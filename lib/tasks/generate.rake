@@ -11,6 +11,6 @@ namespace :jira_api do
     system("openssl req -x509 -nodes -newkey rsa:1024 -sha1 -keyout rsakey.pem -out rsacert.pem")
     system("cat rsacert.pem")
     puts "Done. The RSA-SHA1 private keyfile is in the current directory: \'rsakey.pem\'."
-    rm 'rsakey.pem'
+    rm 'rsacert.pem'
   end
 end
