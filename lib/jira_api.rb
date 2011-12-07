@@ -6,26 +6,38 @@ require 'JSON'
 module JiraApi
   class Client
     
-    VALID_OPTIONS = [
+  # VALID_OPTIONS = [
+  #   :site,
+  #   :signature_method,
+  #   :request_token_path,
+  #   :authorize_path,
+  #   :access_token_path,
+  #   :consumer_key,
+  #   :consumer_secret,
+  #   :private_key_file
+  # ]
+
+    attr_accessor :current_access_token, :consumer_key, :consumer_secret, :options
+
+    def initialize(consumer_key, consumer_secret, options={
       :site => 'http://localhost',
       :signature_method => 'RSA-SHA1',
       :request_token_path => "/jira/plugins/servlet/oauth/request-token",
       :authorize_path => "/jira/plugins/servlet/oauth/authorize",
       :access_token_path => "/jira/plugins/servlet/oauth/access-token",
-      :consumer_key => '',
       :private_key_file => "rsakey.pem"
-    ]
-
-    attr_accessor *VALID_OPTIONS
-    attr_accessible :current_access_token
-
-    def initialize(options={:base_url => "http://localhost"})
-      VALID_OPTIONS.each do |key|
-        instance_variable_set("@#{key}".to_sym, options[key])
-      end
+    })
+  #   VALID_OPTIONS.each do |key|
+  #     instance_variable_set("@#{key}".to_sym, options[key])
+  #   end
+      instance_variable_set(:@options, options)
+      instance_variable_set(:@consumer_key, consumer_key)
+      instance_variable_set(:@consumer_secret, consumer_secret)
     end
 
     def authenticate
+
+      consumer = OAuth::Consumer.new(self.consumer_key,self.consumer_secret,self.options)
       
       request_token = consumer.get_request_token
 
@@ -38,7 +50,7 @@ module JiraApi
       # retrieve oauth_token and oauth_verifier from callback params
       return_token = OAuth::RequestToken.new(consumer, oauth_token, secret)
       access_token = return_token.get_access_token(:oauth_verifier => oauth_verifier)
-      
+      instance_variable_set(:@access_token, access_token)
     end
 
   end
