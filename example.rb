@@ -3,7 +3,7 @@ require './lib/jira_api'
 require 'JSON'
 
 options = {
-  :private_key_file => "myrsakey.pem"
+  :private_key_file => "rsakey.pem"
 }
 
 CONSUMER_KEY = 'test'

@@ -3,6 +3,9 @@ require 'oauth'
 require 'JSON'
 require 'forwardable'
 
+$: << File.expand_path(File.dirname(__FILE__))
+require 'jira_api/resource/project'
+
 module JiraApi
   class Client
 
