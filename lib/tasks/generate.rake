@@ -9,8 +9,9 @@ namespace :jira_api do
   task :generate_public_cert do
     puts "Executing 'openssl req -x509 -nodes -newkey rsa:1024 -sha1 -keyout rsakey.pem -out rsacert.pem'"
     system("openssl req -x509 -nodes -newkey rsa:1024 -sha1 -keyout rsakey.pem -out rsacert.pem")
-    system("cat rsacert.pem")
     puts "Done. The RSA-SHA1 private keyfile is in the current directory: \'rsakey.pem\'."
+    puts "You will need to copy the following certificate into your application link configuration in Jira:"
+    system("cat rsacert.pem")
     rm 'rsacert.pem'
   end
 end
