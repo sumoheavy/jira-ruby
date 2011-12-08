@@ -1,57 +1,82 @@
 Dir[File.join(File.dirname(__FILE__),'tasks/*.rake')].each { |f| load f } if defined?(Rake)
-require "jira_api/version"
 require 'oauth'
 require 'JSON'
+require 'forwardable'
 
 module JiraApi
   class Client
-    
-  # VALID_OPTIONS = [
-  #   :site,
-  #   :signature_method,
-  #   :request_token_path,
-  #   :authorize_path,
-  #   :access_token_path,
-  #   :consumer_key,
-  #   :consumer_secret,
-  #   :private_key_file
-  # ]
 
-    attr_accessor :current_access_token, :consumer_key, :consumer_secret, :options
+    extend Forwardable
 
-    def initialize(consumer_key, consumer_secret, options={
-      :site => 'http://localhost',
+    class UninitializedAccessTokenError < StandardError
+      def message
+        "init_access_token must be called before using the client"
+      end
+    end
+
+    attr_accessor :consumer
+    attr_reader :options
+    delegate [:key, :secret, :get_request_token] => :consumer
+
+    DEFAULT_OPTIONS = {
+      :site => 'http://localhost:2990',
       :signature_method => 'RSA-SHA1',
       :request_token_path => "/jira/plugins/servlet/oauth/request-token",
       :authorize_path => "/jira/plugins/servlet/oauth/authorize",
       :access_token_path => "/jira/plugins/servlet/oauth/access-token",
       :private_key_file => "rsakey.pem"
-    })
-  #   VALID_OPTIONS.each do |key|
-  #     instance_variable_set("@#{key}".to_sym, options[key])
-  #   end
-      instance_variable_set(:@options, options)
-      instance_variable_set(:@consumer_key, consumer_key)
-      instance_variable_set(:@consumer_secret, consumer_secret)
+    }
+
+    def initialize(consumer_key, consumer_secret, options={})
+      options = DEFAULT_OPTIONS.merge(options)
+
+      @options = options
+      @options.freeze
+      @consumer = OAuth::Consumer.new(consumer_key,consumer_secret,options)
+
     end
 
-    def authenticate
-
-      consumer = OAuth::Consumer.new(self.consumer_key,self.consumer_secret,self.options)
-      
-      request_token = consumer.get_request_token
-
-      secret = request_token.secret
-      # redirect to request_token.authorize_url 
-
-      # User authenticates request token
-
-      # redirect back to application with callback url set in jira
-      # retrieve oauth_token and oauth_verifier from callback params
-      return_token = OAuth::RequestToken.new(consumer, oauth_token, secret)
-      access_token = return_token.get_access_token(:oauth_verifier => oauth_verifier)
-      instance_variable_set(:@access_token, access_token)
+    def request_token
+      @request_token ||= get_request_token
     end
+
+    def init_access_token(params)
+      @access_token = request_token.get_access_token(params)
+    end
+
+    def access_token
+      raise UninitializedAccessTokenError.new unless @access_token
+      @access_token
+    end
+
+    # HTTP methods without a body
+    def delete(path, headers = {})
+      request(:delete, path,  merge_default_headers(headers))
+    end
+    def get(path, headers = {})
+      request(:get, path, merge_default_headers(headers))
+    end
+    def head(path, headers = {})
+      request(:head, path, merge_default_headers(headers))
+    end
+
+    # HTTP methods with a body
+    def post(path, body = '', headers = {})
+      request(:post, path, body, merge_default_headers(headers))
+    end
+    def put(path, body = '', headers = {})
+      request(:put, path, body, merge_default_headers(headers))
+    end
+
+    def request(http_method, path, *arguments)
+      access_token.request(http_method, path, *arguments)
+    end
+
+    protected
+
+      def merge_default_headers(headers)
+        {'Accept' => 'application/json'}.merge(headers)
+      end
 
   end
 end
