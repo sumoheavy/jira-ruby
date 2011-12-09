@@ -37,12 +37,14 @@ The following sample controller shows how to set up and initialize an access tok
 (Note that the callback url is defined in the Jira application link interface, and can be placed wherever suits you best in your application. The session#callback method is simply an example)
 
 \#TODO cannot pass params hash straight into init\_access\_token method - errors with a missing parameter exception
+
     class SessionsController < ApplicationController
       def create
         session[:client] = JiraApi::Client.new($CONSUMER_KEY, '', :private_key_file => $PUBLIC_CERT_FILE)
         session[:request_token] = session[:client].request_token #Generate the request token
         redirect_to session[:request_token].authorize_url   #Redirect to Jira to authorize the token
       end
+    
       def callback
         session[:client].init_access_token(:oauth_verifier => params[:oauth_verifier]) #Initialize the access token
         redirect_to root_url  #Redirect to the desired page after initializing the access token
