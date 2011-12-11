@@ -12,6 +12,5 @@ namespace :jira-ruby do
     puts "Done. The RSA-SHA1 private keyfile is in the current directory: \'rsakey.pem\'."
     puts "You will need to copy the following certificate into your application link configuration in Jira:"
     system("cat rsacert.pem")
-    rm 'rsacert.pem'
   end
 end
