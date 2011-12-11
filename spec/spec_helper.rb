@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'jira_api'
+require 'jira-api'
 
 RSpec.configure do |config|
 

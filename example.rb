@@ -1,5 +1,5 @@
 require 'pp'
-require './lib/jira_api'
+require './lib/jira-ruby'
 require 'JSON'
 
 options = {
@@ -8,7 +8,7 @@ options = {
 
 CONSUMER_KEY = 'test'
 
-client = JiraApi::Client.new(CONSUMER_KEY, '', options)
+client = JiraRuby::Client.new(CONSUMER_KEY, '', options)
 
 request_token = client.request_token
 system "open #{request_token.authorize_url}"

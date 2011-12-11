@@ -1,4 +1,4 @@
-namespace :jira_api do
+namespace :jira-ruby do
   desc "Generate a consumer key for your application"
   task :generate_consumer_key do
     #FIXME SERIOUSLY. THIS IS NOT A REAL SOLUTION. I FEEL SO UNCLEAN.
