@@ -1,7 +1,8 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'bundler/setup'
 
-require 'jira-api'
+require 'jira-ruby'
 
 RSpec.configure do |config|
 
