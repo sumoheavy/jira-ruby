@@ -42,6 +42,24 @@ module JiraRuby
         json = JSON.parse(response.body)
         self.new(client, json)
       end
+
+
+      def respond_to?(method_name)
+        if attrs.keys.include? method_name.to_s
+          true
+        else
+          super(method_name)
+        end
+      end
+
+      def method_missing(method_name, *args, &block)
+        if attrs.keys.include? method_name.to_s
+          attrs[method_name.to_s]
+        else
+          super(method_name)
+        end
+      end
+
     end
   end
 end

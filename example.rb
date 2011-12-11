@@ -20,7 +20,10 @@ client.init_access_token(:oauth_verifier => oauth_verifier)
 
 # Show all projects
 projects = client.Project.all
-pp projects
+
+projects.each do |project|
+  puts "Project -> key: #{project.key}, name: #{project.name}"
+end
 
 # # Find a specific project by key
 # project = client.Project.find('SAMPLEPROJECT')

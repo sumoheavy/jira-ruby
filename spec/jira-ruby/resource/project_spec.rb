@@ -33,4 +33,25 @@ describe JiraRuby::Resource::Project do
     project.attrs['self'].should  == 'http://foo/'
     project.attrs['key'].should   == 'FOO'
   end
+
+  describe "dynamic instance methods" do
+
+    let(:attrs) { {'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy'} }
+    subject     { JiraRuby::Resource::Project.new(client, attrs.to_json) }
+
+    it "responds to each of the top level attribute names" do
+      project = JiraRuby::Resource::Project.new(client, attrs)
+      project.should respond_to(:foo)
+      project.should respond_to('flum')
+      project.should respond_to(:object_id)
+
+      project.foo.should  == 'bar'
+      project.flum.should == 'goo'
+
+      # Should not override existing method names, but should still allow
+      # access to their values via the attrs[] hash
+      project.object_id.should_not == 'dummy'
+      project.attrs['object_id'].should == 'dummy'
+    end
+  end
 end
