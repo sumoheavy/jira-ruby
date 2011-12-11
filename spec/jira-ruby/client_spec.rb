@@ -99,6 +99,12 @@ describe JiraRuby::Client do
       subject.Project.all.should == []
     end
 
+    it "finds a single project" do
+      find_result = mock()
+      JiraRuby::Resource::Project.should_receive(:find).with(subject, '123').and_return(find_result)
+      subject.Project.find('123').should == find_result
+    end
+
   end
 
 end

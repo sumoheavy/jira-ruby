@@ -16,6 +16,21 @@ describe JiraRuby::Resource::Project do
     response = mock()
     response.should_receive(:body).and_return('[{"self":"http://foo/","key":"FOO"}]')
     client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/project').and_return(response)
-    JiraRuby::Resource::Project.all(client).should == []
+    projects = JiraRuby::Resource::Project.all(client)
+    projects.length.should == 1
+    first = projects.first
+    first.class.should == JiraRuby::Resource::Project
+    first.attrs['self'].should  == 'http://foo/'
+    first.attrs['key'].should   == 'FOO'
+  end
+
+  it "finds a project by key" do
+    response = mock()
+    response.should_receive(:body).and_return('{"self":"http://foo/","key":"FOO"}')
+    client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/project/FOO').and_return(response)
+    project = JiraRuby::Resource::Project.find(client, 'FOO')
+    project.client.should == client
+    project.attrs['self'].should  == 'http://foo/'
+    project.attrs['key'].should   == 'FOO'
   end
 end

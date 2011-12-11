@@ -32,7 +32,10 @@ module JiraRuby
       @options = options
       @options.freeze
       @consumer = OAuth::Consumer.new(consumer_key,consumer_secret,options)
+    end
 
+    def Project
+      JiraRuby::Resource::ProjectFactory.new(self)
     end
 
     def request_token
