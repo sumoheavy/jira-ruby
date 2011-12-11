@@ -92,4 +92,13 @@ describe JiraRuby::Client do
 
   end
 
+  describe "Resource Factories" do
+
+    it "gets all projects" do
+      JiraRuby::Resource::Project.should_receive(:all).with(subject).and_return([])
+      subject.Project.all.should == []
+    end
+
+  end
+
 end
