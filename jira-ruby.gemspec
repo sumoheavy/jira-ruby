@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "oauth"
   s.add_runtime_dependency "railties"
   s.add_development_dependency "railties"
+  s.add_development_dependency "webmock"
 end

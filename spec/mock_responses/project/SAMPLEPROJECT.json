@@ -1,0 +1,46 @@
+{
+  "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT",
+  "key": "SAMPLEPROJECT",
+  "lead": {
+    "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/user?username=admin",
+    "name": "admin",
+    "displayName": "admin",
+    "active": true
+  },
+  "components": [],
+  "issueTypes": [
+    {
+      "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/issueType/1",
+      "name": "Bug",
+      "subtask": false
+    },
+    {
+      "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/issueType/2",
+      "name": "New Feature",
+      "subtask": false
+    },
+    {
+      "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/issueType/3",
+      "name": "Task",
+      "subtask": false
+    },
+    {
+      "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/issueType/4",
+      "name": "Improvement",
+      "subtask": false
+    },
+    {
+      "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/issueType/5",
+      "name": "Sub-task",
+      "subtask": true
+    }
+  ],
+  "assigneeType": "PROJECT_LEAD",
+  "versions": [],
+  "name": "Sample Project",
+  "roles": {
+    "Users": "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT/role/10000",
+    "Administrators": "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT/role/10002",
+    "Developers": "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT/role/10001"
+  }
+}
