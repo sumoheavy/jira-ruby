@@ -35,8 +35,4 @@ describe Jira::Resource::Project do
     project.key.should    == "SAMPLEPROJECT"
     project.name.should   == "Sample Project"
   end
-
-  def get_mock_response(file)
-    File.read(File.join(File.dirname(__FILE__), '../mock_responses/', file))
-  end
 end

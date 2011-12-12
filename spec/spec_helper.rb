@@ -8,3 +8,7 @@ require 'jira'
 RSpec.configure do |config|
 
 end
+
+def get_mock_response(file)
+  File.read(File.join(File.dirname(__FILE__), 'mock_responses/', file))
+end

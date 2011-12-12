@@ -39,6 +39,10 @@ module Jira
       Jira::Resource::ProjectFactory.new(self)
     end
 
+    def Issue
+      Jira::Resource::IssueFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end

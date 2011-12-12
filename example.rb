@@ -35,6 +35,8 @@ projects = client.Project.all
 projects.each do |project|
   puts "Project -> key: #{project.key}, name: #{project.name}"
 end
+issue = client.Issue.find('SAMPLE-1')
+pp issue
 
 # # Find a specific project by key
 # project = client.Project.find('SAMPLEPROJECT')
