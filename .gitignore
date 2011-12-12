@@ -6,3 +6,4 @@ pkg/*
 .rspec
 *.pem
 .DS_STORE
+doc
