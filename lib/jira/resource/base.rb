@@ -5,9 +5,9 @@ module Jira
 
       attr_reader :client, :attrs
 
-      def initialize(client, attrs)
+      def initialize(client, options)
         @client = client
-        @attrs  = attrs
+        @attrs  = options[:attrs]
       end
 
       # The class methods are never called directly, they are always
@@ -16,14 +16,14 @@ module Jira
         response = client.get(rest_base_path(client))
         json = JSON.parse(response.body)
         json.map do |attrs|
-          self.new(client, attrs)
+          self.new(client, :attrs => attrs)
         end
       end
 
       def self.find(client, key)
         response = client.get(rest_base_path(client) + "/" + key)
         json = JSON.parse(response.body)
-        self.new(client, json)
+        self.new(client, :attrs => json)
       end
 
       def self.rest_base_path(client)

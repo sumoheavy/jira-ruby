@@ -7,7 +7,7 @@ describe Jira::Resource::Base do
   let(:client)  { mock() }
   let(:attrs)   { mock() }
 
-  subject { Jira::Resource::Deadbeef.new(client, attrs) }
+  subject { Jira::Resource::Deadbeef.new(client, :attrs => attrs) }
 
   it "assigns the client and attrs" do
     subject.client.should == client
@@ -61,21 +61,20 @@ describe Jira::Resource::Base do
   describe "dynamic instance methods" do
 
     let(:attrs) { {'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy'} }
-    subject     { Jira::Resource::Deadbeef.new(client, attrs.to_json) }
+    subject     { Jira::Resource::Deadbeef.new(client, :attrs => attrs) }
 
     it "responds to each of the top level attribute names" do
-      deadbeef = Jira::Resource::Deadbeef.new(client, attrs)
-      deadbeef.should respond_to(:foo)
-      deadbeef.should respond_to('flum')
-      deadbeef.should respond_to(:object_id)
+      subject.should respond_to(:foo)
+      subject.should respond_to('flum')
+      subject.should respond_to(:object_id)
 
-      deadbeef.foo.should  == 'bar'
-      deadbeef.flum.should == 'goo'
+      subject.foo.should  == 'bar'
+      subject.flum.should == 'goo'
 
       # Should not override existing method names, but should still allow
       # access to their values via the attrs[] hash
-      deadbeef.object_id.should_not == 'dummy'
-      deadbeef.attrs['object_id'].should == 'dummy'
+      subject.object_id.should_not == 'dummy'
+      subject.attrs['object_id'].should == 'dummy'
     end
   end
 
