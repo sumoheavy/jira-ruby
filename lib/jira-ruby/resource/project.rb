@@ -30,7 +30,7 @@ module JiraRuby
       # The class methods are never called directly, they are always
       # invoked from a ProjectFactory instance.
       def self.all(client)
-        response = client.get('/jira/rest/api/2.0.alpha1/project')
+        response = client.get(rest_base_path(client))
         json = JSON.parse(response.body)
         json.map do |attrs|
           JiraRuby::Resource::Project.new(client, attrs)
@@ -38,9 +38,13 @@ module JiraRuby
       end
 
       def self.find(client, key)
-        response = client.get("/jira/rest/api/2.0.alpha1/project/#{key}")
+        response = client.get(rest_base_path(client) + "/" + key)
         json = JSON.parse(response.body)
         self.new(client, json)
+      end
+
+      def self.rest_base_path(client)
+        client.options[:rest_base_path] + '/project'
       end
 
 
@@ -58,6 +62,11 @@ module JiraRuby
         else
           super(method_name)
         end
+      end
+
+      def rest_base_path
+        # Just proxy this to the class method
+        self.class.rest_base_path(client)
       end
 
     end

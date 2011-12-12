@@ -18,12 +18,13 @@ module JiraRuby
     delegate [:key, :secret, :get_request_token] => :consumer
 
     DEFAULT_OPTIONS = {
-      :site => 'http://localhost:2990',
-      :signature_method => 'RSA-SHA1',
+      :site               => 'http://localhost:2990',
+      :signature_method   => 'RSA-SHA1',
       :request_token_path => "/jira/plugins/servlet/oauth/request-token",
-      :authorize_path => "/jira/plugins/servlet/oauth/authorize",
-      :access_token_path => "/jira/plugins/servlet/oauth/access-token",
-      :private_key_file => "rsakey.pem"
+      :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
+      :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
+      :private_key_file   => "rsakey.pem",
+      :rest_base_path     => "/jira/rest/api/2.0.alpha1"
     }
 
     def initialize(consumer_key, consumer_secret, options={})
