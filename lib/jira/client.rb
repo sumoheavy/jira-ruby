@@ -43,6 +43,10 @@ module Jira
       @request_token ||= get_request_token
     end
 
+    def set_request_token(token, secret)
+      @request_token = OAuth::RequestToken.new(@consumer, token, secret)
+    end
+
     def init_access_token(params)
       @access_token = request_token.get_access_token(params)
     end

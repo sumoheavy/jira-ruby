@@ -56,6 +56,16 @@ describe Jira::Client do
     subject.get_request_token.should == request_token
   end
 
+  it "is possible to set the request token" do
+    token = mock()
+    OAuth::RequestToken.should_receive(:new).with(subject.consumer, 'foo', 'bar').and_return(token)
+
+    request_token = subject.set_request_token('foo', 'bar')
+
+    request_token.should         == token
+    subject.request_token.should == token
+  end
+
   describe "access token" do
 
     it "initializes the access token" do
