@@ -3,7 +3,7 @@ Jira 5 API Gem
 
 Links to JIRA REST API documentation
 ------------------------------------
-* [Overview](https://my.atlassian.com/login?destination=https://maven.atlassian.com/public/com/atlassian/amps/atlassian-plugin-sdk/3.7.2/atlassian-plugin-sdk-3.7.2.tar.gz?eventtype=download_plugin_sdk)
+* [Overview](https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs)
 * [Reference](http://docs.atlassian.com/jira/REST/5.0-rc1/)
 
 
