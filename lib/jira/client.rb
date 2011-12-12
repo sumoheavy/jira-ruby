@@ -47,6 +47,10 @@ module Jira
       @access_token = request_token.get_access_token(params)
     end
 
+    def set_access_token(token, secret)
+      @access_token = OAuth::AccessToken.new(@consumer, token, secret)
+    end
+
     def access_token
       raise UninitializedAccessTokenError.new unless @access_token
       @access_token

@@ -73,6 +73,16 @@ describe Jira::Client do
       end.should raise_exception(Jira::Client::UninitializedAccessTokenError, "init_access_token must be called before using the client")
     end
 
+    it "is possible to set the access token" do
+      token = mock()
+      OAuth::AccessToken.should_receive(:new).with(subject.consumer, 'foo', 'bar').and_return(token)
+
+      access_token = subject.set_access_token('foo', 'bar')
+
+      access_token.should         == token
+      subject.access_token.should == token
+    end
+
   end
 
   describe "http" do

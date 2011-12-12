@@ -4,17 +4,11 @@ describe Jira::Resource::Project do
 
   let(:client) do
     client = Jira::Client.new('foo', 'bar')
-    client.init_access_token(:oauth_verifier => 'abc')
+    client.set_access_token('abc', '123')
     client
   end
 
   before(:each) do
-    stub_request(:post,
-                 "http://localhost:2990/jira/plugins/servlet/oauth/request-token").
-                 to_return(:body => "")
-    stub_request(:post,
-                 "http://localhost:2990/jira/plugins/servlet/oauth/access-token").
-                 to_return(:body => "")
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2.0.alpha1/project").
                  to_return(:body => get_mock_response('project.json'))
