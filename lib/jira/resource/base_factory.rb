@@ -10,19 +10,22 @@ module Jira
         @client = client
       end
 
-      # This method assumes all target classes are within the
-      # Jira::Resource module.
+      # Return the name of the class which this factory generates, i.e. 
+      # Jira::Resource::FooFactory creates Jira::Resource::Foo instances.
       def target_class
-        # The last component of the module name, i.e. 'FooFactory' for
-        # 'Jira::Resource::FooFactory'
-        factory_base_name = self.class.name.split('::').last
+        # Need to do a little bit of work here as Module.const_get doesn't work
+        # with nested class names, i.e. Jira::Resource::Foo.
+        #
+        # So create a method chain from the class componenets.  This code will
+        # unroll to:
+        #   Module.const_get('Jira').const_get('Resource').const_get('Foo')
+        #
+        target_class_name = self.class.name.sub(/Factory$/, '')
+        class_components = target_class_name.split('::')
 
-        # Split Factory from the end of the class name
-        base_name = factory_base_name.sub(/Factory$/, '')
-
-        # Need to do this little hack because const_get does not work with
-        # nested class names, e.g. const_get('Foo::Bar') will not work.
-        Module.const_get('Jira').const_get('Resource').const_get(base_name)
+        class_components.inject(Module) do |mod, const_name|
+          mod.const_get(const_name)
+        end
       end
 
       def all

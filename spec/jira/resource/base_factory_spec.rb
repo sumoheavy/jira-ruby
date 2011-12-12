@@ -24,4 +24,8 @@ describe Jira::Resource::BaseFactory do
     subject.find('FOO')
   end
 
+  it "returns the target class" do
+    subject.target_class.should == Jira::Resource::Foo
+  end
+
 end
