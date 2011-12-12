@@ -3,11 +3,13 @@ module Jira
 
     class Base
 
-      attr_reader :client, :attrs
+      attr_reader :client, :attrs, :expanded
+      alias :expanded? :expanded
 
       def initialize(client, options)
-        @client = client
-        @attrs  = options[:attrs]
+        @client     = client
+        @attrs      = options[:attrs]
+        @expanded  = options[:expanded] || false
       end
 
       # The class methods are never called directly, they are always
@@ -23,7 +25,7 @@ module Jira
       def self.find(client, key)
         response = client.get(rest_base_path(client) + "/" + key)
         json = JSON.parse(response.body)
-        self.new(client, :attrs => json)
+        self.new(client, :attrs => json, :expanded => true)
       end
 
       def self.rest_base_path(client)
@@ -53,6 +55,10 @@ module Jira
       def rest_base_path
         # Just proxy this to the class method
         self.class.rest_base_path(client)
+      end
+
+      def fetch
+        @expanded = true
       end
 
     end

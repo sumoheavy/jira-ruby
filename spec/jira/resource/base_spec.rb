@@ -25,6 +25,7 @@ describe Jira::Resource::Base do
     first.class.should == Jira::Resource::Deadbeef
     first.attrs['self'].should  == 'http://deadbeef/'
     first.attrs['key'].should   == 'FOO'
+    first.expanded?.should be_false
   end
 
   it "finds a deadbeef by key" do
@@ -36,6 +37,7 @@ describe Jira::Resource::Base do
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
     deadbeef.attrs['key'].should   == 'FOO'
+    deadbeef.expanded?.should be_true
   end
 
   it "returns the endpoint name" do
@@ -75,6 +77,17 @@ describe Jira::Resource::Base do
       # access to their values via the attrs[] hash
       subject.object_id.should_not == 'dummy'
       subject.attrs['object_id'].should == 'dummy'
+    end
+  end
+
+  describe "fetch" do
+
+    subject     { Jira::Resource::Deadbeef.new(client, :attrs => {'key' => 'FOO'}) }
+
+    it "sets expanded to true after fetch" do
+      subject.expanded?.should be_false
+      subject.fetch
+      subject.expanded?.should be_true
     end
   end
 
