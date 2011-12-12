@@ -1,5 +1,5 @@
 require 'pp'
-require './lib/jira-ruby'
+require './lib/jira'
 
 options = {
   :private_key_file => "rsakey.pem"
@@ -7,7 +7,7 @@ options = {
 
 CONSUMER_KEY = 'test'
 
-client = JiraRuby::Client.new(CONSUMER_KEY, '', options)
+client = Jira::Client.new(CONSUMER_KEY, '', options)
 
 request_token = client.request_token
 puts "Opening #{request_token.authorize_url}"

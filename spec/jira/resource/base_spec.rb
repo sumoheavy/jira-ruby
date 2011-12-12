@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe JiraRuby::Resource::Base do
+describe Jira::Resource::Base do
 
-  class JiraRuby::Resource::Foo < JiraRuby::Resource::Base ; end
+  class Jira::Resource::Foo < Jira::Resource::Base ; end
 
   let(:client)  { mock() }
   let(:attrs)   { mock() }
 
-  subject { JiraRuby::Resource::Foo.new(client, attrs) }
+  subject { Jira::Resource::Foo.new(client, attrs) }
 
   it "assigns the client and attrs" do
     subject.client.should == client
@@ -18,11 +18,11 @@ describe JiraRuby::Resource::Base do
     response = mock()
     response.should_receive(:body).and_return('[{"self":"http://foo/","key":"FOO"}]')
     client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/foo').and_return(response)
-    JiraRuby::Resource::Foo.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/foo')
-    foos = JiraRuby::Resource::Foo.all(client)
+    Jira::Resource::Foo.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/foo')
+    foos = Jira::Resource::Foo.all(client)
     foos.length.should == 1
     first = foos.first
-    first.class.should == JiraRuby::Resource::Foo
+    first.class.should == Jira::Resource::Foo
     first.attrs['self'].should  == 'http://foo/'
     first.attrs['key'].should   == 'FOO'
   end
@@ -31,8 +31,8 @@ describe JiraRuby::Resource::Base do
     response = mock()
     response.should_receive(:body).and_return('{"self":"http://foo/","key":"FOO"}')
     client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/foo/FOO').and_return(response)
-    JiraRuby::Resource::Foo.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/foo')
-    foo = JiraRuby::Resource::Foo.find(client, 'FOO')
+    Jira::Resource::Foo.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/foo')
+    foo = Jira::Resource::Foo.find(client, 'FOO')
     foo.client.should == client
     foo.attrs['self'].should  == 'http://foo/'
     foo.attrs['key'].should   == 'FOO'
@@ -61,10 +61,10 @@ describe JiraRuby::Resource::Base do
   describe "dynamic instance methods" do
 
     let(:attrs) { {'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy'} }
-    subject     { JiraRuby::Resource::Foo.new(client, attrs.to_json) }
+    subject     { Jira::Resource::Foo.new(client, attrs.to_json) }
 
     it "responds to each of the top level attribute names" do
-      foo = JiraRuby::Resource::Foo.new(client, attrs)
+      foo = Jira::Resource::Foo.new(client, attrs)
       foo.should respond_to(:foo)
       foo.should respond_to('flum')
       foo.should respond_to(:object_id)

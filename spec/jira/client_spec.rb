@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe JiraRuby::Client do
+describe Jira::Client do
 
-  subject {JiraRuby::Client.new('foo','bar')}
+  subject {Jira::Client.new('foo','bar')}
   
   it "creates an instance" do
-    subject.class.should == JiraRuby::Client
+    subject.class.should == Jira::Client
   end
 
   it "sets consumer key" do
@@ -17,24 +17,24 @@ describe JiraRuby::Client do
   end
 
   it "sets the default options" do
-    JiraRuby::Client::DEFAULT_OPTIONS.each do |key, value|
+    Jira::Client::DEFAULT_OPTIONS.each do |key, value|
       subject.options[key].should == value
     end
   end
 
   it "allows the overriding of some options" do
     # Check it overrides a given option ...
-    client = JiraRuby::Client.new('foo', 'bar', :site => 'http://foo.com/')
+    client = Jira::Client.new('foo', 'bar', :site => 'http://foo.com/')
     client.options[:site].should == 'http://foo.com/'
 
     # ... but leaves the rest intact
-    JiraRuby::Client::DEFAULT_OPTIONS.keys.reject do |key|
+    Jira::Client::DEFAULT_OPTIONS.keys.reject do |key|
       key == :site
     end.each do |key|
-      client.options[key].should == JiraRuby::Client::DEFAULT_OPTIONS[key]
+      client.options[key].should == Jira::Client::DEFAULT_OPTIONS[key]
     end
 
-    JiraRuby::Client::DEFAULT_OPTIONS[:site].should_not == 'http://foo.com/'
+    Jira::Client::DEFAULT_OPTIONS[:site].should_not == 'http://foo.com/'
   end
 
   # To avoid having to validate options after initialisation, e.g. setting
@@ -70,7 +70,7 @@ describe JiraRuby::Client do
     it "raises an exception when accessing without initialisation" do
       lambda do
         subject.access_token
-      end.should raise_exception(JiraRuby::Client::UninitializedAccessTokenError, "init_access_token must be called before using the client")
+      end.should raise_exception(Jira::Client::UninitializedAccessTokenError, "init_access_token must be called before using the client")
     end
 
   end
@@ -95,13 +95,13 @@ describe JiraRuby::Client do
   describe "Resource Factories" do
 
     it "gets all projects" do
-      JiraRuby::Resource::Project.should_receive(:all).with(subject).and_return([])
+      Jira::Resource::Project.should_receive(:all).with(subject).and_return([])
       subject.Project.all.should == []
     end
 
     it "finds a single project" do
       find_result = mock()
-      JiraRuby::Resource::Project.should_receive(:find).with(subject, '123').and_return(find_result)
+      Jira::Resource::Project.should_receive(:find).with(subject, '123').and_return(find_result)
       subject.Project.find('123').should == find_result
     end
 

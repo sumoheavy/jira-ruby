@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "jira-ruby/version"
+require "jira/version"
 
 Gem::Specification.new do |s|
   s.name        = "jira-ruby"
-  s.version     = JiraRuby::VERSION
+  s.version     = Jira::VERSION
   s.authors     = ["Trineo Ltd"]
   s.homepage    = "http://trineo.co.nz"
   s.summary     = %q{Ruby Gem for use with the Atlassian Jira 5 REST API}
