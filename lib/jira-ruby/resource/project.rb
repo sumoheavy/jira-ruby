@@ -1,22 +1,7 @@
 module JiraRuby
   module Resource
 
-    class ProjectFactory
-
-      attr_reader :client
-
-      def initialize(client)
-        @client = client
-      end
-
-      def all
-        Project.all(@client)
-      end
-
-      def find(key)
-        Project.find(@client, key)
-      end
-    end
+    class ProjectFactory < BaseFactory ; end
 
     class Project
 
@@ -70,5 +55,6 @@ module JiraRuby
       end
 
     end
+
   end
 end
