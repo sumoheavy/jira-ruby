@@ -20,6 +20,9 @@ describe Jira::Resource::Issue do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/SAMPLEPROJECT-1").
                  to_return(:body => get_mock_response('issue/SAMPLEPROJECT-1.json'))
+    stub_request(:delete,
+                 "http://localhost:2990/jira/rest/api/2/issue/SAMPLEPROJECT-1").
+                 to_return(:body => nil)
   end
 
   it "should get a single issue by key" do
@@ -33,5 +36,10 @@ describe Jira::Resource::Issue do
     issue.fetch
 
     issue.should have_attributes(expected_attributes)
+  end
+
+  it "deletes an issue" do
+    issue = client.Issue.build('key' => "SAMPLEPROJECT-1")
+    issue.delete.should be_true
   end
 end

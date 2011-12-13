@@ -35,9 +35,19 @@ projects = client.Project.all
 projects.each do |project|
   puts "Project -> key: #{project.key}, name: #{project.name}"
 end
-issue = client.Issue.find('SAMPLE-1')
+issue = client.Issue.find('SAMPLEPROJECT-1')
 pp issue
 
 # # Find a specific project by key
+# # ------------------------------
 # project = client.Project.find('SAMPLEPROJECT')
 # pp project
+#
+# # Delete an issue
+# # ---------------
+# issue = client.Issue.find('SAMPLEPROJECT-2')
+# if issue.delete
+#   puts "Delete of issue SAMPLEPROJECT-2 sucessful"
+# else
+#   puts "Delete of issue SAMPLEPROJECT-2 failed"
+# end
