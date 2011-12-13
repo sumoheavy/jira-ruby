@@ -24,7 +24,7 @@ module Jira
       :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
       :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
       :private_key_file   => "rsakey.pem",
-      :rest_base_path     => "/jira/rest/api/2.0.alpha1"
+      :rest_base_path     => "/jira/rest/api/2"
     }
 
     def initialize(consumer_key, consumer_secret, options={})
