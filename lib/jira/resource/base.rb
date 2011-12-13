@@ -4,13 +4,15 @@ module Jira
     class Base
 
       attr_reader :client, :attrs
-      attr_accessor :expanded
+      attr_accessor :expanded, :deleted
       alias :expanded? :expanded
+      alias :deleted? :deleted
 
       def initialize(client, options = {})
         @client   = client
         @attrs    = options[:attrs] || {}
         @expanded = options[:expanded] || false
+        @deleted  = false
       end
 
       # The class methods are never called directly, they are always
@@ -73,6 +75,11 @@ module Jira
         json = JSON.parse(response.body)
         @attrs = json
         @expanded = true
+      end
+
+      def delete
+        client.delete(url)
+        @deleted = true
       end
 
       def url

@@ -13,6 +13,9 @@ describe Jira::Resource::Component do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2.0.alpha1/component/10001").
                  to_return(:body => get_mock_response('component/10001.json'))
+    stub_request(:delete,
+                 "http://localhost:2990/jira/rest/api/2.0.alpha1/component/10001").
+                 to_return(:body => nil)
   end
 
   it "should get a single component by id" do
@@ -31,4 +34,10 @@ describe Jira::Resource::Component do
     component.id.should    == 10001
     component.name.should == "Cheesecake"
   end
+
+  it "deletes a component" do
+    component = client.Component.build('id' => 10001)
+    component.delete.should be_true
+  end
+
 end

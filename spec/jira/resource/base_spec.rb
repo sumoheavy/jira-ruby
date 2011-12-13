@@ -131,6 +131,25 @@ describe Jira::Resource::Base do
 
   end
 
+  describe "delete" do
+
+    before(:each) do
+      client.should_receive(:delete).with('/foo/bar')
+      subject.stub(:url => '/foo/bar')
+    end
+
+    it "flags itself as deleted" do
+      subject.deleted?.should be_false
+      subject.delete
+      subject.deleted?.should be_true
+    end
+
+    it "sends a DELETE request" do
+      subject.delete
+    end
+
+  end
+
   describe 'url' do
     it "returns self as the URL if set" do
       attrs.stub(:[]).with('self').and_return('http://foo/bar')
