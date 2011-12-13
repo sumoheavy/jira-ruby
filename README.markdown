@@ -20,7 +20,7 @@ Otherwise:
 * Unpack the dowloaded archive
 * From within the archive directory, run:
 
-    ./bin/atlas-run-standalone --product jira
+    ./bin/atlas-run-standalone --product jira --version 5.0-rc2
 
 Once this is running, you should be able to connect to
 [http://localhost:2990/] and login to the JIRA admin system using `admin:admin`

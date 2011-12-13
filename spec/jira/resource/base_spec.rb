@@ -17,8 +17,8 @@ describe Jira::Resource::Base do
   it "returns all the deadbeefs" do
     response = mock()
     response.should_receive(:body).and_return('[{"self":"http://deadbeef/","key":"FOO"}]')
-    client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/deadbeef').and_return(response)
-    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/deadbeef')
+    client.should_receive(:get).with('/jira/rest/api/2/deadbeef').and_return(response)
+    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeefs = Jira::Resource::Deadbeef.all(client)
     deadbeefs.length.should == 1
     first = deadbeefs.first
@@ -31,8 +31,8 @@ describe Jira::Resource::Base do
   it "finds a deadbeef by key" do
     response = mock()
     response.should_receive(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
-    client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/deadbeef/FOO').and_return(response)
-    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/deadbeef')
+    client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
+    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeef = Jira::Resource::Deadbeef.find(client, 'FOO')
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
@@ -97,8 +97,8 @@ describe Jira::Resource::Base do
       before(:each) do
         response = mock()
         response.should_receive(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
-        client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/deadbeef/FOO').and_return(response)
-        Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/deadbeef')
+        client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
+        Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
       it "sets expanded to true after fetch" do

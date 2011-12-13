@@ -1,8 +1,12 @@
 [
   {
-    "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT",
+    "self": "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT",
+    "id": "10001",
     "key": "SAMPLEPROJECT",
-    "name": "Sample Project",
-    "roles": {}
+    "name": "Sample Project for Developing RoR RESTful API",
+    "avatarUrls": {
+      "16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10001&avatarId=10011",
+      "48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10001&avatarId=10011"
+    }
   }
 ]

@@ -10,10 +10,10 @@ describe Jira::Resource::Project do
 
   before(:each) do
     stub_request(:get,
-                 "http://localhost:2990/jira/rest/api/2.0.alpha1/project").
+                 "http://localhost:2990/jira/rest/api/2/project").
                  to_return(:body => get_mock_response('project.json'))
     stub_request(:get,
-                 "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT").
+                 "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT").
                  to_return(:body => get_mock_response('project/SAMPLEPROJECT.json'))
   end
 
@@ -22,26 +22,25 @@ describe Jira::Resource::Project do
     projects.length.should == 1
 
     first = projects.first
-    first.self.should   == "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT"
+    first.self.should   == "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT"
     first.key.should    == "SAMPLEPROJECT"
-    first.name.should   == "Sample Project"
-    first.roles.should  == {}
+    first.name.should   == "Sample Project for Developing RoR RESTful API"
   end
 
   it "should get a single project by key" do
     project = client.Project.find('SAMPLEPROJECT')
 
-    project.self.should   == "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT"
+    project.self.should   == "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT"
     project.key.should    == "SAMPLEPROJECT"
-    project.name.should   == "Sample Project"
+    project.name.should   == "Sample Project for Developing RoR RESTful API"
   end
 
   it "builds and fetches single project" do
     project = client.Project.build('key' => 'SAMPLEPROJECT')
     project.fetch
 
-    project.self.should   == "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT"
+    project.self.should   == "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT"
     project.key.should    == "SAMPLEPROJECT"
-    project.name.should   == "Sample Project"
+    project.name.should   == "Sample Project for Developing RoR RESTful API"
   end
 end
