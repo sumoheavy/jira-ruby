@@ -96,6 +96,9 @@ module Jira
         "#<#{self.class.name}:#{object_id} @attrs=#{@attrs.inspect}>"
       end
 
+      def to_json
+        attrs.to_json
+      end
     end
 
   end

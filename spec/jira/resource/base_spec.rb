@@ -181,4 +181,10 @@ describe Jira::Resource::Base do
   it "returns the key attribute" do
     subject.class.key_attribute.should == :key
   end
+
+  it "converts to json" do
+    subject.attrs.stub(:to_json => '{"foo":"bar","dead":"beef"}')
+
+    subject.to_json.should == '{"foo":"bar","dead":"beef"}'
+  end
 end
