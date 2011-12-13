@@ -3,13 +3,14 @@ module Jira
 
     class Base
 
-      attr_reader :client, :attrs, :expanded
+      attr_reader :client, :attrs
+      attr_accessor :expanded
       alias :expanded? :expanded
 
-      def initialize(client, options)
-        @client     = client
-        @attrs      = options[:attrs]
-        @expanded  = options[:expanded] || false
+      def initialize(client, options = {})
+        @client   = client
+        @attrs    = options[:attrs] || {}
+        @expanded = options[:expanded] || false
       end
 
       # The class methods are never called directly, they are always
@@ -23,9 +24,10 @@ module Jira
       end
 
       def self.find(client, key)
-        response = client.get(rest_base_path(client) + "/" + key)
-        json = JSON.parse(response.body)
-        self.new(client, :attrs => json, :expanded => true)
+        instance = self.new(client)
+        instance.attrs['key'] = key
+        instance.fetch
+        instance
       end
 
       def self.rest_base_path(client)
@@ -57,8 +59,22 @@ module Jira
         self.class.rest_base_path(client)
       end
 
-      def fetch
+      def fetch(reload = false)
+        return if expanded? && !reload
+        response = client.get(url)
+        json = JSON.parse(response.body)
+        @attrs = json
         @expanded = true
+      end
+
+      def url
+        if @attrs['self']
+          @attrs['self']
+        elsif @attrs['key']
+          rest_base_path + "/" + @attrs['key']
+        else
+          rest_base_path
+        end
       end
 
     end

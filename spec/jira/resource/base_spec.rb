@@ -84,10 +84,63 @@ describe Jira::Resource::Base do
 
     subject     { Jira::Resource::Deadbeef.new(client, :attrs => {'key' => 'FOO'}) }
 
-    it "sets expanded to true after fetch" do
-      subject.expanded?.should be_false
-      subject.fetch
-      subject.expanded?.should be_true
+    describe "not cached" do
+
+      before(:each) do
+        response = mock()
+        response.should_receive(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
+        client.should_receive(:get).with('/jira/rest/api/2.0.alpha1/deadbeef/FOO').and_return(response)
+        Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2.0.alpha1/deadbeef')
+      end
+
+      it "sets expanded to true after fetch" do
+        subject.expanded?.should be_false
+        subject.fetch
+        subject.expanded?.should be_true
+      end
+
+      it "performs a fetch" do
+        subject.expanded?.should be_false
+        subject.fetch
+        subject.self.should == "http://deadbeef/"
+        subject.key.should  == "FOO"
+      end
+
+      it "performs a fetch if already fetched and force flag is true" do
+        subject.expanded = true
+        subject.fetch(true)
+      end
+
+    end
+
+    describe "cached" do
+      it "doesn't perform a fetch if already fetched" do
+        subject.expanded = true
+        client.should_not_receive(:get)
+        subject.fetch
+      end
+    end
+
+  end
+
+  describe 'url' do
+    it "returns self as the URL if set" do
+      attrs.stub(:[]).with('self').and_return('http://foo/bar')
+      subject.url.should == "http://foo/bar"
+    end
+
+    it "generates the URL from key if self not set" do
+      attrs.stub(:[]).with('self').and_return(nil)
+      attrs.stub(:[]).with('key').and_return('FOO')
+      subject.stub(:rest_base_path => 'http://foo/bar')
+      subject.url.should == "http://foo/bar/FOO"
+    end
+
+    it "generates the URL from rest_base_path if self and key not set" do
+      attrs.stub(:[]).with('self').and_return(nil)
+      attrs.stub(:[]).with('key').and_return(nil)
+      subject.stub(:rest_base_path => 'http://foo/bar')
+      subject.url.should == "http://foo/bar"
     end
   end
 
