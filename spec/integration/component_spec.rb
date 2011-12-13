@@ -9,6 +9,14 @@ describe Jira::Resource::Component do
     client
   end
 
+  let(:expected_attributes) do
+    {
+      'self' => "http://localhost:2990/jira/rest/api/2/component/10000",
+      'id'   => "10000",
+      'name' => "Cheesecake"
+    }
+  end
+
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
@@ -21,18 +29,14 @@ describe Jira::Resource::Component do
   it "should get a single component by id" do
     component = client.Component.find(10000)
 
-    component.self.should == "http://localhost:2990/jira/rest/api/2/component/10000"
-    component.id.should   == "10000"
-    component.name.should == "Cheesecake"
+    component.should have_attributes(expected_attributes)
   end
 
   it "builds and fetches single component" do
     component = client.Component.build('id' => 10000)
     component.fetch
 
-    component.self.should   == "http://localhost:2990/jira/rest/api/2/component/10000"
-    component.id.should    == "10000"
-    component.name.should == "Cheesecake"
+    component.should have_attributes(expected_attributes)
   end
 
   it "deletes a component" do
