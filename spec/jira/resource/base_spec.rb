@@ -152,4 +152,10 @@ describe Jira::Resource::Base do
     end
   end
 
+  it "returns the formatted attrs from to_s" do
+    subject.attrs.stub(:[]).with('foo').and_return('bar')
+    subject.attrs.stub(:[]).with('dead').and_return('beef')
+
+    subject.to_s.should match(/#<Jira::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
+  end
 end

@@ -81,6 +81,10 @@ module Jira
         end
       end
 
+      def to_s
+        "#<#{self.class.name}:#{object_id} @attrs=#{@attrs.inspect}>"
+      end
+
     end
 
   end
