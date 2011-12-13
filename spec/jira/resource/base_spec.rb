@@ -40,6 +40,14 @@ describe Jira::Resource::Base do
     deadbeef.expanded?.should be_true
   end
 
+  it "builds a deadbeef" do
+    deadbeef = Jira::Resource::Deadbeef.build(client, 'key' => "FOO" )
+    deadbeef.expanded?.should be_false
+
+    deadbeef.client.should == client
+    deadbeef.attrs['key'].should   == 'FOO'
+  end
+
   it "returns the endpoint name" do
     subject.class.endpoint_name.should == 'deadbeef'
   end

@@ -30,6 +30,10 @@ module Jira
         instance
       end
 
+      def self.build(client, attrs)
+        self.new(client, :attrs => attrs)
+      end
+
       def self.rest_base_path(client)
         client.options[:rest_base_path] + '/' + self.endpoint_name
       end

@@ -35,4 +35,13 @@ describe Jira::Resource::Project do
     project.key.should    == "SAMPLEPROJECT"
     project.name.should   == "Sample Project"
   end
+
+  it "builds and fetches single project" do
+    project = client.Project.build('key' => 'SAMPLEPROJECT')
+    project.fetch
+
+    project.self.should   == "http://localhost:2990/jira/rest/api/2.0.alpha1/project/SAMPLEPROJECT"
+    project.key.should    == "SAMPLEPROJECT"
+    project.name.should   == "Sample Project"
+  end
 end

@@ -35,6 +35,10 @@ module Jira
       def find(key)
         target_class.find(@client, key)
       end
+
+      def build(attrs)
+        target_class.build(@client, attrs)
+      end
     end
   end
 end

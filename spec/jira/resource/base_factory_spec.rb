@@ -28,4 +28,9 @@ describe Jira::Resource::BaseFactory do
     subject.target_class.should == Jira::Resource::Foo
   end
 
+  it "proxies build to the target class" do
+    attrs = mock()
+    Jira::Resource::Foo.should_receive(:build).with(client, attrs)
+    subject.build(attrs)
+  end
 end
