@@ -158,4 +158,8 @@ describe Jira::Resource::Base do
 
     subject.to_s.should match(/#<Jira::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
   end
+
+  it "returns the key attribute" do
+    subject.class.key_attribute.should == :key
+  end
 end

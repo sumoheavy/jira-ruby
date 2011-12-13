@@ -1,0 +1,14 @@
+{
+  "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/component/10001",
+  "id": 10001,
+  "name": "Cheesecake",
+  "assigneeType": "UNASSIGNED",
+  "realAssigneeType": "PROJECT_DEFAULT",
+  "realAssignee": {
+    "self": "http://localhost:2990/jira/rest/api/2.0.alpha1/user?username=admin",
+    "name": "admin",
+    "displayName": "admin",
+    "active": true
+  },
+  "isAssigneeTypeValid": false
+}

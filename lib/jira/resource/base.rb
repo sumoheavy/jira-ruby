@@ -25,7 +25,7 @@ module Jira
 
       def self.find(client, key)
         instance = self.new(client)
-        instance.attrs['key'] = key
+        instance.attrs[key_attribute.to_s] = key
         instance.fetch
         instance
       end
@@ -40,6 +40,10 @@ module Jira
 
       def self.endpoint_name
         self.name.split('::').last.downcase
+      end
+
+      def self.key_attribute
+        :key
       end
 
       def respond_to?(method_name)
@@ -74,8 +78,8 @@ module Jira
       def url
         if @attrs['self']
           @attrs['self']
-        elsif @attrs['key']
-          rest_base_path + "/" + @attrs['key']
+        elsif @attrs[self.class.key_attribute.to_s]
+          rest_base_path + "/" + @attrs[self.class.key_attribute.to_s].to_s
         else
           rest_base_path
         end
