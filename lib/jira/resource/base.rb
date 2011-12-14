@@ -107,6 +107,10 @@ module Jira
       def to_json
         attrs.to_json
       end
+
+      def new_record?
+        @attrs['id'].nil?
+      end
     end
 
   end

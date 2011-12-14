@@ -164,6 +164,20 @@ describe Jira::Resource::Base do
 
   end
 
+  describe "new_record?" do
+
+    it "returns true for new_record? when new object" do
+      subject.attrs.stub(:[]).with('id').and_return(nil)
+      subject.new_record?.should be_true
+    end
+
+    it "returns false for new_record? when id is set" do
+      subject.attrs.stub(:[]).with('id').and_return('123')
+      subject.new_record?.should be_false
+    end
+
+  end
+
   describe 'url' do
     it "returns self as the URL if set" do
       attrs.stub(:[]).with('self').and_return('http://foo/bar')
