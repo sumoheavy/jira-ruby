@@ -90,7 +90,9 @@ module Jira
     end
 
     def request(http_method, path, *arguments)
-      access_token.request(http_method, path, *arguments)
+      response = access_token.request(http_method, path, *arguments)
+      raise Resource::HTTPError.new unless response.kind_of?(Net::HTTPSuccess)
+      response
     end
 
     protected

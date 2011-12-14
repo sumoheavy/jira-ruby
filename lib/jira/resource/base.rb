@@ -1,6 +1,8 @@
 module Jira
   module Resource
 
+    class HTTPError < StandardError ; end
+
     class Base
 
       attr_reader :client

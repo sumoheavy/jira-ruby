@@ -27,12 +27,21 @@ describe Jira::Resource::Issue do
                  to_return(:body => get_mock_response('issue.post.json'))
     stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
                  to_return(:body => nil)
+    stub_request(:get,
+                 "http://localhost:2990/jira/rest/api/2/issue/99999").
+                 to_return(:status => 404, :body => '{"errorMessages":["Issue Does Not Exist"],"errors": {}}')
   end
 
   it "should get a single issue by key" do
     issue = client.Issue.find('10002')
 
     issue.should have_attributes(expected_attributes)
+  end
+
+  it "should handle issue not found" do
+    lambda do
+      issue = client.Issue.find('99999')
+    end.should raise_exception(Jira::Resource::HTTPError)
   end
 
   it "builds and fetches single issue" do

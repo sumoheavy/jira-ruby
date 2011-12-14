@@ -3,6 +3,12 @@ require 'spec_helper'
 describe Jira::Client do
 
   subject {Jira::Client.new('foo','bar')}
+
+  let(:response) do
+    response = mock("response")
+    response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    response
+  end
   
   it "creates an instance" do
     subject.class.should == Jira::Client
@@ -101,15 +107,34 @@ describe Jira::Client do
       mock_access_token = mock()
       subject.stub(:access_token => mock_access_token)
       [:delete, :get, :head].each do |method|
-        mock_access_token.should_receive(:request).with(method, '/path', {'Accept' => 'application/json'})
+        mock_access_token.should_receive(:request).with(method, '/path', {'Accept' => 'application/json'}).and_return(response)
         subject.send(method, '/path')
       end
       [:post, :put].each do |method|
         mock_access_token.should_receive(:request).with(method,
                                                         '/path', '',
-                                                        {'Accept' => 'application/json', 'Content-Type' => 'application/json'})
+                                                        {'Accept' => 'application/json', 'Content-Type' => 'application/json'}).and_return(response)
         subject.send(method, '/path')
       end
+    end
+
+    it "performs a request" do
+      access_token = mock()
+      access_token.should_receive(:request).with(:get, '/foo').and_return(response)
+      subject.stub(:access_token => access_token)
+      subject.request(:get, '/foo')
+    end
+
+    it "raises an exception for non success responses" do
+      response = mock()
+      response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(false)
+      access_token = mock()
+      access_token.should_receive(:request).with(:get, '/foo').and_return(response)
+      subject.stub(:access_token => access_token)
+      
+      lambda do
+        subject.request(:get, '/foo')
+      end.should raise_exception(Jira::Resource::HTTPError)
     end
 
   end
