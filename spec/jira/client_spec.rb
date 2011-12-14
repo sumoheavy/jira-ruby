@@ -105,7 +105,9 @@ describe Jira::Client do
         subject.send(method, '/path')
       end
       [:post, :put].each do |method|
-        mock_access_token.should_receive(:request).with(method, '/path', '', {'Accept' => 'application/json'})
+        mock_access_token.should_receive(:request).with(method,
+                                                        '/path', '',
+                                                        {'Accept' => 'application/json', 'Content-Type' => 'application/json'})
         subject.send(method, '/path')
       end
     end

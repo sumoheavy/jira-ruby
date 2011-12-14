@@ -131,6 +131,20 @@ describe Jira::Resource::Base do
 
   end
 
+  describe "save" do
+    it "saves" do
+      response = mock()
+      response.stub(:body => '{"id":"123"}')
+      subject.should_receive(:url).and_return('/foo/bar')
+      subject.should_receive(:to_json).and_return('{"foo":"bar"}')
+      client.should_receive(:post).with('/foo/bar','{"foo":"bar"}', {"Content-Type"=>"application/json"}).and_return(response)
+      subject.save.should be_true
+      subject.id.should == "123"
+      subject.expanded.should be_false
+
+    end
+  end
+
   describe "delete" do
 
     before(:each) do

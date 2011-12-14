@@ -3,8 +3,8 @@ module Jira
 
     class Base
 
-      attr_reader :client, :attrs
-      attr_accessor :expanded, :deleted
+      attr_reader :client
+      attr_accessor :expanded, :deleted, :attrs
       alias :expanded? :expanded
       alias :deleted? :deleted
 
@@ -75,6 +75,14 @@ module Jira
         json = JSON.parse(response.body)
         @attrs = json
         @expanded = true
+      end
+
+      def save
+        response = client.post(url,to_json, {'Content-Type' => 'application/json'})
+        json = JSON.parse(response.body)
+        @attrs = json
+        @expanded = false
+        true
       end
 
       def delete

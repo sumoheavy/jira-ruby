@@ -51,3 +51,11 @@ pp issue
 # else
 #   puts "Delete of issue SAMPLEPROJECT-2 failed"
 # end
+#
+# # Create an issue
+# # ---------------
+# issue = client.Issue.build
+# issue.attrs = {"fields"=>{"summary"=>"blarg from in example.rb","project"=>{"id"=>"10001"},"issuetype"=>{"id"=>"3"}}}
+# issue.save
+# issue.fetch
+# pp issue
