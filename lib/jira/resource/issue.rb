@@ -3,7 +3,13 @@ module Jira
 
     class IssueFactory < BaseFactory ; end
 
-    class Issue < Base ; end
+    class Issue < Base
+
+      def self.key_attribute
+        :id
+      end
+
+    end
 
   end
 end
