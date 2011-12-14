@@ -132,17 +132,31 @@ describe Jira::Resource::Base do
   end
 
   describe "save" do
-    it "saves" do
-      response = mock()
+
+    let(:response) { mock() }
+
+    before(:each) do
       response.stub(:body => '{"id":"123"}')
       subject.should_receive(:url).and_return('/foo/bar')
       subject.should_receive(:to_json).and_return('{"foo":"bar"}')
-      client.should_receive(:post).with('/foo/bar','{"foo":"bar"}', {"Content-Type"=>"application/json"}).and_return(response)
+    end
+
+    it "POSTs a new record" do
+      subject.stub(:new_record? => true)
+      client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
+    end
+
+    it "PUTs an existing record" do
+      subject.stub(:new_record? => false)
+      client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
+    end
+
+    after(:each) do
       subject.save.should be_true
       subject.id.should == "123"
       subject.expanded.should be_false
-
     end
+
   end
 
   describe "delete" do

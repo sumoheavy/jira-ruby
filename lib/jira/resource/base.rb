@@ -78,7 +78,8 @@ module Jira
       end
 
       def save
-        response = client.post(url,to_json, {'Content-Type' => 'application/json'})
+        http_method = new_record? ? :post : :put
+        response = client.send(http_method, url, to_json)
         json = JSON.parse(response.body)
         @attrs = json
         @expanded = false
