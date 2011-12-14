@@ -72,18 +72,24 @@ module Jira
       def fetch(reload = false)
         return if expanded? && !reload
         response = client.get(url)
-        json = JSON.parse(response.body)
-        @attrs = json
+        set_attrs_from_response(response)
         @expanded = true
       end
 
       def save
         http_method = new_record? ? :post : :put
         response = client.send(http_method, url, to_json)
-        json = JSON.parse(response.body)
-        @attrs = json
+        set_attrs_from_response(response)
         @expanded = false
         true
+      end
+
+      def set_attrs_from_response(response)
+        unless response.body.nil? or response.body.length < 2
+          json = JSON.parse(response.body)
+          @attrs.merge!(json)
+          json
+        end
       end
 
       def delete

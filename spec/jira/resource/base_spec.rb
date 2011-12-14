@@ -30,7 +30,7 @@ describe Jira::Resource::Base do
 
   it "finds a deadbeef by key" do
     response = mock()
-    response.should_receive(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
+    response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
     Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeef = Jira::Resource::Deadbeef.find(client, 'FOO')
@@ -96,7 +96,7 @@ describe Jira::Resource::Base do
 
       before(:each) do
         response = mock()
-        response.should_receive(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
+        response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
         client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
         Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
       end
@@ -135,25 +135,27 @@ describe Jira::Resource::Base do
 
     let(:response) { mock() }
 
+    subject { Jira::Resource::Deadbeef.new(client) }
+
     before(:each) do
-      response.stub(:body => '{"id":"123"}')
       subject.should_receive(:url).and_return('/foo/bar')
       subject.should_receive(:to_json).and_return('{"foo":"bar"}')
     end
 
     it "POSTs a new record" do
+      response.stub(:body => '{"id":"123"}')
       subject.stub(:new_record? => true)
       client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
+      subject.save.should be_true
+      subject.id.should == "123"
+      subject.expanded.should be_false
     end
 
     it "PUTs an existing record" do
+      response.stub(:body => nil)
       subject.stub(:new_record? => false)
       client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
-    end
-
-    after(:each) do
       subject.save.should be_true
-      subject.id.should == "123"
       subject.expanded.should be_false
     end
 
@@ -229,4 +231,37 @@ describe Jira::Resource::Base do
 
     subject.to_json.should == '{"foo":"bar","dead":"beef"}'
   end
+
+  describe "extract attrs from response" do
+
+    subject { Jira::Resource::Deadbeef.new(client, :attrs => {}) }
+
+    it "sets the attrs from a response" do
+      response = mock()
+      response.stub(:body).and_return('{"foo":"bar"}')
+
+      subject.set_attrs_from_response(response).should == {'foo' => 'bar'}
+      subject.foo.should == "bar"
+    end
+
+    it "doesn't clobber existing attrs not in response" do
+      response = mock()
+      response.stub(:body).and_return('{"foo":"bar"}')
+
+      subject.attrs = {'flum' => 'flar'}
+      subject.set_attrs_from_response(response).should == {'foo' => 'bar'}
+      subject.foo.should == "bar"
+      subject.flum.should == "flar"
+    end
+
+    it "handles nil response body" do
+      response = mock()
+      response.stub(:body).and_return(nil)
+
+      subject.attrs = {'flum' => 'flar'}
+      subject.set_attrs_from_response(response).should be_nil
+      subject.flum.should == 'flar'
+    end
+  end
+
 end

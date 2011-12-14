@@ -59,3 +59,10 @@ pp issue
 # issue.save
 # issue.fetch
 # pp issue
+
+# # Update an issue
+# # ---------------
+# issue = client.Issue.build({"id"=>"10002","fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!",}})
+# puts issue.url
+# issue.save
+# pp issue
