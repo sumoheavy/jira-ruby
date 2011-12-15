@@ -121,6 +121,10 @@ module Jira
         @deleted = true
       end
 
+      def has_errors?
+        respond_to?('errors')
+      end
+
       def url
         if @attrs['self']
           @attrs['self']

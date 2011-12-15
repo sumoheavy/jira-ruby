@@ -219,6 +219,20 @@ describe Jira::Resource::Base do
 
   end
 
+  describe "has_errors?" do
+    
+    it "returns true when the response contains errors" do
+      subject.stub(:respond_to?).with('errors').and_return(true)
+      subject.has_errors?.should be_true
+    end
+
+    it "returns false when the response does not contain any errors" do
+      subject.stub(:respond_to?).with('errors').and_return(false)
+      subject.has_errors?.should be_false
+    end
+
+  end
+
   describe 'url' do
     it "returns self as the URL if set" do
       attrs.stub(:[]).with('self').and_return('http://foo/bar')
