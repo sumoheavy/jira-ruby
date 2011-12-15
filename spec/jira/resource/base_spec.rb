@@ -143,14 +143,13 @@ describe Jira::Resource::Base do
 
     before(:each) do
       subject.should_receive(:url).and_return('/foo/bar')
-      subject.should_receive(:to_json).and_return('{"foo":"bar"}')
     end
 
     it "POSTs a new record" do
       response.stub(:body => '{"id":"123"}')
       subject.stub(:new_record? => true)
       client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save.should be_true
+      subject.save("foo" => "bar").should be_true
       subject.id.should == "123"
       subject.expanded.should be_false
     end
@@ -159,7 +158,7 @@ describe Jira::Resource::Base do
       response.stub(:body => nil)
       subject.stub(:new_record? => false)
       client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save.should be_true
+      subject.save("foo" => "bar").should be_true
       subject.expanded.should be_false
     end
 

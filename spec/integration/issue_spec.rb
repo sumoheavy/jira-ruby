@@ -24,8 +24,10 @@ describe Jira::Resource::Issue do
                  "http://localhost:2990/jira/rest/api/2/issue/10002").
                  to_return(:body => nil)
     stub_request(:post, "http://localhost:2990/jira/rest/api/2/issue").
+                 with(:body => '{"foo":"bar"}').
                  to_return(:body => get_mock_response('issue.post.json'))
     stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
+                 with(:body => '{"foo":"bar"}').
                  to_return(:body => nil)
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/99999").
@@ -58,13 +60,13 @@ describe Jira::Resource::Issue do
 
   it "should save a new record" do
     subject = described_class.new(client)
-    subject.save.should be_true
+    subject.save('foo' => 'bar').should be_true
   end
 
   it "should save an existing record" do
     subject = client.Issue.build('id' => '10002')
     subject.fetch
-    subject.save.should be_true
+    subject.save('foo' => 'bar').should be_true
   end
 
 end

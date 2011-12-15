@@ -55,14 +55,12 @@ pp issue
 # # Create an issue
 # # ---------------
 # issue = client.Issue.build
-# issue.attrs = {"fields"=>{"summary"=>"blarg from in example.rb","project"=>{"id"=>"10001"},"issuetype"=>{"id"=>"3"}}}
-# issue.save
+# issue.save({"fields"=>{"summary"=>"blarg from in example.rb","project"=>{"id"=>"10001"},"issuetype"=>{"id"=>"3"}}})
 # issue.fetch
 # pp issue
-
-# # Update an issue
-# # ---------------
-# issue = client.Issue.build({"id"=>"10002","fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!",}})
-# puts issue.url
-# issue.save
+# 
+# Update an issue
+# ---------------
+# issue = client.Issue.find("10002")
+# issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 # pp issue

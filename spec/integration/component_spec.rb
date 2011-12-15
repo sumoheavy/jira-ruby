@@ -26,9 +26,11 @@ describe Jira::Resource::Component do
                  to_return(:body => nil)
     stub_request(:post,
                  "http://localhost:2990/jira/rest/api/2/component").
+                 with(:body => '{"name":"Test component","project":"SAMPLEPROJECT"}').
                  to_return(:status => 201, :body => get_mock_response('component.post.json'))
     stub_request(:put,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
+                 with(:body => '{"name":"Jammy"}').
                  to_return(:status => 200, :body => get_mock_response('component/10000.put.json'))
   end
 
@@ -51,8 +53,8 @@ describe Jira::Resource::Component do
   end
 
   it "saves a new component" do
-    component = client.Component.build({"name" => "Test component", "project" => "SAMPLEPROJECT"})
-    component.save.should be_true
+    component = client.Component.build
+    component.save({"name" => "Test component", "project" => "SAMPLEPROJECT"}).should be_true
     component.id.should   == "10001"
     component.name.should == "Test component"
   end
@@ -60,8 +62,7 @@ describe Jira::Resource::Component do
   it "saves an existing component" do
     component = client.Component.build('id' => '10000')
     component.fetch
-    component.attrs['name'] = "Jammy"
-    component.save.should be_true
+    component.save('name' => 'Jammy').should be_true
     component.id.should == "10000"
     component.name.should == "Jammy"
   end

@@ -80,9 +80,9 @@ module Jira
         @expanded = true
       end
 
-      def save
+      def save(attrs)
         http_method = new_record? ? :post : :put
-        response = client.send(http_method, url, to_json)
+        response = client.send(http_method, url, attrs.to_json)
         set_attrs_from_response(response)
         @expanded = false
         true
