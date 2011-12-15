@@ -162,6 +162,28 @@ describe Jira::Resource::Base do
       subject.expanded.should be_false
     end
 
+    it "merges attrs on save" do
+      response.stub(:body => nil)
+      client.should_receive(:post).with('/foo/bar','{"foo":{"fum":"dum"}}').and_return(response)
+      subject.attrs = {"foo" => {"bar" => "baz"}}
+      subject.save({"foo" => {"fum" => "dum"}})
+      subject.foo.should == {"bar" => "baz", "fum" => "dum"}
+    end
+
+  end
+
+  describe "set_attrs" do
+    it "merges hashes correctly when clobber is true (default)" do
+      subject.attrs = {"foo" => {"bar" => "baz"}}
+      subject.set_attrs({"foo" => {"fum" => "dum"}})
+      subject.foo.should == {"fum" => "dum"}
+    end
+
+    it "merges hashes correctly when clobber is false" do
+      subject.attrs = {"foo" => {"bar" => "baz"}}
+      subject.set_attrs({"foo" => {"fum" => "dum"}}, false)
+      subject.foo.should == {"bar" => "baz", "fum" => "dum"}
+    end
   end
 
   describe "delete" do

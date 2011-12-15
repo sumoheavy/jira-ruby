@@ -83,6 +83,7 @@ module Jira
       def save(attrs)
         http_method = new_record? ? :post : :put
         response = client.send(http_method, url, attrs.to_json)
+        set_attrs(attrs, false)
         set_attrs_from_response(response)
         @expanded = false
         true
@@ -91,8 +92,27 @@ module Jira
       def set_attrs_from_response(response)
         unless response.body.nil? or response.body.length < 2
           json = self.class.parse_json(response.body)
-          @attrs.merge!(json)
-          json
+          set_attrs(json)
+        end
+      end
+
+      # Set the current attributes from a hash.  If clobber is true, any existing
+      # hash values will be clobbered by the new hash, otherwise the hash will
+      # be deeply merged into attrs.  The target paramater is for internal use only
+      # and should not be used.
+      def set_attrs(hash, clobber=true, target = nil)
+        target ||= @attrs
+        if clobber
+          target.merge!(hash)
+          hash
+        else
+          hash.each do |k, v|
+            if v.is_a?(Hash)
+              set_attrs(v, clobber, target[k])
+            else
+              target[k] = v
+            end
+          end
         end
       end
 
