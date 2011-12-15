@@ -19,7 +19,7 @@ module Jira
       # invoked from a BaseFactory subclass instance.
       def self.all(client)
         response = client.get(rest_base_path(client))
-        json = JSON.parse(response.body)
+        json = parse_json(response.body)
         json.map do |attrs|
           self.new(client, :attrs => attrs)
         end
@@ -46,6 +46,10 @@ module Jira
 
       def self.key_attribute
         :key
+      end
+
+      def self.parse_json(string)
+        JSON.parse(string)
       end
 
       def respond_to?(method_name)
@@ -86,7 +90,7 @@ module Jira
 
       def set_attrs_from_response(response)
         unless response.body.nil? or response.body.length < 2
-          json = JSON.parse(response.body)
+          json = self.class.parse_json(response.body)
           @attrs.merge!(json)
           json
         end

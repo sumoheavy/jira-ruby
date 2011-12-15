@@ -68,6 +68,10 @@ describe Jira::Resource::Base do
     end
   end
 
+  it "parses json" do
+    described_class.parse_json('{"foo":"bar"}').should == {"foo" => "bar"}
+  end
+
   describe "dynamic instance methods" do
 
     let(:attrs) { {'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy'} }
