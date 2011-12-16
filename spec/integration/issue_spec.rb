@@ -19,16 +19,16 @@ describe Jira::Resource::Issue do
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/10002").
-                 to_return(:body => get_mock_response('issue/10002.json'))
+                 to_return(:status => 200, :body => get_mock_response('issue/10002.json'))
     stub_request(:delete,
                  "http://localhost:2990/jira/rest/api/2/issue/10002").
-                 to_return(:body => nil)
+                 to_return(:status => 204, :body => nil)
     stub_request(:post, "http://localhost:2990/jira/rest/api/2/issue").
                  with(:body => '{"foo":"bar"}').
-                 to_return(:body => get_mock_response('issue.post.json'))
+                 to_return(:status => 201, :body => get_mock_response('issue.post.json'))
     stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
                  with(:body => '{"foo":"bar"}').
-                 to_return(:body => nil)
+                 to_return(:status => 204, :body => nil)
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/99999").
                  to_return(:status => 404, :body => '{"errorMessages":["Issue Does Not Exist"],"errors": {}}')

@@ -19,10 +19,10 @@ describe Jira::Resource::Project do
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/project").
-                 to_return(:body => get_mock_response('project.json'))
+                 to_return(:status => 200, :body => get_mock_response('project.json'))
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT").
-                 to_return(:body => get_mock_response('project/SAMPLEPROJECT.json'))
+                 to_return(:status => 200,:body => get_mock_response('project/SAMPLEPROJECT.json'))
   end
 
   it "should get all the projects" do

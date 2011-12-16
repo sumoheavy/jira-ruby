@@ -20,10 +20,10 @@ describe Jira::Resource::Component do
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
-                 to_return(:body => get_mock_response('component/10000.json'))
+                 to_return(:status => 200,:body => get_mock_response('component/10000.json'))
     stub_request(:delete,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
-                 to_return(:body => nil)
+                 to_return(:status => 204, :body => nil)
     stub_request(:post,
                  "http://localhost:2990/jira/rest/api/2/component").
                  with(:body => '{"name":"Test component","project":"SAMPLEPROJECT"}').
