@@ -170,6 +170,13 @@ describe Jira::Resource::Base do
       subject.foo.should == {"bar" => "baz", "fum" => "dum"}
     end
 
+    it "returns false when an invalid field is set" do # The Jira REST API apparently ignores fields that you aren't allowed to set manually
+      response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
+      subject.stub(:new_record? => false)
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(Jira::Resource::HTTPError.new(response))
+      subject.save("invalid_field" => "foobar").should be_false
+    end
+
   end
 
   describe "set_attrs" do

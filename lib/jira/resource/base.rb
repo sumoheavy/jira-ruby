@@ -82,11 +82,18 @@ module Jira
 
       def save(attrs)
         http_method = new_record? ? :post : :put
-        response = client.send(http_method, url, attrs.to_json)
-        set_attrs(attrs, false)
-        set_attrs_from_response(response)
+        begin
+          response = client.send(http_method, url, attrs.to_json)
+        rescue Jira::Resource::HTTPError => exception
+          set_attrs_from_response(exception.response)
+          save_status = false
+        else
+          set_attrs(attrs, false)
+          set_attrs_from_response(response) #attach errors from Jira REST API if present
+          save_status = true
+        end
         @expanded = false
-        true
+        save_status
       end
 
       def set_attrs_from_response(response)
