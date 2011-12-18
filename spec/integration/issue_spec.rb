@@ -29,6 +29,12 @@ describe Jira::Resource::Issue do
     stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
                  with(:body => '{"foo":"bar"}').
                  to_return(:status => 204, :body => nil)
+    stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
+                 with(:body => '{"fields":{"invalid":"field"}}').
+                 to_return(:status => 400, :body => get_mock_response('issue/10002.put.invalid.json'))
+    stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/10002").
+                 with(:body => '{"missing":"fields and update"}').
+                 to_return(:status => 400, :body => get_mock_response('issue/10002.put.missing_field_update.json'))
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/99999").
                  to_return(:status => 404, :body => '{"errorMessages":["Issue Does Not Exist"],"errors": {}}')
@@ -67,6 +73,18 @@ describe Jira::Resource::Issue do
     subject = client.Issue.build('id' => '10002')
     subject.fetch
     subject.save('foo' => 'bar').should be_true
+  end
+
+  it "fails to save with an invalid field" do
+    subject = client.Issue.build('id' => '10002')
+    subject.fetch
+    subject.save('fields'=> {'invalid' => 'field'}).should be_false
+  end
+
+  it "fails to save when fields and update are missing" do
+    subject = client.Issue.build('id' => '10002')
+    subject.fetch
+    subject.save('missing' => 'fields and update').should be_false
   end
 
 end

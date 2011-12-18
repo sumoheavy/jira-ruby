@@ -32,6 +32,10 @@ describe Jira::Resource::Component do
                  "http://localhost:2990/jira/rest/api/2/component/10000").
                  with(:body => '{"name":"Jammy"}').
                  to_return(:status => 200, :body => get_mock_response('component/10000.put.json'))
+    stub_request(:put,
+                 "http://localhost:2990/jira/rest/api/2/component/10000").
+                 with(:body => '{"invalid":"field"}').
+                 to_return(:status => 400, :body => get_mock_response('component/10000.put.invalid.json'))
   end
 
   it "should get a single component by id" do
@@ -65,6 +69,12 @@ describe Jira::Resource::Component do
     component.save('name' => 'Jammy').should be_true
     component.id.should == "10000"
     component.name.should == "Jammy"
+  end
+
+  it "fails to save a component with an invalid field" do
+    component = client.Component.build('id' => '10000')
+    component.fetch
+    component.save('invalid' => 'field').should be_false
   end
 
 end
