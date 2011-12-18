@@ -179,6 +179,42 @@ describe Jira::Resource::Base do
 
   end
 
+  describe "save!" do
+    let(:response) { mock() }
+
+    subject { Jira::Resource::Deadbeef.new(client) }
+
+    before(:each) do
+      subject.should_receive(:url).and_return('/foo/bar')
+    end
+
+    it "POSTs a new record" do
+      response.stub(:body => '{"id":"123"}')
+      subject.stub(:new_record? => true)
+      client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
+      subject.save!("foo" => "bar").should be_true
+      subject.id.should == "123"
+      subject.expanded.should be_false
+    end
+
+    it "PUTs an existing record" do
+      response.stub(:body => nil)
+      subject.stub(:new_record? => false)
+      client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
+      subject.save!("foo" => "bar").should be_true
+      subject.expanded.should be_false
+    end
+
+    it "throws an exception when an invalid field is set" do
+      response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
+      subject.stub(:new_record? => false)
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(Jira::Resource::HTTPError.new(response))
+      lambda do
+        subject.save!("invalid_field" => "foobar")
+      end.should raise_error(Jira::Resource::HTTPError)
+    end
+  end
+
   describe "set_attrs" do
     it "merges hashes correctly when clobber is true (default)" do
       subject.attrs = {"foo" => {"bar" => "baz"}}
