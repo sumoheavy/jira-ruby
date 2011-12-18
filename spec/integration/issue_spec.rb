@@ -87,4 +87,12 @@ describe Jira::Resource::Issue do
     subject.save('missing' => 'fields and update').should be_false
   end
 
+  it "throws an exception when save! fails" do
+    subject = client.Issue.build('id' => '10002')
+    subject.fetch
+    lambda do
+      subject.save!('missing' => 'fields and update')
+    end.should raise_error(Jira::Resource::HTTPError)
+  end
+
 end

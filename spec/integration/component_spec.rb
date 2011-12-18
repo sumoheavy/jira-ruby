@@ -77,4 +77,12 @@ describe Jira::Resource::Component do
     component.save('invalid' => 'field').should be_false
   end
 
+  it "throws an exception when save! fails" do
+    component = client.Component.build('id' => '10000')
+    component.fetch
+    lambda do
+      component.save!('invalid' => 'field')
+    end.should raise_error(Jira::Resource::HTTPError)
+  end
+
 end
