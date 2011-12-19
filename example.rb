@@ -7,7 +7,7 @@ options = {
 
 CONSUMER_KEY = 'test'
 
-client = Jira::Client.new(CONSUMER_KEY, '', options)
+client = JIRA::Client.new(CONSUMER_KEY, '', options)
 
 if ARGV.length == 0
   # If not passed any command line arguments, open a browser and prompt the

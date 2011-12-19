@@ -1,5 +1,5 @@
 require 'forwardable'
-module Jira
+module JIRA
   module Resource
 
     class HTTPError < StandardError

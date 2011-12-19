@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Jira::Resource::Base do
+describe JIRA::Resource::Base do
 
-  class Jira::Resource::Deadbeef < Jira::Resource::Base ; end
+  class JIRA::Resource::Deadbeef < JIRA::Resource::Base ; end
 
   let(:client)  { mock() }
   let(:attrs)   { mock() }
 
-  subject { Jira::Resource::Deadbeef.new(client, :attrs => attrs) }
+  subject { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
 
   it "assigns the client and attrs" do
     subject.client.should == client
@@ -18,11 +18,11 @@ describe Jira::Resource::Base do
     response = mock()
     response.should_receive(:body).and_return('[{"self":"http://deadbeef/","key":"FOO"}]')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef').and_return(response)
-    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
-    deadbeefs = Jira::Resource::Deadbeef.all(client)
+    JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+    deadbeefs = JIRA::Resource::Deadbeef.all(client)
     deadbeefs.length.should == 1
     first = deadbeefs.first
-    first.class.should == Jira::Resource::Deadbeef
+    first.class.should == JIRA::Resource::Deadbeef
     first.attrs['self'].should  == 'http://deadbeef/'
     first.attrs['key'].should   == 'FOO'
     first.expanded?.should be_false
@@ -32,8 +32,8 @@ describe Jira::Resource::Base do
     response = mock()
     response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
-    Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
-    deadbeef = Jira::Resource::Deadbeef.find(client, 'FOO')
+    JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+    deadbeef = JIRA::Resource::Deadbeef.find(client, 'FOO')
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
     deadbeef.attrs['key'].should   == 'FOO'
@@ -41,7 +41,7 @@ describe Jira::Resource::Base do
   end
 
   it "builds a deadbeef" do
-    deadbeef = Jira::Resource::Deadbeef.build(client, 'key' => "FOO" )
+    deadbeef = JIRA::Resource::Deadbeef.build(client, 'key' => "FOO" )
     deadbeef.expanded?.should be_false
 
     deadbeef.client.should == client
@@ -75,7 +75,7 @@ describe Jira::Resource::Base do
   describe "dynamic instance methods" do
 
     let(:attrs) { {'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy'} }
-    subject     { Jira::Resource::Deadbeef.new(client, :attrs => attrs) }
+    subject     { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
 
     it "responds to each of the top level attribute names" do
       subject.should respond_to(:foo)
@@ -94,7 +94,7 @@ describe Jira::Resource::Base do
 
   describe "fetch" do
 
-    subject     { Jira::Resource::Deadbeef.new(client, :attrs => {'key' => 'FOO'}) }
+    subject     { JIRA::Resource::Deadbeef.new(client, :attrs => {'key' => 'FOO'}) }
 
     describe "not cached" do
 
@@ -102,7 +102,7 @@ describe Jira::Resource::Base do
         response = mock()
         response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
         client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
-        Jira::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+        JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
       it "sets expanded to true after fetch" do
@@ -139,7 +139,7 @@ describe Jira::Resource::Base do
 
     let(:response) { mock() }
 
-    subject { Jira::Resource::Deadbeef.new(client) }
+    subject { JIRA::Resource::Deadbeef.new(client) }
 
     before(:each) do
       subject.should_receive(:url).and_return('/foo/bar')
@@ -170,10 +170,10 @@ describe Jira::Resource::Base do
       subject.foo.should == {"bar" => "baz", "fum" => "dum"}
     end
 
-    it "returns false when an invalid field is set" do # The Jira REST API apparently ignores fields that you aren't allowed to set manually
+    it "returns false when an invalid field is set" do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
       response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
       subject.stub(:new_record? => false)
-      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(Jira::Resource::HTTPError.new(response))
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::Resource::HTTPError.new(response))
       subject.save("invalid_field" => "foobar").should be_false
     end
 
@@ -182,7 +182,7 @@ describe Jira::Resource::Base do
   describe "save!" do
     let(:response) { mock() }
 
-    subject { Jira::Resource::Deadbeef.new(client) }
+    subject { JIRA::Resource::Deadbeef.new(client) }
 
     before(:each) do
       subject.should_receive(:url).and_return('/foo/bar')
@@ -208,10 +208,10 @@ describe Jira::Resource::Base do
     it "throws an exception when an invalid field is set" do
       response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
       subject.stub(:new_record? => false)
-      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(Jira::Resource::HTTPError.new(response))
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::Resource::HTTPError.new(response))
       lambda do
         subject.save!("invalid_field" => "foobar")
-      end.should raise_error(Jira::Resource::HTTPError)
+      end.should raise_error(JIRA::Resource::HTTPError)
     end
   end
 
@@ -301,7 +301,7 @@ describe Jira::Resource::Base do
     subject.attrs.stub(:[]).with('foo').and_return('bar')
     subject.attrs.stub(:[]).with('dead').and_return('beef')
 
-    subject.to_s.should match(/#<Jira::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
+    subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
   end
 
   it "returns the key attribute" do
@@ -316,7 +316,7 @@ describe Jira::Resource::Base do
 
   describe "extract attrs from response" do
 
-    subject { Jira::Resource::Deadbeef.new(client, :attrs => {}) }
+    subject { JIRA::Resource::Deadbeef.new(client, :attrs => {}) }
 
     it "sets the attrs from a response" do
       response = mock()

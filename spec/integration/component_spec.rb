@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Jira::Resource::Component do
+describe JIRA::Resource::Component do
 
 
   let(:client) do
-    client = Jira::Client.new('foo', 'bar')
+    client = JIRA::Client.new('foo', 'bar')
     client.set_access_token('abc', '123')
     client
   end
@@ -82,7 +82,7 @@ describe Jira::Resource::Component do
     component.fetch
     lambda do
       component.save!('invalid' => 'field')
-    end.should raise_error(Jira::Resource::HTTPError)
+    end.should raise_error(JIRA::Resource::HTTPError)
   end
 
 end

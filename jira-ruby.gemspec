@@ -4,11 +4,11 @@ require "jira/version"
 
 Gem::Specification.new do |s|
   s.name        = "jira-ruby"
-  s.version     = Jira::VERSION
+  s.version     = JIRA::VERSION
   s.authors     = ["Trineo Ltd"]
   s.homepage    = "http://trineo.co.nz"
-  s.summary     = %q{Ruby Gem for use with the Atlassian Jira 5 REST API}
-  s.description = %q{API for Jira 5}
+  s.summary     = %q{Ruby Gem for use with the Atlassian JIRA 5 REST API}
+  s.description = %q{API for JIRA 5}
 
   s.rubyforge_project = "jira-ruby"
 
