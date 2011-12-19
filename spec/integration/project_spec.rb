@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Jira::Resource::Project do
+describe JIRA::Resource::Project do
 
   let(:client) do
-    client = Jira::Client.new('foo', 'bar')
+    client = JIRA::Client.new('foo', 'bar')
     client.set_access_token('abc', '123')
     client
   end

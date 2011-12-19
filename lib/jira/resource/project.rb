@@ -1,4 +1,4 @@
-module Jira
+module JIRA
   module Resource
 
     class ProjectFactory < BaseFactory ; end

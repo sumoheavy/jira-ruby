@@ -2,7 +2,7 @@ require 'oauth'
 require 'json'
 require 'forwardable'
 
-module Jira
+module JIRA
   class Client
 
     extend Forwardable
@@ -36,15 +36,15 @@ module Jira
     end
 
     def Project
-      Jira::Resource::ProjectFactory.new(self)
+      JIRA::Resource::ProjectFactory.new(self)
     end
 
     def Issue
-      Jira::Resource::IssueFactory.new(self)
+      JIRA::Resource::IssueFactory.new(self)
     end
 
     def Component
-      Jira::Resource::ComponentFactory.new(self)
+      JIRA::Resource::ComponentFactory.new(self)
     end
 
     def request_token

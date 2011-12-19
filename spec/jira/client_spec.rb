@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Jira::Client do
+describe JIRA::Client do
 
-  subject {Jira::Client.new('foo','bar')}
+  subject {JIRA::Client.new('foo','bar')}
 
   let(:response) do
     response = mock("response")
@@ -11,7 +11,7 @@ describe Jira::Client do
   end
   
   it "creates an instance" do
-    subject.class.should == Jira::Client
+    subject.class.should == JIRA::Client
   end
 
   it "sets consumer key" do
@@ -23,24 +23,24 @@ describe Jira::Client do
   end
 
   it "sets the default options" do
-    Jira::Client::DEFAULT_OPTIONS.each do |key, value|
+    JIRA::Client::DEFAULT_OPTIONS.each do |key, value|
       subject.options[key].should == value
     end
   end
 
   it "allows the overriding of some options" do
     # Check it overrides a given option ...
-    client = Jira::Client.new('foo', 'bar', :site => 'http://foo.com/')
+    client = JIRA::Client.new('foo', 'bar', :site => 'http://foo.com/')
     client.options[:site].should == 'http://foo.com/'
 
     # ... but leaves the rest intact
-    Jira::Client::DEFAULT_OPTIONS.keys.reject do |key|
+    JIRA::Client::DEFAULT_OPTIONS.keys.reject do |key|
       key == :site
     end.each do |key|
-      client.options[key].should == Jira::Client::DEFAULT_OPTIONS[key]
+      client.options[key].should == JIRA::Client::DEFAULT_OPTIONS[key]
     end
 
-    Jira::Client::DEFAULT_OPTIONS[:site].should_not == 'http://foo.com/'
+    JIRA::Client::DEFAULT_OPTIONS[:site].should_not == 'http://foo.com/'
   end
 
   # To avoid having to validate options after initialisation, e.g. setting
@@ -86,7 +86,7 @@ describe Jira::Client do
     it "raises an exception when accessing without initialisation" do
       lambda do
         subject.access_token
-      end.should raise_exception(Jira::Client::UninitializedAccessTokenError, "init_access_token must be called before using the client")
+      end.should raise_exception(JIRA::Client::UninitializedAccessTokenError, "init_access_token must be called before using the client")
     end
 
     it "is possible to set the access token" do
@@ -134,7 +134,7 @@ describe Jira::Client do
       
       lambda do
         subject.request(:get, '/foo')
-      end.should raise_exception(Jira::Resource::HTTPError)
+      end.should raise_exception(JIRA::Resource::HTTPError)
     end
 
   end
@@ -142,13 +142,13 @@ describe Jira::Client do
   describe "Resource Factories" do
 
     it "gets all projects" do
-      Jira::Resource::Project.should_receive(:all).with(subject).and_return([])
+      JIRA::Resource::Project.should_receive(:all).with(subject).and_return([])
       subject.Project.all.should == []
     end
 
     it "finds a single project" do
       find_result = mock()
-      Jira::Resource::Project.should_receive(:find).with(subject, '123').and_return(find_result)
+      JIRA::Resource::Project.should_receive(:find).with(subject, '123').and_return(find_result)
       subject.Project.find('123').should == find_result
     end
 
