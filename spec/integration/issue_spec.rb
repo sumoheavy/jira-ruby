@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Jira::Resource::Issue do
+describe JIRA::Resource::Issue do
 
   let(:client) do
-    client = Jira::Client.new('foo', 'bar')
+    client = JIRA::Client.new('foo', 'bar')
     client.set_access_token('abc', '123')
     client
   end
@@ -49,7 +49,7 @@ describe Jira::Resource::Issue do
   it "should handle issue not found" do
     lambda do
       issue = client.Issue.find('99999')
-    end.should raise_exception(Jira::Resource::HTTPError)
+    end.should raise_exception(JIRA::Resource::HTTPError)
   end
 
   it "builds and fetches single issue" do
@@ -92,7 +92,7 @@ describe Jira::Resource::Issue do
     subject.fetch
     lambda do
       subject.save!('missing' => 'fields and update')
-    end.should raise_error(Jira::Resource::HTTPError)
+    end.should raise_error(JIRA::Resource::HTTPError)
   end
 
 end

@@ -1,4 +1,4 @@
-Jira 5 API Gem
+JIRA 5 API Gem
 ==============
 
 Links to JIRA REST API documentation
@@ -30,7 +30,7 @@ this library.
 
 Configuring JIRA to use OAuth
 -----------------------------
-From the Jira API tutorial
+From the JIRA API tutorial
 
 > The first step is to register a new consumer in JIRA. This is done through
 > the Application Links administration screens in JIRA. Create a new
@@ -54,7 +54,7 @@ key.
 
 Using the API Gem in your application
 -------------------------------------
-The JiraApi gem requires the consumer key and public certificate file (which are generated in their respective rake tasks) to initialize an access token for using the Jira API. These two pieces of information are applied globally to your application, with separate JiraApi::Client objects created on a per-user basis.
+The JIRAApi gem requires the consumer key and public certificate file (which are generated in their respective rake tasks) to initialize an access token for using the JIRA API. These two pieces of information are applied globally to your application, with separate JIRAApi::Client objects created on a per-user basis.
 
 An example initializer which sets the key and certificate filename in a pair of globals is shown below, myapp/config/initializers/jira\_api.rb:
 
@@ -63,15 +63,15 @@ An example initializer which sets the key and certificate filename in a pair of 
 
 This allows acces to the variables when a session is being set up.
 The following sample controller shows how to set up and initialize an access token for a particular user session.
-(Note that the callback url is defined in the Jira application link interface, and can be placed wherever suits you best in your application. The session#callback method is simply an example)
+(Note that the callback url is defined in the JIRA application link interface, and can be placed wherever suits you best in your application. The session#callback method is simply an example)
 
 \#TODO cannot pass params hash straight into init\_access\_token method - errors with a missing parameter exception
 
     class SessionsController < ApplicationController
       def create
-        session[:client] = JiraApi::Client.new($CONSUMER_KEY, '', :private_key_file => $PUBLIC_CERT_FILE)
+        session[:client] = JIRAApi::Client.new($CONSUMER_KEY, '', :private_key_file => $PUBLIC_CERT_FILE)
         session[:request_token] = session[:client].request_token #Generate the request token
-        redirect_to session[:request_token].authorize_url   #Redirect to Jira to authorize the token
+        redirect_to session[:request_token].authorize_url   #Redirect to JIRA to authorize the token
       end
     
       def callback
