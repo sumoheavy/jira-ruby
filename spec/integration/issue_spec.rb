@@ -52,13 +52,6 @@ describe JIRA::Resource::Issue do
     end.should raise_exception(JIRA::Resource::HTTPError)
   end
 
-  it "builds and fetches single issue" do
-    issue = client.Issue.build('id' => '10002')
-    issue.fetch
-
-    issue.should have_attributes(expected_attributes)
-  end
-
   it "deletes an issue" do
     issue = client.Issue.build('id' => "10002")
     issue.delete.should be_true

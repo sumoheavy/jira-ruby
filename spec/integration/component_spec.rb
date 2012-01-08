@@ -42,13 +42,6 @@ describe JIRA::Resource::Component do
 
   it_should_behave_like "a resource with a singular GET endpoint"
 
-  it "builds and fetches single component" do
-    component = client.Component.build('id' => 10000)
-    component.fetch
-
-    component.should have_attributes(expected_attributes)
-  end
-
   it "deletes a component" do
     component = client.Component.build('id' => "10000")
     component.delete.should be_true

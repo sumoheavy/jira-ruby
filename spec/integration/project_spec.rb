@@ -36,11 +36,4 @@ describe JIRA::Resource::Project do
   end
 
   it_should_behave_like "a resource with a singular GET endpoint"
-
-  it "builds and fetches single project" do
-    project = client.Project.build('key' => 'SAMPLEPROJECT')
-    project.fetch
-
-    project.should have_attributes(expected_attributes)
-  end
 end
