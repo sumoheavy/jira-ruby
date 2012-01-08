@@ -38,6 +38,8 @@ describe JIRA::Resource::Issue do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/99999").
                  to_return(:status => 404, :body => '{"errorMessages":["Issue Does Not Exist"],"errors": {}}')
+    stub_request(:put, "http://localhost:2990/jira/rest/api/2/issue/99999").
+                 to_return(:status => 405, :body => "<html><body>Some HTML</body></html>")
   end
 
   it "should get a single issue by key" do
@@ -92,6 +94,14 @@ describe JIRA::Resource::Issue do
     subject.fetch
     lambda do
       subject.save!('missing' => 'fields and update')
+    end.should raise_error(JIRA::Resource::HTTPError)
+  end
+
+  it "gracefully handles non-json responses" do
+    subject = client.Issue.build('id' => '99999')
+    subject.save('foo' => 'bar').should be_false
+    lambda do
+      subject.save!('foo' => 'bar').should be_false
     end.should raise_error(JIRA::Resource::HTTPError)
   end
 
