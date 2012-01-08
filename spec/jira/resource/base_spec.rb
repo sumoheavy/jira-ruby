@@ -263,14 +263,13 @@ describe JIRA::Resource::Base do
   end
 
   describe "has_errors?" do
-    
+
     it "returns true when the response contains errors" do
-      subject.stub(:respond_to?).with('errors').and_return(true)
+      attrs["errors"] = {"invalid" => "Field invalid"}
       subject.has_errors?.should be_true
     end
 
     it "returns false when the response does not contain any errors" do
-      subject.stub(:respond_to?).with('errors').and_return(false)
       subject.has_errors?.should be_false
     end
 
