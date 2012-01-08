@@ -32,3 +32,16 @@ shared_examples "a resource with a DELETE endpoint" do
     subject.delete.should be_true
   end
 end
+
+shared_examples "a resource with a POST endpoint" do
+
+  it "saves a new resource" do
+    class_basename = described_class.name.split('::').last
+    subject = client.send(class_basename).build
+    subject.save(attributes_for_save).should be_true
+    expected_attributes_from_save.each do |method_name, value|
+      subject.send(method_name).should == value
+    end
+  end
+
+end

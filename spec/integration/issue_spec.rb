@@ -18,6 +18,13 @@ describe JIRA::Resource::Issue do
     }
   end
 
+  let(:attributes_for_save) {
+    { 'foo' => 'bar' }
+  }
+  let(:expected_attributes_from_save) {
+    { "id" => "10005", "key" => "SAMPLEPROJECT-4" }
+  }
+
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/issue/10002").
@@ -46,16 +53,12 @@ describe JIRA::Resource::Issue do
 
   it_should_behave_like "a resource with a singular GET endpoint"
   it_should_behave_like "a resource with a DELETE endpoint"
+  it_should_behave_like "a resource with a POST endpoint"
 
   it "should handle issue not found" do
     lambda do
       issue = client.Issue.find('99999')
     end.should raise_exception(JIRA::Resource::HTTPError)
-  end
-
-  it "should save a new record" do
-    subject = described_class.new(client)
-    subject.save('foo' => 'bar').should be_true
   end
 
   it "should save an existing record" do

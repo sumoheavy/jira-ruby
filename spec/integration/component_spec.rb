@@ -19,6 +19,13 @@ describe JIRA::Resource::Component do
     }
   end
 
+  let(:attributes_for_save) {
+    {"name" => "Test component", "project" => "SAMPLEPROJECT" }
+  }
+  let(:expected_attributes_from_save) {
+    { "id" => "10001", "name" => "Test component" }
+  }
+
   before(:each) do
     stub_request(:get,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
@@ -42,13 +49,7 @@ describe JIRA::Resource::Component do
 
   it_should_behave_like "a resource with a singular GET endpoint"
   it_should_behave_like "a resource with a DELETE endpoint"
-
-  it "saves a new component" do
-    component = client.Component.build
-    component.save({"name" => "Test component", "project" => "SAMPLEPROJECT"}).should be_true
-    component.id.should   == "10001"
-    component.name.should == "Test component"
-  end
+  it_should_behave_like "a resource with a POST endpoint"
 
   it "saves an existing component" do
     component = client.Component.build('id' => '10000')
