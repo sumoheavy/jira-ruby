@@ -45,16 +45,12 @@ describe JIRA::Resource::Issue do
   end
 
   it_should_behave_like "a resource with a singular GET endpoint"
+  it_should_behave_like "a resource with a DELETE endpoint"
 
   it "should handle issue not found" do
     lambda do
       issue = client.Issue.find('99999')
     end.should raise_exception(JIRA::Resource::HTTPError)
-  end
-
-  it "deletes an issue" do
-    issue = client.Issue.build('id' => "10002")
-    issue.delete.should be_true
   end
 
   it "should save a new record" do

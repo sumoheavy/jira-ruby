@@ -41,11 +41,7 @@ describe JIRA::Resource::Component do
   end
 
   it_should_behave_like "a resource with a singular GET endpoint"
-
-  it "deletes a component" do
-    component = client.Component.build('id' => "10000")
-    component.delete.should be_true
-  end
+  it_should_behave_like "a resource with a DELETE endpoint"
 
   it "saves a new component" do
     component = client.Component.build
