@@ -9,10 +9,12 @@ describe JIRA::Resource::Component do
     client
   end
 
+  let(:key) { "10000" }
+
   let(:expected_attributes) do
     {
       'self' => "http://localhost:2990/jira/rest/api/2/component/10000",
-      'id'   => "10000",
+      'id'   => key,
       'name' => "Cheesecake"
     }
   end
@@ -38,11 +40,7 @@ describe JIRA::Resource::Component do
                  to_return(:status => 400, :body => get_mock_response('component/10000.put.invalid.json'))
   end
 
-  it "should get a single component by id" do
-    component = client.Component.find(10000)
-
-    component.should have_attributes(expected_attributes)
-  end
+  it_should_behave_like "a resource with a singular GET endpoint"
 
   it "builds and fetches single component" do
     component = client.Component.build('id' => 10000)

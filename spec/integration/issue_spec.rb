@@ -8,6 +8,8 @@ describe JIRA::Resource::Issue do
     client
   end
 
+  let(:key) { "10002" }
+
   let(:expected_attributes) do
     {
       'self'   => "http://localhost:2990/jira/rest/api/2/issue/10002",
@@ -42,11 +44,7 @@ describe JIRA::Resource::Issue do
                  to_return(:status => 405, :body => "<html><body>Some HTML</body></html>")
   end
 
-  it "should get a single issue by key" do
-    issue = client.Issue.find('10002')
-
-    issue.should have_attributes(expected_attributes)
-  end
+  it_should_behave_like "a resource with a singular GET endpoint"
 
   it "should handle issue not found" do
     lambda do

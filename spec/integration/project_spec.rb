@@ -8,10 +8,12 @@ describe JIRA::Resource::Project do
     client
   end
 
+  let(:key) { "SAMPLEPROJECT" }
+
   let(:expected_attributes) do
     {
       'self'   => "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT",
-      'key'    => "SAMPLEPROJECT",
+      'key'    => key,
       'name'   => "Sample Project for Developing RoR RESTful API"
     }
   end
@@ -33,11 +35,7 @@ describe JIRA::Resource::Project do
     first.should have_attributes(expected_attributes)
   end
 
-  it "should get a single project by key" do
-    project = client.Project.find('SAMPLEPROJECT')
-
-    project.should have_attributes(expected_attributes)
-  end
+  it_should_behave_like "a resource with a singular GET endpoint"
 
   it "builds and fetches single project" do
     project = client.Project.build('key' => 'SAMPLEPROJECT')
