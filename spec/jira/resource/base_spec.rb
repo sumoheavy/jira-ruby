@@ -5,7 +5,7 @@ describe JIRA::Resource::Base do
   class JIRA::Resource::Deadbeef < JIRA::Resource::Base ; end
 
   let(:client)  { mock() }
-  let(:attrs)   { mock() }
+  let(:attrs)   { Hash.new }
 
   subject { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
 
@@ -251,12 +251,12 @@ describe JIRA::Resource::Base do
   describe "new_record?" do
 
     it "returns true for new_record? when new object" do
-      subject.attrs.stub(:[]).with('id').and_return(nil)
+      subject.attrs['id'] = nil
       subject.new_record?.should be_true
     end
 
     it "returns false for new_record? when id is set" do
-      subject.attrs.stub(:[]).with('id').and_return('123')
+      subject.attrs['id'] = '123'
       subject.new_record?.should be_false
     end
 
@@ -278,28 +278,28 @@ describe JIRA::Resource::Base do
 
   describe 'url' do
     it "returns self as the URL if set" do
-      attrs.stub(:[]).with('self').and_return('http://foo/bar')
+      attrs['self'] = 'http://foo/bar'
       subject.url.should == "http://foo/bar"
     end
 
     it "generates the URL from key if self not set" do
-      attrs.stub(:[]).with('self').and_return(nil)
-      attrs.stub(:[]).with('key').and_return('FOO')
+      attrs['self'] = nil
+      attrs['key'] = 'FOO'
       subject.stub(:rest_base_path => 'http://foo/bar')
       subject.url.should == "http://foo/bar/FOO"
     end
 
     it "generates the URL from rest_base_path if self and key not set" do
-      attrs.stub(:[]).with('self').and_return(nil)
-      attrs.stub(:[]).with('key').and_return(nil)
+      attrs['self'] = nil
+      attrs['key']  = nil
       subject.stub(:rest_base_path => 'http://foo/bar')
       subject.url.should == "http://foo/bar"
     end
   end
 
   it "returns the formatted attrs from to_s" do
-    subject.attrs.stub(:[]).with('foo').and_return('bar')
-    subject.attrs.stub(:[]).with('dead').and_return('beef')
+    subject.attrs['foo']  = 'bar'
+    subject.attrs['dead'] = 'beef'
 
     subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
   end
@@ -309,7 +309,7 @@ describe JIRA::Resource::Base do
   end
 
   it "converts to json" do
-    subject.attrs.stub(:to_json => '{"foo":"bar","dead":"beef"}')
+    subject.attrs = {"foo" => "bar","dead" => "beef"}
 
     subject.to_json.should == '{"foo":"bar","dead":"beef"}'
   end
