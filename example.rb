@@ -73,3 +73,8 @@ pp issue
 # issue = client.Issue.find("10002")
 # issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 # pp issue
+#
+# # Find a user
+# # -----------
+# user = client.User.find('admin')
+# pp user

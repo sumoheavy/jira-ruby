@@ -47,6 +47,10 @@ module JIRA
       JIRA::Resource::ComponentFactory.new(self)
     end
 
+    def User
+      JIRA::Resource::UserFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end
