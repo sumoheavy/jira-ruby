@@ -5,10 +5,6 @@ module JIRA
 
     class Issue < Base
 
-      def self.key_attribute
-        :id
-      end
-
     end
 
   end

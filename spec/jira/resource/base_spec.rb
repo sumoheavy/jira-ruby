@@ -16,7 +16,7 @@ describe JIRA::Resource::Base do
 
   it "returns all the deadbeefs" do
     response = mock()
-    response.should_receive(:body).and_return('[{"self":"http://deadbeef/","key":"FOO"}]')
+    response.should_receive(:body).and_return('[{"self":"http://deadbeef/","id":"98765"}]')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef').and_return(response)
     JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeefs = JIRA::Resource::Deadbeef.all(client)
@@ -24,28 +24,28 @@ describe JIRA::Resource::Base do
     first = deadbeefs.first
     first.class.should == JIRA::Resource::Deadbeef
     first.attrs['self'].should  == 'http://deadbeef/'
-    first.attrs['key'].should   == 'FOO'
+    first.attrs['id'].should   == '98765'
     first.expanded?.should be_false
   end
 
-  it "finds a deadbeef by key" do
+  it "finds a deadbeef by id" do
     response = mock()
-    response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
-    client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
+    response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
+    client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
     JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
-    deadbeef = JIRA::Resource::Deadbeef.find(client, 'FOO')
+    deadbeef = JIRA::Resource::Deadbeef.find(client, '98765')
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
-    deadbeef.attrs['key'].should   == 'FOO'
+    deadbeef.attrs['id'].should   == '98765'
     deadbeef.expanded?.should be_true
   end
 
   it "builds a deadbeef" do
-    deadbeef = JIRA::Resource::Deadbeef.build(client, 'key' => "FOO" )
+    deadbeef = JIRA::Resource::Deadbeef.build(client, 'id' => "98765" )
     deadbeef.expanded?.should be_false
 
     deadbeef.client.should == client
-    deadbeef.attrs['key'].should   == 'FOO'
+    deadbeef.attrs['id'].should   == '98765'
   end
 
   it "returns the endpoint name" do
@@ -94,14 +94,14 @@ describe JIRA::Resource::Base do
 
   describe "fetch" do
 
-    subject     { JIRA::Resource::Deadbeef.new(client, :attrs => {'key' => 'FOO'}) }
+    subject     { JIRA::Resource::Deadbeef.new(client, :attrs => {'id' => '98765'}) }
 
     describe "not cached" do
 
       before(:each) do
         response = mock()
-        response.stub(:body).and_return('{"self":"http://deadbeef/","key":"FOO"}')
-        client.should_receive(:get).with('/jira/rest/api/2/deadbeef/FOO').and_return(response)
+        response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
+        client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
         JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
@@ -115,7 +115,7 @@ describe JIRA::Resource::Base do
         subject.expanded?.should be_false
         subject.fetch
         subject.self.should == "http://deadbeef/"
-        subject.key.should  == "FOO"
+        subject.id.should  == "98765"
       end
 
       it "performs a fetch if already fetched and force flag is true" do
@@ -281,16 +281,16 @@ describe JIRA::Resource::Base do
       subject.url.should == "http://foo/bar"
     end
 
-    it "generates the URL from key if self not set" do
+    it "generates the URL from id if self not set" do
       attrs['self'] = nil
-      attrs['key'] = 'FOO'
+      attrs['id'] = '98765'
       subject.stub(:rest_base_path => 'http://foo/bar')
-      subject.url.should == "http://foo/bar/FOO"
+      subject.url.should == "http://foo/bar/98765"
     end
 
-    it "generates the URL from rest_base_path if self and key not set" do
+    it "generates the URL from rest_base_path if self and id not set" do
       attrs['self'] = nil
-      attrs['key']  = nil
+      attrs['id']  = nil
       subject.stub(:rest_base_path => 'http://foo/bar')
       subject.url.should == "http://foo/bar"
     end
@@ -304,7 +304,7 @@ describe JIRA::Resource::Base do
   end
 
   it "returns the key attribute" do
-    subject.class.key_attribute.should == :key
+    subject.class.key_attribute.should == :id
   end
 
   it "converts to json" do

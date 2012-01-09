@@ -22,6 +22,11 @@ RSpec::Matchers.define :have_attributes do |expected|
   end
 end
 
-def get_mock_response(file)
-  File.read(File.join(File.dirname(__FILE__), 'mock_responses/', file))
+def get_mock_response(file, value_if_file_not_found = false)
+  begin
+    File.read(File.join(File.dirname(__FILE__), 'mock_responses/', file))
+  rescue Errno::ENOENT => e
+    raise e if value_if_file_not_found == false
+    value_if_file_not_found
+  end
 end

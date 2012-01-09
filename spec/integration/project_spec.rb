@@ -18,22 +18,7 @@ describe JIRA::Resource::Project do
     }
   end
 
-  before(:each) do
-    stub_request(:get,
-                 "http://localhost:2990/jira/rest/api/2/project").
-                 to_return(:status => 200, :body => get_mock_response('project.json'))
-    stub_request(:get,
-                 "http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT").
-                 to_return(:status => 200,:body => get_mock_response('project/SAMPLEPROJECT.json'))
-  end
-
-  it "should get all the projects" do
-    projects = client.Project.all
-    projects.length.should == 1
-
-    first = projects.first
-    first.should have_attributes(expected_attributes)
-  end
-
+  it_should_behave_like "a resource"
+  it_should_behave_like "a resource with a collection GET endpoint"
   it_should_behave_like "a resource with a singular GET endpoint"
 end

@@ -45,7 +45,7 @@ module JIRA
       end
 
       def self.key_attribute
-        :key
+        :id
       end
 
       def self.parse_json(string)
@@ -154,7 +154,7 @@ module JIRA
       end
 
       def new_record?
-        @attrs['id'].nil?
+        @attrs[self.class.key_attribute.to_s].nil?
       end
     end
 
