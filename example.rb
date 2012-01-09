@@ -42,6 +42,9 @@ pp issue
 # # ------------------------------
 # project = client.Project.find('SAMPLEPROJECT')
 # pp project
+# project.issues.each do |issue|
+#   puts "#{issue.id} - #{issue.fields['summary']}"
+# end
 #
 # # Delete an issue
 # # ---------------
