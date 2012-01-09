@@ -39,6 +39,14 @@ module JIRA
       def build(attrs={})
         target_class.build(@client, attrs)
       end
+
+      def collection_path
+        target_class.collection_path(@client)
+      end
+
+      def singular_path(key)
+        target_class.singular_path(@client, key)
+      end
     end
   end
 end

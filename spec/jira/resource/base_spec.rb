@@ -282,17 +282,27 @@ describe JIRA::Resource::Base do
     end
 
     it "generates the URL from id if self not set" do
+      client.stub(:options => {:rest_base_path => '/foo/bar'})
       attrs['self'] = nil
       attrs['id'] = '98765'
-      subject.stub(:rest_base_path => 'http://foo/bar')
-      subject.url.should == "http://foo/bar/98765"
+      subject.url.should == "/foo/bar/deadbeef/98765"
     end
 
     it "generates the URL from rest_base_path if self and id not set" do
+      client.stub(:options => {:rest_base_path => '/foo/bar'})
       attrs['self'] = nil
       attrs['id']  = nil
-      subject.stub(:rest_base_path => 'http://foo/bar')
-      subject.url.should == "http://foo/bar"
+      subject.url.should == "/foo/bar/deadbeef"
+    end
+
+    it "has a class method for the collection path" do
+      client.stub(:options => {:rest_base_path => '/foo/bar'})
+      JIRA::Resource::Deadbeef.collection_path(client).should == "/foo/bar/deadbeef"
+    end
+
+    it "has a class method for the singular path" do
+      client.stub(:options => {:rest_base_path => '/foo/bar'})
+      JIRA::Resource::Deadbeef.singular_path(client, 'abc123').should == "/foo/bar/deadbeef/abc123"
     end
   end
 

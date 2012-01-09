@@ -44,6 +44,14 @@ module JIRA
         self.name.split('::').last.downcase
       end
 
+      def self.collection_path(client)
+        rest_base_path(client)
+      end
+
+      def self.singular_path(client, key)
+        rest_base_path(client) + '/' + key
+      end
+
       def self.key_attribute
         :id
       end
@@ -139,9 +147,9 @@ module JIRA
         if @attrs['self']
           @attrs['self']
         elsif @attrs[self.class.key_attribute.to_s]
-          rest_base_path + "/" + @attrs[self.class.key_attribute.to_s].to_s
+          self.class.singular_path(client, @attrs[self.class.key_attribute.to_s].to_s)
         else
-          rest_base_path
+          self.class.collection_path(client)
         end
       end
 

@@ -33,4 +33,14 @@ describe JIRA::Resource::BaseFactory do
     JIRA::Resource::Foo.should_receive(:build).with(client, attrs)
     subject.build(attrs)
   end
+
+  it "proxies collection path to the target class" do
+    JIRA::Resource::Foo.should_receive(:collection_path).with(client)
+    subject.collection_path
+  end
+
+  it "proxies singular path to the target class" do
+    JIRA::Resource::Foo.should_receive(:singular_path).with(client, 'FOO')
+    subject.singular_path('FOO')
+  end
 end
