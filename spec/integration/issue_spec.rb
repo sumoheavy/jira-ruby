@@ -18,11 +18,18 @@ describe JIRA::Resource::Issue do
     }
   end
 
-  let(:attributes_for_save) {
+  let(:attributes_for_post) {
     { 'foo' => 'bar' }
   }
-  let(:expected_attributes_from_save) {
+  let(:expected_attributes_from_post) {
     { "id" => "10005", "key" => "SAMPLEPROJECT-4" }
+  }
+
+  let(:attributes_for_put) {
+    { 'foo' => 'bar' }
+  }
+  let(:expected_attributes_from_put) {
+    { 'foo' => 'bar' }
   }
 
   before(:each) do
@@ -54,17 +61,12 @@ describe JIRA::Resource::Issue do
   it_should_behave_like "a resource with a singular GET endpoint"
   it_should_behave_like "a resource with a DELETE endpoint"
   it_should_behave_like "a resource with a POST endpoint"
+  it_should_behave_like "a resource with a PUT endpoint"
 
   it "should handle issue not found" do
     lambda do
       issue = client.Issue.find('99999')
     end.should raise_exception(JIRA::Resource::HTTPError)
-  end
-
-  it "should save an existing record" do
-    subject = client.Issue.build('id' => '10002')
-    subject.fetch
-    subject.save('foo' => 'bar').should be_true
   end
 
   it "fails to save with an invalid field" do

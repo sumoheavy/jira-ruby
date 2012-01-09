@@ -38,8 +38,22 @@ shared_examples "a resource with a POST endpoint" do
   it "saves a new resource" do
     class_basename = described_class.name.split('::').last
     subject = client.send(class_basename).build
-    subject.save(attributes_for_save).should be_true
-    expected_attributes_from_save.each do |method_name, value|
+    subject.save(attributes_for_post).should be_true
+    expected_attributes_from_post.each do |method_name, value|
+      subject.send(method_name).should == value
+    end
+  end
+
+end
+
+shared_examples "a resource with a PUT endpoint" do
+  
+  it "saves an existing component" do
+    class_basename = described_class.name.split('::').last
+    subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
+    subject.fetch
+    subject.save(attributes_for_put).should be_true
+    expected_attributes_from_put.each do |method_name, value|
       subject.send(method_name).should == value
     end
   end

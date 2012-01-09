@@ -19,11 +19,18 @@ describe JIRA::Resource::Component do
     }
   end
 
-  let(:attributes_for_save) {
+  let(:attributes_for_post) {
     {"name" => "Test component", "project" => "SAMPLEPROJECT" }
   }
-  let(:expected_attributes_from_save) {
+  let(:expected_attributes_from_post) {
     { "id" => "10001", "name" => "Test component" }
+  }
+
+  let(:attributes_for_put) {
+    {"name" => "Jammy", "project" => "SAMPLEPROJECT" }
+  }
+  let(:expected_attributes_from_put) {
+    { "id" => "10000", "name" => "Jammy" }
   }
 
   before(:each) do
@@ -39,7 +46,7 @@ describe JIRA::Resource::Component do
                  to_return(:status => 201, :body => get_mock_response('component.post.json'))
     stub_request(:put,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
-                 with(:body => '{"name":"Jammy"}').
+                 with(:body => '{"name":"Jammy","project":"SAMPLEPROJECT"}').
                  to_return(:status => 200, :body => get_mock_response('component/10000.put.json'))
     stub_request(:put,
                  "http://localhost:2990/jira/rest/api/2/component/10000").
@@ -50,14 +57,7 @@ describe JIRA::Resource::Component do
   it_should_behave_like "a resource with a singular GET endpoint"
   it_should_behave_like "a resource with a DELETE endpoint"
   it_should_behave_like "a resource with a POST endpoint"
-
-  it "saves an existing component" do
-    component = client.Component.build('id' => '10000')
-    component.fetch
-    component.save('name' => 'Jammy').should be_true
-    component.id.should == "10000"
-    component.name.should == "Jammy"
-  end
+  it_should_behave_like "a resource with a PUT endpoint"
 
   it "fails to save a component with an invalid field" do
     component = client.Component.build('id' => '10000')
