@@ -21,7 +21,7 @@ shared_examples "a resource with a collection GET endpoint" do
                  "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}").
                  to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}.json"))
     collection = client.send(class_basename).all
-    collection.length.should == 1
+    collection.length.should == expected_collection_length
 
     first = collection.first
     first.should have_attributes(expected_attributes)

@@ -18,6 +18,8 @@ describe JIRA::Resource::Project do
     }
   end
 
+  let(:expected_collection_length) { 1 }
+
   it_should_behave_like "a resource"
   it_should_behave_like "a resource with a collection GET endpoint"
   it_should_behave_like "a resource with a singular GET endpoint"

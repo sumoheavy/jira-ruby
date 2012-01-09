@@ -31,9 +31,24 @@ describe JIRA::Resource::Issue do
   let(:expected_attributes_from_put) {
     { 'foo' => 'bar' }
   }
+  let(:expected_collection_length) { 11 }
 
   it_should_behave_like "a resource"
   it_should_behave_like "a resource with a singular GET endpoint"
+  describe "GET all issues" do # JIRA::Resource::Issue.all uses the search endpoint
+    let(:expected_attributes) {
+      {
+        "id"=>"10014",
+        "self"=>"http://localhost:2990/jira/rest/api/2/issue/10014",
+        "key"=>"SAMPLEPROJECT-13"
+      }
+    }
+    before(:each) do
+      stub_request(:get, "http://localhost:2990/jira/rest/api/2/search").
+                  to_return(:status => 200, :body => get_mock_response('issue.json'))
+    end
+    it_should_behave_like "a resource with a collection GET endpoint"
+  end
   it_should_behave_like "a resource with a DELETE endpoint"
   it_should_behave_like "a resource with a POST endpoint"
   it_should_behave_like "a resource with a PUT endpoint"
