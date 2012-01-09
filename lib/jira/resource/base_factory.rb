@@ -28,25 +28,24 @@ module JIRA
         end
       end
 
-      def all
-        target_class.all(@client)
+      def self.delegate_to_target_class(*method_names)
+        method_names.each do |method_name|
+          define_method method_name do |*args|
+            target_class.send(method_name, @client, *args)
+          end
+        end
       end
 
-      def find(key)
-        target_class.find(@client, key)
-      end
+      # The priciple purpose of this class is to delegate methods to the corresponding
+      # non-factory class and automatically prepend the client argument to the argument
+      # list.
+      delegate_to_target_class :all, :find, :collection_path, :singular_path
 
+      # This method needs special handling as it has a default argument value
       def build(attrs={})
         target_class.build(@client, attrs)
       end
 
-      def collection_path
-        target_class.collection_path(@client)
-      end
-
-      def singular_path(key)
-        target_class.singular_path(@client, key)
-      end
     end
   end
 end
