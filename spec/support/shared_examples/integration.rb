@@ -2,7 +2,7 @@ shared_examples "a resource" do
 
   it "gracefully handles non-json responses" do
     class_basename = described_class.name.split('::').last
-    stub_request(:put, "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/99999").
+    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, '99999')).
                 to_return(:status => 405, :body => "<html><body>Some HTML</body></html>")
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
     subject.save('foo' => 'bar').should be_false
@@ -17,8 +17,7 @@ shared_examples "a resource with a collection GET endpoint" do
 
   it "should get the collection" do
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                 "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}").
+    stub_request(:get, "http://localhost:2990" + described_class.collection_path(client)).
                  to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}.json"))
     collection = client.send(class_basename).all
     collection.length.should == expected_collection_length
@@ -35,8 +34,7 @@ shared_examples "a resource with a singular GET endpoint" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.find()
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
     subject = client.send(class_basename).find(key)
 
@@ -47,8 +45,7 @@ shared_examples "a resource with a singular GET endpoint" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.build('key' => 'ABC123')
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
 
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
@@ -59,8 +56,7 @@ shared_examples "a resource with a singular GET endpoint" do
 
   it "handles a 404" do
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/99999").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, '99999')).
                 to_return(:status => 404, :body => '{"errorMessages":["'+class_basename+' Does Not Exist"],"errors": {}}')
     lambda do
       client.send(class_basename).find('99999')
@@ -73,8 +69,7 @@ shared_examples "a resource with a DELETE endpoint" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.delete()
     class_basename = described_class.name.split('::').last
-    stub_request(:delete,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:delete, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 204, :body => nil)
 
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
@@ -86,7 +81,7 @@ shared_examples "a resource with a POST endpoint" do
 
   it "saves a new resource" do
     class_basename = described_class.name.split('::').last
-    stub_request(:post, "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}").
+    stub_request(:post, "http://localhost:2990" + described_class.collection_path(client)).
                 to_return(:status => 201, :body => get_mock_response("#{class_basename.downcase}.post.json"))
     subject = client.send(class_basename).build
     subject.save(attributes_for_post).should be_true
@@ -101,11 +96,9 @@ shared_examples "a resource with a PUT endpoint" do
   
   it "saves an existing component" do
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
-    stub_request(:put,
-                  "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
                   to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.put.json", nil))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -117,10 +110,9 @@ shared_examples "a resource with a PUT endpoint" do
 
   it "fails to save with an invalid field" do
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
-    stub_request(:put, "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 400, :body => get_mock_response("#{class_basename.downcase}/#{key}.put.invalid.json"))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -129,10 +121,9 @@ shared_examples "a resource with a PUT endpoint" do
 
   it "fails to save with an invalid field" do
     class_basename = described_class.name.split('::').last
-    stub_request(:get,
-                "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
-    stub_request(:put, "http://localhost:2990/jira/rest/api/2/#{class_basename.downcase}/#{key}").
+    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
                 to_return(:status => 400, :body => get_mock_response("#{class_basename.downcase}/#{key}.put.invalid.json"))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
