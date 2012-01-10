@@ -93,7 +93,7 @@ shared_examples "a resource with a POST endpoint" do
 end
 
 shared_examples "a resource with a PUT endpoint" do
-  
+
   it "saves an existing component" do
     class_basename = described_class.name.split('::').last
     stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).

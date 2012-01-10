@@ -71,6 +71,10 @@ module JIRA
       JIRA::Resource::AttachmentFactory.new(self)
     end
 
+    def Version
+      JIRA::Resource::VersionFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end

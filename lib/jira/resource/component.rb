@@ -3,9 +3,7 @@ module JIRA
 
     class ComponentFactory < BaseFactory ; end
 
-    class Component < Base
-
-    end
+    class Component < Base ; end
 
   end
 end
