@@ -72,11 +72,12 @@ module JIRA
         end
       end
 
-      def self.has_many(collection)
-        child_class = ('JIRA::Resource::' + collection.to_s.classify).constantize
+      def self.has_many(collection, options = {})
+        child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
         define_method(collection) do
-          return [] unless @attrs[collection.to_s]
-          @attrs[collection.to_s].map do |child_attributes|
+          lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
+          return [] unless lookup_hash[collection.to_s]
+          lookup_hash[collection.to_s].map do |child_attributes|
             child_class.new(client, :attrs => child_attributes)
           end
         end

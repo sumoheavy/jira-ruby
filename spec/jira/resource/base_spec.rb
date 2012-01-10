@@ -13,6 +13,8 @@ describe JIRA::Resource::Base do
 
   class JIRA::Resource::HasManyExample < JIRA::Resource::Base
     has_many :deadbeefs
+    has_many :brunchmuffins, :class => JIRA::Resource::Deadbeef,
+                           :nested_under => 'nested'
   end
 
   let(:client)  { mock() }
@@ -380,6 +382,14 @@ describe JIRA::Resource::Base do
     it "returns an empty collection for empty has_many relationships" do
       subject = JIRA::Resource::HasManyExample.new(client)
       subject.deadbeefs.length.should == 0
+    end
+
+    it "allows the has_many attributes to be nested inside another attribute" do
+      subject = JIRA::Resource::HasManyExample.new(client, :attrs => {'nested' => {'brunchmuffins' => [{'id' => '123'},{'id' => '456'}]}})
+      subject.brunchmuffins.length.should == 2
+      subject.brunchmuffins.each do |brunchmuffin|
+        brunchmuffin.class.should == JIRA::Resource::Deadbeef
+      end
     end
 
   end
