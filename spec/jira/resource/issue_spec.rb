@@ -48,4 +48,11 @@ describe JIRA::Resource::Issue do
     subject.issuetype.class.should == JIRA::Resource::Issuetype
     subject.issuetype.foo.should == 'bar'
   end
+
+  it "has one priority" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'priority' => {'foo' => 'bar'}}})
+    subject.priority.class.should == JIRA::Resource::Priority
+    subject.priority.foo.should == 'bar'
+  end
+
 end
