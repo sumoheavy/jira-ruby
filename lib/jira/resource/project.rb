@@ -5,6 +5,7 @@ module JIRA
 
     class Project < Base
 
+      has_one :lead, :class => JIRA::Resource::User
       has_many :components
 
       def self.key_attribute
