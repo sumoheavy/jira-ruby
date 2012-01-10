@@ -10,6 +10,7 @@ require 'jira/resource/base_factory'
 require 'jira/resource/http_error'
 
 require 'jira/resource/user'
+require 'jira/resource/attachment'
 require 'jira/resource/component'
 require 'jira/resource/issuetype'
 require 'jira/resource/project'

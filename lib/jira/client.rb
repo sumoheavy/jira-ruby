@@ -67,6 +67,10 @@ module JIRA
       JIRA::Resource::CommentFactory.new(self)
     end
 
+    def Attachment
+      JIRA::Resource::AttachmentFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end
