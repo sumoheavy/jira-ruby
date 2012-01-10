@@ -25,57 +25,50 @@ describe JIRA::Resource::Issue do
     subject.foo.should == 'bar'
   end
 
-  it "returns the reporter" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'reporter' => {'foo' => 'bar'}}})
-    subject.reporter.class.should == JIRA::Resource::User
-    subject.reporter.foo.should == 'bar'
-  end
+  describe "relationships" do
+    subject {
+      JIRA::Resource::Issue.new(client, :attrs => {
+        'fields' => {
+          'reporter'    => {'foo' => 'bar'},
+          'assignee'    => {'foo' => 'bar'},
+          'project'     => {'foo' => 'bar'},
+          'priority'    => {'foo' => 'bar'},
+          'issuetype'   => {'foo' => 'bar'},
+          'status'      => {'foo' => 'bar'},
+          'components'  => [{'foo' => 'bar'}, {'baz' => 'flum'}],
+          'comment'     => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]},
+          'attachment'  => [{'foo' => 'bar'}, {'baz' => 'flum'}]
+        }
+      })
+    }
 
-  it "returns the assignee" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'assignee' => {'foo' => 'bar'}}})
-    subject.assignee.class.should == JIRA::Resource::User
-    subject.assignee.foo.should == 'bar'
-  end
+    it "has the correct relationships" do
+      subject.should have_one(:reporter, JIRA::Resource::User)
+      subject.reporter.foo.should == 'bar'
 
-  it "returns the project" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'project' => {'foo' => 'bar'}}})
-    subject.project.class.should == JIRA::Resource::Project
-    subject.project.foo.should == 'bar'
-  end
+      subject.should have_one(:assignee, JIRA::Resource::User)
+      subject.assignee.foo.should == 'bar'
 
-  it "returns the issuetype" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'issuetype' => {'foo' => 'bar'}}})
-    subject.issuetype.class.should == JIRA::Resource::Issuetype
-    subject.issuetype.foo.should == 'bar'
-  end
+      subject.should have_one(:project, JIRA::Resource::Project)
+      subject.project.foo.should == 'bar'
 
-  it "has one priority" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'priority' => {'foo' => 'bar'}}})
-    subject.priority.class.should == JIRA::Resource::Priority
-    subject.priority.foo.should == 'bar'
-  end
+      subject.should have_one(:issuetype, JIRA::Resource::Issuetype)
+      subject.issuetype.foo.should == 'bar'
 
-  it "has one status" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'status' => {'foo' => 'bar'}}})
-    subject.status.class.should == JIRA::Resource::Status
-    subject.status.foo.should == 'bar'
-  end
+      subject.should have_one(:priority, JIRA::Resource::Priority)
+      subject.priority.foo.should == 'bar'
 
-  it "has many components" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'components' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
-    subject.should have_many(:components, JIRA::Resource::Component)
-    subject.components.length.should == 2
-  end
+      subject.should have_one(:status, JIRA::Resource::Status)
+      subject.status.foo.should == 'bar'
 
-  it "has many comments" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'comment' => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}}})
-    subject.should have_many(:comments, JIRA::Resource::Comment)
-    subject.comments.length.should == 2
-  end
+      subject.should have_many(:components, JIRA::Resource::Component)
+      subject.components.length.should == 2
 
-  it "has many attachments" do
-    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'attachment' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
-    subject.should have_many(:attachments, JIRA::Resource::Attachment)
-    subject.attachments.length.should == 2
+      subject.should have_many(:comments, JIRA::Resource::Comment)
+      subject.comments.length.should == 2
+
+      subject.should have_many(:attachments, JIRA::Resource::Attachment)
+      subject.attachments.length.should == 2
+    end
   end
 end
