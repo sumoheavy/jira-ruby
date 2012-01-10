@@ -15,6 +15,7 @@ require 'jira/resource/issuetype'
 require 'jira/resource/project'
 require 'jira/resource/priority'
 require 'jira/resource/status'
+require 'jira/resource/comment'
 require 'jira/resource/issue'
 
 require 'jira/client'

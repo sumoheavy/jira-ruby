@@ -63,6 +63,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def Comment
+      JIRA::Resource::CommentFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end

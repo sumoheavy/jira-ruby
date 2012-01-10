@@ -68,4 +68,12 @@ describe JIRA::Resource::Issue do
       component.class.should == JIRA::Resource::Component
     end
   end
+
+  it "has many comments" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'comment' => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}}})
+    subject.comments.length.should == 2
+    subject.comments.each do |comment|
+      comment.class.should == JIRA::Resource::Comment
+    end
+  end
 end
