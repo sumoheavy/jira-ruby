@@ -7,8 +7,9 @@ describe JIRA::Resource::Project do
   describe "relationships" do
     subject {
       JIRA::Resource::Project.new(client, :attrs => {
-        'lead' => {'foo' => 'bar'},
-        'issueTypes' => [{'foo' =>'bar'},{'baz' => 'flum'}]
+        'lead'        => {'foo' => 'bar'},
+        'issueTypes'  => [{'foo' =>'bar'},{'baz' => 'flum'}],
+        'versions'    => [{'foo' =>'bar'},{'baz' => 'flum'}]
       })
     }
 
@@ -18,6 +19,9 @@ describe JIRA::Resource::Project do
 
       subject.should have_many(:issuetypes, JIRA::Resource::Issuetype)
       subject.issuetypes.length.should == 2
+
+      subject.should have_many(:versions, JIRA::Resource::Version)
+      subject.versions.length.should == 2
     end
   end
 

@@ -8,6 +8,7 @@ module JIRA
       has_one :lead, :class => JIRA::Resource::User
       has_many :components
       has_many :issuetypes, :attribute_key => 'issueTypes'
+      has_many :versions
 
       def self.key_attribute
         :key
