@@ -43,4 +43,9 @@ describe JIRA::Resource::Issue do
     subject.project.foo.should == 'bar'
   end
 
+  it "returns the issuetype" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'issuetype' => {'foo' => 'bar'}}})
+    subject.issuetype.class.should == JIRA::Resource::Issuetype
+    subject.issuetype.foo.should == 'bar'
+  end
 end
