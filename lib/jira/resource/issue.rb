@@ -17,6 +17,8 @@ module JIRA
 
       has_one :status,    :nested_under => 'fields'
 
+      has_many :components, :nested_under => 'fields'
+
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")
         json = parse_json(response.body)

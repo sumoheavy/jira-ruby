@@ -101,7 +101,19 @@
       "progress": 0,
       "total": 0
     },
-    "components": [],
+    "components": [
+      {
+        "self": "http://localhost:2990/jira/rest/api/2/component/10001",
+        "id": "10001",
+        "name": "Jamflam"
+      },
+      {
+        "self": "http://localhost:2990/jira/rest/api/2/component/10000",
+        "id": "10000",
+        "name": "Jammy",
+        "description": "Description!"
+      }
+    ],
     "comment": {
       "startAt": 0,
       "maxResults": 0,

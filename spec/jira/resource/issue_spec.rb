@@ -61,4 +61,11 @@ describe JIRA::Resource::Issue do
     subject.status.foo.should == 'bar'
   end
 
+  it "has many components" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'components' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
+    subject.components.length.should == 2
+    subject.components.each do |component|
+      component.class.should == JIRA::Resource::Component
+    end
+  end
 end
