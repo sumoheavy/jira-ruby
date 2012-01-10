@@ -12,10 +12,8 @@ describe JIRA::Resource::Project do
 
   it "has many issuetypes" do
     subject = JIRA::Resource::Project.new(client, :attrs => {'issueTypes' => [{'foo' =>'bar'},{'baz' => 'flum'}]})
+    subject.should have_many(:issuetypes, JIRA::Resource::Issuetype)
     subject.issuetypes.length.should == 2
-    subject.issuetypes.each do |issuetype|
-      issuetype.class.should == JIRA::Resource::Issuetype
-    end
   end
 
 end

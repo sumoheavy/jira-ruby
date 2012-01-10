@@ -63,25 +63,19 @@ describe JIRA::Resource::Issue do
 
   it "has many components" do
     subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'components' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
+    subject.should have_many(:components, JIRA::Resource::Component)
     subject.components.length.should == 2
-    subject.components.each do |component|
-      component.class.should == JIRA::Resource::Component
-    end
   end
 
   it "has many comments" do
     subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'comment' => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}}})
+    subject.should have_many(:comments, JIRA::Resource::Comment)
     subject.comments.length.should == 2
-    subject.comments.each do |comment|
-      comment.class.should == JIRA::Resource::Comment
-    end
   end
 
   it "has many attachments" do
     subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'attachment' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
+    subject.should have_many(:attachments, JIRA::Resource::Attachment)
     subject.attachments.length.should == 2
-    subject.attachments.each do |attachment|
-      attachment.class.should == JIRA::Resource::Attachment
-    end
   end
 end
