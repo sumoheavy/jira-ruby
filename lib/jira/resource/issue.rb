@@ -13,7 +13,9 @@ module JIRA
 
       has_one :issuetype, :nested_under => 'fields'
 
-      has_one :priority, :nested_under => 'fields'
+      has_one :priority,  :nested_under => 'fields'
+
+      has_one :status,    :nested_under => 'fields'
 
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")

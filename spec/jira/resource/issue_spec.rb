@@ -55,4 +55,10 @@ describe JIRA::Resource::Issue do
     subject.priority.foo.should == 'bar'
   end
 
+  it "has one status" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'status' => {'foo' => 'bar'}}})
+    subject.status.class.should == JIRA::Resource::Status
+    subject.status.foo.should == 'bar'
+  end
+
 end
