@@ -25,4 +25,22 @@ describe JIRA::Resource::Issue do
     subject.foo.should == 'bar'
   end
 
+  it "returns the reporter" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'reporter' => {'foo' => 'bar'}}})
+    subject.reporter.class.should == JIRA::Resource::User
+    subject.reporter.foo.should == 'bar'
+  end
+
+  it "returns the assignee" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'assignee' => {'foo' => 'bar'}}})
+    subject.assignee.class.should == JIRA::Resource::User
+    subject.assignee.foo.should == 'bar'
+  end
+
+  it "returns the project" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'project' => {'foo' => 'bar'}}})
+    subject.project.class.should == JIRA::Resource::Project
+    subject.project.foo.should == 'bar'
+  end
+
 end

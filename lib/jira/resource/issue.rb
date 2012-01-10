@@ -5,6 +5,12 @@ module JIRA
 
     class Issue < Base
 
+      has_one :reporter,  :class => JIRA::Resource::User,
+                          :nested_under => 'fields'
+      has_one :assignee,  :class => JIRA::Resource::User,
+                          :nested_under => 'fields'
+      has_one :project,   :nested_under => 'fields'
+
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")
         json = parse_json(response.body)
