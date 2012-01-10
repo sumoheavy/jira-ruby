@@ -51,6 +51,10 @@ module JIRA
       JIRA::Resource::UserFactory.new(self)
     end
 
+    def Issuetype
+      JIRA::Resource::IssuetypeFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end

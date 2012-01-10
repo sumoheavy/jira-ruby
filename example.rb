@@ -78,3 +78,13 @@ pp issue
 # # -----------
 # user = client.User.find('admin')
 # pp user
+#
+# # Get all issue types
+# # -------------------
+# issuetypes = client.Issuetype.all
+# pp issuetypes
+#
+# # Get a single issue type
+# # -----------------------
+# issuetype = client.Issuetype.find('5')
+# pp issuetype
