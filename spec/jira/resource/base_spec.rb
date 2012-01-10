@@ -4,6 +4,10 @@ describe JIRA::Resource::Base do
 
   class JIRA::Resource::Deadbeef < JIRA::Resource::Base ; end
 
+  class JIRA::Resource::HasManyExample < JIRA::Resource::Base
+    has_many :deadbeefs
+  end
+
   let(:client)  { mock() }
   let(:attrs)   { Hash.new }
 
@@ -353,6 +357,24 @@ describe JIRA::Resource::Base do
       subject.set_attrs_from_response(response).should be_nil
       subject.flum.should == 'flar'
     end
+  end
+
+  describe "has_many" do
+
+    subject { JIRA::Resource::HasManyExample.new(client, :attrs => {'deadbeefs' => [{'id' => '123'}]}) }
+
+    it "returns a collection of instances for has_many relationships" do
+      subject.deadbeefs.length.should == 1
+      subject.deadbeefs.each do |deadbeef|
+        deadbeef.class.should == JIRA::Resource::Deadbeef
+      end
+    end
+
+    it "returns an empty collection for empty has_many relationships" do
+      subject = JIRA::Resource::HasManyExample.new(client)
+      subject.deadbeefs.length.should == 0
+    end
+
   end
 
 end

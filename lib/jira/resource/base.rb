@@ -1,3 +1,6 @@
+require 'active_support/core_ext/string'
+require 'active_support/inflector'
+
 module JIRA
   module Resource
 
@@ -58,6 +61,16 @@ module JIRA
 
       def self.parse_json(string)
         JSON.parse(string)
+      end
+
+      def self.has_many(collection)
+        child_class = ('JIRA::Resource::' + collection.to_s.classify).constantize
+        define_method(collection) do
+          return [] unless @attrs[collection.to_s]
+          @attrs[collection.to_s].map do |child_attributes|
+            child_class.new(client, :attrs => child_attributes)
+          end
+        end
       end
 
       def respond_to?(method_name)
