@@ -66,8 +66,9 @@ module JIRA
       def self.has_one(resource, options = {})
         child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize
         define_method(resource) do
-          return nil unless @attrs[resource.to_s]
-          child_class.new(client, :attrs => @attrs[resource.to_s])
+          lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
+          return nil unless lookup_hash && lookup_hash[resource.to_s]
+          child_class.new(client, :attrs => lookup_hash[resource.to_s])
         end
       end
 

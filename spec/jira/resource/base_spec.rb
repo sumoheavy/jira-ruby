@@ -7,6 +7,8 @@ describe JIRA::Resource::Base do
   class JIRA::Resource::HasOneExample < JIRA::Resource::Base
     has_one :deadbeef
     has_one :muffin, :class => JIRA::Resource::Deadbeef
+    has_one :brunchmuffin, :class => JIRA::Resource::Deadbeef,
+                           :nested_under => 'nested'
   end
 
   class JIRA::Resource::HasManyExample < JIRA::Resource::Base
@@ -400,6 +402,12 @@ describe JIRA::Resource::Base do
       subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'muffin' => {'id' => '123'}})
       subject.muffin.class.should == JIRA::Resource::Deadbeef
       subject.muffin.id.should == '123'
+    end
+
+    it "allows the has_one attributes to be nested inside another attribute" do
+      subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'nested' => {'brunchmuffin' => {'id' => '123'}}})
+      subject.brunchmuffin.class.should == JIRA::Resource::Deadbeef
+      subject.brunchmuffin.id.should == '123'
     end
 
   end
