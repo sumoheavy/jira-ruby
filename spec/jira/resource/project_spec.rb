@@ -10,4 +10,12 @@ describe JIRA::Resource::Project do
     subject.lead.foo.should == 'bar'
   end
 
+  it "has many issuetypes" do
+    subject = JIRA::Resource::Project.new(client, :attrs => {'issueTypes' => [{'foo' =>'bar'},{'baz' => 'flum'}]})
+    subject.issuetypes.length.should == 2
+    subject.issuetypes.each do |issuetype|
+      issuetype.class.should == JIRA::Resource::Issuetype
+    end
+  end
+
 end
