@@ -7,6 +7,7 @@ require 'jira/resource/user'
 require 'jira/resource/component'
 require 'jira/resource/project'
 require 'jira/resource/issuetype'
+require 'jira/resource/priority'
 require 'jira/resource/issue'
 
 require 'jira/client'
