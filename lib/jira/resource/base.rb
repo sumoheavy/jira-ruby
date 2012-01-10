@@ -67,9 +67,9 @@ module JIRA
         attribute_key = options[:attribute_key] || resource.to_s
         child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize
         define_method(resource) do
-          lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
-          return nil unless lookup_hash && lookup_hash[attribute_key]
-          child_class.new(client, :attrs => lookup_hash[attribute_key])
+          attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
+          return nil unless attribute
+          child_class.new(client, :attrs => attribute)
         end
       end
 
@@ -77,9 +77,9 @@ module JIRA
         attribute_key = options[:attribute_key] || collection.to_s
         child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
         define_method(collection) do
-          lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
-          return [] unless lookup_hash[attribute_key]
-          lookup_hash[attribute_key].map do |child_attributes|
+          attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
+          return [] unless attribute
+          attribute.map do |child_attributes|
             child_class.new(client, :attrs => child_attributes)
           end
         end
@@ -189,6 +189,27 @@ module JIRA
       def new_record?
         @attrs[self.class.key_attribute.to_s].nil?
       end
+
+      protected
+
+      # This allows conditional lookup of possibly nested attributes.  Example usage:
+      #
+      #   maybe_nested_attribute('foo')                 # => @attrs['foo']
+      #   maybe_nested_attribute('foo', 'bar')          # => @attrs['bar']['foo']
+      #   maybe_nested_attribute('foo', ['bar', 'baz']) # => @attrs['bar']['baz']['foo']
+      #
+      def maybe_nested_attribute(attribute_name, nested_under = nil)
+        return @attrs[attribute_name] if nested_under.nil?
+        if nested_under.instance_of? Array
+          final = nested_under.inject(@attrs) do |parent, key|
+            parent[key]
+          end
+          final[attribute_name]
+        else
+          return @attrs[nested_under][attribute_name]
+        end
+      end
+
     end
 
   end

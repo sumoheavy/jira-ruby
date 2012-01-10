@@ -9,6 +9,9 @@ describe JIRA::Resource::Base do
     has_one :muffin, :class => JIRA::Resource::Deadbeef
     has_one :brunchmuffin, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'
+    has_one :breakfastscone,
+            :class => JIRA::Resource::Deadbeef,
+            :nested_under => ['nested','breakfastscone']
     has_one :irregularly_named_thing,
             :class => JIRA::Resource::Deadbeef,
             :attribute_key => 'irregularlyNamedThing'
@@ -18,9 +21,12 @@ describe JIRA::Resource::Base do
     has_many :deadbeefs
     has_many :brunchmuffins, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'
-    has_many  :irregularly_named_things,
-              :class => JIRA::Resource::Deadbeef,
-              :attribute_key => 'irregularlyNamedThings'
+    has_many :breakfastscones,
+             :class => JIRA::Resource::Deadbeef,
+             :nested_under => ['nested','breakfastscone']
+    has_many :irregularly_named_things,
+             :class => JIRA::Resource::Deadbeef,
+             :attribute_key => 'irregularlyNamedThings'
 
   end
 
@@ -399,6 +405,16 @@ describe JIRA::Resource::Base do
       end
     end
 
+    it "allows it to be deeply nested" do
+      subject = JIRA::Resource::HasManyExample.new(client, :attrs => {'nested' => {
+        'breakfastscone' => { 'breakfastscones' => [{'id' => '123'},{'id' => '456'}] }
+      }})
+      subject.breakfastscones.length.should == 2
+      subject.breakfastscones.each do |breakfastscone|
+        breakfastscone.class.should == JIRA::Resource::Deadbeef
+      end
+    end
+
     it "allows the attribute key to be specified" do
       subject = JIRA::Resource::HasManyExample.new(client, :attrs => {'irregularlyNamedThings' => [{'id' => '123'},{'id' => '456'}]})
       subject.irregularly_named_things.length.should == 2
@@ -433,6 +449,14 @@ describe JIRA::Resource::Base do
       subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'nested' => {'brunchmuffin' => {'id' => '123'}}})
       subject.brunchmuffin.class.should == JIRA::Resource::Deadbeef
       subject.brunchmuffin.id.should == '123'
+    end
+
+    it "allows it to be deeply nested" do
+      subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'nested' => {
+        'breakfastscone' => { 'breakfastscone' => {'id' => '123'} }
+      }})
+      subject.breakfastscone.class.should == JIRA::Resource::Deadbeef
+      subject.breakfastscone.id.should == '123'
     end
 
     it "allows the attribute key to be specified" do
