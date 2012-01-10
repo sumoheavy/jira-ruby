@@ -36,6 +36,7 @@ describe JIRA::Resource::Issue do
           'issuetype'   => {'foo' => 'bar'},
           'status'      => {'foo' => 'bar'},
           'components'  => [{'foo' => 'bar'}, {'baz' => 'flum'}],
+          'versions'    => [{'foo' => 'bar'}, {'baz' => 'flum'}],
           'comment'     => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]},
           'attachment'  => [{'foo' => 'bar'}, {'baz' => 'flum'}]
         }
@@ -68,6 +69,9 @@ describe JIRA::Resource::Issue do
       subject.comments.length.should == 2
 
       subject.should have_many(:attachments, JIRA::Resource::Attachment)
+      subject.attachments.length.should == 2
+
+      subject.should have_many(:versions, JIRA::Resource::Version)
       subject.attachments.length.should == 2
     end
   end

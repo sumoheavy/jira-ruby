@@ -24,6 +24,8 @@ module JIRA
       has_many :attachments, :nested_under => 'fields',
                           :attribute_key => 'attachment'
 
+      has_many :versions, :nested_under => 'fields'
+
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")
         json = parse_json(response.body)
