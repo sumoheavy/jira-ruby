@@ -9,12 +9,19 @@ describe JIRA::Resource::Base do
     has_one :muffin, :class => JIRA::Resource::Deadbeef
     has_one :brunchmuffin, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'
+    has_one :irregularly_named_thing,
+            :class => JIRA::Resource::Deadbeef,
+            :attribute_key => 'irregularlyNamedThing'
   end
 
   class JIRA::Resource::HasManyExample < JIRA::Resource::Base
     has_many :deadbeefs
     has_many :brunchmuffins, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'
+    has_many  :irregularly_named_things,
+              :class => JIRA::Resource::Deadbeef,
+              :attribute_key => 'irregularlyNamedThings'
+
   end
 
   let(:client)  { mock() }
@@ -392,6 +399,14 @@ describe JIRA::Resource::Base do
       end
     end
 
+    it "allows the attribute key to be specified" do
+      subject = JIRA::Resource::HasManyExample.new(client, :attrs => {'irregularlyNamedThings' => [{'id' => '123'},{'id' => '456'}]})
+      subject.irregularly_named_things.length.should == 2
+      subject.irregularly_named_things.each do |thing|
+        thing.class.should == JIRA::Resource::Deadbeef
+      end
+    end
+
   end
 
   describe "has_one" do
@@ -418,6 +433,12 @@ describe JIRA::Resource::Base do
       subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'nested' => {'brunchmuffin' => {'id' => '123'}}})
       subject.brunchmuffin.class.should == JIRA::Resource::Deadbeef
       subject.brunchmuffin.id.should == '123'
+    end
+
+    it "allows the attribute key to be specified" do
+      subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'irregularlyNamedThing' => {'id' => '123'}})
+      subject.irregularly_named_thing.class.should == JIRA::Resource::Deadbeef
+      subject.irregularly_named_thing.id.should == '123'
     end
 
   end

@@ -64,20 +64,22 @@ module JIRA
       end
 
       def self.has_one(resource, options = {})
+        attribute_key = options[:attribute_key] || resource.to_s
         child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize
         define_method(resource) do
           lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
-          return nil unless lookup_hash && lookup_hash[resource.to_s]
-          child_class.new(client, :attrs => lookup_hash[resource.to_s])
+          return nil unless lookup_hash && lookup_hash[attribute_key]
+          child_class.new(client, :attrs => lookup_hash[attribute_key])
         end
       end
 
       def self.has_many(collection, options = {})
+        attribute_key = options[:attribute_key] || collection.to_s
         child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
         define_method(collection) do
           lookup_hash = options[:nested_under] ? @attrs[options[:nested_under]] : @attrs
-          return [] unless lookup_hash[collection.to_s]
-          lookup_hash[collection.to_s].map do |child_attributes|
+          return [] unless lookup_hash[attribute_key]
+          lookup_hash[attribute_key].map do |child_attributes|
             child_class.new(client, :attrs => child_attributes)
           end
         end
