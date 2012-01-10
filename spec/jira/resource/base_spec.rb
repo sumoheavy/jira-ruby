@@ -4,6 +4,11 @@ describe JIRA::Resource::Base do
 
   class JIRA::Resource::Deadbeef < JIRA::Resource::Base ; end
 
+  class JIRA::Resource::HasOneExample < JIRA::Resource::Base
+    has_one :deadbeef
+    has_one :muffin, :class => JIRA::Resource::Deadbeef
+  end
+
   class JIRA::Resource::HasManyExample < JIRA::Resource::Base
     has_many :deadbeefs
   end
@@ -377,4 +382,25 @@ describe JIRA::Resource::Base do
 
   end
 
+  describe "has_one" do
+
+    subject { JIRA::Resource::HasOneExample.new(client, :attrs => {'deadbeef' => {'id' => '123'}}) }
+
+    it "returns an instance for a has one relationship" do
+      subject.deadbeef.class.should == JIRA::Resource::Deadbeef
+      subject.deadbeef.id.should == '123'
+    end
+
+    it "returns nil when resource attribute is nonexistent" do
+      subject = JIRA::Resource::HasOneExample.new(client)
+      subject.deadbeef.should be_nil
+    end
+
+    it "returns an instance with a different class name to the attribute name" do
+      subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'muffin' => {'id' => '123'}})
+      subject.muffin.class.should == JIRA::Resource::Deadbeef
+      subject.muffin.id.should == '123'
+    end
+
+  end
 end

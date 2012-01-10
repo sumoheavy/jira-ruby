@@ -63,6 +63,14 @@ module JIRA
         JSON.parse(string)
       end
 
+      def self.has_one(resource, options = {})
+        child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize
+        define_method(resource) do
+          return nil unless @attrs[resource.to_s]
+          child_class.new(client, :attrs => @attrs[resource.to_s])
+        end
+      end
+
       def self.has_many(collection)
         child_class = ('JIRA::Resource::' + collection.to_s.classify).constantize
         define_method(collection) do
