@@ -40,4 +40,17 @@ describe JIRA::Resource::Project do
     end
 
   end
+
+  it "returns a collection of components" do
+
+    stub_request(:get, 'http://localhost:2990' + described_class.singular_path(client, key)).
+      to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.json'))
+
+    subject = client.Project.find(key)
+    subject.components.length.should == 2
+    subject.components.each do |component|
+      component.class.should == JIRA::Resource::Component
+    end
+
+  end
 end

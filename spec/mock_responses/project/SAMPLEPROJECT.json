@@ -12,7 +12,21 @@
     "displayName": "admin",
     "active": true
   },
-  "components": [],
+  "components": [
+    {
+      "self": "http://localhost:2990/jira/rest/api/2/component/10001",
+      "id": "10001",
+      "name": "Jamflam",
+      "isAssigneeTypeValid": false
+    },
+    {
+      "self": "http://localhost:2990/jira/rest/api/2/component/10000",
+      "id": "10000",
+      "name": "Jammy",
+      "description": "Description!",
+      "isAssigneeTypeValid": false
+    }
+  ],
   "issueTypes": [
     {
       "self": "http://localhost:2990/jira/rest/api/2/issuetype/1",

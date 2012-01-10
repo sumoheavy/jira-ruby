@@ -5,6 +5,8 @@ module JIRA
 
     class Project < Base
 
+      has_many :components
+
       def self.key_attribute
         :key
       end
