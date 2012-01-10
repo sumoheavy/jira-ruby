@@ -19,4 +19,10 @@ describe JIRA::Resource::Issue do
     issue_from_id.attrs.should == issue_from_key.attrs
   end
 
+  it "provides direct accessors to the fields" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'foo' =>'bar'}})
+    subject.should respond_to(:foo)
+    subject.foo.should == 'bar'
+  end
+
 end
