@@ -76,4 +76,12 @@ describe JIRA::Resource::Issue do
       comment.class.should == JIRA::Resource::Comment
     end
   end
+
+  it "has many attachments" do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'attachment' => [{'foo' => 'bar'}, {'baz' => 'flum'}]}})
+    subject.attachments.length.should == 2
+    subject.attachments.each do |attachment|
+      attachment.class.should == JIRA::Resource::Attachment
+    end
+  end
 end
