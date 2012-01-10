@@ -59,6 +59,10 @@ module JIRA
       JIRA::Resource::PriorityFactory.new(self)
     end
 
+    def Status
+      JIRA::Resource::StatusFactory.new(self)
+    end
+
     def request_token
       @request_token ||= get_request_token
     end
