@@ -412,6 +412,7 @@ describe JIRA::Resource::Base do
     subject { JIRA::Resource::HasManyExample.new(client, :attrs => {'deadbeefs' => [{'id' => '123'}]}) }
 
     it "returns a collection of instances for has_many relationships" do
+      subject.deadbeefs.class.should == JIRA::Resource::HasManyProxy
       subject.deadbeefs.length.should == 1
       subject.deadbeefs.each do |deadbeef|
         deadbeef.class.should == JIRA::Resource::Deadbeef
@@ -447,6 +448,11 @@ describe JIRA::Resource::Base do
       subject.irregularly_named_things.each do |thing|
         thing.class.should == JIRA::Resource::Deadbeef
       end
+    end
+
+    it "can build child instances" do
+      deadbeef = subject.deadbeefs.build
+      deadbeef.class.should == JIRA::Resource::Deadbeef
     end
 
   end

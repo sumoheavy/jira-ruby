@@ -7,6 +7,7 @@ end
 
 require 'jira/resource/base'
 require 'jira/resource/base_factory'
+require 'jira/resource/has_many_proxy'
 require 'jira/resource/http_error'
 
 require 'jira/resource/user'

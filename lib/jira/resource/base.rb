@@ -94,9 +94,10 @@ module JIRA
           child_class_options = {self_class_basename => self}
           attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
           return [] unless attribute
-          attribute.map do |child_attributes|
+          collection = attribute.map do |child_attributes|
             child_class.new(client, child_class_options.merge(:attrs => child_attributes))
           end
+          HasManyProxy.new(self, child_class, collection)
         end
       end
 
