@@ -22,7 +22,7 @@ module JIRA
         self.class.belongs_to_relationships.each do |relation|
           if options[relation]
             instance_variable_set("@#{relation.to_s}", options[relation])
-            instance_variable_set("@#{relation.to_s}_id", options[relation].send(options[relation].class.key_attribute))
+            instance_variable_set("@#{relation.to_s}_id", options[relation].key_value)
           elsif options["#{relation}_id".to_sym]
             instance_variable_set("@#{relation.to_s}_id", options["#{relation}_id".to_sym])
           else
@@ -126,6 +126,12 @@ module JIRA
         end
       end
 
+      # Each resource has a unique key attribute, this method returns the value
+      # of that key for this instance.
+      def key_value
+        @attrs[self.class.key_attribute.to_s]
+      end
+
       def rest_base_path(prefix = "/")
         # Just proxy this to the class method
         self.class.rest_base_path(client, prefix)
@@ -202,8 +208,8 @@ module JIRA
         end
         if @attrs['self']
           @attrs['self']
-        elsif @attrs[self.class.key_attribute.to_s]
-          self.class.singular_path(client, @attrs[self.class.key_attribute.to_s].to_s, prefix)
+        elsif key_value
+          self.class.singular_path(client, key_value.to_s, prefix)
         else
           self.class.collection_path(client, prefix)
         end
@@ -218,7 +224,7 @@ module JIRA
       end
 
       def new_record?
-        @attrs[self.class.key_attribute.to_s].nil?
+        key_value.nil?
       end
 
       protected

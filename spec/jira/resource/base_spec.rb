@@ -352,6 +352,11 @@ describe JIRA::Resource::Base do
     subject.class.key_attribute.should == :id
   end
 
+  it "returns the key value" do
+    subject.attrs['id'] = '123'
+    subject.key_value.should == '123'
+  end
+
   it "converts to json" do
     subject.attrs = {"foo" => "bar","dead" => "beef"}
 
