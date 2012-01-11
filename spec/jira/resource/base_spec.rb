@@ -30,7 +30,7 @@ describe JIRA::Resource::Base do
 
   end
 
-  let(:client)  { mock() }
+  let(:client)  { mock("client") }
   let(:attrs)   { Hash.new }
 
   subject { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
@@ -87,6 +87,10 @@ describe JIRA::Resource::Base do
 
     it "returns the rest_base_path" do
       subject.rest_base_path.should == '/deadbeef/bar/deadbeef'
+    end
+
+    it "returns the rest_base_path with a prefix" do
+      subject.rest_base_path('/baz/').should == '/deadbeef/bar/baz/deadbeef'
     end
 
     it "has a class method that returns the rest_base_path" do
@@ -302,33 +306,38 @@ describe JIRA::Resource::Base do
   end
 
   describe 'url' do
+
+    before(:each) do
+      client.stub(:options => {:rest_base_path => '/foo/bar'})
+    end
+
     it "returns self as the URL if set" do
       attrs['self'] = 'http://foo/bar'
       subject.url.should == "http://foo/bar"
     end
 
     it "generates the URL from id if self not set" do
-      client.stub(:options => {:rest_base_path => '/foo/bar'})
       attrs['self'] = nil
       attrs['id'] = '98765'
       subject.url.should == "/foo/bar/deadbeef/98765"
     end
 
     it "generates the URL from rest_base_path if self and id not set" do
-      client.stub(:options => {:rest_base_path => '/foo/bar'})
       attrs['self'] = nil
       attrs['id']  = nil
       subject.url.should == "/foo/bar/deadbeef"
     end
 
     it "has a class method for the collection path" do
-      client.stub(:options => {:rest_base_path => '/foo/bar'})
       JIRA::Resource::Deadbeef.collection_path(client).should == "/foo/bar/deadbeef"
+      #Should accept an optional prefix (flum in this case)
+      JIRA::Resource::Deadbeef.collection_path(client, '/flum/').should == "/foo/bar/flum/deadbeef"
     end
 
     it "has a class method for the singular path" do
-      client.stub(:options => {:rest_base_path => '/foo/bar'})
       JIRA::Resource::Deadbeef.singular_path(client, 'abc123').should == "/foo/bar/deadbeef/abc123"
+      #Should accept an optional prefix (flum in this case)
+      JIRA::Resource::Deadbeef.singular_path(client, 'abc123', '/flum/').should == "/foo/bar/flum/deadbeef/abc123"
     end
   end
 
@@ -463,6 +472,39 @@ describe JIRA::Resource::Base do
       subject = JIRA::Resource::HasOneExample.new(client, :attrs => {'irregularlyNamedThing' => {'id' => '123'}})
       subject.irregularly_named_thing.class.should == JIRA::Resource::Deadbeef
       subject.irregularly_named_thing.id.should == '123'
+    end
+
+  end
+
+  describe "belongs_to" do
+
+    class JIRA::Resource::BelongsToExample < JIRA::Resource::Base
+      belongs_to :deadbeef
+    end
+
+    let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, :attrs => {'id' => "999"}) }
+
+    subject { JIRA::Resource::BelongsToExample.new(client, :attrs => {'id' => '123'}, :deadbeef => deadbeef) }
+
+    it "sets up an accessor for the belongs to relationship" do
+      subject.deadbeef.should == deadbeef
+    end
+
+    it "raises an exception when initialized without a belongs_to instance" do
+      lambda do
+        JIRA::Resource::BelongsToExample.new(client, :attrs => {'id' => '123'})
+      end.should raise_exception(ArgumentError,"Required option :deadbeef missing")
+    end
+
+    it "returns the right url" do
+      client.stub(:options => { :rest_base_path => "/foo" })
+      subject.url.should == "/foo/deadbeef/999/belongstoexample/123"
+    end
+
+    it "can be initialized with an instance or a key value" do
+      client.stub(:options => { :rest_base_path => "/foo" })
+      subject = JIRA::Resource::BelongsToExample.new(client, :attrs => {'id' => '123'}, :deadbeef_id => '987')
+      subject.url.should == "/foo/deadbeef/987/belongstoexample/123"
     end
 
   end

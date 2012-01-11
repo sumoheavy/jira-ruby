@@ -16,6 +16,19 @@ module JIRA
         @attrs    = options[:attrs] || {}
         @expanded = options[:expanded] || false
         @deleted  = false
+
+        # If this class has any belongs_to relationships, a value for
+        # each of them must be passed in to the initializer.
+        self.class.belongs_to_relationships.each do |relation|
+          if options[relation]
+            instance_variable_set("@#{relation.to_s}", options[relation])
+            instance_variable_set("@#{relation.to_s}_id", options[relation].send(options[relation].class.key_attribute))
+          elsif options["#{relation}_id".to_sym]
+            instance_variable_set("@#{relation.to_s}_id", options["#{relation}_id".to_sym])
+          else
+            raise ArgumentError.new("Required option #{relation.inspect} missing") unless options[relation]
+          end
+        end
       end
 
       # The class methods are never called directly, they are always
@@ -39,20 +52,20 @@ module JIRA
         self.new(client, :attrs => attrs)
       end
 
-      def self.rest_base_path(client)
-        client.options[:rest_base_path] + '/' + self.endpoint_name
+      def self.rest_base_path(client, prefix = '/')
+        client.options[:rest_base_path] + prefix + self.endpoint_name
       end
 
       def self.endpoint_name
         self.name.split('::').last.downcase
       end
 
-      def self.collection_path(client)
-        rest_base_path(client)
+      def self.collection_path(client, prefix = '/')
+        rest_base_path(client, prefix)
       end
 
-      def self.singular_path(client, key)
-        rest_base_path(client) + '/' + key
+      def self.singular_path(client, key, prefix = '/')
+        rest_base_path(client, prefix) + '/' + key
       end
 
       def self.key_attribute
@@ -85,6 +98,16 @@ module JIRA
         end
       end
 
+      def self.belongs_to_relationships
+        @belongs_to_relationships ||= []
+      end
+
+      def self.belongs_to(resource)
+        belongs_to_relationships.push(resource)
+        attr_reader resource
+        attr_reader "#{resource}_id"
+      end
+
       def respond_to?(method_name)
         if attrs.keys.include? method_name.to_s
           true
@@ -101,9 +124,9 @@ module JIRA
         end
       end
 
-      def rest_base_path
+      def rest_base_path(prefix = "/")
         # Just proxy this to the class method
-        self.class.rest_base_path(client)
+        self.class.rest_base_path(client, prefix)
       end
 
       def fetch(reload = false)
@@ -169,12 +192,18 @@ module JIRA
       end
 
       def url
+        prefix = '/'
+        unless self.class.belongs_to_relationships.empty?
+          prefix = self.class.belongs_to_relationships.inject(prefix) do |prefix_so_far, relationship|
+            prefix_so_far + relationship.to_s + "/" + self.send("#{relationship.to_s}_id") + '/'
+          end
+        end
         if @attrs['self']
           @attrs['self']
         elsif @attrs[self.class.key_attribute.to_s]
-          self.class.singular_path(client, @attrs[self.class.key_attribute.to_s].to_s)
+          self.class.singular_path(client, @attrs[self.class.key_attribute.to_s].to_s, prefix)
         else
-          self.class.collection_path(client)
+          self.class.collection_path(client, prefix)
         end
       end
 
