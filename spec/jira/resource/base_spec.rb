@@ -78,6 +78,18 @@ describe JIRA::Resource::Base do
     subject.class.endpoint_name.should == 'deadbeef'
   end
 
+  it "returns the path_component" do
+    attrs['id'] = '123'
+    subject.path_component.should == '/deadbeef/123'
+  end
+
+  it "returns the path component for unsaved instances" do
+    subject.path_component.should == '/deadbeef'
+  end
+
+  it "converts to a symbol" do
+    subject.to_sym.should == :deadbeef
+  end
 
   describe "rest_base_path" do
 

@@ -41,8 +41,8 @@ module JIRA
         end
       end
 
-      def self.find(client, key)
-        instance = self.new(client)
+      def self.find(client, key, options = {})
+        instance = self.new(client, options)
         instance.attrs[key_attribute.to_s] = key
         instance.fetch
         instance
@@ -110,6 +110,12 @@ module JIRA
         attr_reader "#{resource}_id"
       end
 
+      # Returns a symbol for the given instance, for example
+      # JIRA::Resource::Issue returns :issue
+      def to_sym
+        self.class.endpoint_name.to_sym
+      end
+
       def respond_to?(method_name)
         if attrs.keys.include? method_name.to_s
           true
@@ -135,6 +141,17 @@ module JIRA
       def rest_base_path(prefix = "/")
         # Just proxy this to the class method
         self.class.rest_base_path(client, prefix)
+      end
+
+      # This returns the URL path component that is specific to this instance,
+      # for example for Issue id 123 it returns '/issue/123'.  For an unsaved
+      # issue it returns '/issue'
+      def path_component
+        path_component = "/#{self.class.endpoint_name}"
+        if key_value
+          path_component += '/' + key_value
+        end
+        path_component
       end
 
       def fetch(reload = false)
