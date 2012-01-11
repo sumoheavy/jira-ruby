@@ -89,11 +89,13 @@ module JIRA
       def self.has_many(collection, options = {})
         attribute_key = options[:attribute_key] || collection.to_s
         child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
+        self_class_basename = self.name.split('::').last.downcase.to_sym
         define_method(collection) do
+          child_class_options = {self_class_basename => self}
           attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
           return [] unless attribute
           attribute.map do |child_attributes|
-            child_class.new(client, :attrs => child_attributes)
+            child_class.new(client, child_class_options.merge(:attrs => child_attributes))
           end
         end
       end

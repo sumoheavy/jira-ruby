@@ -28,6 +28,7 @@ describe JIRA::Resource::Issue do
   describe "relationships" do
     subject {
       JIRA::Resource::Issue.new(client, :attrs => {
+        'id' => '123',
         'fields' => {
           'reporter'    => {'foo' => 'bar'},
           'assignee'    => {'foo' => 'bar'},

@@ -3,7 +3,9 @@ module JIRA
 
     class CommentFactory < BaseFactory ; end
 
-    class Comment < Base ; end
+    class Comment < Base
+      belongs_to :issue
+    end
 
   end
 end
