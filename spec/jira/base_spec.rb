@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe JIRA::Base do
 
-  class JIRA::Resource::Deadbeef < JIRA::Base ; end
+  class JIRA::Resource::Deadbeef < JIRA::Base # :nodoc:
+  end
 
-  class JIRA::Resource::HasOneExample < JIRA::Base
+  class JIRA::Resource::HasOneExample < JIRA::Base # :nodoc:
     has_one :deadbeef
     has_one :muffin, :class => JIRA::Resource::Deadbeef
     has_one :brunchmuffin, :class => JIRA::Resource::Deadbeef,
@@ -17,7 +18,7 @@ describe JIRA::Base do
             :attribute_key => 'irregularlyNamedThing'
   end
 
-  class JIRA::Resource::HasManyExample < JIRA::Base
+  class JIRA::Resource::HasManyExample < JIRA::Base # :nodoc:
     has_many :deadbeefs
     has_many :brunchmuffins, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'

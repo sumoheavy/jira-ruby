@@ -1,7 +1,8 @@
 module JIRA
   module Resource
 
-    class WorklogFactory < JIRA::BaseFactory ; end
+    class WorklogFactory < JIRA::BaseFactory # :nodoc:
+    end
 
     class Worklog < JIRA::Base
       has_one :author, :class => JIRA::Resource::User

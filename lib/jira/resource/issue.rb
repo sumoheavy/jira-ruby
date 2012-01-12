@@ -1,7 +1,8 @@
 module JIRA
   module Resource
 
-    class IssueFactory < JIRA::BaseFactory ; end
+    class IssueFactory < JIRA::BaseFactory # :nodoc:
+    end
 
     class Issue < JIRA::Base
 

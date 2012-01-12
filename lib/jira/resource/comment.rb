@@ -1,7 +1,8 @@
 module JIRA
   module Resource
 
-    class CommentFactory < JIRA::BaseFactory ; end
+    class CommentFactory < JIRA::BaseFactory # :nodoc:
+    end
 
     class Comment < JIRA::Base
       belongs_to :issue
