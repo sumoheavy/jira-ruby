@@ -88,3 +88,9 @@ pp issue
 # # -----------------------
 # issuetype = client.Issuetype.find('5')
 # pp issuetype
+#
+# #  Get all comments for an issue
+# #  -----------------------------
+# issue.comments.each do |comment|
+#   pp comment
+# end

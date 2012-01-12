@@ -86,7 +86,13 @@ shared_examples "a resource with a singular GET endpoint" do
     stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
 
-    subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
+    if defined?(belongs_to)
+      puts described_class.endpoint_name.pluralize.to_sym.inspect
+      build_receiver = belongs_to.send(described_class.endpoint_name.pluralize.to_sym)
+    else
+      build_receiver = client.send(class_basename)
+    end
+    subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
 
     subject.should have_attributes(expected_attributes)
