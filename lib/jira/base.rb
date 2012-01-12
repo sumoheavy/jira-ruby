@@ -3,10 +3,67 @@ require 'active_support/inflector'
 
 module JIRA
 
+  # This class provides the basic object <-> REST mapping for all JIRA::Resource subclasses,
+  # i.e. the Create, Retrieve, Update, Delete lifecycle methods.
+  #
+  # == Lifecycle methods
+  #
+  # Note that not all lifecycle
+  # methods are available for all resources, for example some resources cannot be updated
+  # or deleted.
+  #
+  # === Retrieving all resources
+  #
+  #   client.Resource.all
+  #
+  # === Retrieving a single resource
+  #
+  #   client.Resource.find(id)
+  #
+  # === Creating a resource
+  #
+  #   resource = client.Resource.build({'name' => '')
+  #   resource.save
+  #
+  # === Updating a resource
+  #
+  #   resource = client.Resource.find(id)
+  #   resource.save('updated_attribute' => 'new value')
+  #
+  # === Deleting a resource
+  #
+  #   resource = client.Resource.find(id)
+  #   resource.delete
+  #
+  # == Nested resources
+  #
+  # Some resources are not defined in the top level of the URL namespace
+  # within the JIRA API, but are always nested under the context of another
+  # resource.  For example, a JIRA::Resource::Comment always belongs to a
+  # JIRA::Resource::Issue.
+  #
+  # These resources must be indexed and built from an instance of the class
+  # they are nested under:
+  #
+  #   issue = client.Issue.find(id)
+  #   comments = issue.comments
+  #   new_comment = issue.comments.build
+  #
   class Base
 
+    # A reference to the JIRA::Client used to initialize this resource.
     attr_reader :client
-    attr_accessor :expanded, :deleted, :attrs
+
+    # Returns true if this instance has been fetched from the server
+    attr_accessor :expanded
+
+    # Returns true if this instance has been deleted from the server
+    attr_accessor :deleted
+
+    # The hash of attributes belonging to this instance.  An exact
+    # representation of the JSON returned from the JIRA API
+    attr_accessor :attrs
+
     alias :expanded? :expanded
     alias :deleted? :deleted
 
@@ -44,6 +101,7 @@ module JIRA
       end
     end
 
+    # Finds and retrieves a resource with the given ID.
     def self.find(client, key, options = {})
       instance = self.new(client, options)
       instance.attrs[key_attribute.to_s] = key
@@ -51,30 +109,89 @@ module JIRA
       instance
     end
 
+    # Builds a new instance of the resource with the given attributes.
+    # These attributes will be posted to the JIRA Api if save is called.
     def self.build(client, attrs)
       self.new(client, :attrs => attrs)
     end
 
+    # Returns the name of this resource for use in URL components.
+    # E.g.
+    #   JIRA::Resource::Issue.endpoint_name
+    #     # => issue
     def self.endpoint_name
       self.name.split('::').last.downcase
     end
 
+    # Returns the full path for a collection of this resource.
+    # E.g.
+    #   JIRA::Resource::Issue.collection_path
+    #     # => /jira/rest/api/2/issue
     def self.collection_path(client, prefix = '/')
       client.options[:rest_base_path] + prefix + self.endpoint_name
     end
 
+    # Returns the singular path for the resource with the given key.
+    # E.g.
+    #   JIRA::Resource::Issue.singular_path('123')
+    #     # => /jira/rest/api/2/issue/123
+    #
+    # If a prefix parameter is provided it will be injected between the base
+    # path and the endpoint.
+    # E.g.
+    #   JIRA::Resource::Comment.singular_path('456','/issue/123/')
+    #     # => /jira/rest/api/2/issue/123/comment/456
     def self.singular_path(client, key, prefix = '/')
       collection_path(client, prefix) + '/' + key
     end
 
+    # Returns the attribute name of the attribute used for find.
+    # Defaults to :id unless overridden.
     def self.key_attribute
       :id
     end
 
-    def self.parse_json(string)
+    def self.parse_json(string) # :nodoc:
       JSON.parse(string)
     end
 
+    # Declares that this class contains a singular instance of another resource
+    # within the JSON returned from the JIRA API.
+    #
+    #   class Example < JIRA::Base
+    #     has_one :child
+    #   end
+    #
+    #   example = client.Example.find(1)
+    #   example.child # Returns a JIRA::Resource::Child
+    #
+    # The following options can be used to override the default behaviour of the
+    # relationship:
+    #
+    # [:attribute_key]  The relationship will by default reference a JSON key on the
+    #                   object with the same name as the relationship.
+    #
+    #                     has_one :child # => {"id":"123",{"child":{"id":"456"}}}
+    #
+    #                   Use this option if the key in the JSON is named differently.
+    #
+    #                     # Respond to resource.child, but return the value of resource.attrs['kid']
+    #                     has_one :child, :attribute_key => 'kid' # => {"id":"123",{"kid":{"id":"456"}}}
+    #
+    # [:class]          The class of the child instance will be inferred from the name of the
+    #                   relationship. E.g. <tt>has_one :child</tt> will return a <tt>JIRA::Resource::Child</tt>.
+    #                   Use this option to override the inferred class.
+    #
+    #                     has_one :child, :class => JIRA::Resource::Kid
+    # [:nested_under]   In some cases, the JSON return from JIRA is nested deeply for particular
+    #                   relationships.  This option allows the nesting to be specified.
+    #
+    #                     # Specify a single depth of nesting.
+    #                     has_one :child, :nested_under => 'foo'
+    #                       # => Looks for {"foo":{"child":{}}}
+    #                     # Specify deeply nested JSON
+    #                     has_one :child, :nested_under => ['foo', 'bar', 'baz']
+    #                       # => Looks for {"foo":{"bar":{"baz":{"child":{}}}}}
     def self.has_one(resource, options = {})
       attribute_key = options[:attribute_key] || resource.to_s
       child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize

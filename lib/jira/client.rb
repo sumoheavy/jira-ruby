@@ -3,18 +3,43 @@ require 'json'
 require 'forwardable'
 
 module JIRA
+
+  # This class is the main access point for all JIRA::Resource instances.
+  #
+  # The client must be initialized with a consumer_key and consumer secret,
+  # and an optional hash of extra configuration options.  The available options
+  # are:
+  #
+  #   :site               => 'http://localhost:2990',
+  #   :signature_method   => 'RSA-SHA1',
+  #   :request_token_path => "/jira/plugins/servlet/oauth/request-token",
+  #   :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
+  #   :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
+  #   :private_key_file   => "rsakey.pem",
+  #   :rest_base_path     => "/jira/rest/api/2"
+  #
+  #
+  # See the JIRA::Base class methods for all of the available methods on these accessor
+  # objects.
+  #
   class Client
 
     extend Forwardable
 
+    # This exception is thrown when the client is used before the OAuth access token
+    # has been initialized.
     class UninitializedAccessTokenError < StandardError
       def message
         "init_access_token must be called before using the client"
       end
     end
 
+    # The OAuth::Consumer instance used by this client
     attr_accessor :consumer
+
+    # The configuration options for this client instance
     attr_reader :options
+
     delegate [:key, :secret, :get_request_token] => :consumer
 
     DEFAULT_OPTIONS = {

@@ -1,5 +1,24 @@
 = JIRA 5 API Gem
 
+This gem provides access to the Atlassian JIRA version 5 REST API (a.k.a REST
+API version 2).
+
+== Example usage
+
+  client = JIRA::Client.new(CONSUMER_KEY, CONSUMER_SECRET)
+
+  project = client.Project.find('SAMPLEPROJECT')
+
+  project.issues.each do |issue|
+    puts "#{issue.id} - #{issue.summary}"
+  end
+
+  issue.comments.each {|comment| ... }
+
+  comment = issue.comments.build({'body':'My new comment'})
+  comment.save
+  comment.delete
+
 == Links to JIRA REST API documentation
 
 * {Overview}[https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs]
