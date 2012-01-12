@@ -70,7 +70,7 @@ shared_examples "a resource with a collection GET endpoint" do
   it "should get the collection" do
     stub_request(:get, "http://localhost:2990" + described_class.collection_path(client)).
                  to_return(:status => 200, :body => get_mock_from_path(:get))
-    collection = client.send(class_basename).all
+    collection = build_receiver.all
     collection.length.should == expected_collection_length
 
     first = collection.first

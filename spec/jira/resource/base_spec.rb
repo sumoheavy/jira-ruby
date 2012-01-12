@@ -407,6 +407,19 @@ describe JIRA::Resource::Base do
     end
   end
 
+  describe "nesting" do
+
+    it "defaults collection_attributes_are_nested to false" do
+      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should be_false
+    end
+
+    it "allows collection_attributes_are_nested to be set" do
+      JIRA::Resource::Deadbeef.nested_collections true
+      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should be_true
+    end
+
+  end
+
   describe "has_many" do
 
     subject { JIRA::Resource::HasManyExample.new(client, :attrs => {'deadbeefs' => [{'id' => '123'}]}) }

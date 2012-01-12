@@ -33,11 +33,15 @@ module JIRA
 
       # The class methods are never called directly, they are always
       # invoked from a BaseFactory subclass instance.
-      def self.all(client)
+      def self.all(client, options = {})
         response = client.get(rest_base_path(client))
         json = parse_json(response.body)
+        puts collection_attributes_are_nested
+        if collection_attributes_are_nested
+          json = json[endpoint_name.pluralize]
+        end
         json.map do |attrs|
-          self.new(client, :attrs => attrs)
+          self.new(client, {:attrs => attrs}.merge(options))
         end
       end
 
@@ -92,8 +96,7 @@ module JIRA
         self_class_basename = self.name.split('::').last.downcase.to_sym
         define_method(collection) do
           child_class_options = {self_class_basename => self}
-          attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
-          return [] unless attribute
+          attribute = maybe_nested_attribute(attribute_key, options[:nested_under]) || []
           collection = attribute.map do |child_attributes|
             child_class.new(client, child_class_options.merge(:attrs => child_attributes))
           end
@@ -109,6 +112,14 @@ module JIRA
         belongs_to_relationships.push(resource)
         attr_reader resource
         attr_reader "#{resource}_id"
+      end
+
+      def self.collection_attributes_are_nested
+        @collection_attributes_are_nested ||= false
+      end
+
+      def self.nested_collections(value)
+        @collection_attributes_are_nested = value
       end
 
       # Returns a symbol for the given instance, for example
@@ -254,16 +265,20 @@ module JIRA
       #   maybe_nested_attribute('foo', ['bar', 'baz']) # => @attrs['bar']['baz']['foo']
       #
       def maybe_nested_attribute(attribute_name, nested_under = nil)
-        return @attrs[attribute_name] if nested_under.nil?
+        self.class.maybe_nested_attribute(@attrs, attribute_name, nested_under)
+      end
+
+      def self.maybe_nested_attribute(attributes, attribute_name, nested_under = nil)
+        return attributes[attribute_name] if nested_under.nil?
         if nested_under.instance_of? Array
-          final = nested_under.inject(@attrs) do |parent, key|
+          final = nested_under.inject(attributes) do |parent, key|
             break if parent.nil?
             parent[key]
           end
           return nil if final.nil?
           final[attribute_name]
         else
-          return @attrs[nested_under][attribute_name]
+          return attributes[nested_under][attribute_name]
         end
       end
 

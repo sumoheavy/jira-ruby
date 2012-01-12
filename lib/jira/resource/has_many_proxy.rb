@@ -30,6 +30,12 @@ class JIRA::Resource::HasManyProxy
     resource
   end
 
+  # Forces an HTTP request to fetch all instances of the target class that
+  # are associated with the parent
+  def all
+    target_class.all(parent.client, parent.to_sym => parent)
+  end
+
   # Delegate any missing methods to the collection that this proxy wraps
   def method_missing(method_name, *args, &block)
     collection.send(method_name, *args, &block)
