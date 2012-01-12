@@ -29,12 +29,12 @@ describe JIRA::Resource::Comment do
     }
   end
 
-  #let(:attributes_for_post) {
-  #  {"name" => "Test component", "project" => "SAMPLEPROJECT" }
-  #}
-  #let(:expected_attributes_from_post) {
-  #  { "id" => "10001", "name" => "Test component" }
-  #}
+  let(:attributes_for_post) {
+    {"body" => "new comment"}
+  }
+  let(:expected_attributes_from_post) {
+    { "id" => "10001", "body" => "new comment"}
+  }
 
   #let(:attributes_for_put) {
   #  {"name" => "Jammy", "project" => "SAMPLEPROJECT" }
@@ -46,7 +46,7 @@ describe JIRA::Resource::Comment do
   it_should_behave_like "a resource"
   it_should_behave_like "a resource with a singular GET endpoint"
   it_should_behave_like "a resource with a DELETE endpoint"
-  # it_should_behave_like "a resource with a POST endpoint"
+  it_should_behave_like "a resource with a POST endpoint"
   # it_should_behave_like "a resource with a PUT endpoint"
 
 end

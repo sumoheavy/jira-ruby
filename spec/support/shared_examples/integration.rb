@@ -127,9 +127,9 @@ end
 shared_examples "a resource with a POST endpoint" do
 
   it "saves a new resource" do
-    stub_request(:post, "http://localhost:2990" + described_class.collection_path(client)).
+    stub_request(:post, "http://localhost:2990" + described_class.collection_path(client, prefix)).
                 to_return(:status => 201, :body => get_mock_from_path(:post))
-    subject = client.send(class_basename).build
+    subject = build_receiver.build
     subject.save(attributes_for_post).should be_true
     expected_attributes_from_post.each do |method_name, value|
       subject.send(method_name).should == value
