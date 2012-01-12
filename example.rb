@@ -67,9 +67,9 @@ pp issue
 # issue.save({"fields"=>{"summary"=>"blarg from in example.rb","project"=>{"id"=>"10001"},"issuetype"=>{"id"=>"3"}}})
 # issue.fetch
 # pp issue
-# 
-# Update an issue
-# ---------------
+#
+# # Update an issue
+# # ---------------
 # issue = client.Issue.find("10002")
 # issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 # pp issue
@@ -94,3 +94,16 @@ pp issue
 # issue.comments.each do |comment|
 #   pp comment
 # end
+#
+# # Build and Save a comment
+# # ------------------------
+# comment = issue.comments.build
+# comment.save!(:body => "New comment from example script")
+#
+# # Delete a comment from the collection
+# # ------------------------------------
+# issue.comments.last.delete
+#
+# # Update an existing comment
+# # --------------------------
+# issue.comments.first.save({"body" => "an updated comment frome example.rb"})
