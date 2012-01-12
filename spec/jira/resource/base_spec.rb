@@ -443,7 +443,9 @@ describe JIRA::Resource::Base do
     end
 
     it "short circuits missing deeply nested attrs" do
-      subject = JIRA::Resource::HasManyExample.new(client)
+      subject = JIRA::Resource::HasManyExample.new(client, :attrs => {
+                                                  'nested' => {}
+      })
       subject.breakfastscones.length.should == 0
     end
 
