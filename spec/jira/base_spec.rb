@@ -45,7 +45,7 @@ describe JIRA::Base do
     response = mock()
     response.should_receive(:body).and_return('[{"self":"http://deadbeef/","id":"98765"}]')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef').and_return(response)
-    JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+    JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeefs = JIRA::Resource::Deadbeef.all(client)
     deadbeefs.length.should == 1
     first = deadbeefs.first
@@ -59,7 +59,7 @@ describe JIRA::Base do
     response = mock()
     response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
-    JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+    JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeef = JIRA::Resource::Deadbeef.find(client, '98765')
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
@@ -92,22 +92,22 @@ describe JIRA::Base do
     subject.to_sym.should == :deadbeef
   end
 
-  describe "rest_base_path" do
+  describe "collection_path" do
 
     before(:each) do
       client.should_receive(:options).and_return(:rest_base_path => '/deadbeef/bar')
     end
 
-    it "returns the rest_base_path" do
-      subject.rest_base_path.should == '/deadbeef/bar/deadbeef'
+    it "returns the collection_path" do
+      subject.collection_path.should == '/deadbeef/bar/deadbeef'
     end
 
-    it "returns the rest_base_path with a prefix" do
-      subject.rest_base_path('/baz/').should == '/deadbeef/bar/baz/deadbeef'
+    it "returns the collection_path with a prefix" do
+      subject.collection_path('/baz/').should == '/deadbeef/bar/baz/deadbeef'
     end
 
-    it "has a class method that returns the rest_base_path" do
-      subject.class.rest_base_path(client).should == '/deadbeef/bar/deadbeef'
+    it "has a class method that returns the collection_path" do
+      subject.class.collection_path(client).should == '/deadbeef/bar/deadbeef'
     end
   end
 
@@ -145,7 +145,7 @@ describe JIRA::Base do
         response = mock()
         response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
         client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
-        JIRA::Resource::Deadbeef.should_receive(:rest_base_path).and_return('/jira/rest/api/2/deadbeef')
+        JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
       it "sets expanded to true after fetch" do
@@ -335,7 +335,7 @@ describe JIRA::Base do
       subject.url.should == "/foo/bar/deadbeef/98765"
     end
 
-    it "generates the URL from rest_base_path if self and id not set" do
+    it "generates the URL from collection_path if self and id not set" do
       attrs['self'] = nil
       attrs['id']  = nil
       subject.url.should == "/foo/bar/deadbeef"

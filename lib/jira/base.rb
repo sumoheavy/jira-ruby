@@ -33,7 +33,7 @@ module JIRA
     # The class methods are never called directly, they are always
     # invoked from a BaseFactory subclass instance.
     def self.all(client, options = {})
-      response = client.get(rest_base_path(client))
+      response = client.get(collection_path(client))
       json = parse_json(response.body)
       puts collection_attributes_are_nested
       if collection_attributes_are_nested
@@ -55,20 +55,16 @@ module JIRA
       self.new(client, :attrs => attrs)
     end
 
-    def self.rest_base_path(client, prefix = '/')
-      client.options[:rest_base_path] + prefix + self.endpoint_name
-    end
-
     def self.endpoint_name
       self.name.split('::').last.downcase
     end
 
     def self.collection_path(client, prefix = '/')
-      rest_base_path(client, prefix)
+      client.options[:rest_base_path] + prefix + self.endpoint_name
     end
 
     def self.singular_path(client, key, prefix = '/')
-      rest_base_path(client, prefix) + '/' + key
+      collection_path(client, prefix) + '/' + key
     end
 
     def self.key_attribute
@@ -149,9 +145,9 @@ module JIRA
       @attrs[self.class.key_attribute.to_s]
     end
 
-    def rest_base_path(prefix = "/")
+    def collection_path(prefix = "/")
       # Just proxy this to the class method
-      self.class.rest_base_path(client, prefix)
+      self.class.collection_path(client, prefix)
     end
 
     # This returns the URL path component that is specific to this instance,

@@ -7,7 +7,7 @@ describe JIRA::Resource::Issue do
   it "should find an issue by key or id" do
     response = mock()
     response.stub(:body).and_return('{"key":"foo","id":"101"}')
-    JIRA::Resource::Issue.stub(:rest_base_path).and_return('/jira/rest/api/2/issue')
+    JIRA::Resource::Issue.stub(:collection_path).and_return('/jira/rest/api/2/issue')
     client.should_receive(:get).with('/jira/rest/api/2/issue/foo')
     .and_return(response)
     client.should_receive(:get).with('/jira/rest/api/2/issue/101')
