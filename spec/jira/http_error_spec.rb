@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::HTTPError do
+describe JIRA::HTTPError do
 
   let(:response)  { 
     response = mock("response") 

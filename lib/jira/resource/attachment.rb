@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class AttachmentFactory < BaseFactory ; end
+    class AttachmentFactory < JIRA::BaseFactory ; end
 
-    class Attachment < Base
+    class Attachment < JIRA::Base
       has_one :author, :class => JIRA::Resource::User
     end
 

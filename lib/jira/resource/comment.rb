@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class CommentFactory < BaseFactory ; end
+    class CommentFactory < JIRA::BaseFactory ; end
 
-    class Comment < Base
+    class Comment < JIRA::Base
       belongs_to :issue
 
       nested_collections true

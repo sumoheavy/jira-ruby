@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Base do
+describe JIRA::Base do
 
-  class JIRA::Resource::Deadbeef < JIRA::Resource::Base ; end
+  class JIRA::Resource::Deadbeef < JIRA::Base ; end
 
-  class JIRA::Resource::HasOneExample < JIRA::Resource::Base
+  class JIRA::Resource::HasOneExample < JIRA::Base
     has_one :deadbeef
     has_one :muffin, :class => JIRA::Resource::Deadbeef
     has_one :brunchmuffin, :class => JIRA::Resource::Deadbeef,
@@ -17,7 +17,7 @@ describe JIRA::Resource::Base do
             :attribute_key => 'irregularlyNamedThing'
   end
 
-  class JIRA::Resource::HasManyExample < JIRA::Resource::Base
+  class JIRA::Resource::HasManyExample < JIRA::Base
     has_many :deadbeefs
     has_many :brunchmuffins, :class => JIRA::Resource::Deadbeef,
                            :nested_under => 'nested'
@@ -215,7 +215,7 @@ describe JIRA::Resource::Base do
     it "returns false when an invalid field is set" do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
       response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
       subject.stub(:new_record? => false)
-      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::Resource::HTTPError.new(response))
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       subject.save("invalid_field" => "foobar").should be_false
     end
 
@@ -250,10 +250,10 @@ describe JIRA::Resource::Base do
     it "throws an exception when an invalid field is set" do
       response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
       subject.stub(:new_record? => false)
-      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::Resource::HTTPError.new(response))
+      client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       lambda do
         subject.save!("invalid_field" => "foobar")
-      end.should raise_error(JIRA::Resource::HTTPError)
+      end.should raise_error(JIRA::HTTPError)
     end
   end
 
@@ -425,7 +425,7 @@ describe JIRA::Resource::Base do
     subject { JIRA::Resource::HasManyExample.new(client, :attrs => {'deadbeefs' => [{'id' => '123'}]}) }
 
     it "returns a collection of instances for has_many relationships" do
-      subject.deadbeefs.class.should == JIRA::Resource::HasManyProxy
+      subject.deadbeefs.class.should == JIRA::HasManyProxy
       subject.deadbeefs.length.should == 1
       subject.deadbeefs.each do |deadbeef|
         deadbeef.class.should == JIRA::Resource::Deadbeef
@@ -521,7 +521,7 @@ describe JIRA::Resource::Base do
 
   describe "belongs_to" do
 
-    class JIRA::Resource::BelongsToExample < JIRA::Resource::Base
+    class JIRA::Resource::BelongsToExample < JIRA::Base
       belongs_to :deadbeef
     end
 

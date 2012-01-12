@@ -60,7 +60,7 @@ shared_examples "a resource" do
     subject.save('foo' => 'bar').should be_false
     lambda do
       subject.save!('foo' => 'bar').should be_false
-    end.should raise_error(JIRA::Resource::HTTPError)
+    end.should raise_error(JIRA::HTTPError)
   end
 
 end
@@ -108,7 +108,7 @@ shared_examples "a resource with a singular GET endpoint" do
                 to_return(:status => 404, :body => '{"errorMessages":["'+class_basename+' Does Not Exist"],"errors": {}}')
     lambda do
       client.send(class_basename).find('99999', options)
-    end.should raise_exception(JIRA::Resource::HTTPError)
+    end.should raise_exception(JIRA::HTTPError)
   end
 end
 
@@ -168,7 +168,7 @@ shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
     subject.save('fields'=> {'invalid' => 'field'}).should be_false
     lambda do
       subject.save!('fields'=> {'invalid' => 'field'})
-    end.should raise_error(JIRA::Resource::HTTPError)
+    end.should raise_error(JIRA::HTTPError)
   end
 
 end

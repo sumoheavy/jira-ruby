@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class UserFactory < BaseFactory ; end
+    class UserFactory < JIRA::BaseFactory ; end
 
-    class User < Base
+    class User < JIRA::Base
       def self.singular_path(client, key, prefix = '/')
         rest_base_path(client, prefix) + '?username=' + key
       end

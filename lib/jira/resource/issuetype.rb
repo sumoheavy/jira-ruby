@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class IssuetypeFactory < BaseFactory ; end
+    class IssuetypeFactory < JIRA::BaseFactory ; end
 
-    class Issuetype < Base ; end
+    class Issuetype < JIRA::Base ; end
 
   end
 end

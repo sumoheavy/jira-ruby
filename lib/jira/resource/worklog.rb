@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class WorklogFactory < BaseFactory ; end
+    class WorklogFactory < JIRA::BaseFactory ; end
 
-    class Worklog < Base
+    class Worklog < JIRA::Base
       has_one :author, :class => JIRA::Resource::User
       has_one :update_author, :class => JIRA::Resource::User,
                               :attribute_key => "updateAuthor"

@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class ProjectFactory < BaseFactory ; end
+    class ProjectFactory < JIRA::BaseFactory ; end
 
-    class Project < Base
+    class Project < JIRA::Base
 
       has_one :lead, :class => JIRA::Resource::User
       has_many :components

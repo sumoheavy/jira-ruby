@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class VersionFactory < BaseFactory ; end
+    class VersionFactory < JIRA::BaseFactory ; end
 
-    class Version < Base ; end
+    class Version < JIRA::Base ; end
 
   end
 end

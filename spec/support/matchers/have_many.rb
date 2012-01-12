@@ -1,6 +1,6 @@
 RSpec::Matchers.define :have_many do |collection, klass|
   match do |actual|
-    actual.send(collection).class.should == JIRA::Resource::HasManyProxy
+    actual.send(collection).class.should == JIRA::HasManyProxy
     actual.send(collection).length.should > 0
     actual.send(collection).each do |member|
       member.class.should == klass

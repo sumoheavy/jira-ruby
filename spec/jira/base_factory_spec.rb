@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe JIRA::Resource::BaseFactory do
+describe JIRA::BaseFactory do
 
-  class JIRA::Resource::FooFactory < JIRA::Resource::BaseFactory ; end
+  class JIRA::Resource::FooFactory < JIRA::BaseFactory ; end
   class JIRA::Resource::Foo ; end
 
   let(:client)  { mock() }

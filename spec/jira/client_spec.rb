@@ -134,7 +134,7 @@ describe JIRA::Client do
       
       lambda do
         subject.request(:get, '/foo')
-      end.should raise_exception(JIRA::Resource::HTTPError)
+      end.should raise_exception(JIRA::HTTPError)
     end
 
   end

@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class PriorityFactory < BaseFactory ; end
+    class PriorityFactory < JIRA::BaseFactory ; end
 
-    class Priority < Base ; end
+    class Priority < JIRA::Base ; end
 
   end
 end

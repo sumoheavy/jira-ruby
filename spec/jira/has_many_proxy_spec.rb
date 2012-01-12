@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe JIRA::Resource::HasManyProxy do
+describe JIRA::HasManyProxy do
 
   class Foo ; end
 
-  subject { JIRA::Resource::HasManyProxy.new(parent, Foo, collection) }
+  subject { JIRA::HasManyProxy.new(parent, Foo, collection) }
 
   let(:parent)      { mock("parent") }
   let(:collection)  { mock("collection") }

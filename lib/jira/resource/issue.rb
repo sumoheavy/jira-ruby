@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class IssueFactory < BaseFactory ; end
+    class IssueFactory < JIRA::BaseFactory ; end
 
-    class Issue < Base
+    class Issue < JIRA::Base
 
       has_one :reporter,  :class => JIRA::Resource::User,
                           :nested_under => 'fields'

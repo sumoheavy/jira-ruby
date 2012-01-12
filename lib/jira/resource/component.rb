@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class ComponentFactory < BaseFactory ; end
+    class ComponentFactory < JIRA::BaseFactory ; end
 
-    class Component < Base ; end
+    class Component < JIRA::Base ; end
 
   end
 end

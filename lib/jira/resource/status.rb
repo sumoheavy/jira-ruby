@@ -1,9 +1,9 @@
 module JIRA
   module Resource
 
-    class StatusFactory < BaseFactory ; end
+    class StatusFactory < JIRA::BaseFactory ; end
 
-    class Status < Base ; end
+    class Status < JIRA::Base ; end
 
   end
 end
