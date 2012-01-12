@@ -141,11 +141,11 @@ end
 shared_examples "a resource with a PUT endpoint" do
 
   it "saves an existing component" do
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
+    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key =>key))
-    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
+    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
                   to_return(:status => 200, :body => get_mock_from_path(:put, :key => key, :value_if_not_found => nil))
-    subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
+    subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
     subject.save(attributes_for_put).should be_true
     expected_attributes_from_put.each do |method_name, value|
@@ -153,27 +153,22 @@ shared_examples "a resource with a PUT endpoint" do
     end
   end
 
-  it "fails to save with an invalid field" do
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
-                to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
-    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
-                to_return(:status => 400, :body => get_mock_from_path(:put, :key => key, :suffix => "invalid"))
-    subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
-    subject.fetch
-    subject.save('fields'=> {'invalid' => 'field'}).should be_false
-  end
+end
+
+shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
 
   it "fails to save with an invalid field" do
     stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
-                #to_return(:status => 200, :body => get_mock_response("#{class_basename.downcase}/#{key}.json"))
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
     stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
-                #to_return(:status => 400, :body => get_mock_response("#{class_basename.downcase}/#{key}.put.invalid.json"))
                 to_return(:status => 400, :body => get_mock_from_path(:put, :key => key, :suffix => "invalid"))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
+
+    subject.save('fields'=> {'invalid' => 'field'}).should be_false
     lambda do
       subject.save!('fields'=> {'invalid' => 'field'})
     end.should raise_error(JIRA::Resource::HTTPError)
   end
+
 end
