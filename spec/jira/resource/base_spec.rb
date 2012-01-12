@@ -442,6 +442,11 @@ describe JIRA::Resource::Base do
       end
     end
 
+    it "short circuits missing deeply nested attrs" do
+      subject = JIRA::Resource::HasManyExample.new(client)
+      subject.breakfastscones.length.should == 0
+    end
+
     it "allows the attribute key to be specified" do
       subject = JIRA::Resource::HasManyExample.new(client, :attrs => {'irregularlyNamedThings' => [{'id' => '123'},{'id' => '456'}]})
       subject.irregularly_named_things.length.should == 2

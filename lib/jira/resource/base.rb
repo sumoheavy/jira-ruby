@@ -257,6 +257,7 @@ module JIRA
         return @attrs[attribute_name] if nested_under.nil?
         if nested_under.instance_of? Array
           final = nested_under.inject(@attrs) do |parent, key|
+            return nil if parent.nil?
             parent[key]
           end
           final[attribute_name]
