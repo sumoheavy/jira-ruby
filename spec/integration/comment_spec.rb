@@ -45,7 +45,7 @@ describe JIRA::Resource::Comment do
 
   it_should_behave_like "a resource"
   it_should_behave_like "a resource with a singular GET endpoint"
-  # it_should_behave_like "a resource with a DELETE endpoint"
+  it_should_behave_like "a resource with a DELETE endpoint"
   # it_should_behave_like "a resource with a POST endpoint"
   # it_should_behave_like "a resource with a PUT endpoint"
 
