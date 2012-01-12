@@ -25,7 +25,9 @@ class JIRA::Resource::HasManyProxy
   #                               :attrs => attrs,
   #                               :issue => issue)
   def build(attrs = {})
-    target_class.new(parent.client, :attrs => attrs, parent.to_sym => parent)
+    resource = target_class.new(parent.client, :attrs => attrs, parent.to_sym => parent)
+    collection << resource
+    resource
   end
 
   # Delegate any missing methods to the collection that this proxy wraps

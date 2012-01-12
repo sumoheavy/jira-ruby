@@ -5,7 +5,7 @@ describe JIRA::Resource::HasManyProxy do
   class Foo ; end
 
   subject { JIRA::Resource::HasManyProxy.new(parent, Foo, collection) }
-  
+
   let(:parent)      { mock("parent") }
   let(:collection)  { mock("collection") }
 
@@ -26,6 +26,7 @@ describe JIRA::Resource::HasManyProxy do
     foo = mock('foo')
     parent.stub(:client => client, :to_sym => :foo)
     Foo.should_receive(:new).with(client, :attrs => {'foo' => 'bar'}, :foo => parent).and_return(foo)
+    collection.should_receive(:<<).with(foo)
     subject.build('foo' => 'bar').should == foo
   end
 
