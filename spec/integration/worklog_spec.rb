@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Comment do
+describe JIRA::Resource::Worklog do
 
 
   let(:client) do
@@ -11,9 +11,9 @@ describe JIRA::Resource::Comment do
 
   let(:key) { "10000" }
 
-  let(:target) { JIRA::Resource::Comment.new(client, :attrs => {'id' => '99999'}, :issue_id => '54321') }
+  let(:target) { JIRA::Resource::Worklog.new(client, :attrs => {'id' => '99999'}, :issue_id => '54321') }
 
-  let(:expected_collection_length) { 2 }
+  let(:expected_collection_length) { 3 }
 
   let(:belongs_to) {
     JIRA::Resource::Issue.new(client, :attrs => {
@@ -25,24 +25,24 @@ describe JIRA::Resource::Comment do
 
   let(:expected_attributes) do
     {
-      'self' => "http://localhost:2990/jira/rest/api/2/issue/10002/comment/10000",
+      'self' => "http://localhost:2990/jira/rest/api/2/issue/10002/worklog/10000",
       'id'   => key,
-      'body' => "This is a comment. Creative."
+      'comment' => "Some epic work."
     }
   end
 
   let(:attributes_for_post) {
-    {"body" => "new comment"}
+    {"timeSpent" => "2d"}
   }
   let(:expected_attributes_from_post) {
-    { "id" => "10001", "body" => "new comment"}
+    { "id" => "10001", "timeSpent" => "2d"}
   }
 
   let(:attributes_for_put) {
-    {"body" => "new body"}
+    {"timeSpent" => "2d"}
   }
   let(:expected_attributes_from_put) {
-    { "id" => "10000", "body" => "new body" }
+    { "id" => "10001", "timeSpent" => "4d"}
   }
 
   it_should_behave_like "a resource"

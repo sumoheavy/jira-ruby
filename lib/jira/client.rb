@@ -71,6 +71,10 @@ module JIRA
       JIRA::Resource::AttachmentFactory.new(self)
     end
 
+    def Worklog
+      JIRA::Resource::WorklogFactory.new(self)
+    end
+
     def Version
       JIRA::Resource::VersionFactory.new(self)
     end

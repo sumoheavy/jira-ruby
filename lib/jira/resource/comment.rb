@@ -5,6 +5,8 @@ module JIRA
 
     class Comment < Base
       belongs_to :issue
+
+      nested_collections true
     end
 
   end

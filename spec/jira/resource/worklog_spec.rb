@@ -6,7 +6,7 @@ describe JIRA::Resource::Worklog do
 
   describe "relationships" do
     subject {
-      JIRA::Resource::Worklog.new(client, :attrs => {
+      JIRA::Resource::Worklog.new(client, :issue_id => '99999', :attrs => {
         'author' => {'foo' => 'bar'},
         'updateAuthor' => {'foo' => 'bar'}
       })
