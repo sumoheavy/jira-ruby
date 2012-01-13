@@ -202,6 +202,47 @@ module JIRA
       end
     end
 
+    # Declares that this class contains a collection of another resource
+    # within the JSON returned from the JIRA API.
+    #
+    #   class Example < JIRA::Base
+    #     has_many :children
+    #   end
+    #
+    #   example = client.Example.find(1)
+    #   example.children # Returns an instance of Jira::Resource::HasManyProxy,
+    #                    # which behaves exactly like an array of
+    #                    # Jira::Resource::Child
+    #
+    # The following options can be used to override the default behaviour of the
+    # relationship:
+    #
+    # [:attribute_key]  The relationship will by default reference a JSON key on the
+    #                   object with the same name as the relationship.
+    #
+    #                     has_many :children # => {"id":"123",{"children":[{"id":"456"},{"id":"789"}]}}
+    #
+    #                   Use this option if the key in the JSON is named differently.
+    #
+    #                     # Respond to resource.children, but return the value of resource.attrs['kids']
+    #                     has_many :children, :attribute_key => 'kids' # => {"id":"123",{"kids":[{"id":"456"},{"id":"789"}]}}
+    #
+    # [:class]          The class of the child instance will be inferred from the name of the
+    #                   relationship. E.g. <tt>has_many :children</tt> will return an instance
+    #                   of <tt>JIRA::Resource::HasManyProxy</tt> containing the collection of
+    #                   <tt>JIRA::Resource::Child</tt>.
+    #                   Use this option to override the inferred class.
+    #
+    #                     has_many :children, :class => JIRA::Resource::Kid
+    # [:nested_under]   In some cases, the JSON return from JIRA is nested deeply for particular
+    #                   relationships.  This option allows the nesting to be specified.
+    #
+    #                     # Specify a single depth of nesting.
+    #                     has_many :children, :nested_under => 'foo'
+    #                       # => Looks for {"foo":{"children":{}}}
+    #                     # Specify deeply nested JSON
+    #                     has_many :children, :nested_under => ['foo', 'bar', 'baz']
+    #                       # => Looks for {"foo":{"bar":{"baz":{"children":{}}}}}
     def self.has_many(collection, options = {})
       attribute_key = options[:attribute_key] || collection.to_s
       child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
@@ -240,6 +281,9 @@ module JIRA
       self.class.endpoint_name.to_sym
     end
 
+    # Checks if method_name is set in the attributes hash
+    # and returns true when found, otherwise proxies the
+    # call to the superclass.
     def respond_to?(method_name)
       if attrs.keys.include? method_name.to_s
         true
@@ -248,6 +292,9 @@ module JIRA
       end
     end
 
+    # Overrides method_missing to check the attribute hash
+    # for resources matching method_name and proxies the call
+    # to the superclass if no match is found.
     def method_missing(method_name, *args, &block)
       if attrs.keys.include? method_name.to_s
         attrs[method_name.to_s]
@@ -278,6 +325,9 @@ module JIRA
       path_component
     end
 
+    # Fetches the attributes for the specified resource from JIRA unless
+    # the resource is already expanded and the optional force reload flag 
+    # is not set
     def fetch(reload = false)
       return if expanded? && !reload
       response = client.get(url)
@@ -285,6 +335,11 @@ module JIRA
       @expanded = true
     end
 
+    # Saves the specified resource attributes by sending either a POST or PUT
+    # request to JIRA, depending on resource.new_record?
+    #
+    # Accepts an attributes hash of the values to be saved.  Will throw a
+    # JIRA::HTTPError if the request fails (response is not HTTP 2xx).
     def save!(attrs)
       http_method = new_record? ? :post : :put
       response = client.send(http_method, url, attrs.to_json)
@@ -294,6 +349,11 @@ module JIRA
       true
     end
 
+    # Saves the specified resource attributes by sending either a POST or PUT
+    # request to JIRA, depending on resource.new_record?
+    #
+    # Accepts an attributes hash of the values to be saved. Will return false
+    # if the request fails.
     def save(attrs)
       begin
         save_status = save!(attrs)
@@ -304,6 +364,8 @@ module JIRA
       save_status
     end
 
+    # Sets the attributes hash from a HTTPResponse object from JIRA if it is
+    # not nil or is not a json response.
     def set_attrs_from_response(response)
       unless response.body.nil? or response.body.length < 2
         json = self.class.parse_json(response.body)
@@ -331,6 +393,8 @@ module JIRA
       end
     end
 
+    # Sends a delete request to the JIRA Api and sets the deleted instance
+    # variable on the object to true.
     def delete
       client.delete(url)
       @deleted = true
@@ -360,10 +424,14 @@ module JIRA
       "#<#{self.class.name}:#{object_id} @attrs=#{@attrs.inspect}>"
     end
 
+    # Returns a JSON representation of the current attributes hash.
     def to_json
       attrs.to_json
     end
 
+    # Determines if the resource is newly created by checking whether its
+    # key_value is set. If it is nil, the record is new and the method
+    # will return true.
     def new_record?
       key_value.nil?
     end

@@ -60,66 +60,74 @@ module JIRA
       @consumer = OAuth::Consumer.new(consumer_key,consumer_secret,options)
     end
 
-    def Project
+    def Project # :nodoc:
       JIRA::Resource::ProjectFactory.new(self)
     end
 
-    def Issue
+    def Issue # :nodoc:
       JIRA::Resource::IssueFactory.new(self)
     end
 
-    def Component
+    def Component # :nodoc:
       JIRA::Resource::ComponentFactory.new(self)
     end
 
-    def User
+    def User # :nodoc:
       JIRA::Resource::UserFactory.new(self)
     end
 
-    def Issuetype
+    def Issuetype # :nodoc:
       JIRA::Resource::IssuetypeFactory.new(self)
     end
 
-    def Priority
+    def Priority # :nodoc:
       JIRA::Resource::PriorityFactory.new(self)
     end
 
-    def Status
+    def Status # :nodoc:
       JIRA::Resource::StatusFactory.new(self)
     end
 
-    def Comment
+    def Comment # :nodoc:
       JIRA::Resource::CommentFactory.new(self)
     end
 
-    def Attachment
+    def Attachment # :nodoc:
       JIRA::Resource::AttachmentFactory.new(self)
     end
 
-    def Worklog
+    def Worklog # :nodoc:
       JIRA::Resource::WorklogFactory.new(self)
     end
 
-    def Version
+    def Version # :nodoc:
       JIRA::Resource::VersionFactory.new(self)
     end
 
+    # Returns the current request token if it is set, else it creates
+    # and sets a new token.
     def request_token
       @request_token ||= get_request_token
     end
 
+    # Sets the request token from a given token and secret.
     def set_request_token(token, secret)
       @request_token = OAuth::RequestToken.new(@consumer, token, secret)
     end
 
+    # Initialises and returns a new access token from the params hash
+    # returned by the OAuth transaction.
     def init_access_token(params)
       @access_token = request_token.get_access_token(params)
     end
 
+    # Sets the access token from a preexisting token and secret.
     def set_access_token(token, secret)
       @access_token = OAuth::AccessToken.new(@consumer, token, secret)
     end
 
+    # Returns the current access token. Raises an
+    # JIRA::Client::UninitializedAccessTokenError exception if it is not set.
     def access_token
       raise UninitializedAccessTokenError.new unless @access_token
       @access_token
@@ -146,6 +154,12 @@ module JIRA
       request(:put, path, body, merge_default_headers(headers))
     end
 
+    # Sends the specified HTTP request to the REST API through the
+    # OAuth token.
+    #
+    # Returns the response if the request was successful (HTTP::2xx) and
+    # raises a JIRA::HTTPError if it was not successful, with the response
+    # attached.
     def request(http_method, path, *arguments)
       response = access_token.request(http_method, path, *arguments)
       raise HTTPError.new(response) unless response.kind_of?(Net::HTTPSuccess)
