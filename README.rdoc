@@ -70,7 +70,7 @@ key.
   After you have entered all the information click OK and ensure OAuth authentication is
   enabled.
 
-== Using the API Gem in your application
+== Using the API Gem in your Rails application
 
 The gem requires the consumer key and public certificate file (which
 are generated in their respective rake tasks) to initialize an access token for
@@ -158,3 +158,102 @@ Create your own controllers for the JIRA resources you wish to access.
       @issue = @jira_client.Issue.find(params[:id])
     end
   end
+
+== Using the API Gem in your Sinatra application
+
+Here's the same example as a Sinatra application:
+
+  require 'jira'
+  class App < Sinatra::Base
+    enable :sessions
+
+    # This section gets called before every request. Here, we set up the
+    # OAuth consumer details including the consumer key, private key,
+    # site uri, and the request token, access token, and authorize paths
+    before do
+      options = {
+        :site               => 'http://localhost:2990',
+        :signature_method   => 'RSA-SHA1',
+        :request_token_path => "/jira/plugins/servlet/oauth/request-token",
+        :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
+        :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
+        :private_key_file   => "rsakey.pem",
+        :rest_base_path     => "/jira/rest/api/2"
+      }
+
+      @jira_client = JIRA::Client.new('jira-ruby-example', '', options)
+      @jira_client.consumer.http.set_debug_output($stderr)
+
+      # Add AccessToken if authorised previously.
+      if session[:jira_auth]
+        @jira_client.set_access_token(
+          session[:jira_auth][:access_token],
+          session[:jira_auth][:access_key]
+        )
+      end
+    end
+
+
+    # Starting point: http://<yourserver>/
+    # This will serve up a login link if you're not logged in. If you are, it'll show some user info and a
+    # signout link
+    get '/' do
+      if !session[:jira_auth]
+        # not logged in
+        <<-eos
+          <h1>jira-ruby (JIRA 5 Ruby Gem) demo </h1>You're not signed in. Why don't you 
+          <a href=/signin>sign in</a> first.
+        eos
+      else
+        #logged in
+        @issues = @jira_client.Issue.all
+
+        # HTTP response inlined with bind data below...
+        <<-eos
+          You're now signed in. There #{@issues.count == 1 ? "is" : "are"} #{@issues.count} 
+          issue#{@issues.count == 1 ? "" : "s"} in this JIRA instance. <a href='/signout'>Signout</a>
+        eos
+      end
+    end
+
+    # http://<yourserver>/signin
+    # Initiates the OAuth dance by first requesting a token then redirecting to 
+    # http://<yourserver>/auth to get the @access_token
+    get '/signin' do
+      request_token = @jira_client.request_token
+      session[:request_token] = request_token.token
+      session[:request_secret] = request_token.secret
+
+      redirect request_token.authorize_url    
+    end
+
+    # http://<yourserver>/callback
+    # Retrieves the @access_token then stores it inside a session cookie. In a real app, 
+    # you'll want to persist the token in a datastore associated with the user.
+    get "/callback/" do
+      request_token = @jira_client.set_request_token(
+        session[:request_token], session[:request_secret]
+      )
+      access_token = @jira_client.init_access_token(
+        :oauth_verifier => params[:oauth_verifier]
+      )
+
+      session[:jira_auth] = {
+        :access_token => access_token.token,
+        :access_key => access_token.secret
+      }
+
+      session.delete(:request_token)
+      session.delete(:request_secret)
+
+      redirect "/"
+    end
+
+    # http://<yourserver>/signout
+    # Expires the session
+    get "/signout" do
+      session.delete(:jira_auth)
+      redirect "/"
+    end
+  end
+
