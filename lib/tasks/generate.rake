@@ -1,8 +1,10 @@
+require 'securerandom'
+
 namespace :jira do
   desc "Generate a consumer key for your application"
   task :generate_consumer_key do
-    #FIXME SERIOUSLY. THIS IS NOT A REAL SOLUTION. I FEEL SO UNCLEAN.
-    system("for i in {1..10}; do echo $RANDOM$RANDOM$RANDOM; done | md5 | awk '{ print \"You can use this as your consumer key: \" $0 }'")
+    key = SecureRandom.hex(16)
+    puts "You can use this as your consumer key: #{key}"
   end
 
   desc "Run the system call to generate a RSA public certificate"
