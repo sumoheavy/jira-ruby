@@ -92,7 +92,6 @@ module JIRA
     def self.all(client, options = {})
       response = client.get(collection_path(client))
       json = parse_json(response.body)
-      puts collection_attributes_are_nested
       if collection_attributes_are_nested
         json = json[endpoint_name.pluralize]
       end

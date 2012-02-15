@@ -24,3 +24,4 @@ require 'jira/resource/issue'
 
 require 'jira/client'
 
+require 'jira/railtie' if defined?(Rails)
