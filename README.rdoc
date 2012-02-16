@@ -76,6 +76,9 @@ The gem requires the consumer key and public certificate file (which
 are generated in their respective rake tasks) to initialize an access token for
 using the JIRA API.
 
+Note that currently the rake task which generates the public certificate
+requires OpenSSL to be installed on the machine.
+
 Below is an example for setting up a rails application for OAuth authorization.
 
 Ensure the JIRA gem is loaded correctly
