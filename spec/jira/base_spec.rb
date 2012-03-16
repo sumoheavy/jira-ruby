@@ -373,7 +373,7 @@ describe JIRA::Base do
   it "converts to json" do
     subject.attrs = {"foo" => "bar","dead" => "beef"}
 
-    subject.to_json.should == '{"foo":"bar","dead":"beef"}'
+    subject.to_json.should == subject.attrs.to_json
   end
 
   describe "extract attrs from response" do
