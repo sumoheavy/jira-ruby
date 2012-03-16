@@ -358,7 +358,7 @@ describe JIRA::Base do
     subject.attrs['foo']  = 'bar'
     subject.attrs['dead'] = 'beef'
 
-    subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
+    subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{Regexp.quote(attrs.inspect)}>/)
   end
 
   it "returns the key attribute" do
