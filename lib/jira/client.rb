@@ -1,5 +1,6 @@
 require 'oauth'
 require 'json'
+require 'forwardable'
 
 module JIRA
 
@@ -23,6 +24,8 @@ module JIRA
   #
   class Client
 
+    extend Forwardable
+
     # This exception is thrown when the client is used before the OAuth access token
     # has been initialized.
     class UninitializedAccessTokenError < StandardError
@@ -37,7 +40,7 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    delegate :key, :secret, :get_request_token, :to => :consumer
+    delegate [:key, :secret, :get_request_token] => :consumer
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',
