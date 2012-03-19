@@ -40,7 +40,7 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    delegate [:key, :secret, :get_request_token] => :consumer
+    def_instance_delegators :@consumer, :key, :secret, :get_request_token
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',

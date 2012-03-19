@@ -274,6 +274,10 @@ module JIRA
       @collection_attributes_are_nested = value
     end
 
+    def id
+      attrs['id']
+    end
+
     # Returns a symbol for the given instance, for example
     # JIRA::Resource::Issue returns :issue
     def to_sym
