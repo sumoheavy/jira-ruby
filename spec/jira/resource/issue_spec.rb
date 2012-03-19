@@ -8,10 +8,10 @@ describe JIRA::Resource::Issue do
     response = mock()
     response.stub(:body).and_return('{"key":"foo","id":"101"}')
     JIRA::Resource::Issue.stub(:collection_path).and_return('/jira/rest/api/2/issue')
-    client.should_receive(:get).with('/jira/rest/api/2/issue/foo')
-    .and_return(response)
-    client.should_receive(:get).with('/jira/rest/api/2/issue/101')
-    .and_return(response)
+    client.should_receive(:get).with('/jira/rest/api/2/issue/foo').
+      and_return(response)
+    client.should_receive(:get).with('/jira/rest/api/2/issue/101').
+      and_return(response)
 
     issue_from_id = JIRA::Resource::Issue.find(client,101)
     issue_from_key = JIRA::Resource::Issue.find(client,'foo')

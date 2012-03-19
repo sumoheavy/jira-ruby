@@ -358,7 +358,7 @@ describe JIRA::Base do
     subject.attrs['foo']  = 'bar'
     subject.attrs['dead'] = 'beef'
 
-    subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{attrs.inspect}>/)
+    subject.to_s.should match(/#<JIRA::Resource::Deadbeef:\d+ @attrs=#{Regexp.quote(attrs.inspect)}>/)
   end
 
   it "returns the key attribute" do
@@ -373,7 +373,7 @@ describe JIRA::Base do
   it "converts to json" do
     subject.attrs = {"foo" => "bar","dead" => "beef"}
 
-    subject.to_json.should == '{"foo":"bar","dead":"beef"}'
+    subject.to_json.should == subject.attrs.to_json
   end
 
   describe "extract attrs from response" do
