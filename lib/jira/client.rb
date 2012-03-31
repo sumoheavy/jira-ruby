@@ -104,6 +104,10 @@ module JIRA
       JIRA::Resource::VersionFactory.new(self)
     end
 
+    def Changelog # :nodoc:
+      JIRA::Resource::ChangelogFactory.new(self)
+    end
+
     # Returns the current request token if it is set, else it creates
     # and sets a new token.
     def request_token

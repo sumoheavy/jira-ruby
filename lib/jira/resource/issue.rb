@@ -37,6 +37,19 @@ module JIRA
         end
       end
 
+      def changelogs
+        change_histories = []
+
+        url = client.options[:rest_base_path] + "/issue/#{id}?expand=changelog&fields=summary"
+        response = client.get(url)
+        json = self.class.parse_json(response.body)
+        change_histories = json['changelog']['histories'].map do |h|
+          client.Changelog.build(h)
+        end
+        change_histories
+
+      end
+
       def respond_to?(method_name)
         if attrs.keys.include?('fields') && attrs['fields'].keys.include?(method_name.to_s)
           true

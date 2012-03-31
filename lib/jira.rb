@@ -11,6 +11,7 @@ require 'jira/has_many_proxy'
 require 'jira/http_error'
 
 require 'jira/resource/user'
+require 'jira/resource/changelog'
 require 'jira/resource/attachment'
 require 'jira/resource/component'
 require 'jira/resource/issuetype'
