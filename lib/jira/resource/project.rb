@@ -16,12 +16,16 @@ module JIRA
       end
 
       # Returns all the issues for this project
-      def issues
+      def issues(jql = nil)
        
         issues = []
         fetched_results = 0
-        begin 
-          response = client.get(client.options[:rest_base_path] + "/search?jql=project%3D'#{key}'&startAt=#{fetched_results}")
+        begin
+          uri = client.options[:rest_base_path] + "/search?startAt=#{fetched_results}"
+          uri << "&jql=project%3D'#{key}'"
+          uri << URI.escape(" and #{jql}") if jql
+
+          response = client.get(uri)
           json = self.class.parse_json(response.body)
           
           issues = issues + json['issues'].map do |issue|

@@ -29,11 +29,14 @@ module JIRA
 
       has_many :worklogs, :nested_under => ['fields','worklog']
 
-      def self.all(client)
+      def self.all(client, jql = nil)
         issues = []
         fetched_results = 0
         begin 
-          response = client.get(client.options[:rest_base_path] + "/search")
+          url = client.options[:rest_base_path] + "/search?startAt=#{fetched_results}"
+          url << "&jql=#{ URI.escape(jql) }" if jql
+
+          response = client.get(url)
           json = parse_json(response.body)
           
           issues = issues + json['issues'].map do |issue|
