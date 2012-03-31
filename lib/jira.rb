@@ -5,6 +5,8 @@ ActiveSupport::Inflector.inflections do |inflector|
   inflector.singular 'status', 'status'
 end
 
+require 'uri'
+
 require 'jira/base'
 require 'jira/base_factory'
 require 'jira/has_many_proxy'
