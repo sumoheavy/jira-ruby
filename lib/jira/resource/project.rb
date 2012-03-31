@@ -17,11 +17,23 @@ module JIRA
 
       # Returns all the issues for this project
       def issues
-        response = client.get(client.options[:rest_base_path] + "/search?jql=project%3D'#{key}'")
-        json = self.class.parse_json(response.body)
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
-        end
+       
+        issues = []
+        fetched_results = 0
+        begin 
+          response = client.get(client.options[:rest_base_path] + "/search?jql=project%3D'#{key}'&startAt=#{fetched_results}")
+          json = self.class.parse_json(response.body)
+          
+          issues = issues + json['issues'].map do |issue|
+            client.Issue.build(issue)
+          end
+
+          fetched_results += json['maxResults']
+
+        end while fetched_results < json['total']
+
+        issues
+        
       end
 
     end
