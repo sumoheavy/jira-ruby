@@ -54,7 +54,7 @@ module JIRA
 
     def initialize(consumer_key, consumer_secret, options={})
       options = DEFAULT_OPTIONS.merge(options)
-
+      JIRA::Log.debug "Initializing client with options #{options.inspect}"
       @options = options
       @options.freeze
       @consumer = OAuth::Consumer.new(consumer_key,consumer_secret,options)
@@ -135,21 +135,26 @@ module JIRA
 
     # HTTP methods without a body
     def delete(path, headers = {})
+      JIRA::Log.debug ":delete => #{path}"
       request(:delete, path,  merge_default_headers(headers))
     end
     def get(path, headers = {})
+      JIRA::Log.debug ":get => #{path}"
       request(:get, path, merge_default_headers(headers))
     end
     def head(path, headers = {})
+      JIRA::Log.debug ":head => #{path}"
       request(:head, path, merge_default_headers(headers))
     end
 
     # HTTP methods with a body
     def post(path, body = '', headers = {})
+      JIRA::Log.debug ":post => #{path}, #{body}"
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:post, path, body, merge_default_headers(headers))
     end
     def put(path, body = '', headers = {})
+      JIRA::Log.debug ":post => #{path}, #{body}"
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
     end
@@ -161,6 +166,7 @@ module JIRA
     # raises a JIRA::HTTPError if it was not successful, with the response
     # attached.
     def request(http_method, path, *arguments)
+      JIRA::Log.debug "Request :#{http_method} => #{path}"
       response = access_token.request(http_method, path, *arguments)
       raise HTTPError.new(response) unless response.kind_of?(Net::HTTPSuccess)
       response

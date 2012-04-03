@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe JIRA::Resource::Comment do
 
-
+  before(:each) do
+    stub_request(:get, "http://localhost:2990/jira/rest/api/2/issue/10002/comment").
+        to_return(:status => 200, :body => get_mock_response('issue/10002/comment.json'))
+  end
   let(:client) do
     client = JIRA::Client.new('foo', 'bar')
     client.set_access_token('abc', '123')

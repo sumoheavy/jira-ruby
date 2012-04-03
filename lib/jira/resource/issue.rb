@@ -6,6 +6,10 @@ module JIRA
 
     class Issue < JIRA::Base
 
+      extend JIRA::Mixins::Searchable
+
+      expand_field :changelog
+
       has_one :reporter,  :class => JIRA::Resource::User,
                           :nested_under => 'fields'
       has_one :assignee,  :class => JIRA::Resource::User,
@@ -20,6 +24,9 @@ module JIRA
 
       has_many :components, :nested_under => 'fields'
 
+      has_many :labels, :nested_under => 'fields',
+                          :class => String
+
       has_many :comments, :nested_under => ['fields','comment']
 
       has_many :attachments, :nested_under => 'fields',
@@ -27,14 +34,13 @@ module JIRA
 
       has_many :versions, :nested_under => 'fields'
 
-      has_many :worklogs, :nested_under => ['fields','worklog']
+      has_many :worklogs , :nested_under => ['fields','worklog']
 
-      def self.all(client)
-        response = client.get(client.options[:rest_base_path] + "/search")
-        json = parse_json(response.body)
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
-        end
+      has_many :changelog, :nested_under => ['changelog'], :attribute_key => 'histories'
+
+      def self.all(client, jql = nil,&block)
+        Log.warn "Blockgiven #{block_given?}"
+        page_jql(client,jql, &block )
       end
 
       def respond_to?(method_name)

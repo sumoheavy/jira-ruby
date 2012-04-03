@@ -5,6 +5,8 @@ module JIRA
     end
 
     class Project < JIRA::Base
+      
+      extend JIRA::Mixins::Searchable
 
       has_one :lead, :class => JIRA::Resource::User
       has_many :components
@@ -16,12 +18,8 @@ module JIRA
       end
 
       # Returns all the issues for this project
-      def issues
-        response = client.get(client.options[:rest_base_path] + "/search?jql=project%3D'#{key}'")
-        json = self.class.parse_json(response.body)
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
-        end
+      def issues(jql = nil, &block)
+        self.class.page_jql(client,self.class.get_scoped_jql(self, jql), &block)       
       end
 
     end

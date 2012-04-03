@@ -8,6 +8,7 @@ module JIRA
       belongs_to :issue
 
       nested_collections true
+      nested_under :issue
     end
 
   end
