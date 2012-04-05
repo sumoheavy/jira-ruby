@@ -285,7 +285,11 @@ module JIRA
           if child_class < JIRA::Base
             child_class.new(client, child_class_options.merge(:attrs => child_attributes))
           else
-            child_class.new(child_attributes)
+            if child_attributes.is_a? child_class
+              child_attributes
+            else
+              child_class.new(child_attributes)
+            end
           end
         end
         HasManyProxy.new(self, child_class, collection)

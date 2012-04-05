@@ -8,7 +8,7 @@ describe JIRA::Resource::Changelog do
     subject {
       JIRA::Resource::Changelog.new(client, :attrs => {
         'author' => {'foo' => 'bar'},
-        'items'  => ['item1','item2']
+        'items'  => [{:one => 'item1'},{:two => 'item2'}]
       })
     }
 
@@ -16,8 +16,8 @@ describe JIRA::Resource::Changelog do
       subject.should have_one(:author, JIRA::Resource::User)
       subject.author.foo.should == 'bar'
 
-      subject.should have_many(:items, String)
-      subject.items[0].should == 'item1'
+      subject.should have_many(:items, Hash)
+      subject.items = [{:one => 'item1'},{:two => 'item2'}]
     end
   end
 

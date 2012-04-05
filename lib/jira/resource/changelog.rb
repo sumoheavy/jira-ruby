@@ -7,7 +7,7 @@ module JIRA
     class Changelog < JIRA::Base
       nested_collections true
       has_one :author, :class => JIRA::Resource::User
-      has_many :items, :class => String
+      has_many :items, :class => Hash
     end
 
   end
