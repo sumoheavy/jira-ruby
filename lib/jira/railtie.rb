@@ -1,3 +1,6 @@
+require 'jira'
+require 'rails'
+
 module JIRA
   class Railtie < Rails::Railtie
     rake_tasks do
