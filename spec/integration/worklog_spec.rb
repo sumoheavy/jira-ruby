@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Worklog do
-
+ before(:each) do
+  stub_request(:get, "http://localhost:2990/jira/rest/api/2/issue/10002/worklog").
+         to_return(:status => 200, :body => get_mock_response('issue/10002/worklog.json'), :headers => {})
+ end
 
   let(:client) do
     client = JIRA::Client.new('foo', 'bar')

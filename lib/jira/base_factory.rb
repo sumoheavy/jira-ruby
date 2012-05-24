@@ -29,8 +29,8 @@ module JIRA
 
     def self.delegate_to_target_class(*method_names)
       method_names.each do |method_name|
-        define_method method_name do |*args|
-          target_class.send(method_name, @client, *args)
+        define_method method_name do |*args, &block|
+          target_class.send(method_name, @client, *args, &block)
         end
       end
     end

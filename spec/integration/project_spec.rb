@@ -27,7 +27,7 @@ describe JIRA::Resource::Project do
   describe "issues" do
 
     it "returns all the issues" do
-      stub_request(:get, "http://localhost:2990/jira/rest/api/2/search?jql=project='SAMPLEPROJECT'").
+      stub_request(:get, "http://localhost:2990/jira/rest/api/2/search?jql=project='SAMPLEPROJECT'&startAt=0").
         to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.issues.json'))
       subject = client.Project.build('key' => key)
       issues = subject.issues
@@ -39,7 +39,59 @@ describe JIRA::Resource::Project do
 
     end
 
+    it "enumrate all projects using a block" do
+      stub_request(:get, "http://localhost:2990/jira/rest/api/2/project").
+        to_return(:status => 200, :body => get_mock_response('project.json'))
+      count = 0
+      client.Project.all do |project|
+        count += 1
+        project.class.should == JIRA::Resource::Project
+      end
+      count.should == 1
+
+    end
+
+    it "search returns the issues" do
+      
+      query = "assignee = 'admin'"
+
+      stub_request(:get, "http://localhost:2990/jira/rest/api/2/search?jql=" + URI.escape(query+ " project='SAMPLEPROJECT'") + "&startAt=0").
+                   to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.issues.json'))
+      subject = client.Project.build('key' => key)
+
+      JIRA::Resource::Project.get_scoped_jql(subject).should == "project='SAMPLEPROJECT'"
+      
+      issues = subject.issues(query)
+      issues.length.should == 11
+      issues.each do |issue|
+        issue.class.should == JIRA::Resource::Issue
+        issue.expanded?.should be_false
+      end
+
+    end
+
+    it "search returns the issues using an enumerator" do
+      
+      query = "assignee = 'admin'"
+
+      stub_request(:get, "http://localhost:2990/jira/rest/api/2/search?jql=" + URI.escape("project='SAMPLEPROJECT'") + "&startAt=0").
+                   to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.issues.json'))
+      subject = client.Project.build('key' => key)
+
+      JIRA::Resource::Project.get_scoped_jql(subject).should == "project='SAMPLEPROJECT'"
+
+      count = 0
+      subject.issues do |issue|
+        issue.class.should == JIRA::Resource::Issue
+        issue.expanded?.should be_false
+        count += 1
+      end
+      count.should == 11
+    end
+
   end
+
+
 
   it "returns a collection of components" do
 

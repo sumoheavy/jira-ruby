@@ -41,6 +41,7 @@ describe JIRA::Resource::Issue do
           'comment'     => { 'comments' => [{'foo' => 'bar'}, {'baz' => 'flum'}]},
           'attachment'  => [{'foo' => 'bar'}, {'baz' => 'flum'}],
           'worklog'     => { 'worklogs' => [{'foo' => 'bar'}, {'baz' => 'flum'}]},
+          'labels'      => ["label1","label2"]
         }
       })
     }
@@ -78,6 +79,9 @@ describe JIRA::Resource::Issue do
 
       subject.should have_many(:worklogs, JIRA::Resource::Worklog)
       subject.worklogs.length.should == 2
+
+      subject.should have_many(:labels, String)
+      subject.labels.length.should ==2
     end
   end
 end
