@@ -11,12 +11,13 @@ module JIRA
   # are:
   #
   #   :site               => 'http://localhost:2990',
+  #   :context_path       => '/jira',
   #   :signature_method   => 'RSA-SHA1',
-  #   :request_token_path => "/jira/plugins/servlet/oauth/request-token",
-  #   :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
-  #   :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
+  #   :request_token_path => "/plugins/servlet/oauth/request-token",
+  #   :authorize_path     => "/plugins/servlet/oauth/authorize",
+  #   :access_token_path  => "/plugins/servlet/oauth/access-token",
   #   :private_key_file   => "rsakey.pem",
-  #   :rest_base_path     => "/jira/rest/api/2"
+  #   :rest_base_path     => "/rest/api/2"
   #
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
@@ -44,16 +45,23 @@ module JIRA
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',
+      :context_path       => '/jira',
       :signature_method   => 'RSA-SHA1',
-      :request_token_path => "/jira/plugins/servlet/oauth/request-token",
-      :authorize_path     => "/jira/plugins/servlet/oauth/authorize",
-      :access_token_path  => "/jira/plugins/servlet/oauth/access-token",
+      :request_token_path => "/plugins/servlet/oauth/request-token",
+      :authorize_path     => "/plugins/servlet/oauth/authorize",
+      :access_token_path  => "/plugins/servlet/oauth/access-token",
       :private_key_file   => "rsakey.pem",
-      :rest_base_path     => "/jira/rest/api/2"
+      :rest_base_path     => "/rest/api/2"
     }
 
     def initialize(consumer_key, consumer_secret, options={})
       options = DEFAULT_OPTIONS.merge(options)
+
+      # prepend the context path to all authorization and rest paths
+      options[:request_token_path] = options[:context_path] + options[:request_token_path]
+      options[:authorize_path] = options[:context_path] + options[:authorize_path]
+      options[:access_token_path] = options[:context_path] + options[:access_token_path]
+      options[:rest_base_path] = options[:context_path] + options[:rest_base_path]
 
       @options = options
       @options.freeze
