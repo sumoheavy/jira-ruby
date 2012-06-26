@@ -22,9 +22,10 @@ describe JIRA::Client do
     subject.secret.should == 'bar'
   end
 
-  it "sets the default options" do
-    JIRA::Client::DEFAULT_OPTIONS.each do |key, value|
-      subject.options[key].should == value
+  it "sets the non path default options" do
+    options = [:site, :signature_method, :private_key_file]
+    options.each do |key|
+      subject.options[key].should == JIRA::Client::DEFAULT_OPTIONS[key]
     end
   end
 
@@ -32,15 +33,15 @@ describe JIRA::Client do
     # Check it overrides a given option ...
     client = JIRA::Client.new('foo', 'bar', :site => 'http://foo.com/')
     client.options[:site].should == 'http://foo.com/'
-
-    # ... but leaves the rest intact
-    JIRA::Client::DEFAULT_OPTIONS.keys.reject do |key|
-      key == :site
-    end.each do |key|
-      client.options[key].should == JIRA::Client::DEFAULT_OPTIONS[key]
-    end
-
     JIRA::Client::DEFAULT_OPTIONS[:site].should_not == 'http://foo.com/'
+  end
+
+  it "prepends the context path to all authorization and rest paths" do
+    options = [:request_token_path, :authorize_path, :access_token_path, :rest_base_path]
+    defaults = JIRA::Client::DEFAULT_OPTIONS
+    options.each do |key|
+      subject.options[key].should == defaults[:context_path] + defaults[key]
+    end
   end
 
   # To avoid having to validate options after initialisation, e.g. setting
