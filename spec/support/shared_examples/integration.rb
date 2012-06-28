@@ -55,7 +55,7 @@ shared_examples "a resource" do
     else
       subject = client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
     end
-    stub_request(:put, 'http://localhost:2990' + subject.url).
+    stub_request(:put, site_url + subject.url).
                 to_return(:status => 405, :body => "<html><body>Some HTML</body></html>")
     subject.save('foo' => 'bar').should be_false
     lambda do
@@ -68,7 +68,7 @@ end
 shared_examples "a resource with a collection GET endpoint" do
 
   it "should get the collection" do
-    stub_request(:get, "http://localhost:2990" + described_class.collection_path(client)).
+    stub_request(:get, site_url + described_class.collection_path(client)).
                  to_return(:status => 200, :body => get_mock_from_path(:get))
     collection = build_receiver.all
     collection.length.should == expected_collection_length
@@ -84,7 +84,7 @@ shared_examples "a resource with a singular GET endpoint" do
   it "GETs a single resource" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.find()
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
+    stub_request(:get, site_url + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
     subject = client.send(class_basename).find(key, options)
 
@@ -94,7 +94,7 @@ shared_examples "a resource with a singular GET endpoint" do
   it "builds and fetches a single resource" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.build('key' => 'ABC123')
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
+    stub_request(:get, site_url + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
@@ -104,7 +104,7 @@ shared_examples "a resource with a singular GET endpoint" do
   end
 
   it "handles a 404" do
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, '99999', prefix)).
+    stub_request(:get, site_url + described_class.singular_path(client, '99999', prefix)).
                 to_return(:status => 404, :body => '{"errorMessages":["'+class_basename+' Does Not Exist"],"errors": {}}')
     lambda do
       client.send(class_basename).find('99999', options)
@@ -116,7 +116,7 @@ shared_examples "a resource with a DELETE endpoint" do
   it "deletes a resource" do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.delete()
-    stub_request(:delete, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
+    stub_request(:delete, site_url + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 204, :body => nil)
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
@@ -127,7 +127,7 @@ end
 shared_examples "a resource with a POST endpoint" do
 
   it "saves a new resource" do
-    stub_request(:post, "http://localhost:2990" + described_class.collection_path(client, prefix)).
+    stub_request(:post, site_url + described_class.collection_path(client, prefix)).
                 to_return(:status => 201, :body => get_mock_from_path(:post))
     subject = build_receiver.build
     subject.save(attributes_for_post).should be_true
@@ -141,9 +141,9 @@ end
 shared_examples "a resource with a PUT endpoint" do
 
   it "saves an existing component" do
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
+    stub_request(:get, site_url + described_class.singular_path(client, key, prefix)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key =>key))
-    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key, prefix)).
+    stub_request(:put, site_url + described_class.singular_path(client, key, prefix)).
                   to_return(:status => 200, :body => get_mock_from_path(:put, :key => key, :value_if_not_found => nil))
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -158,9 +158,9 @@ end
 shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
 
   it "fails to save with an invalid field" do
-    stub_request(:get, "http://localhost:2990" + described_class.singular_path(client, key)).
+    stub_request(:get, site_url + described_class.singular_path(client, key)).
                 to_return(:status => 200, :body => get_mock_from_path(:get, :key => key))
-    stub_request(:put, "http://localhost:2990" + described_class.singular_path(client, key)).
+    stub_request(:put, site_url + described_class.singular_path(client, key)).
                 to_return(:status => 400, :body => get_mock_from_path(:put, :key => key, :suffix => "invalid"))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch

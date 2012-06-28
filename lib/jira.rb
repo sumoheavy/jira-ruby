@@ -22,6 +22,9 @@ require 'jira/resource/comment'
 require 'jira/resource/worklog'
 require 'jira/resource/issue'
 
+require 'jira/request_client'
+require 'jira/oauth_client'
+require 'jira/http_client'
 require 'jira/client'
 
 require 'jira/railtie' if defined?(Rails)

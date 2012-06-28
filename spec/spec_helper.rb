@@ -7,7 +7,7 @@ Dir["./spec/support/**/*.rb"].each {|f| require f}
 require 'jira'
 
 RSpec.configure do |config|
-
+  config.extend ClientsHelper
 end
 
 
