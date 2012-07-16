@@ -1,4 +1,3 @@
-require 'oauth'
 require 'json'
 require 'forwardable'
 
@@ -6,9 +5,8 @@ module JIRA
 
   # This class is the main access point for all JIRA::Resource instances.
   #
-  # The client must be initialized with a consumer_key and consumer secret,
-  # and an optional hash of extra configuration options.  The available options
-  # are:
+  # The client must be initialized with an options hash containing 
+  # configuration options.  The available options are:
   #
   #   :site               => 'http://localhost:2990',
   #   :context_path       => '/jira',
@@ -17,55 +15,56 @@ module JIRA
   #   :authorize_path     => "/plugins/servlet/oauth/authorize",
   #   :access_token_path  => "/plugins/servlet/oauth/access-token",
   #   :private_key_file   => "rsakey.pem",
-  #   :rest_base_path     => "/rest/api/2"
-  #
+  #   :rest_base_path     => "/rest/api/2",
+  #   :consumer_key       => nil,
+  #   :consumer_secret    => nil,
+  #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+  #   :use_ssl            => true,
+  #   :username           => nil,
+  #   :password           => nil,
+  #   :auth_type          => :oauth
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
-  #
+  
   class Client
 
     extend Forwardable
 
-    # This exception is thrown when the client is used before the OAuth access token
-    # has been initialized.
-    class UninitializedAccessTokenError < StandardError
-      def message
-        "init_access_token must be called before using the client"
-      end
-    end
-
-    # The OAuth::Consumer instance used by this client
-    attr_accessor :consumer
+    # The OAuth::Consumer instance returned by the OauthClient
+    #
+    # The authenticated client instance returned by the respective client type
+    # (Oauth, Basic)
+    attr_accessor :consumer, :request_client
 
     # The configuration options for this client instance
     attr_reader :options
 
-    def_instance_delegators :@consumer, :key, :secret, :get_request_token
+    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',
       :context_path       => '/jira',
-      :signature_method   => 'RSA-SHA1',
-      :request_token_path => "/plugins/servlet/oauth/request-token",
-      :authorize_path     => "/plugins/servlet/oauth/authorize",
-      :access_token_path  => "/plugins/servlet/oauth/access-token",
-      :private_key_file   => "rsakey.pem",
-      :rest_base_path     => "/rest/api/2"
+      :rest_base_path     => "/rest/api/2",
+      :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+      :use_ssl            => true,
+      :auth_type          => :oauth
     }
 
-    def initialize(consumer_key, consumer_secret, options={})
+    def initialize(options={})
       options = DEFAULT_OPTIONS.merge(options)
-
-      # prepend the context path to all authorization and rest paths
-      options[:request_token_path] = options[:context_path] + options[:request_token_path]
-      options[:authorize_path] = options[:context_path] + options[:authorize_path]
-      options[:access_token_path] = options[:context_path] + options[:access_token_path]
-      options[:rest_base_path] = options[:context_path] + options[:rest_base_path]
-
       @options = options
+      @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+
+      case options[:auth_type]
+      when :oauth
+        @request_client = OauthClient.new(@options)
+        @consumer = @request_client.consumer
+      when :basic
+        @request_client = HttpClient.new(@options)
+      end
+
       @options.freeze
-      @consumer = OAuth::Consumer.new(consumer_key,consumer_secret,options)
     end
 
     def Project # :nodoc:
@@ -112,44 +111,17 @@ module JIRA
       JIRA::Resource::VersionFactory.new(self)
     end
 
-    # Returns the current request token if it is set, else it creates
-    # and sets a new token.
-    def request_token
-      @request_token ||= get_request_token
-    end
-
-    # Sets the request token from a given token and secret.
-    def set_request_token(token, secret)
-      @request_token = OAuth::RequestToken.new(@consumer, token, secret)
-    end
-
-    # Initialises and returns a new access token from the params hash
-    # returned by the OAuth transaction.
-    def init_access_token(params)
-      @access_token = request_token.get_access_token(params)
-    end
-
-    # Sets the access token from a preexisting token and secret.
-    def set_access_token(token, secret)
-      @access_token = OAuth::AccessToken.new(@consumer, token, secret)
-    end
-
-    # Returns the current access token. Raises an
-    # JIRA::Client::UninitializedAccessTokenError exception if it is not set.
-    def access_token
-      raise UninitializedAccessTokenError.new unless @access_token
-      @access_token
-    end
-
     # HTTP methods without a body
     def delete(path, headers = {})
-      request(:delete, path,  merge_default_headers(headers))
+      request(:delete, path, nil, merge_default_headers(headers))
     end
+
     def get(path, headers = {})
-      request(:get, path, merge_default_headers(headers))
+      request(:get, path, nil, merge_default_headers(headers))
     end
+
     def head(path, headers = {})
-      request(:head, path, merge_default_headers(headers))
+      request(:head, path, nil, merge_default_headers(headers))
     end
 
     # HTTP methods with a body
@@ -157,21 +129,16 @@ module JIRA
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:post, path, body, merge_default_headers(headers))
     end
+
     def put(path, body = '', headers = {})
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
     end
 
     # Sends the specified HTTP request to the REST API through the
-    # OAuth token.
-    #
-    # Returns the response if the request was successful (HTTP::2xx) and
-    # raises a JIRA::HTTPError if it was not successful, with the response
-    # attached.
-    def request(http_method, path, *arguments)
-      response = access_token.request(http_method, path, *arguments)
-      raise HTTPError.new(response) unless response.kind_of?(Net::HTTPSuccess)
-      response
+    # appropriate method (oauth, basic).
+    def request(http_method, path, body = '', headers)
+      @request_client.request(http_method, path, body, headers)
     end
 
     protected

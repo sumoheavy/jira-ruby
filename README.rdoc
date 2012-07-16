@@ -5,7 +5,7 @@ API version 2).
 
 == Example usage
 
-  client = JIRA::Client.new(CONSUMER_KEY, CONSUMER_SECRET)
+  client = JIRA::Client.new({:consumer_key => CONSUMER_KEY, :consumer_secret => CONSUMER_SECRET})
 
   project = client.Project.find('SAMPLEPROJECT')
 
@@ -70,9 +70,47 @@ key.
   After you have entered all the information click OK and ensure OAuth authentication is
   enabled.
 
+== Configuring JIRA to use HTTP Basic Auth
+
+Follow the same steps described above to set up a new Application Link in JIRA,
+however there is no need to set up any "incoming authentication" as this
+defaults to HTTP Basic Auth.
+
+== Using the API Gem in a command line application
+
+Using HTTP Basic Authentication, configure and connect a client to your instance
+of JIRA.
+
+  require 'rubygems'
+  require 'pp'
+  require 'jira'
+
+  # Consider the use of :use_ssl and :ssl_verify_mode options if running locally 
+  # for tests.
+
+  username = "myremoteuser"
+  password = "myuserspassword"
+
+  options = {
+              :username => username,
+              :password => password,
+              :site     => 'http://localhost:8080/',
+              :context_path => '/myjira',
+              :auth_type => :basic
+            }
+
+  client = JIRA::Client.new(options)
+
+  # Show all projects
+  projects = client.Project.all
+  
+  projects.each do |project|
+    puts "Project -> key: #{project.key}, name: #{project.name}"
+  end
+
 == Using the API Gem in your Rails application
 
-The gem requires the consumer key and public certificate file (which
+Using oauth, the gem requires the consumer key and public certificate file (which
 are generated in their respective rake tasks) to initialize an access token for
 using the JIRA API.
 
@@ -95,17 +133,22 @@ errors are handled gracefully
   class ApplicationController < ActionController::Base
     protect_from_forgery
 
-    rescue_from JIRA::Client::UninitializedAccessTokenError do
+    rescue_from JIRA::OauthClient::UninitializedAccessTokenError do
       redirect_to new_jira_session_url
     end
 
     private
 
     def get_jira_client
+      
+      # add any extra configuration options for your instance of JIRA,
+      # e.g. :use_ssl, :ssl_verify_mode, :context_path, :site
       options = {
-        :private_key_file => "rsakey.pem"
+        :private_key_file => "rsakey.pem",
+        :consumer_key => 'test'
       }
-      @jira_client = JIRA::Client.new('test', '', options)
+
+      @jira_client = JIRA::Client.new(options)
 
       # Add AccessToken if authorised previously.
       if session[:jira_auth]
@@ -190,10 +233,11 @@ Here's the same example as a Sinatra application:
         :authorize_path     => "/plugins/servlet/oauth/authorize",
         :access_token_path  => "/plugins/servlet/oauth/access-token",
         :private_key_file   => "rsakey.pem",
-        :rest_base_path     => "/rest/api/2"
+        :rest_base_path     => "/rest/api/2",
+        :consumer_key       => "jira-ruby-example"
       }
 
-      @jira_client = JIRA::Client.new('jira-ruby-example', '', options)
+      @jira_client = JIRA::Client.new(options)
       @jira_client.consumer.http.set_debug_output($stderr)
 
       # Add AccessToken if authorised previously.
