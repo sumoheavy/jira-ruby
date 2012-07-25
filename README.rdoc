@@ -15,8 +15,8 @@ API version 2).
 
   issue.comments.each {|comment| ... }
 
-  comment = issue.comments.build({'body':'My new comment'})
-  comment.save
+  comment = issue.comments.build
+  comment.save({'body':'My new comment'})
   comment.delete
 
 == Links to JIRA REST API documentation
