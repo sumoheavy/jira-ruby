@@ -71,7 +71,7 @@ module JIRA
       @access_token
     end
 
-    def make_request(http_method, path, body='', headers)
+    def make_request(http_method, path, body='', headers={})
       case http_method
       when :delete, :get, :head
         response = access_token.send http_method, path, headers

@@ -137,7 +137,7 @@ module JIRA
 
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
-    def request(http_method, path, body = '', headers)
+    def request(http_method, path, body = '', headers={})
       @request_client.request(http_method, path, body, headers)
     end
 

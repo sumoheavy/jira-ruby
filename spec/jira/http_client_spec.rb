@@ -23,16 +23,14 @@ describe JIRA::HttpClient do
     basic_auth_http_conn = mock()
     request = mock()
     basic_client.stub(:basic_auth_http_conn => basic_auth_http_conn)
-    request.should_receive(:basic_auth)
-           .with(basic_client.options[:username], basic_client.options[:password])
-           .exactly(5).times.and_return(request)
+    request.should_receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).exactly(5).times.and_return(request)
     basic_auth_http_conn.should_receive(:request).exactly(5).times.with(request).and_return(response)
     [:delete, :get, :head].each do |method|
-      Net::HTTP.const_get(method.capitalize).should_receive(:new).with('/path', headers).and_return(request)
+      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
       basic_client.make_request(method, '/path', nil, headers).should == response
     end
     [:post, :put].each do |method|
-      Net::HTTP.const_get(method.capitalize).should_receive(:new).with('/path', headers).and_return(request)
+      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
       request.should_receive(:body=).with(body).and_return(request)
       basic_client.make_request(method, '/path', body, headers).should == response
     end
