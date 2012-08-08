@@ -6,7 +6,17 @@ require 'rake/rdoctask'
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
-task :default => [:spec]
+task :default => [:test]
+
+task :test => [:prepare, :spec]
+
+describe "Prepare and run rspec tests"
+task :prepare do
+  rsa_key = File.expand_path('rsakey.pem')
+  if !File.exists?(rsa_key)
+    raise "rsakey.pem does not exist, tests will fail.  Run `rake jira:generate_public_cert` first"
+  end
+end
 
 desc "Run RSpec tests"
 RSpec::Core::RakeTask.new(:spec)
