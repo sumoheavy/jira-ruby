@@ -74,5 +74,21 @@ describe JIRA::Resource::Issue do
 
     end
 
+    describe "GET jql issues" do # JIRA::Resource::Issue.jql uses the search endpoint
+      jql_query_string = "PROJECT = 'SAMPLEPROJECT'"
+      let(:client) { client }
+      let(:site_url) { site_url }
+      let(:jql_query_string) { jql_query_string }
+
+      let(:expected_attributes) {
+        {
+          "id"=>"10014",
+          "self"=>"http://localhost:2990/jira/rest/api/2/issue/10014",
+          "key"=>"SAMPLEPROJECT-13"
+        }
+      }
+      it_should_behave_like "a resource with JQL inputs and a collection GET endpoint"
+    end
+
   end
 end

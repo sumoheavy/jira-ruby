@@ -1,3 +1,5 @@
+require 'cgi'
+
 def get_mock_from_path(method, options = {})
   if defined? belongs_to
     prefix = belongs_to.path_component + '/'
@@ -71,6 +73,20 @@ shared_examples "a resource with a collection GET endpoint" do
     stub_request(:get, site_url + described_class.collection_path(client)).
                  to_return(:status => 200, :body => get_mock_from_path(:get))
     collection = build_receiver.all
+    collection.length.should == expected_collection_length
+
+    first = collection.first
+    first.should have_attributes(expected_attributes)
+  end
+
+end
+
+shared_examples "a resource with JQL inputs and a collection GET endpoint" do
+
+  it "should get the collection" do
+    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string)).
+                 to_return(:status => 200, :body => get_mock_response('issue.json'))
+    collection = build_receiver.jql(jql_query_string)
     collection.length.should == expected_collection_length
 
     first = collection.first
