@@ -1,3 +1,5 @@
+require 'cgi'
+
 module JIRA
   module Resource
 
@@ -31,6 +33,15 @@ module JIRA
 
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")
+        json = parse_json(response.body)
+        json['issues'].map do |issue|
+          client.Issue.build(issue)
+        end
+      end
+
+      def self.jql(client, jql)
+        url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
+        response = client.get(url)
         json = parse_json(response.body)
         json['issues'].map do |issue|
           client.Issue.build(issue)
