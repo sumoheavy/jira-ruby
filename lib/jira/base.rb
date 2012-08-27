@@ -417,7 +417,7 @@ module JIRA
       if @attrs['self']
         @attrs['self']
       elsif key_value
-        self.class.singular_path(client, key_value.to_s, prefix)
+        self.class.singular_path(client, URI.encode(key_value.to_s), prefix)
       else
         self.class.collection_path(client, prefix)
       end
