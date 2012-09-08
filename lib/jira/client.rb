@@ -135,6 +135,11 @@ module JIRA
       request(:put, path, body, merge_default_headers(headers))
     end
 
+    def upload(path, body = {}, headers = {})
+      headers = {'Content-Type' => 'multipart/form-data'}.merge(headers)
+      request(:upload, path, body, merge_default_headers(headers))
+    end
+
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
     def request(http_method, path, body = '', headers={})
