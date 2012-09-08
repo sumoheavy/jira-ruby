@@ -18,7 +18,11 @@ module JIRA
 
     def make_request(http_method, path, body='', headers={})
       if http_method == :upload
+        # Add Atlassian XSRF check bypass header
         headers.merge! 'X-Atlassian-Token' => 'nocheck'
+
+        # XXX: should we raise an exception if file param is blank?
+        # XXX: should we detect mime type if none provided?
         # Set filename if none set by caller
         body['filename'] ||= File.basename body['content']
 
