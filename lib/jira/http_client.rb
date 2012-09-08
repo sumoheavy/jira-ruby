@@ -1,5 +1,6 @@
 require 'json'
 require 'net/https'
+require 'net/http/post/multipart'
 
 module JIRA
   class HttpClient < RequestClient
@@ -16,8 +17,14 @@ module JIRA
     end
 
     def make_request(http_method, path, body='', headers={})
-      request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
-      request.body = body unless body.nil?
+      if http_method == :upload
+        headers.merge! 'X-Atlassian-Token' => 'nocheck'
+        request = Net::HTTP::Post::Multipart.new(path, { 'file' => UploadIO.new(body['content'], body['type'], body['filename']) }, headers)
+      else
+        request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
+        request.body = body unless body.nil?
+      end
+
       request.basic_auth(@options[:username], @options[:password])
       response = basic_auth_http_conn.request(request)
       response
