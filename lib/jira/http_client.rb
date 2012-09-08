@@ -19,6 +19,9 @@ module JIRA
     def make_request(http_method, path, body='', headers={})
       if http_method == :upload
         headers.merge! 'X-Atlassian-Token' => 'nocheck'
+        # Set filename if none set by caller
+        body['filename'] ||= File.basename body['content']
+
         request = Net::HTTP::Post::Multipart.new(path, { 'file' => UploadIO.new(body['content'], body['type'], body['filename']) }, headers)
       else
         request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
