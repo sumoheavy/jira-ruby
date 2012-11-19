@@ -117,6 +117,7 @@ module JIRA
     end
 
     def get(path, headers = {})
+      $stderr.puts "jira-ruby GET: #{path}\n"
       request(:get, path, nil, merge_default_headers(headers))
     end
 
