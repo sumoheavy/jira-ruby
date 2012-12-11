@@ -1,13 +1,17 @@
 require 'pp'
 require './lib/jira'
 
+CONSUMER_KEY = 'test'
+SITE         = 'https://test.jira.com'
+
 options = {
-  :private_key_file => "rsakey.pem"
+  :private_key_file => "rsakey.pem",
+  :context_path     => '',
+  :consumer_key     => CONSUMER_KEY,
+  :site             => SITE
 }
 
-CONSUMER_KEY = 'test'
-
-client = JIRA::Client.new(CONSUMER_KEY, '', options)
+client = JIRA::Client.new(options)
 
 if ARGV.length == 0
   # If not passed any command line arguments, open a browser and prompt the
