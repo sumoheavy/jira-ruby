@@ -111,6 +111,13 @@ module JIRA
       JIRA::Resource::VersionFactory.new(self)
     end
 
+    def Filter # :nodoc:
+      JIRA::Resource::FilterFactory.new(self)
+    end
+    def Field # :nodoc:
+      JIRA::Resource::FieldFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
