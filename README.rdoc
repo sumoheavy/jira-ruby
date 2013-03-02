@@ -1,3 +1,5 @@
+= Notice: unfortunately this gem is no longer under maintenance, and we're looking for a new maintainer.  Please write to ak@trineo.co.nz if you are interested in taking over maintenance for this gem.
+
 = JIRA 5 API Gem
 
 This gem provides access to the Atlassian JIRA version 5 REST API (a.k.a REST
