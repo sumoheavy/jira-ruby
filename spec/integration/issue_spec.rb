@@ -6,7 +6,6 @@ describe JIRA::Resource::Issue do
     let(:client) { client }
     let(:site_url) { site_url }
 
-
     let(:key) { "10002" }
 
     let(:expected_attributes) do
@@ -75,6 +74,10 @@ describe JIRA::Resource::Issue do
     end
 
     describe "GET jql issues" do # JIRA::Resource::Issue.jql uses the search endpoint
+      before(:each) do
+        stub_request(:post, site_url + "/jira/rest/api/2/search").
+                    to_return(:status => 200, :body => get_mock_response('issue.json'))
+      end
       jql_query_string = "PROJECT = 'SAMPLEPROJECT'"
       let(:client) { client }
       let(:site_url) { site_url }
