@@ -1,3 +1,3 @@
 module JIRA
-  VERSION = "0.1.1.ooyala"
+  VERSION = "0.1.2.ooyala"
 end
