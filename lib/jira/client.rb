@@ -38,7 +38,7 @@ module JIRA
     attr_accessor :consumer, :request_client
 
     # The configuration options for this client instance
-    attr_reader :options
+    attr_reader :options, :request_options
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
 
@@ -51,7 +51,12 @@ module JIRA
       :auth_type          => :oauth
     }
 
-    def initialize(options={})
+    DEFAULT_REQUEST_OPTIONS = {
+      :max_results       => 1000,
+      :start_at          => 0
+    }
+
+    def initialize(options={}, request_options={})
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
@@ -63,6 +68,10 @@ module JIRA
       when :basic
         @request_client = HttpClient.new(@options)
       end
+
+      request_options = DEFAULT_REQUEST_OPTIONS.merge(request_options)
+      @request_options = request_options
+      @request_options.freeze
 
       @options.freeze
     end

@@ -40,8 +40,9 @@ module JIRA
       end
 
       def self.jql(client, jql)
-        url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
-        response = client.get(url)
+        url = client.options[:rest_base_path] + '/search'
+        request_body = { :jql => jql, :startAt => client.request_options[:start_at], :maxResults => client.request_options[:max_results]}
+        response = client.post(url, request_body.to_json)
         json = parse_json(response.body)
         json['issues'].map do |issue|
           client.Issue.build(issue)
