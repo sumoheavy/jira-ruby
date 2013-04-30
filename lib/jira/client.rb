@@ -38,7 +38,7 @@ module JIRA
     attr_accessor :consumer, :request_client
 
     # The configuration options for this client instance
-    attr_reader :options, :request_options
+    attr_reader :options, :max_results, :start_at
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
 
@@ -70,8 +70,9 @@ module JIRA
       end
 
       request_options = DEFAULT_REQUEST_OPTIONS.merge(request_options)
-      @request_options = request_options
-      @request_options.freeze
+
+      @max_results = request_options[:max_results]
+      @start_at = request_options[:start_at]
 
       @options.freeze
     end
