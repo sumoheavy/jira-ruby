@@ -30,6 +30,8 @@ module JIRA
       has_many :versions, :nested_under => 'fields'
 
       has_many :worklogs, :nested_under => ['fields','worklog']
+      
+      has_many :transitions
 
       def self.all(client)
         response = client.get(client.options[:rest_base_path] + "/search")
