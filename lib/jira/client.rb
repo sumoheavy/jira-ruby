@@ -35,10 +35,10 @@ module JIRA
     #
     # The authenticated client instance returned by the respective client type
     # (Oauth, Basic)
-    attr_accessor :consumer, :request_client
+    attr_accessor :consumer, :request_client, :max_results, :start_at
 
     # The configuration options for this client instance
-    attr_reader :options, :max_results, :start_at
+    attr_reader :options
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
 

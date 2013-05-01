@@ -82,11 +82,24 @@ shared_examples "a resource with a collection GET endpoint" do
 end
 
 shared_examples "a resource with JQL inputs and a collection GET endpoint" do
-
   it "should get the collection" do
     stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string) + "&maxResults=1000&startAt=0").
                  to_return(:status => 200, :body => get_mock_response('issue.json'))
     collection = build_receiver.jql(jql_query_string)
+    collection.length.should == expected_collection_length
+
+    first = collection.first
+    first.should have_attributes(expected_attributes)
+  end
+
+end
+
+shared_examples "a resource with JQL inputs and a collection GET endpoint with maxResult and startAt" do
+
+  it "should get the collection" do
+    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string) + "&maxResults=#{max_results}&startAt=#{start_at}").
+                 to_return(:status => 200, :body => get_mock_response('issue.json'))
+    collection = build_receiver.jql(jql_query_string, start_at, max_results)
     collection.length.should == expected_collection_length
 
     first = collection.first

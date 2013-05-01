@@ -6,7 +6,6 @@ describe JIRA::Resource::Issue do
     let(:client) { client }
     let(:site_url) { site_url }
 
-
     let(:key) { "10002" }
 
     let(:expected_attributes) do
@@ -88,6 +87,24 @@ describe JIRA::Resource::Issue do
         }
       }
       it_should_behave_like "a resource with JQL inputs and a collection GET endpoint"
+    end
+
+    describe "GET jql issues with maxResults and startAt" do 
+      jql_query_string = "PROJECT = 'SAMPLEPROJECT'"
+      let(:client) { client }
+      let(:site_url) { site_url }
+      let(:jql_query_string) { jql_query_string }
+      let(:start_at) { 0 }
+      let(:max_results) { 100 }
+
+      let(:expected_attributes) {
+        {
+          "id"=>"10014",
+          "self"=>"http://localhost:2990/jira/rest/api/2/issue/10014",
+          "key"=>"SAMPLEPROJECT-13"
+        }
+      }
+      it_should_behave_like "a resource with JQL inputs and a collection GET endpoint with maxResult and startAt"
     end
 
   end
