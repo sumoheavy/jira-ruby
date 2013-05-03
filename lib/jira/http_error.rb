@@ -11,6 +11,9 @@ module JIRA
       @response = response
     end
 
+    def to_s
+      "HTTP error performing JIRA request: #{code} - #{message}"
+    end
   end
 
 end
