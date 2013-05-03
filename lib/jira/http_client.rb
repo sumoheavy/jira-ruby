@@ -19,6 +19,7 @@ module JIRA
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?
       request.basic_auth(@options[:username], @options[:password])
+      $stderr.puts request.to_hash
       response = basic_auth_http_conn.request(request)
       response
     end

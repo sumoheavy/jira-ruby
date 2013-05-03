@@ -117,6 +117,7 @@ module JIRA
     end
 
     def get(path, headers = {})
+      $stderr.puts "jira-ruby GET: #{path}\n"
       request(:get, path, nil, merge_default_headers(headers))
     end
 
@@ -126,11 +127,14 @@ module JIRA
 
     # HTTP methods with a body
     def post(path, body = '', headers = {})
+      $stderr.puts "jira-ruby POST: #{path}\n"
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:post, path, body, merge_default_headers(headers))
     end
 
     def put(path, body = '', headers = {})
+      $stderr.puts "jira-ruby PUT: #{path}\n"
+      $stderr.puts "jira-ruby PUT body:\n#{body}\n"
       headers = {'Content-Type' => 'application/json'}.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
     end
