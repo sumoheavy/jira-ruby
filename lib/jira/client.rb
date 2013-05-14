@@ -111,6 +111,14 @@ module JIRA
       JIRA::Resource::VersionFactory.new(self)
     end
 
+    def Transition # :nodoc:
+      JIRA::Resource::TransitionFactory.new(self)
+    end
+
+    def Link # :nodoc:
+      JIRA::Resource::LinkFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
