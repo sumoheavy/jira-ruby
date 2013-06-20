@@ -3,7 +3,7 @@ module JIRA
 
     class RapidViewFactory < JIRA::BaseFactory # :nodoc:
     end
-
+=begin
     class RapidView < JIRA::Base
 
       # Overrides collection path to use greenhopper_rest_path
@@ -12,10 +12,10 @@ module JIRA
       end
 
       def self.all(client)
-        response = client.get(client.options[:greenhopper_base_path] + 'rapidview')
+        response = client.get(client.options[:greenhopper_base_path] + '/rapidview')
         json = self.class.parse_json(response.body)
         json['views'].map do |view|
-          self.new(client, {:attrs => attrs}.merge(options))
+          client.RapidView.build(view)
         end
       end
 
@@ -34,5 +34,7 @@ module JIRA
         end
       end
     end
+
+=end
   end
 end
