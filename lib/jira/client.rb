@@ -56,7 +56,8 @@ module JIRA
     def initialize(options={})
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
-      @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+      #@options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+      @options[:rest_base_path] = "TEST/PATH"
       @options[:greenhopper_base_path] = @options[:context_path] + @options[:greenhopper_base_path]
 
       case options[:auth_type]
@@ -113,6 +114,12 @@ module JIRA
     def Version # :nodoc:
       JIRA::Resource::VersionFactory.new(self)
     end
+
+    def RapidView # :nodoc:
+      JIRA::Resource::RapidViewFactory.new(self)
+    end
+
+
 
     # HTTP methods without a body
     def delete(path, headers = {})
