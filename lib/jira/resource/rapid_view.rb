@@ -8,11 +8,11 @@ module JIRA
 
       # Overrides collection path to use greenhopper_rest_path
       def self.collection_path(client, prefix = '/')
-        client.options[:greenhopper_rest_path] + prefix + self.endpoint_name
+        client.options[:greenhopper_base_path] + prefix + self.endpoint_name
       end
 
       def self.all(client)
-        response = client.get(client.options[:greenhopper_rest_path] + 'rapidview')
+        response = client.get(client.options[:greenhopper_base_path] + 'rapidview')
         json = self.class.parse_json(response.body)
         json['views'].map do |view|
           self.new(client, {:attrs => attrs}.merge(options))
