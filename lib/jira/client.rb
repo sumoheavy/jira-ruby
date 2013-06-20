@@ -47,7 +47,7 @@ module JIRA
       :site                   => 'http://localhost:2990',
       :context_path           => '/jira',
       :rest_base_path         => "/rest/api/2",
-      :greenhopper_base_path  => "/rest/greenhopper/1.0",
+      :greenhopper_base_path  => "/rest/greenhopper/1.0/TEST",
       :ssl_verify_mode        => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl                => true,
       :auth_type              => :oauth
