@@ -5,7 +5,7 @@ module JIRA
     end
 
     class RapidView < JIRA::Base
-=begin
+
       # Overrides collection path to use greenhopper_rest_path
       def self.collection_path(client, prefix = '/')
         client.options[:greenhopper_rest_path] + prefix + self.endpoint_name
@@ -33,7 +33,6 @@ module JIRA
           client.Sprint.build(sprint)
         end
       end
-=end
     end
   end
 end
