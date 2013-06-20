@@ -118,6 +118,10 @@ module JIRA
       JIRA::Resource::RapidViewFactory.new(self)
     end
 
+    def Sprint # :nodoc:
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
 
 
     # HTTP methods without a body
