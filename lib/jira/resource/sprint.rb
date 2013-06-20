@@ -3,7 +3,7 @@ module JIRA
 
     class SprintFactory < JIRA::BaseFactory # :nodoc:
     end
-
+=begin
     class Sprint < JIRA::Base
 
       has_many :completed_issues,   :nested_under => 'contents'
@@ -17,5 +17,6 @@ module JIRA
         instance 
       end
     end
+=end
   end
 end
