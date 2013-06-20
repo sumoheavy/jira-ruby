@@ -21,7 +21,7 @@ require 'jira/resource/status'
 require 'jira/resource/comment'
 require 'jira/resource/worklog'
 require 'jira/resource/issue'
-require 'jira/resource/rapid_view.rb'
+#require 'jira/resource/rapid_view.rb'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
