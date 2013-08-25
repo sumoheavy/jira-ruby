@@ -80,4 +80,23 @@ describe JIRA::Resource::Issue do
       subject.worklogs.length.should == 2
     end
   end
+
+  describe ".jql" do
+
+    before(:each) do
+      @response = mock
+      @response.stub(:body).and_return('{"issues":[]}' )
+      client.stub(:options).and_return({ :rest_base_path => "jira/rest/api/2" })
+    end
+
+    it "provides JQL search access" do
+      client
+        .should_receive(:get)
+        .with("jira/rest/api/2/search?jql=project+%3D+Example")
+        .and_return(@response)
+      JIRA::Resource::Issue.jql(client, 'project = Example')
+    end
+
+  end
+
 end
