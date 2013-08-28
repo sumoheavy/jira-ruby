@@ -80,4 +80,27 @@ describe JIRA::Resource::Issue do
       subject.worklogs.length.should == 2
     end
   end
+
+  describe "unexpanded relationships" do
+    let(:url) {'jira_url'}
+    subject {
+      JIRA::Resource::Issue.new(client, :attrs => {
+        'id' => '123',
+        'expand' => "foo,bar,transitions,baz"
+      })
+    }
+    before {
+      JIRA::Resource::Issue.any_instance.stub(:url).and_return(url)
+      response = mock()
+      response.stub(:body).and_return('{"transitions":[{"id":1},{"id":2}],"id":"101"}')
+      client.should_receive(:get).with("#{url}?expand=transitions").and_return(response)
+    }
+
+    it "has the correct relationships" do
+      subject.should have_many(:transitions, JIRA::Resource::Transition)
+      subject.transitions.count.should == 2
+      subject.transitions.first.id.should == 1
+      subject.transitions.last.id.should == 2
+    end
+  end
 end

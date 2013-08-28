@@ -249,6 +249,13 @@ module JIRA
       define_method(collection) do
         child_class_options = {self_class_basename => self}
         attribute = maybe_nested_attribute(attribute_key, options[:nested_under]) || []
+
+        if attribute.empty? && attrs["expand"] && attrs["expand"].split(",").include?(attribute_key)
+          response = client.get(url + "?expand=#{attribute_key}")
+          set_attrs_from_response(response)
+          attribute = maybe_nested_attribute(attribute_key, options[:nested_under]) || []
+        end
+
         collection = attribute.map do |child_attributes|
           child_class.new(client, child_class_options.merge(:attrs => child_attributes))
         end
