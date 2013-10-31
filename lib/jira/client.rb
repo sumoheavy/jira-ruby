@@ -48,7 +48,11 @@ module JIRA
       :rest_base_path     => "/rest/api/2",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
-      :auth_type          => :oauth
+      :auth_type          => :oauth,
+      :default_headers    => {
+        'User-Agent' => 'Mozilla/4.0',
+        'Accept'     => 'application/json'
+      }
     }
 
     def initialize(options={})
@@ -144,7 +148,7 @@ module JIRA
     protected
 
       def merge_default_headers(headers)
-        {'Accept' => 'application/json'}.merge(headers)
+        @options[:default_headers].merge(headers)
       end
 
   end
