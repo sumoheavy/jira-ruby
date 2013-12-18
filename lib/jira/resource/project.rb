@@ -9,7 +9,6 @@ module JIRA
       has_one :lead, :class => JIRA::Resource::User
       has_many :components
       has_many :issuetypes, :attribute_key => 'issueTypes'
-      has_many :versions
 
       def self.key_attribute
         :key
@@ -22,6 +21,16 @@ module JIRA
         json['issues'].map do |issue|
           client.Issue.build(issue)
         end
+      end
+      
+      def versions
+        path = "#{self.class.singular_path(client, key)}/versions"
+        response = client.get path
+        vs = self.class.parse_json(response.body)
+        vs.map! do |v|
+          client.Version.build v
+        end
+        vs
       end
 
     end
