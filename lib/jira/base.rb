@@ -106,7 +106,26 @@ module JIRA
       instance.attrs[key_attribute.to_s] = key
       instance.fetch
       instance
-    end
+		end
+
+    # Finds and retrieves a resource with the given ID.
+    # If raise a JIRA::HTTPError then return nil
+    def self._find(client, key, options = {})
+      instance = self.new(client, options)
+      instance.attrs[key_attribute.to_s] = key
+      begin
+        instance.fetch
+      rescue => e
+        if e.is_a?(JIRA::HTTPError) 
+          puts JSON.parse(e.response.body)["errorMessages"][0]
+          instance=nil
+        else
+          raise e
+        end
+      end
+      instance
+		end
+
 
     # Builds a new instance of the resource with the given attributes.
     # These attributes will be posted to the JIRA Api if save is called.

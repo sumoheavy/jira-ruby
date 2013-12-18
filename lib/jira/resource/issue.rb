@@ -39,8 +39,16 @@ module JIRA
         end
       end
 
-      def self.jql(client, jql)
+			#client call sample
+			#client.jql("filter=900",:startAt=>0,:maxResults=>100,:fields=>"Summary")
+			#Searches for issues using JQL
+      def self.jql(client, jql,extends={})
         url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
+				#add extend params
+				url << "&startAt=#{extends[:startAt]}" if extends[:startAt]
+				url << "&maxResults=#{extends[:maxResults]}" if extends[:maxResults]
+				url << "&fields=#{extends[:fields]}" if extends[:fields]
+
         response = client.get(url)
         json = parse_json(response.body)
         json['issues'].map do |issue|
