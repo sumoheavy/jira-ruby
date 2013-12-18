@@ -1,7 +1,7 @@
-= JIRA 5 API Gem
+= JIRA API Gem
+{<img src="https://codeclimate.com/github/sumoheavy/jira-ruby.png" />}[https://codeclimate.com/github/sumoheavy/jira-ruby]
 
-This gem provides access to the Atlassian JIRA version 5 REST API (a.k.a REST
-API version 2).
+This gem provides access to the Atlassian JIRA REST API.
 
 == Example usage
 
@@ -22,7 +22,7 @@ API version 2).
 == Links to JIRA REST API documentation
 
 * {Overview}[https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs]
-* {Reference}[http://docs.atlassian.com/jira/REST/5.0-rc1/]
+* {Reference}[http://docs.atlassian.com/jira/REST/latest/]
 
 
 == Setting up the JIRA SDK
@@ -38,7 +38,7 @@ Otherwise:
 * Unpack the dowloaded archive
 * From within the archive directory, run:
 
-    ./bin/atlas-run-standalone --product jira --version 5.0-rc2
+    ./bin/atlas-run-standalone --product jira
 
 Once this is running, you should be able to connect to
 http://localhost:2990/ and login to the JIRA admin system using `admin:admin`
@@ -312,4 +312,3 @@ Here's the same example as a Sinatra application:
       redirect "/"
     end
   end
-
