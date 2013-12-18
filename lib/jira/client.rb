@@ -8,21 +8,22 @@ module JIRA
   # The client must be initialized with an options hash containing 
   # configuration options.  The available options are:
   #
-  #   :site               => 'http://localhost:2990',
-  #   :context_path       => '/jira',
-  #   :signature_method   => 'RSA-SHA1',
-  #   :request_token_path => "/plugins/servlet/oauth/request-token",
-  #   :authorize_path     => "/plugins/servlet/oauth/authorize",
-  #   :access_token_path  => "/plugins/servlet/oauth/access-token",
-  #   :private_key_file   => "rsakey.pem",
-  #   :rest_base_path     => "/rest/api/2",
-  #   :consumer_key       => nil,
-  #   :consumer_secret    => nil,
-  #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
-  #   :use_ssl            => true,
-  #   :username           => nil,
-  #   :password           => nil,
-  #   :auth_type          => :oauth
+  #   :site                   => 'http://localhost:2990',
+  #   :context_path           => '/jira',
+  #   :signature_method       => 'RSA-SHA1',
+  #   :request_token_path     => "/plugins/servlet/oauth/request-token",
+  #   :authorize_path         => "/plugins/servlet/oauth/authorize",
+  #   :access_token_path      => "/plugins/servlet/oauth/access-token",
+  #   :private_key_file       => "rsakey.pem",
+  #   :rest_base_path         => "/rest/api/2",
+  #   :greenhopper_base_path  => "/rest/greenhopper/1.0"
+  #   :consumer_key           => nil,
+  #   :consumer_secret        => nil,
+  #   :ssl_verify_mode        => OpenSSL::SSL::VERIFY_PEER,
+  #   :use_ssl                => true,
+  #   :username               => nil,
+  #   :password               => nil,
+  #   :auth_type              => :oauth
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -43,18 +44,20 @@ module JIRA
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
 
     DEFAULT_OPTIONS = {
-      :site               => 'http://localhost:2990',
-      :context_path       => '/jira',
-      :rest_base_path     => "/rest/api/2",
-      :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
-      :use_ssl            => true,
-      :auth_type          => :oauth
+      :site                   => 'http://localhost:2990',
+      :context_path           => '/jira',
+      :rest_base_path         => "/rest/api/2",
+      :greenhopper_base_path  => "/rest/greenhopper/1.0",
+      :ssl_verify_mode        => OpenSSL::SSL::VERIFY_PEER,
+      :use_ssl                => true,
+      :auth_type              => :oauth
     }
 
     def initialize(options={})
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+      @options[:greenhopper_base_path] = @options[:context_path] + @options[:greenhopper_base_path]
 
       case options[:auth_type]
       when :oauth
@@ -110,6 +113,16 @@ module JIRA
     def Version # :nodoc:
       JIRA::Resource::VersionFactory.new(self)
     end
+
+    def RapidView # :nodoc:
+      JIRA::Resource::RapidViewFactory.new(self)
+    end
+
+    def Sprint # :nodoc:
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
+
 
     # HTTP methods without a body
     def delete(path, headers = {})
