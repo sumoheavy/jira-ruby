@@ -3,6 +3,18 @@
 This gem provides access to the Atlassian JIRA version 5 REST API (a.k.a REST
 API version 2).
 
+== My changes on transitions
+
+Pull request on sumoheavy's repo: https://github.com/sumoheavy/jira-ruby/pull/48
+This allows the application of transitions on issues.
+It does not have any working tests, so I don't expect it to be accepted. However, if you would like to write some, be my guest. I will be using my fork internally, and I will hopefully get around to testing this code soon.
+
+Example usage:
+
+  # issue = a jira-ruby issue
+  transition = issue.transitions.build()
+  trans_response = transition.save(:transition => {:id => 51})
+
 == Example usage
 
   client = JIRA::Client.new({:consumer_key => CONSUMER_KEY, :consumer_secret => CONSUMER_SECRET})
