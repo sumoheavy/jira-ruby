@@ -1,5 +1,6 @@
 = JIRA API Gem
 {<img src="https://codeclimate.com/github/sumoheavy/jira-ruby.png" />}[https://codeclimate.com/github/sumoheavy/jira-ruby]
+{<img src="https://travis-ci.org/sumoheavy/jira-ruby.png?branch=master"}[https://travis-ci.org/sumoheavy/jira-ruby]
 
 This gem provides access to the Atlassian JIRA REST API.
 
