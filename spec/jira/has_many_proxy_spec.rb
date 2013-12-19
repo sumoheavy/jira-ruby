@@ -6,8 +6,8 @@ describe JIRA::HasManyProxy do
 
   subject { JIRA::HasManyProxy.new(parent, Foo, collection) }
 
-  let(:parent)      { mock("parent") }
-  let(:collection)  { mock("collection") }
+  let(:parent)      { double("parent") }
+  let(:collection)  { double("collection") }
 
   it "has a target class" do
     subject.target_class.should == Foo
@@ -22,8 +22,8 @@ describe JIRA::HasManyProxy do
   end
 
   it "can build a new instance" do
-    client = mock('client')
-    foo = mock('foo')
+    client = double('client')
+    foo = double('foo')
     parent.stub(:client => client, :to_sym => :parent)
     Foo.should_receive(:new).with(client, :attrs => {'foo' => 'bar'}, :parent => parent).and_return(foo)
     collection.should_receive(:<<).with(foo)
@@ -31,8 +31,8 @@ describe JIRA::HasManyProxy do
   end
 
   it "can get all the instances" do
-    foo = mock('foo')
-    client = mock('client')
+    foo = double('foo')
+    client = double('client')
     parent.stub(:client => client, :to_sym => :parent)
     Foo.should_receive(:all).with(client, :parent => parent).and_return(foo)
     subject.all.should == foo

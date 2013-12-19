@@ -13,7 +13,7 @@ describe JIRA::Client do
   let(:clients) { [oauth_client, basic_client] }
 
   let(:response) do
-    response = mock("response")
+    response = double("response")
     response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
@@ -64,7 +64,7 @@ describe JIRA::Client do
     describe "like oauth" do
 
       it "allows setting an access token" do
-        token = mock()
+        token = double()
         OAuth::AccessToken.should_receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
         access_token = oauth_client.set_access_token('foo', 'bar')
 
@@ -75,7 +75,7 @@ describe JIRA::Client do
       it "allows initializing the access token" do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
         oauth_client.consumer.stub(:get_request_token => request_token)
-        mock_access_token = mock()
+        mock_access_token = double()
         request_token.should_receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
         oauth_client.init_access_token(:oauth_verifier => 'abc123')
         oauth_client.access_token.should == mock_access_token
@@ -178,7 +178,7 @@ describe JIRA::Client do
     end
 
     it "finds a single project" do
-      find_result = mock()
+      find_result = double()
       JIRA::Resource::Project.should_receive(:find).with(oauth_client, '123').and_return(find_result)
       JIRA::Resource::Project.should_receive(:find).with(basic_client, '123').and_return(find_result)
       oauth_client.Project.find('123').should == find_result

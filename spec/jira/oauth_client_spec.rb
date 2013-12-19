@@ -9,7 +9,7 @@ describe JIRA::OauthClient do
   end
 
   let(:response) do
-    response = mock("response")
+    response = double("response")
     response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
@@ -37,7 +37,7 @@ describe JIRA::OauthClient do
     end
 
     it "allows setting the request token" do
-      token = mock()
+      token = double()
       OAuth::RequestToken.should_receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
 
       request_token = oauth_client.set_request_token('foo', 'bar')
@@ -59,7 +59,7 @@ describe JIRA::OauthClient do
       it "initializes" do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
         oauth_client.consumer.stub(:get_request_token => request_token)
-        mock_access_token = mock()
+        mock_access_token = double()
         request_token.should_receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
         oauth_client.init_access_token(:oauth_verifier => 'abc123')
         oauth_client.access_token.should == mock_access_token
@@ -73,7 +73,7 @@ describe JIRA::OauthClient do
       end
 
       it "allows setting the access token" do
-        token = mock()
+        token = double()
         OAuth::AccessToken.should_receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
 
         access_token = oauth_client.set_access_token('foo', 'bar')
@@ -85,8 +85,8 @@ describe JIRA::OauthClient do
 
     describe "http" do
       it "responds to the http methods" do
-        headers = mock()
-        mock_access_token = mock()
+        headers = double()
+        mock_access_token = double()
         oauth_client.stub(:access_token => mock_access_token)
         [:delete, :get, :head].each do |method|
           mock_access_token.should_receive(method).with('/path', headers).and_return(response)
@@ -100,8 +100,8 @@ describe JIRA::OauthClient do
 
       it "performs a request" do
         body = nil
-        headers = mock()
-        access_token = mock()
+        headers = double()
+        access_token = double()
         access_token.should_receive(:send).with(:get, '/foo', headers).and_return(response)
         oauth_client.stub(:access_token => access_token)
         oauth_client.request(:get, '/foo', body, headers)

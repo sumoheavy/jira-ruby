@@ -31,7 +31,7 @@ describe JIRA::Base do
 
   end
 
-  let(:client)  { mock("client") }
+  let(:client)  { double("client") }
   let(:attrs)   { Hash.new }
 
   subject { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
@@ -42,7 +42,7 @@ describe JIRA::Base do
   end
 
   it "returns all the deadbeefs" do
-    response = mock()
+    response = double()
     response.should_receive(:body).and_return('[{"self":"http://deadbeef/","id":"98765"}]')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef').and_return(response)
     JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
@@ -56,7 +56,7 @@ describe JIRA::Base do
   end
 
   it "finds a deadbeef by id" do
-    response = mock()
+    response = double()
     response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
     JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
@@ -142,7 +142,7 @@ describe JIRA::Base do
     describe "not cached" do
 
       before(:each) do
-        response = mock()
+        response = double()
         response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765"}')
         client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
         JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
@@ -180,7 +180,7 @@ describe JIRA::Base do
 
   describe "save" do
 
-    let(:response) { mock() }
+    let(:response) { double() }
 
     subject { JIRA::Resource::Deadbeef.new(client) }
 
@@ -223,7 +223,7 @@ describe JIRA::Base do
   end
 
   describe "save!" do
-    let(:response) { mock() }
+    let(:response) { double() }
 
     subject { JIRA::Resource::Deadbeef.new(client) }
 
@@ -382,7 +382,7 @@ describe JIRA::Base do
     subject { JIRA::Resource::Deadbeef.new(client, :attrs => {}) }
 
     it "sets the attrs from a response" do
-      response = mock()
+      response = double()
       response.stub(:body).and_return('{"foo":"bar"}')
 
       subject.set_attrs_from_response(response).should == {'foo' => 'bar'}
@@ -390,7 +390,7 @@ describe JIRA::Base do
     end
 
     it "doesn't clobber existing attrs not in response" do
-      response = mock()
+      response = double()
       response.stub(:body).and_return('{"foo":"bar"}')
 
       subject.attrs = {'flum' => 'flar'}
@@ -400,7 +400,7 @@ describe JIRA::Base do
     end
 
     it "handles nil response body" do
-      response = mock()
+      response = double()
       response.stub(:body).and_return(nil)
 
       subject.attrs = {'flum' => 'flar'}

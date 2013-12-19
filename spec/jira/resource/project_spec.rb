@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Project do
 
-  let(:client) { mock() }
+  let(:client) { double() }
 
   describe "relationships" do
     subject {

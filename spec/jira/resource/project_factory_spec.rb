@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::ProjectFactory do
 
-  let(:client)  { mock() }
+  let(:client)  { double() }
   subject       { JIRA::Resource::ProjectFactory.new(client) }
 
   it "initializes correctly" do

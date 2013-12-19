@@ -3,7 +3,7 @@ require 'spec_helper'
 describe JIRA::HTTPError do
 
   let(:response)  { 
-    response = mock("response") 
+    response = double("response") 
     response.stub(:code => 401)
     response.stub(:message => "A MESSAGE WOO")
     response

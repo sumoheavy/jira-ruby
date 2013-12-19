@@ -5,7 +5,7 @@ describe JIRA::BaseFactory do
   class JIRA::Resource::FooFactory < JIRA::BaseFactory ; end
   class JIRA::Resource::Foo ; end
 
-  let(:client)  { mock() }
+  let(:client)  { double() }
   subject       { JIRA::Resource::FooFactory.new(client) }
 
   it "initializes correctly" do
@@ -29,7 +29,7 @@ describe JIRA::BaseFactory do
   end
 
   it "proxies build to the target class" do
-    attrs = mock()
+    attrs = double()
     JIRA::Resource::Foo.should_receive(:build).with(client, attrs)
     subject.build(attrs)
   end
