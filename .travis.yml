@@ -3,4 +3,4 @@ rvm:
     - 2.0.0
 before_install:
     - curl http://www.sumoheavylabs.com/rsakey.pem -o $TRAVIS_BUILD_DIR/rsakey.pem
-script: bundle exec rake spec:ci
+script: bundle exec rake spec
