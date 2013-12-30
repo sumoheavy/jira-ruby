@@ -80,4 +80,41 @@ describe JIRA::Resource::Issue do
       subject.worklogs.length.should == 2
     end
   end
+
+  describe ".jql" do
+
+    before(:each) do
+      @response = mock
+      @response.stub(:body).and_return('{"issues":[]}' )
+      client.stub(:options).and_return({ :rest_base_path => "jira/rest/api/2" })
+    end
+
+    it "provides JQL search access" do
+      client
+        .should_receive(:get)
+        .with("jira/rest/api/2/search?jql=project+%3D+Example")
+        .and_return(@response)
+      JIRA::Resource::Issue.jql(client, 'project = Example')
+    end
+
+    it "supports a max_results option" do
+      client
+        .should_receive(:get)
+        .with("jira/rest/api/2/search?jql=project+%3D+Example&maxResults=200")
+        .and_return(@response)
+      JIRA::Resource::Issue.jql(client, 'project = Example', { :max_results => 200 })
+    end
+
+    it "supports a fields option" do
+      client
+        .should_receive(:get)
+        .with("jira/rest/api/2/search?jql=project+%3D+Example&fields=summary,customfield_123")
+        .and_return(@response)
+      JIRA::Resource::Issue.jql(client, 'project = Example', {
+        :fields => [ "summary", "customfield_123" ],
+      })
+    end
+
+  end
+
 end
