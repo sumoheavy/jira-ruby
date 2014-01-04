@@ -30,7 +30,7 @@ This gem provides access to the Atlassian JIRA REST API.
 
 On Mac OS,
 
-    brew install atlassian-plugin-sdk
+    brew install atlassian/tap/atlassian-plugin-sdk
 
 Otherwise:
 
