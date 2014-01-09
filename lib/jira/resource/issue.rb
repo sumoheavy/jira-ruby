@@ -20,6 +20,8 @@ module JIRA
 
       has_one :status,    :nested_under => 'fields'
 
+      has_many :transitions
+
       has_many :components, :nested_under => 'fields'
 
       has_many :comments, :nested_under => ['fields','comment']
