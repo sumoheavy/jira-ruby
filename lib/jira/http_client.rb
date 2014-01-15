@@ -31,6 +31,8 @@ module JIRA
       http_conn = Net::HTTP.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
       http_conn.verify_mode = @options[:ssl_verify_mode]
+      http_conn.cert_store = OpenSSL::X509::Store.new
+      http_conn.cert_store.set_default_paths
       http_conn
     end
 
