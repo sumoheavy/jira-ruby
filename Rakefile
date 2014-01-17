@@ -13,7 +13,7 @@ task :test => [:prepare, :spec]
 desc 'Prepare and run rspec tests'
 task :prepare do
   rsa_key = File.expand_path('rsakey.pem')
-  if !File.exists?(rsa_key)
+  unless File.exists?(rsa_key)
     raise 'rsakey.pem does not exist, tests will fail.  Run `rake jira:generate_public_cert` first'
   end
 end

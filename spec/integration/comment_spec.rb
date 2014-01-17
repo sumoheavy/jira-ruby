@@ -14,7 +14,8 @@ describe JIRA::Resource::Comment do
 
     let(:belongs_to) {
       JIRA::Resource::Issue.new(client, :attrs => {
-        'id' => '10002', 'fields' => {
+        'id' => '10002',
+        'fields' => {
           'comment' => {'comments' => []}
         }
       })
@@ -29,7 +30,7 @@ describe JIRA::Resource::Comment do
     end
 
     let(:attributes_for_post) {
-      {"body" => "new comment"}
+      { "body" => "new comment" }
     }
     let(:expected_attributes_from_post) {
       { "id" => "10001", "body" => "new comment"}
