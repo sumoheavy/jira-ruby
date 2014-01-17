@@ -2,5 +2,5 @@ language: ruby
 rvm:
     - 2.0.0
 before_install:
-    - curl http://69.160.53.4/rsakey.pem -o $TRAVIS_BUILD_DIR/rsakey.pem
+    - rake jira:generate_public_cert
 script: bundle exec rake spec
