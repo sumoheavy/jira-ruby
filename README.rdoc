@@ -30,13 +30,7 @@ This gem provides access to the Atlassian JIRA REST API.
 
 On Mac OS,
 
-    brew install atlassian-plugin-sdk
-
-Otherwise:
-
-* Download the SDK from https://developer.atlassian.com/ (You will need
-  an Atlassian login for this)
-* Unpack the dowloaded archive
+* Follow the instructions under "Mac OSX Installer" here: https://developer.atlassian.com/display/DOCS/Install+the+Atlassian+SDK+on+a+Linux+or+Mac+System
 * From within the archive directory, run:
 
     ./bin/atlas-run-standalone --product jira
