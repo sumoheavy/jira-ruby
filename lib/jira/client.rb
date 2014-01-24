@@ -77,6 +77,10 @@ module JIRA
       JIRA::Resource::IssueFactory.new(self)
     end
 
+    def Filter # :nodoc:
+      JIRA::Resource::FilterFactory.new(self)
+    end
+
     def Component # :nodoc:
       JIRA::Resource::ComponentFactory.new(self)
     end
