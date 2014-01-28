@@ -59,11 +59,16 @@ describe JIRA::HttpClient do
     uri = double()
     host = double()
     port = double()
+    cert_store = double()
     uri.should_receive(:host).and_return(host)
     uri.should_receive(:port).and_return(port)
     Net::HTTP.should_receive(:new).with(host, port).and_return(http_conn)
     http_conn.should_receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
     http_conn.should_receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
+    OpenSSL::X509::Store.should_receive(:new).and_return(cert_store)
+    http_conn.should_receive(:cert_store=).with(cert_store).and_return(cert_store)
+    http_conn.should_receive(:cert_store).and_return(cert_store)
+    cert_store.should_receive(:set_default_paths).and_return(nil)
     basic_client.http_conn(uri).should == http_conn
   end
 
