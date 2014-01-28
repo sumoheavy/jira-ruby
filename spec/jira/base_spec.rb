@@ -67,6 +67,21 @@ describe JIRA::Base do
     deadbeef.expanded?.should be_true
   end
 
+  it "finds a deadbeef containing changelog by id" do
+    response = double() 
+    response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}')
+    client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
+
+    JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
+
+    deadbeef = JIRA::Resource::Deadbeef.find(client, '98765', {expand:'changelog'})
+    deadbeef.client.should == client
+    deadbeef.attrs['self'].should  == 'http://deadbeef/'
+    deadbeef.attrs['id'].should   == '98765'
+    deadbeef.expanded?.should be_true
+    deadbeef.attrs['changelog']['histories'].should == []
+  end
+
   it "builds a deadbeef" do
     deadbeef = JIRA::Resource::Deadbeef.build(client, 'id' => "98765" )
     deadbeef.expanded?.should be_false
@@ -176,6 +191,21 @@ describe JIRA::Base do
       end
     end
 
+    context "with expand parameter 'changelog'" do
+      it "fetchs changelogs '" do
+        response = double() 
+        response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}')
+        client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
+
+        JIRA::Resource::Deadbeef.should_receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
+
+        subject.fetch(false, {expand:'changelog'})
+
+        subject.self.should == "http://deadbeef/"
+        subject.id.should  == "98765"
+        subject.changelog['histories'].should == []
+      end
+    end
   end
 
   describe "save" do
