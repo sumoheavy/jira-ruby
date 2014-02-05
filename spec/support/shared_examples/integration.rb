@@ -82,15 +82,37 @@ shared_examples "a resource with a collection GET endpoint" do
 end
 
 shared_examples "a resource with JQL inputs and a collection GET endpoint" do
-
   it "should get the collection" do
-    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string)).
+    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string) + "&maxResults=1000&startAt=0").
                  to_return(:status => 200, :body => get_mock_response('issue.json'))
     collection = build_receiver.jql(jql_query_string)
     collection.length.should == expected_collection_length
 
     first = collection.first
     first.should have_attributes(expected_attributes)
+  end
+
+end
+
+shared_examples "a resource with JQL inputs and a collection GET endpoint with maxResult and startAt" do
+
+  it "should get the collection" do
+    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string) + "&maxResults=#{max_results}&startAt=#{start_at}").
+                 to_return(:status => 200, :body => get_mock_response('issue.json'))
+
+    ## Check for default values in Client
+    client.max_results.should eq(1000)
+    client.start_at.should eq(0)
+
+    collection = build_receiver.jql(jql_query_string, start_at, max_results)
+    collection.length.should == expected_collection_length
+
+    first = collection.first
+    first.should have_attributes(expected_attributes)
+
+    # verify that parameters passed trough from Issue.jql() to Client instance
+    client.max_results.should eq(max_results)
+    client.start_at.should eq(start_at)
   end
 
 end
