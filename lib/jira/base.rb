@@ -1,5 +1,6 @@
 require 'active_support/core_ext/string'
 require 'active_support/inflector'
+require 'set'
 
 module JIRA
 
@@ -50,6 +51,8 @@ module JIRA
   #   new_comment = issue.comments.build
   #
   class Base
+    QUERY_PARAMS_FOR_SINGLE_FETCH = Set.new [:expand, :fields]
+    QUERY_PARAMS_FOR_SEARCH = Set.new [:expand, :fields, :startAt, :maxResults]
 
     # A reference to the JIRA::Client used to initialize this resource.
     attr_reader :client
@@ -104,7 +107,7 @@ module JIRA
     def self.find(client, key, options = {})
       instance = self.new(client, options)
       instance.attrs[key_attribute.to_s] = key
-      instance.fetch
+      instance.fetch(false, query_params_for_single_fetch(options))
       instance
     end
 
@@ -331,9 +334,9 @@ module JIRA
     # Fetches the attributes for the specified resource from JIRA unless
     # the resource is already expanded and the optional force reload flag 
     # is not set
-    def fetch(reload = false)
+    def fetch(reload = false, query_params = {})
       return if expanded? && !reload
-      response = client.get(url)
+      response = client.get(url_with_query_params(url, query_params))
       set_attrs_from_response(response)
       @expanded = true
     end
@@ -465,5 +468,30 @@ module JIRA
       end
     end
 
+    def url_with_query_params(url, query_params)
+      if not query_params.empty?
+        "#{url}?#{hash_to_query_string query_params}"
+      else
+        url
+      end
+    end
+
+    def hash_to_query_string(query_params)
+      query_params.map do |k,v|
+        CGI.escape(k.to_s) + "=" + CGI.escape(v.to_s)
+      end.join('&')
+    end
+
+    def self.query_params_for_single_fetch(options)
+      Hash[options.select do |k,v|
+        QUERY_PARAMS_FOR_SINGLE_FETCH.include? k
+      end]
+    end
+
+    def self.query_params_for_search(options)
+      Hash[options.select do |k,v|
+        QUERY_PARAMS_FOR_SEARCH.include? k
+      end]
+    end
   end
 end
