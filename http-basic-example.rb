@@ -51,7 +51,7 @@ end
 #
 # # List issues by JQL query
 # # ------------------------
-# client.Issue.jql('PROJECT = "SAMPLEPROJECT"').each do |issue|
+# client.Issue.jql('PROJECT = "SAMPLEPROJECT"', [comments, summary]).each do |issue|
 #   puts "#{issue.id} - #{issue.fields['summary']}"
 # end
 #

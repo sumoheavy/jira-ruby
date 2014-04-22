@@ -332,7 +332,7 @@ module JIRA
     end
 
     # Fetches the attributes for the specified resource from JIRA unless
-    # the resource is already expanded and the optional force reload flag 
+    # the resource is already expanded and the optional force reload flag
     # is not set
     def fetch(reload = false, query_params = {})
       return if expanded? && !reload

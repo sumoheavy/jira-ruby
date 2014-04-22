@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Issue do
 
-  let(:client) { double() }
+  let(:client) { double(options: {rest_base_path: '/jira/rest/api/2'}) }
 
   it "should find an issue by key or id" do
     response = double()
@@ -17,6 +17,30 @@ describe JIRA::Resource::Issue do
     issue_from_key = JIRA::Resource::Issue.find(client,'foo')
 
     issue_from_id.attrs.should == issue_from_key.attrs
+  end
+
+  it "should search an issue with a jql query string" do
+    response = double()
+    issue = double()
+    response.stub(:body).and_return('{"issues": {"key":"foo"}}')
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar').
+      and_return(response)
+    client.should_receive(:Issue).and_return(issue)
+    issue.should_receive(:build).with(["key", "foo"]).and_return('')
+
+    JIRA::Resource::Issue.jql(client,'foo bar').should == ['']
+  end
+
+  it "should search an issue with a jql query string and fields" do
+    response = double()
+    issue = double()
+    response.stub(:body).and_return('{"issues": {"key":"foo"}}')
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar%26fields%3Dfoo%2Cbar').
+      and_return(response)
+    client.should_receive(:Issue).and_return(issue)
+    issue.should_receive(:build).with(["key", "foo"]).and_return('')
+
+    JIRA::Resource::Issue.jql(client,'foo bar',['foo','bar']).should == ['']
   end
 
   it "provides direct accessors to the fields" do
