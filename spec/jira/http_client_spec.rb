@@ -7,7 +7,18 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:basic_cookie_client) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(:use_cookies => true)
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
+    response = double("response")
+    response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    response
+  end
+
+  let(:cookie_response) do
     response = double("response")
     response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
@@ -35,6 +46,27 @@ describe JIRA::HttpClient do
       basic_client.make_request(method, '/path', body, headers).should == response
     end
   end
+
+  it "gets and sets cookies" do
+    body = ''
+    headers = double()
+    basic_auth_http_conn = double()
+    request = double()
+    basic_cookie_client.stub(:basic_auth_http_conn => basic_auth_http_conn)
+    request.should_receive(:basic_auth).with(basic_cookie_client.options[:username], basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
+    cookie_response.should_receive(:get_fields).with('set-cookie').exactly(5).times
+    basic_auth_http_conn.should_receive(:request).exactly(5).times.with(request).and_return(cookie_response)
+    [:delete, :get, :head].each do |method|
+      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
+      basic_cookie_client.make_request(method, '/path', nil, headers).should == cookie_response
+    end
+    [:post, :put].each do |method|
+      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
+      request.should_receive(:body=).with(body).and_return(request)
+      basic_cookie_client.make_request(method, '/path', body, headers).should == cookie_response
+    end
+  end
+
 
   it "performs a basic http client request" do
     body = nil
