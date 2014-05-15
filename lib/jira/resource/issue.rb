@@ -44,8 +44,9 @@ module JIRA
         end
       end
 
-      def self.jql(client, jql, fields = nil)
-        url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
+      def self.jql(client, jql, fields = nil, start_at = 0, max_results = 50)
+        url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql) +
+          "&startAt=#{start_at}&maxResults=#{max_results}"
         url += CGI.escape("&fields=#{fields.join(",")}") if fields
         response = client.get(url)
         json = parse_json(response.body)
