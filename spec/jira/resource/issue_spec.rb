@@ -23,7 +23,7 @@ describe JIRA::Resource::Issue do
     response = double()
     issue = double()
     response.stub(:body).and_return('{"issues": {"key":"foo"}}')
-    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&startAt=0&maxResults=50').
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar').
       and_return(response)
     client.should_receive(:Issue).and_return(issue)
     issue.should_receive(:build).with(["key", "foo"]).and_return('')
@@ -35,12 +35,12 @@ describe JIRA::Resource::Issue do
     response = double()
     issue = double()
     response.stub(:body).and_return('{"issues": {"key":"foo"}}')
-    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&startAt=0&maxResults=50%26fields%3Dfoo%2Cbar').
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&fields=foo,bar').
       and_return(response)
     client.should_receive(:Issue).and_return(issue)
     issue.should_receive(:build).with(["key", "foo"]).and_return('')
 
-    JIRA::Resource::Issue.jql(client,'foo bar',['foo','bar']).should == ['']
+    JIRA::Resource::Issue.jql(client, 'foo bar', fields: ['foo','bar']).should == ['']
   end
 
   it "should search an issue with a jql query string, start at, and maxResults" do
@@ -52,7 +52,7 @@ describe JIRA::Resource::Issue do
     client.should_receive(:Issue).and_return(issue)
     issue.should_receive(:build).with(["key", "foo"]).and_return('')
 
-    JIRA::Resource::Issue.jql(client,'foo bar', nil, 1, 3).should == ['']
+    JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3).should == ['']
   end
 
   it "provides direct accessors to the fields" do
