@@ -1,5 +1,4 @@
 require 'cgi'
-require 'active_support/inflector'
 
 module JIRA
   module Resource
