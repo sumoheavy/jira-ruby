@@ -1,5 +1,6 @@
 require 'json'
 require 'net/https'
+require 'cgi/cookie'
 
 module JIRA
   class HttpClient < RequestClient
@@ -13,13 +14,16 @@ module JIRA
 
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
+      @cookies = {}
     end
 
     def make_request(http_method, path, body='', headers={})
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?
+      add_cookies(request) if options[:use_cookies]
       request.basic_auth(@options[:username], @options[:password])
       response = basic_auth_http_conn.request(request)
+      store_cookies(response) if options[:use_cookies]
       response
     end
 
@@ -41,6 +45,25 @@ module JIRA
 
     def uri
       uri = URI.parse(@options[:site])
+    end
+
+    private
+
+    def store_cookies(response)
+      cookies = response.get_fields('set-cookie')
+      if cookies
+        cookies.each do |cookie|
+          data = CGI::Cookie.parse(cookie)
+          data.delete('Path')
+          @cookies.merge!(data)
+        end
+      end
+    end
+
+    def add_cookies(request)
+      cookie_array = @cookies.values.map { |cookie| cookie.to_s }
+      request.add_field('Cookie', cookie_array.join('; ')) if cookie_array.any?
+      request
     end
   end
 end
