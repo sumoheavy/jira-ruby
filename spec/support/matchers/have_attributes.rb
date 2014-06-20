@@ -5,7 +5,7 @@ RSpec::Matchers.define :have_attributes do |expected|
     end
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     "expected #{actual.attrs} to match #{expected}"
   end
 end

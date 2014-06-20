@@ -59,9 +59,9 @@ shared_examples "a resource" do
     end
     stub_request(:put, site_url + subject.url).
                 to_return(:status => 405, :body => "<html><body>Some HTML</body></html>")
-    subject.save('foo' => 'bar').should be_false
+    subject.save('foo' => 'bar').should == false
     lambda do
-      subject.save!('foo' => 'bar').should be_false
+      subject.save!('foo' => 'bar').should == false
     end.should raise_error(JIRA::HTTPError)
   end
 
@@ -84,7 +84,8 @@ end
 shared_examples "a resource with JQL inputs and a collection GET endpoint" do
 
   it "should get the collection" do
-    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string)).
+    stub_request(:get, site_url + client.options[:rest_base_path] +
+      '/search?jql=' + CGI.escape(jql_query_string) + '&maxResults=50&startAt=0').
                  to_return(:status => 200, :body => get_mock_response('issue.json'))
     collection = build_receiver.jql(jql_query_string)
     collection.length.should == expected_collection_length
@@ -136,7 +137,7 @@ shared_examples "a resource with a DELETE endpoint" do
                 to_return(:status => 204, :body => nil)
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
-    subject.delete.should be_true
+    subject.delete.should == true
   end
 end
 
@@ -146,7 +147,7 @@ shared_examples "a resource with a POST endpoint" do
     stub_request(:post, site_url + described_class.collection_path(client, prefix)).
                 to_return(:status => 201, :body => get_mock_from_path(:post))
     subject = build_receiver.build
-    subject.save(attributes_for_post).should be_true
+    subject.save(attributes_for_post).should == true
     expected_attributes_from_post.each do |method_name, value|
       subject.send(method_name).should == value
     end
@@ -163,7 +164,7 @@ shared_examples "a resource with a PUT endpoint" do
                   to_return(:status => 200, :body => get_mock_from_path(:put, :key => key, :value_if_not_found => nil))
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
-    subject.save(attributes_for_put).should be_true
+    subject.save(attributes_for_put).should == true
     expected_attributes_from_put.each do |method_name, value|
       subject.send(method_name).should == value
     end
@@ -181,7 +182,7 @@ shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
 
-    subject.save('fields'=> {'invalid' => 'field'}).should be_false
+    subject.save('fields'=> {'invalid' => 'field'}).should == false
     lambda do
       subject.save!('fields'=> {'invalid' => 'field'})
     end.should raise_error(JIRA::HTTPError)

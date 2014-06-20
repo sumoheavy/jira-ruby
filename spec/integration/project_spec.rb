@@ -33,7 +33,7 @@ describe JIRA::Resource::Project do
         issues.length.should == 11
         issues.each do |issue|
           issue.class.should == JIRA::Resource::Issue
-          issue.expanded?.should be_false
+          issue.expanded?.should == false
         end
 
       end
