@@ -69,7 +69,7 @@ describe JIRA::Resource::Issue do
       it "fails to save when fields and update are missing" do
         subject = client.Issue.build('id' => '10002')
         subject.fetch
-        subject.save('missing' => 'fields and update').should be_false
+        subject.save('missing' => 'fields and update').should == false
       end
 
     end

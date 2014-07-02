@@ -2,12 +2,19 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
 require 'bundler/setup'
 require 'webmock/rspec'
+require 'pry'
 Dir["./spec/support/**/*.rb"].each {|f| require f}
 
 require 'jira'
 
 RSpec.configure do |config|
   config.extend ClientsHelper
+  config.expect_with :rspec do |c|
+    c.syntax = [ :should, :expect ]
+  end
+  config.mock_with :rspec do |c|
+    c.syntax = [ :should, :expect ]
+  end
 end
 
 

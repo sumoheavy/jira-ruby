@@ -23,7 +23,7 @@ describe JIRA::Resource::Issue do
     response = double()
     issue = double()
     response.stub(:body).and_return('{"issues": {"key":"foo"}}')
-    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar').
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&startAt=0&maxResults=50').
       and_return(response)
     client.should_receive(:Issue).and_return(issue)
     issue.should_receive(:build).with(["key", "foo"]).and_return('')
@@ -35,7 +35,7 @@ describe JIRA::Resource::Issue do
     response = double()
     issue = double()
     response.stub(:body).and_return('{"issues": {"key":"foo"}}')
-    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar%26fields%3Dfoo%2Cbar').
+    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&fields=foo%2Cbar&startAt=0&maxResults=50').
       and_return(response)
     client.should_receive(:Issue).and_return(issue)
     issue.should_receive(:build).with(["key", "foo"]).and_return('')

@@ -86,7 +86,7 @@ describe JIRA::Resource::Filter do
     expect(filter).to be_present
     client.stub(:options) { { :rest_base_path => 'localhost' } }
     client.should_receive(:get).
-      with("localhost/search?jql=#{CGI.escape(filter.jql)}").
+      with("localhost/search?jql=#{CGI.escape(filter.jql)}&startAt=0&maxResults=50").
       and_return(issue_jql_response)
     issues = filter.issues
     expect(issues).to be_an(Array)

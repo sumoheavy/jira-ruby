@@ -52,7 +52,7 @@ describe JIRA::Base do
     first.class.should == JIRA::Resource::Deadbeef
     first.attrs['self'].should  == 'http://deadbeef/'
     first.attrs['id'].should   == '98765'
-    first.expanded?.should be_false
+    first.expanded?.should == false
   end
 
   it "finds a deadbeef by id" do
@@ -64,11 +64,11 @@ describe JIRA::Base do
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
     deadbeef.attrs['id'].should   == '98765'
-    deadbeef.expanded?.should be_true
+    deadbeef.expanded?.should == true
   end
 
   it "finds a deadbeef containing changelog by id" do
-    response = double() 
+    response = double()
     response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}')
     client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
 
@@ -78,13 +78,13 @@ describe JIRA::Base do
     deadbeef.client.should == client
     deadbeef.attrs['self'].should  == 'http://deadbeef/'
     deadbeef.attrs['id'].should   == '98765'
-    deadbeef.expanded?.should be_true
+    deadbeef.expanded?.should == true
     deadbeef.attrs['changelog']['histories'].should == []
   end
 
   it "builds a deadbeef" do
     deadbeef = JIRA::Resource::Deadbeef.build(client, 'id' => "98765" )
-    deadbeef.expanded?.should be_false
+    deadbeef.expanded?.should == false
 
     deadbeef.client.should == client
     deadbeef.attrs['id'].should   == '98765'
@@ -164,13 +164,13 @@ describe JIRA::Base do
       end
 
       it "sets expanded to true after fetch" do
-        subject.expanded?.should be_false
+        subject.expanded?.should == false
         subject.fetch
-        subject.expanded?.should be_true
+        subject.expanded?.should == true
       end
 
       it "performs a fetch" do
-        subject.expanded?.should be_false
+        subject.expanded?.should == false
         subject.fetch
         subject.self.should == "http://deadbeef/"
         subject.id.should  == "98765"
@@ -193,7 +193,7 @@ describe JIRA::Base do
 
     context "with expand parameter 'changelog'" do
       it "fetchs changelogs '" do
-        response = double() 
+        response = double()
         response.stub(:body).and_return('{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}')
         client.should_receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
 
@@ -222,17 +222,17 @@ describe JIRA::Base do
       response.stub(:body => '{"id":"123"}')
       subject.stub(:new_record? => true)
       client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save("foo" => "bar").should be_true
+      subject.save("foo" => "bar").should == true
       subject.id.should == "123"
-      subject.expanded.should be_false
+      subject.expanded.should == false
     end
 
     it "PUTs an existing record" do
       response.stub(:body => nil)
       subject.stub(:new_record? => false)
       client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save("foo" => "bar").should be_true
-      subject.expanded.should be_false
+      subject.save("foo" => "bar").should == true
+      subject.expanded.should == false
     end
 
     it "merges attrs on save" do
@@ -247,7 +247,7 @@ describe JIRA::Base do
       response.stub(:body => '{"errorMessages":["blah"]}', :status => 400)
       subject.stub(:new_record? => false)
       client.should_receive(:put).with('/foo/bar','{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
-      subject.save("invalid_field" => "foobar").should be_false
+      subject.save("invalid_field" => "foobar").should == false
     end
 
   end
@@ -265,17 +265,17 @@ describe JIRA::Base do
       response.stub(:body => '{"id":"123"}')
       subject.stub(:new_record? => true)
       client.should_receive(:post).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save!("foo" => "bar").should be_true
+      subject.save!("foo" => "bar").should == true
       subject.id.should == "123"
-      subject.expanded.should be_false
+      subject.expanded.should == false
     end
 
     it "PUTs an existing record" do
       response.stub(:body => nil)
       subject.stub(:new_record? => false)
       client.should_receive(:put).with('/foo/bar','{"foo":"bar"}').and_return(response)
-      subject.save!("foo" => "bar").should be_true
-      subject.expanded.should be_false
+      subject.save!("foo" => "bar").should == true
+      subject.expanded.should == false
     end
 
     it "throws an exception when an invalid field is set" do
@@ -310,9 +310,9 @@ describe JIRA::Base do
     end
 
     it "flags itself as deleted" do
-      subject.deleted?.should be_false
+      subject.deleted?.should == false
       subject.delete
-      subject.deleted?.should be_true
+      subject.deleted?.should == true
     end
 
     it "sends a DELETE request" do
@@ -325,12 +325,12 @@ describe JIRA::Base do
 
     it "returns true for new_record? when new object" do
       subject.attrs['id'] = nil
-      subject.new_record?.should be_true
+      subject.new_record?.should == true
     end
 
     it "returns false for new_record? when id is set" do
       subject.attrs['id'] = '123'
-      subject.new_record?.should be_false
+      subject.new_record?.should == false
     end
 
   end
@@ -339,11 +339,11 @@ describe JIRA::Base do
 
     it "returns true when the response contains errors" do
       attrs["errors"] = {"invalid" => "Field invalid"}
-      subject.has_errors?.should be_true
+      subject.has_errors?.should == true
     end
 
     it "returns false when the response does not contain any errors" do
-      subject.has_errors?.should be_false
+      subject.has_errors?.should == false
     end
 
   end
@@ -442,12 +442,12 @@ describe JIRA::Base do
   describe "nesting" do
 
     it "defaults collection_attributes_are_nested to false" do
-      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should be_false
+      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should == false
     end
 
     it "allows collection_attributes_are_nested to be set" do
       JIRA::Resource::Deadbeef.nested_collections true
-      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should be_true
+      JIRA::Resource::Deadbeef.collection_attributes_are_nested.should == true
     end
 
   end
