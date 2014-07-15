@@ -46,7 +46,7 @@ module JIRA
 
       def self.jql(client, jql, fields = nil)
         url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
-        url += CGI.escape("&fields=#{fields.join(",")}") if fields
+        url += "&fields=" + CGI.escape(fields.join(",")) if fields
         response = client.get(url)
         json = parse_json(response.body)
         json['issues'].map do |issue|
