@@ -74,7 +74,7 @@ describe JIRA::Client do
 
       it "allows initializing the access token" do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
-        allow(request_token).to receive(:get_request_token).and_return(request_token)
+        allow(oauth_client.consumer).to receive(:get_request_token).and_return(request_token)
         mock_access_token = double()
         expect(request_token).to receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
         oauth_client.init_access_token(:oauth_verifier => 'abc123')
