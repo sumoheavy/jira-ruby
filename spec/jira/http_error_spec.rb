@@ -2,24 +2,25 @@ require 'spec_helper'
 
 describe JIRA::HTTPError do
 
-  let(:response)  { 
-    response = double("response") 
-    response.stub(:code => 401)
-    response.stub(:message => "A MESSAGE WOO")
+  let(:response)  {
+    response = double("response")
+    allow(response).to receive(:code).and_return(401)
+    allow(response).to receive(:message).and_return("A MESSAGE WOO")
     response
   }
+
   subject { described_class.new(response) }
 
   it "takes the response object as an argument" do
-    subject.response.should == response
+    expect(subject.response).to eq(response)
   end
 
   it "has a code method" do
-    subject.code.should == response.code
+    expect(subject.code).to eq(response.code)
   end
 
   it "returns code and class from message" do
-    subject.message.should == response.message
+    expect(subject.message).to eq(response.message)
   end
 
 end

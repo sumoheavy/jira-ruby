@@ -43,7 +43,7 @@ describe JIRA::Resource::Transition do
           .with(:body => attributes_for_post.to_json)
           .to_return(:status => 200, :body => get_mock_from_path(:post))
         subject = build_receiver.build
-        subject.save(attributes_for_post).should be_true
+        expect(subject.save(attributes_for_post)).to be_truthy
       end
     end
 

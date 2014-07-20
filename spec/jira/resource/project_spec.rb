@@ -17,14 +17,14 @@ describe JIRA::Resource::Project do
     }
 
     it "has the correct relationships" do
-      subject.should have_one(:lead, JIRA::Resource::User)
-      subject.lead.foo.should == 'bar'
+      expect(subject).to have_one(:lead, JIRA::Resource::User)
+      expect(subject.lead.foo).to eq('bar')
 
-      subject.should have_many(:issuetypes, JIRA::Resource::Issuetype)
-      subject.issuetypes.length.should == 2
+      expect(subject).to have_many(:issuetypes, JIRA::Resource::Issuetype)
+      expect(subject.issuetypes.length).to eq(2)
 
-      subject.should have_many(:versions, JIRA::Resource::Version)
-      subject.versions.length.should == 2
+      expect(subject).to have_many(:versions, JIRA::Resource::Version)
+      expect(subject.versions.length).to eq(2)
     end
   end
 
@@ -41,11 +41,11 @@ describe JIRA::Resource::Project do
         :body => response_body)
       issue_factory = double("issue factory")
 
-      client.should_receive(:get)
+      expect(client).to receive(:get)
         .with('/jira/rest/api/2/search?jql=project%3D%22test%22')
         .and_return(response)
-      client.should_receive(:Issue).and_return(issue_factory)
-      issue_factory.should_receive(:build)
+      expect(client).to receive(:Issue).and_return(issue_factory)
+      expect(issue_factory).to receive(:build)
         .with(JSON.parse(response_body)["issues"][0])
       subject.issues
     end
@@ -57,11 +57,11 @@ describe JIRA::Resource::Project do
           :body => response_body)
         issue_factory = double("issue factory")
 
-        client.should_receive(:get)
+        expect(client).to receive(:get)
           .with('/jira/rest/api/2/search?jql=project%3D%22test%22&expand=changelog&startAt=1&maxResults=100')
           .and_return(response)
-        client.should_receive(:Issue).and_return(issue_factory)
-        issue_factory.should_receive(:build)
+        expect(client).to receive(:Issue).and_return(issue_factory)
+        expect(issue_factory).to receive(:build)
           .with(JSON.parse(response_body)["issues"][0])
         subject.issues({expand:'changelog', startAt:1, maxResults:100})
       end

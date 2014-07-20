@@ -1,9 +1,9 @@
 RSpec::Matchers.define :have_many do |collection, klass|
   match do |actual|
-    actual.send(collection).class.should == JIRA::HasManyProxy
-    actual.send(collection).length.should > 0
+    expect(actual.send(collection).class).to eq(JIRA::HasManyProxy)
+    expect(actual.send(collection).length).to be > 0
     actual.send(collection).each do |member|
-      member.class.should == klass
+      expect(member.class).to eq(klass)
     end
   end
 end
