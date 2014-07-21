@@ -12,8 +12,8 @@ describe JIRA::Resource::Attachment do
     }
 
     it "has the correct relationships" do
-      subject.should have_one(:author, JIRA::Resource::User)
-      subject.author.foo.should == 'bar'
+      expect(subject).to have_one(:author, JIRA::Resource::User)
+      expect(subject.author.foo).to eq('bar')
     end
   end
 

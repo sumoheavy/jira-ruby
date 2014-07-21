@@ -10,76 +10,76 @@ describe JIRA::OauthClient do
 
   let(:response) do
     response = double("response")
-    response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
-  
+
   describe "authenticating with oauth" do
     it "prepends the context path to all authorization and rest paths" do
       options = [:request_token_path, :authorize_path, :access_token_path]
       defaults = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::OauthClient::DEFAULT_OPTIONS)
       options.each do |key|
-        oauth_client.options[key].should == defaults[:context_path] + defaults[key]
+        expect(oauth_client.options[key]).to eq(defaults[:context_path] + defaults[key])
       end
     end
 
     it "creates a Oauth::Consumer on initialize" do
-      oauth_client.consumer.class.should == OAuth::Consumer
-      oauth_client.consumer.key.should == oauth_client.key
-      oauth_client.consumer.secret.should == oauth_client.secret
+      expect(oauth_client.consumer.class).to eq(OAuth::Consumer)
+      expect(oauth_client.consumer.key).to eq(oauth_client.key)
+      expect(oauth_client.consumer.secret).to eq(oauth_client.secret)
     end
 
     it "returns an OAuth request_token" do
       # Cannot just check for method delegation as http connection will be attempted
       request_token = OAuth::RequestToken.new(oauth_client.consumer)
-      oauth_client.consumer.stub(:get_request_token => request_token)
-      oauth_client.get_request_token.should == request_token
+      allow(oauth_client).to receive(:get_request_token).and_return(request_token)
+      expect(oauth_client.get_request_token).to eq(request_token)
     end
 
     it "allows setting the request token" do
       token = double()
-      OAuth::RequestToken.should_receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
+      expect(OAuth::RequestToken).to receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
 
       request_token = oauth_client.set_request_token('foo', 'bar')
 
-      request_token.should == token
-      oauth_client.request_token.should == token
+      expect(request_token).to eq(token)
+      expect(oauth_client.request_token).to eq(token)
     end
 
     it "allows setting the consumer key" do
-      oauth_client.key.should == 'foo'
+      expect(oauth_client.key).to eq('foo')
     end
 
     it "allows setting the consumer secret" do
-      oauth_client.secret.should == 'bar'
+      expect(oauth_client.secret).to eq('bar')
     end
 
     describe "the access token" do
 
       it "initializes" do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
-        oauth_client.consumer.stub(:get_request_token => request_token)
+        allow(oauth_client).to receive(:get_request_token).and_return(request_token)
         mock_access_token = double()
-        request_token.should_receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
+        expect(request_token).to receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
         oauth_client.init_access_token(:oauth_verifier => 'abc123')
-        oauth_client.access_token.should == mock_access_token
+        expect(oauth_client.access_token).to eq(mock_access_token)
       end
 
       it "raises an exception when accessing without initialisation" do
         expect {
           oauth_client.access_token
-        }.to raise_exception(JIRA::OauthClient::UninitializedAccessTokenError, 
+        }.to raise_exception(JIRA::OauthClient::UninitializedAccessTokenError,
                              "init_access_token must be called before using the client")
       end
 
       it "allows setting the access token" do
         token = double()
-        OAuth::AccessToken.should_receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
+        expect(OAuth::AccessToken).to receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
 
         access_token = oauth_client.set_access_token('foo', 'bar')
 
-        access_token.should         == token
-        oauth_client.access_token.should == token
+        expect(access_token).to eq(token)
+        expect(oauth_client.access_token).to eq(token)
       end
     end
 
@@ -87,13 +87,13 @@ describe JIRA::OauthClient do
       it "responds to the http methods" do
         headers = double()
         mock_access_token = double()
-        oauth_client.stub(:access_token => mock_access_token)
+        allow(oauth_client).to receive(:access_token).and_return(mock_access_token)
         [:delete, :get, :head].each do |method|
-          mock_access_token.should_receive(method).with('/path', headers).and_return(response)
+          expect(mock_access_token).to receive(method).with('/path', headers).and_return(response)
           oauth_client.make_request(method, '/path', '', headers)
         end
         [:post, :put].each do |method|
-          mock_access_token.should_receive(method).with('/path', '', headers).and_return(response)
+          expect(mock_access_token).to receive(method).with('/path', '', headers).and_return(response)
           oauth_client.make_request(method, '/path', '', headers)
         end
       end
@@ -102,8 +102,8 @@ describe JIRA::OauthClient do
         body = nil
         headers = double()
         access_token = double()
-        access_token.should_receive(:send).with(:get, '/foo', headers).and_return(response)
-        oauth_client.stub(:access_token => access_token)
+        expect(access_token).to receive(:send).with(:get, '/foo', headers).and_return(response)
+        allow(oauth_client).to receive(:access_token).and_return(access_token)
         oauth_client.request(:get, '/foo', body, headers)
       end
     end

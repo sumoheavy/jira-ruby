@@ -14,18 +14,18 @@ describe JIRA::HttpClient do
 
   let(:response) do
     response = double("response")
-    response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
 
   let(:cookie_response) do
     response = double("response")
-    response.stub(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
 
   it "creates an instance of Net:HTTP for a basic auth client" do
-    basic_client.basic_auth_http_conn.class.should == Net::HTTP
+    expect(basic_client.basic_auth_http_conn.class).to eq(Net::HTTP)
   end
 
   it "responds to the http methods" do
@@ -33,17 +33,17 @@ describe JIRA::HttpClient do
     headers = double()
     basic_auth_http_conn = double()
     request = double()
-    basic_client.stub(:basic_auth_http_conn => basic_auth_http_conn)
-    request.should_receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).exactly(5).times.and_return(request)
-    basic_auth_http_conn.should_receive(:request).exactly(5).times.with(request).and_return(response)
+    allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).exactly(5).times.and_return(request)
+    expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(response)
     [:delete, :get, :head].each do |method|
-      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
-      basic_client.make_request(method, '/path', nil, headers).should == response
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(basic_client.make_request(method, '/path', nil, headers)).to eq(response)
     end
     [:post, :put].each do |method|
-      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
-      request.should_receive(:body=).with(body).and_return(request)
-      basic_client.make_request(method, '/path', body, headers).should == response
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(request).to receive(:body=).with(body).and_return(request)
+      expect(basic_client.make_request(method, '/path', body, headers)).to eq(response)
     end
   end
 
@@ -52,18 +52,18 @@ describe JIRA::HttpClient do
     headers = double()
     basic_auth_http_conn = double()
     request = double()
-    basic_cookie_client.stub(:basic_auth_http_conn => basic_auth_http_conn)
-    request.should_receive(:basic_auth).with(basic_cookie_client.options[:username], basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
-    cookie_response.should_receive(:get_fields).with('set-cookie').exactly(5).times
-    basic_auth_http_conn.should_receive(:request).exactly(5).times.with(request).and_return(cookie_response)
+    allow(basic_cookie_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    expect(request).to receive(:basic_auth).with(basic_cookie_client.options[:username], basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
+    expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
+    expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
     [:delete, :get, :head].each do |method|
-      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
-      basic_cookie_client.make_request(method, '/path', nil, headers).should == cookie_response
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(basic_cookie_client.make_request(method, '/path', nil, headers)).to eq(cookie_response)
     end
     [:post, :put].each do |method|
-      Net::HTTP.const_get(method.to_s.capitalize).should_receive(:new).with('/path', headers).and_return(request)
-      request.should_receive(:body=).with(body).and_return(request)
-      basic_cookie_client.make_request(method, '/path', body, headers).should == cookie_response
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(request).to receive(:body=).with(body).and_return(request)
+      expect(basic_cookie_client.make_request(method, '/path', body, headers)).to eq(cookie_response)
     end
   end
 
@@ -73,17 +73,17 @@ describe JIRA::HttpClient do
     headers = double()
     basic_auth_http_conn = double()
     http_request = double()
-    Net::HTTP::Get.should_receive(:new).with('/foo', headers).and_return(http_request)
+    expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
 
-    basic_auth_http_conn.should_receive(:request).with(http_request).and_return(response)
-    http_request.should_receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
-    basic_client.stub(:basic_auth_http_conn => basic_auth_http_conn)
+    expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
+    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
+    allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, '/foo', body, headers)
   end
 
   it "returns a URI" do
     uri = URI.parse(basic_client.options[:site])
-    basic_client.uri.should == uri
+    expect(basic_client.uri).to eq(uri)
   end
 
   it "sets up a http connection with options" do
@@ -91,19 +91,19 @@ describe JIRA::HttpClient do
     uri = double()
     host = double()
     port = double()
-    uri.should_receive(:host).and_return(host)
-    uri.should_receive(:port).and_return(port)
-    Net::HTTP.should_receive(:new).with(host, port).and_return(http_conn)
-    http_conn.should_receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
-    http_conn.should_receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
-    basic_client.http_conn(uri).should == http_conn
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+    expect(Net::HTTP).to receive(:new).with(host, port).and_return(http_conn)
+    expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
+    expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
+    expect(basic_client.http_conn(uri)).to eq(http_conn)
   end
 
   it "returns a http connection" do
     http_conn = double()
     uri = double()
-    basic_client.should_receive(:uri).and_return(uri)
-    basic_client.should_receive(:http_conn).and_return(http_conn)
-    basic_client.basic_auth_http_conn.should == http_conn
+    expect(basic_client).to receive(:uri).and_return(uri)
+    expect(basic_client).to receive(:http_conn).and_return(http_conn)
+    expect(basic_client.basic_auth_http_conn).to eq(http_conn)
   end
 end
