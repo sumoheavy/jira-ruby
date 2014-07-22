@@ -30,10 +30,10 @@ describe JIRA::Resource::Project do
           to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.issues.json'))
         subject = client.Project.build('key' => key)
         issues = subject.issues
-        issues.length.should == 11
+        expect(issues.length).to eq(11)
         issues.each do |issue|
-          issue.class.should == JIRA::Resource::Issue
-          issue.expanded?.should be_false
+          expect(issue.class).to eq(JIRA::Resource::Issue)
+          expect(issue.expanded?).to be_falsey
         end
 
       end
@@ -46,9 +46,9 @@ describe JIRA::Resource::Project do
         to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.json'))
 
       subject = client.Project.find(key)
-      subject.components.length.should == 2
+      expect(subject.components.length).to eq(2)
       subject.components.each do |component|
-        component.class.should == JIRA::Resource::Component
+        expect(component.class).to eq(JIRA::Resource::Component)
       end
 
     end
