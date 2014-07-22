@@ -48,13 +48,15 @@ describe JIRA::Resource::Issue do
   it "should search an issue with a jql query string, start at, and maxResults" do
     response = double()
     issue = double()
-    response.stub(:body).and_return('{"issues": {"key":"foo"}}')
-    client.should_receive(:get).with('/jira/rest/api/2/search?jql=foo+bar&startAt=1&maxResults=3').
-      and_return(response)
-    client.should_receive(:Issue).and_return(issue)
-    issue.should_receive(:build).with(["key", "foo"]).and_return('')
 
-    JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3).should == ['']
+    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
+    expect(client).to receive(:get)
+      .with('/jira/rest/api/2/search?jql=foo+bar&startAt=1&maxResults=3')
+      .and_return(response)
+    expect(client).to receive(:Issue).and_return(issue)
+    expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
+
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3)).to eq([''])
   end
 
   it "provides direct accessors to the fields" do
