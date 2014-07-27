@@ -83,8 +83,14 @@ end
 shared_examples "a resource with JQL inputs and a collection GET endpoint" do
 
   it "should get the collection" do
-    stub_request(:get, site_url + client.options[:rest_base_path] + '/search?jql=' + CGI.escape(jql_query_string)).
-                 to_return(:status => 200, :body => get_mock_response('issue.json'))
+    stub_request(
+      :get,
+      site_url +
+        client.options[:rest_base_path] +
+        '/search?jql=' +
+        CGI.escape(jql_query_string)
+    ).to_return(:status => 200, :body => get_mock_response('issue.json'))
+
     collection = build_receiver.jql(jql_query_string)
 
     expect(collection.length).to eq(expected_collection_length)
