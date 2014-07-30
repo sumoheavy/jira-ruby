@@ -6,8 +6,8 @@ describe JIRA::Resource::ProjectFactory do
   subject       { JIRA::Resource::ProjectFactory.new(client) }
 
   it "initializes correctly" do
-    subject.class.should  == JIRA::Resource::ProjectFactory
-    subject.client.should == client
+    expect(subject.class).to eq(JIRA::Resource::ProjectFactory)
+    expect(subject.client).to eq(client)
   end
 
 end

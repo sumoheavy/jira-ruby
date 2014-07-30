@@ -3,7 +3,7 @@ require 'spec_helper'
 describe JIRA::Resource::Filter do
   let(:client) do
     client = double()
-    client.stub(:Issue) { JIRA::Resource::IssueFactory.new(self) }
+    allow(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(self))
     client
   end
   let(:collection_path) { '/rest/api/2/filter' }
@@ -44,12 +44,12 @@ describe JIRA::Resource::Filter do
   end
   let(:filter_response) do
     response = double()
-    response.stub(:body).and_return(filter_attrs.to_json)
+    allow(response).to receive(:body).and_return(filter_attrs.to_json)
     response
   end
   let(:filter) do
-    client.should_receive(:get).with("#{collection_path}/42").and_return(filter_response)
-    JIRA::Resource::Filter.stub(:collection_path).and_return(collection_path)
+    expect(client).to receive(:get).with("#{collection_path}/42").and_return(filter_response)
+    allow(JIRA::Resource::Filter).to receive(:collection_path).and_return(collection_path)
     JIRA::Resource::Filter.find(client, 42)
   end
   let(:jql_issue) do
@@ -74,7 +74,7 @@ describe JIRA::Resource::Filter do
   end
   let(:issue_jql_response) do
     response = double()
-    response.stub(:body).and_return(jql_attrs.to_json)
+    allow(response).to receive(:body).and_return(jql_attrs.to_json)
     response
   end
 
@@ -84,8 +84,8 @@ describe JIRA::Resource::Filter do
 
   it "returns issues" do
     expect(filter).to be_present
-    client.stub(:options) { { :rest_base_path => 'localhost' } }
-    client.should_receive(:get).
+    allow(client).to receive(:options).and_return({ :rest_base_path => 'localhost' })
+    expect(client).to receive(:get).
       with("localhost/search?jql=#{CGI.escape(filter.jql)}").
       and_return(issue_jql_response)
     issues = filter.issues
