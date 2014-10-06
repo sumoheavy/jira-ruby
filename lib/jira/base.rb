@@ -290,7 +290,7 @@ module JIRA
     # Checks if method_name is set in the attributes hash
     # and returns true when found, otherwise proxies the
     # call to the superclass.
-    def respond_to?(method_name)
+    def respond_to?(method_name, include_all=false)
       if attrs.keys.include? method_name.to_s
         true
       else
