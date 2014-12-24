@@ -2,8 +2,33 @@ require 'spec_helper'
 
 describe JIRA::Resource::Issue do
 
+  class JIRAResourceDelegation < SimpleDelegator # :nodoc:
+  end
+
   let(:client) { double(options: {rest_base_path: '/jira/rest/api/2'}) }
 
+  describe "#respond_to?" do
+    describe "when decorated by SimpleDelegator" do
+      before(:each) do
+        response = double()
+        allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
+        allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
+        allow(client).to receive(:get).with('/jira/rest/api/2/issue/101').
+          and_return(response)
+
+        issue = JIRA::Resource::Issue.find(client,101)
+        @decorated = JIRAResourceDelegation.new( issue )
+      end
+      it "responds to key" do
+        expect(@decorated.respond_to?(:key)).to eq(true)
+      end
+      it "does not raise an error" do
+        expect {
+          @issue.respond_to?(:project)
+        }.not_to raise_error
+      end
+    end
+  end
   it "should find an issue by key or id" do
     response = double()
     allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')

@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe JIRA::Base do
 
+  class JIRADelegation < SimpleDelegator # :nodoc:
+  end
+
   class JIRA::Resource::Deadbeef < JIRA::Base # :nodoc:
   end
 
@@ -35,6 +38,21 @@ describe JIRA::Base do
   let(:attrs)   { Hash.new }
 
   subject { JIRA::Resource::Deadbeef.new(client, :attrs => attrs) }
+
+  let(:decorated) { JIRADelegation.new(subject) }
+
+  describe "#respond_to?" do
+    describe "when decorated using SimpleDelegator" do
+      it "responds to client" do
+        expect(decorated.respond_to?(:client)).to eq(true)
+      end
+      it "does not raise an error" do
+        expect {
+          decorated.respond_to?(:client)
+        }.not_to raise_error
+      end
+    end
+  end
 
   it "assigns the client and attrs" do
     expect(subject.client).to eq(client)
