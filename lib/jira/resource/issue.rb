@@ -58,7 +58,7 @@ module JIRA
         end
       end
 
-      def respond_to?(method_name)
+      def respond_to?(method_name, include_all=false)
         if attrs.keys.include?('fields') && attrs['fields'].keys.include?(method_name.to_s)
           true
         else
