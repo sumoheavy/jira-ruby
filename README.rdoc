@@ -163,7 +163,8 @@ Create a controller for handling the OAuth conversation.
     before_filter :get_jira_client
 
     def new
-      request_token = @jira_client.request_token
+      callback_url = 'http://callback'
+      request_token = @jira_client.request_token(oauth_callback: callback_url)
       session[:request_token] = request_token.token
       session[:request_secret] = request_token.secret
 
