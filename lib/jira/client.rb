@@ -125,6 +125,10 @@ module JIRA
       JIRA::Resource::FieldFactory.new(self)
     end
 
+    def RapidView
+      JIRA::Resource::RapidViewFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
