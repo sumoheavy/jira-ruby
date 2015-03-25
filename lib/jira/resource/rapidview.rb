@@ -30,6 +30,12 @@ module JIRA
         client.Issue.jql("id IN(#{issue_ids.join(', ')})")
       end
 
+      def sprints(options = {})
+        response = client.get(path_base(client) + "/sprintquery/#{id}?#{options.to_query}")
+        json = self.class.parse_json(response.body)
+        client.Sprint.build(json)
+      end
+
       private
 
       def self.path_base(client)
