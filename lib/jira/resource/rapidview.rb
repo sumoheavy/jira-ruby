@@ -33,7 +33,11 @@ module JIRA
       def sprints(options = {})
         response = client.get(path_base(client) + "/sprintquery/#{id}?#{options.to_query}")
         json = self.class.parse_json(response.body)
-        client.Sprint.build(json)
+        json['sprints'].map do |sprint|
+          sprint['rapidview_id'] = id
+          client.Sprint.build(sprint)
+        end
+
       end
 
       private

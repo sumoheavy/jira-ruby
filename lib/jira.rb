@@ -26,6 +26,7 @@ require 'jira/resource/filter'
 require 'jira/resource/field'
 require 'jira/resource/rapidview'
 require 'jira/resource/sprint'
+require 'jira/resource/sprint_report'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
