@@ -5,10 +5,6 @@ module JIRA
     end
 
     class Sprint < JIRA::Base
-      def save
-
-      end
-
       # get all issues of sprint
       def issues(options = {})
         jql = "sprint = " + id.to_s
