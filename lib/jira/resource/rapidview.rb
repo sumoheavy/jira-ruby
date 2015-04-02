@@ -22,16 +22,20 @@ module JIRA
         client.RapidView.build(json)
       end
 
-      def issues
+      def issues(options = {})
         response = client.get(path_base(client) + "/xboard/plan/backlog/data?rapidViewId=#{id}")
         json = self.class.parse_json(response.body)
         # To get Issue objects with the same structure as for Issue.all
         issue_ids = json['issues'].map { |issue| issue['id'] }
-        client.Issue.jql("id IN(#{issue_ids.join(', ')})")
+        jql = "id IN(#{issue_ids.join(', ')})"
+        jql += " and updated >= '#{options.delete(:updated)}'" if options[:updated]
+        client.Issue.jql(jql)
       end
 
       def sprints(options = {})
-        response = client.get(path_base(client) + "/sprintquery/#{id}?#{options.to_query}")
+        params  = { includeHistoricSprints: options.fetch(:include_historic, false),
+                    includeFutureSprints:   options.fetch(:include_future, false) }
+        response = client.get(path_base(client) + "/sprintquery/#{id}?#{params.to_query}")
         json = self.class.parse_json(response.body)
         json['sprints'].map do |sprint|
           sprint['rapidview_id'] = id

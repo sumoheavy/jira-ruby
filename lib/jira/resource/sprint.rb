@@ -5,9 +5,14 @@ module JIRA
     end
 
     class Sprint < JIRA::Base
+      def save
+
+      end
+
       # get all issues of sprint
-      def issues
+      def issues(options = {})
         jql = "sprint = " + id.to_s
+        jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
       end
 
