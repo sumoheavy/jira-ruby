@@ -7,7 +7,7 @@ module JIRA
     class Sprint < JIRA::Base
       # get all issues of sprint
       def issues(options = {})
-        jql = "sprint = " + id.to_s
+        jql = 'sprint = ' + id.to_s
         jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
       end
@@ -17,11 +17,15 @@ module JIRA
       end
 
       def start_date
-        get_sprint_details_attribute("start_date")
+        get_sprint_details_attribute('start_date')
       end
 
       def end_date
-        get_sprint_details_attribute("end_date")
+        get_sprint_details_attribute('end_date')
+      end
+
+      def complete_date
+        get_sprint_details_attribute('complete_date')
       end
 
       def get_sprint_details_attribute(attribute_name)
@@ -34,16 +38,18 @@ module JIRA
       end
 
       def get_sprint_details
-        search_url = client.options[:site] + "/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=" +
-          rapidview_id.to_s + "&sprintId=" + id.to_s
+        search_url = client.options[:site] + '/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=' +
+          rapidview_id.to_s + '&sprintId=' + id.to_s
         begin
           response = client.get(search_url)
         rescue
           return nil
         end
         json = self.class.parse_json(response.body)
-        @start_date = Date.parse(json['sprint']['startDate'])
-        @end_date = Date.parse(json['sprint']['endDate'])
+
+        @start_date = Date.parse(json['sprint']['startDate']) unless json['sprint']['startDate'] == 'None'
+        @end_date = Date.parse(json['sprint']['endDate']) unless json['sprint']['endDate'] == 'None'
+        @completed_date = Date.parse(json['sprint']['completeDate']) unless json['sprint']['completeDate'] == 'None'
         @sprint_report = client.SprintReport.build(json['contents'])
       end
 
@@ -51,7 +57,7 @@ module JIRA
         if @attrs['rapidview_id']
           return @attrs['rapidview_id']
         end
-        search_url = client.options[:site] + "/secure/GHGoToBoard.jspa?sprintId=" + id.to_s
+        search_url = client.options[:site] + '/secure/GHGoToBoard.jspa?sprintId=' + id.to_s
         begin
           response = client.get(search_url)
         rescue JIRA::HTTPError => error
