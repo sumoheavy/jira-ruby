@@ -5,6 +5,13 @@ module JIRA
     end
 
     class Sprint < JIRA::Base
+
+      def self.find(client, key)
+        response = client.get(client.options[:site] + '/rest/greenhopper/1.0/sprint/' + key.to_s + '/edit/model')
+        json = parse_json(response.body)
+        client.Sprint.build(json['sprint'])
+      end
+
       # get all issues of sprint
       def issues(options = {})
         jql = 'sprint = ' + id.to_s
@@ -69,6 +76,20 @@ module JIRA
             @attrs['rapidview_id'] = rapid_view_match[1]
           end
         end
+      end
+
+
+      # WORK IN PROGRESS
+      def complete
+        complete_url = client.options[:site] + '/rest/greenhopper/1.0/sprint/' + id.to_s + '/complete'
+        response = client.put(complete_url)
+        self.class.parse_json(response.body)
+      end
+
+      def save(attrs)
+        url_key = new_record? ? :rapidview_id : id
+        url = client.options[:site] + '/rest/greenhopper/1.0/sprint/' + url_key.to_s
+        super(attrs, url)
       end
 
     end
