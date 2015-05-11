@@ -420,8 +420,9 @@ module JIRA
         end
       end
       if @attrs['self']
-        prefix + @attrs['self'].sub(@client.options[:site],'')
-        @attrs['self'].sub(@client.options[:site],'')
+        the_url = @attrs['self'].sub(@client.options[:site],'')
+        the_url = "/#{the_url}" if (the_url =~ /^\//).nil?
+        the_url
       elsif key_value
         self.class.singular_path(client, key_value.to_s, prefix)
       else
