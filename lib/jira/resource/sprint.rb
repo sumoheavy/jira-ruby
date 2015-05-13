@@ -86,8 +86,9 @@ module JIRA
         self.class.parse_json(response.body)
       end
 
-      def save(attrs)
-        url_key = new_record? ? :rapidview_id : id
+      def save(attrs = {})
+        return unless rapidview_id.is_a?(Integer)
+        url_key = new_record? ? rapidview_id : id
         url = client.options[:site] + '/rest/greenhopper/1.0/sprint/' + url_key.to_s
         super(attrs, url)
       end

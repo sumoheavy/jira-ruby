@@ -114,7 +114,7 @@ module JIRA
     # Builds a new instance of the resource with the given attributes.
     # These attributes will be posted to the JIRA Api if save is called.
     def self.build(client, attrs)
-      self.new(client, :attrs => attrs)
+      self.new(client, :attrs => attrs.with_indifferent_access)
     end
 
     # Returns the name of this resource for use in URL components.
