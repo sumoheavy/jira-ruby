@@ -50,6 +50,7 @@ module JIRA
         url << "&fields=#{options[:fields].map{ |value| CGI.escape(value.to_s) }.join(',')}" if options[:fields]
         url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
         url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
+        url << "&expand=#{CGI.escape(options[:expand].to_s)}" if options[:expand]
 
         response = client.get(url)
         json = parse_json(response.body)
