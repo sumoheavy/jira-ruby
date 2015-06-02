@@ -25,7 +25,7 @@ module JIRA
       add_cookies(request) if options[:use_cookies]
       request.basic_auth(@options[:username], @options[:password])
       response = basic_auth_http_conn.request(request)
-      puts "<<<<<<<<<<<<<< Response body: #{response.inspect}"
+      puts "<<<<<<<<<<<<<< Response body: #{response.body}"
       store_cookies(response) if options[:use_cookies]
       response
     end
