@@ -8,9 +8,7 @@ Please find list of changes below:
 
 Add this line to your Gemfile:
 
-```
 gem 'jira-ruby', :require => 'jira', :git => 'https://github.com/legkvla/jira-ruby.git'
-```
 
 == Should I use it
 
