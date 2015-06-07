@@ -2,7 +2,7 @@
 This is fork with some fixes that are not availabe in  sumoheavy/jira-ruby
 Please find list of changes below:
 * https://github.com/sumoheavy/jira-ruby/issues/100 - Fixing issue updating
-* Project.users - return users available for project
+* Project.users - returns users available for project
 
 == How to install
 
