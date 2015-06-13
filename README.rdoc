@@ -1,3 +1,19 @@
+= About this repository
+This is fork with some fixes that are not availabe in  sumoheavy/jira-ruby
+Please find list of changes below:
+* https://github.com/sumoheavy/jira-ruby/issues/100 - Fixing issue updating
+* Project.users - returns users available for project
+
+== How to install
+
+Add this line to your Gemfile:
+
+gem 'jira-ruby', :require => 'jira', :git => 'https://github.com/legkvla/jira-ruby.git'
+
+== Should I use it
+
+Before use please check state of original repository: https://github.com/sumoheavy/jira-ruby
+
 = JIRA API Gem
 {<img src="https://codeclimate.com/github/sumoheavy/jira-ruby.png" />}[https://codeclimate.com/github/sumoheavy/jira-ruby]
 {<img src="https://travis-ci.org/sumoheavy/jira-ruby.png?branch=master"}[https://travis-ci.org/sumoheavy/jira-ruby]
