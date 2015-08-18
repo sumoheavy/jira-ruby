@@ -163,6 +163,7 @@ module JIRA
 
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
+    end
 
     def Sprint
       JIRA::Resource::SprintFactory.new(self)
