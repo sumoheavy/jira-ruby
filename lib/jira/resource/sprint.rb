@@ -9,23 +9,17 @@ module JIRA
     class Sprint < JIRA::Base
 
       def self.all(client, key)
-        response = client.get(path_base(client) + '/sprints/' + key)
+        response = client.get(path_base(client) + '/sprintquery/' + key.to_s)
         parse_json(response.body)
       end
 
-      # def self.find(client, key, options = {})
-      #   response = client.get(path_base(client) + "/rapidview/#{key}")
-      #   json = parse_json(response.body)
-      #   client.RapidView.build(json)
-      # end
-
-      # def issues
-      #   response = client.get(path_base(client) + "/xboard/plan/backlog/data?rapidViewId=#{id}")
-      #   json = self.class.parse_json(response.body)
-      #   # To get Issue objects with the same structure as for Issue.all
-      #   issue_ids = json['issues'].map { |issue| issue['id'] }
-      #   client.Issue.jql("id IN(#{issue_ids.join(', ')})")
-      # end
+      def self.find(client, key, options = {})
+        options[:maxResults] ||= 100
+        fields = options[:fields].join(',') unless options[:fields].nil?
+        puts "/rest/api/latest/search?jql=sprint=#{key}&fields=#{fields}&maxResults=#{options[:maxResults]}"
+        response = client.get("/rest/api/latest/search?jql=sprint=#{key}&fields=#{fields}&maxResults=#{options[:maxResults]}")
+        parse_json(response.body)
+      end
 
       private
 
