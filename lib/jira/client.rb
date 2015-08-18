@@ -151,6 +151,9 @@ module JIRA
 
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
+
+    def Sprint
+      JIRA::Resource::SprintFactory.new(self)
     end
 
     # HTTP methods without a body
