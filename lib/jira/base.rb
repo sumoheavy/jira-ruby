@@ -414,7 +414,7 @@ module JIRA
       prefix = '/'
       unless self.class.belongs_to_relationships.empty?
         prefix = self.class.belongs_to_relationships.inject(prefix) do |prefix_so_far, relationship|
-          prefix_so_far + relationship.to_s + "/" + self.send("#{relationship.to_s}_id") + '/'
+          prefix_so_far.to_s + relationship.to_s + "/" + self.send("#{relationship.to_s}_id").to_s + '/'
         end
       end
       if @attrs['self']
