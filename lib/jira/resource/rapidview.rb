@@ -27,7 +27,14 @@ module JIRA
         json = self.class.parse_json(response.body)
         # To get Issue objects with the same structure as for Issue.all
         issue_ids = json['issues'].map { |issue| issue['id'] }
+
+        # First we have to get all IDs of parent and sub tasks
         jql = "id IN(#{issue_ids.join(', ')})"
+        parent_issues = client.Issue.jql(jql)
+        subtask_ids = parent_issues.map { |t| t.subtasks.map { |sub| sub['id'] } }.flatten
+
+        parent_and_sub_ids = issue_ids + subtask_ids
+        jql = "id IN(#{parent_and_sub_ids.join(', ')})"
         jql += " and updated >= '#{options.delete(:updated)}'" if options[:updated]
         client.Issue.jql(jql)
       end
