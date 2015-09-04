@@ -29,7 +29,9 @@ module JIRA
       has_many :attachments, :nested_under => 'fields',
                           :attribute_key => 'attachment'
 
-      has_many :versions, :nested_under => 'fields'
+      has_many :versions,    :nested_under => 'fields'
+      has_many :fixVersions, :class => JIRA::Resource::Version,
+                             :nested_under => 'fields'
 
       has_many :worklogs, :nested_under => ['fields','worklog']
 
