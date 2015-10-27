@@ -29,8 +29,23 @@ describe JIRA::Resource::Issue do
       end
     end
   end
+
+  it "should find all issues" do
+    response = double()
+    issue = double()
+
+    allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields').
+      and_return(response)
+    expect(client).to receive(:Issue).and_return(issue)
+    expect(issue).to receive(:build).with({"id"=>"1","summary"=>"Bugs Everywhere"})
+
+    issues = JIRA::Resource::Issue.all(client)
+  end
+
   it "should find an issue by key or id" do
     response = double()
+
     allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
     allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
     expect(client).to receive(:get).with('/jira/rest/api/2/issue/foo').
@@ -47,6 +62,7 @@ describe JIRA::Resource::Issue do
   it "should search an issue with a jql query string" do
     response = double()
     issue = double()
+
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=foo+bar').
       and_return(response)
