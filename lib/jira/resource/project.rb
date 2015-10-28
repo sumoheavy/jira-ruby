@@ -26,6 +26,16 @@ module JIRA
           client.Issue.build(issue)
         end
       end
+
+      def users
+        users_url = client.options[:rest_base_path] + '/user/assignable/search'
+        query_params = {:project => self.key_value}
+        response = client.get(url_with_query_params(users_url, query_params))
+        json = self.class.parse_json(response.body)
+        json.map do |jira_user|
+          client.User.build(jira_user)
+        end
+      end
     end
   end
 end
