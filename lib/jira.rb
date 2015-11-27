@@ -25,6 +25,7 @@ require 'jira/resource/issue'
 require 'jira/resource/filter'
 require 'jira/resource/field'
 require 'jira/resource/rapidview'
+require 'jira/resource/serverinfo'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
