@@ -386,6 +386,7 @@ module JIRA
     # and should not be used.
     def set_attrs(hash, clobber=true, target = nil)
       target ||= @attrs
+
       if clobber
         target.merge!(hash)
         hash
