@@ -153,7 +153,7 @@ client_1 = JIRA::Client.new(options)
 client_2 = JIRA::Client.new(options)
 
 # you have to search for your app id here, instead of getting the first
-client_2_app_link = client_2.ApplicationLink.all[0].application
+client_2_app_link = client_2.ApplicationLink.manifest
 issue_1 = client_1.Issue.find('BB-2')
 issue_2 = client_2.Issue.find('AA-1')
 
@@ -161,7 +161,7 @@ remote_link = issue_2.remotelink.build
 
 remote_link.save(
     {
-        :globalId => "appId=#{client_2_app_link['id']}&issueId=#{issue_1.id}",
+        :globalId => "appId=#{client_2_app_link.id}&issueId=#{issue_1.id}",
         :application => {
             :type => 'com.atlassian.jira',
             :name => client_2_app_link['name']

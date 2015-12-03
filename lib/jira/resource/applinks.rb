@@ -2,6 +2,7 @@ module JIRA
   module Resource
 
     class ApplicationLinkFactory < JIRA::BaseFactory # :nodoc:
+      delegate_to_target_class :manifest
     end
 
     class ApplicationLink < JIRA::Base
@@ -12,8 +13,12 @@ module JIRA
         'listApplicationlinks'
       end
 
+      def self.full_url(client)
+        client.options[:context_path] + REST_BASE_PATH
+      end
+
       def self.collection_path(client, prefix = '/')
-        client.options[:context_path] + REST_BASE_PATH + prefix + self.endpoint_name
+        self.full_url(client) + prefix + self.endpoint_name
       end
 
       def self.all(client, options = {})
@@ -24,6 +29,14 @@ module JIRA
           self.new(client, {:attrs => attrs}.merge(options))
         end
       end
+
+      def self.manifest(client)
+        url = self.full_url(client) + '/manifest'
+        response = client.get(url)
+        json = parse_json(response.body)
+        JIRA::Base.new(client, {:attrs => json})
+      end
+
     end
   end
 end
