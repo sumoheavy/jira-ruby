@@ -91,7 +91,8 @@ of JIRA.
               :password => password,
               :site     => 'http://localhost:8080/',
               :context_path => '/myjira',
-              :auth_type => :basic
+              :auth_type => :basic,
+              :read_timeout => 120
             }
 
   client = JIRA::Client.new(options)
