@@ -4,7 +4,7 @@ require 'bundler/setup'
 require 'webmock/rspec'
 Dir["./spec/support/**/*.rb"].each {|f| require f}
 
-require 'jira'
+require 'jira-ruby'
 
 RSpec.configure do |config|
   config.extend ClientsHelper
