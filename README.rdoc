@@ -76,6 +76,10 @@ defaults to HTTP Basic Auth.
 Using HTTP Basic Authentication, configure and connect a client to your instance
 of JIRA.
 
+Note: If your Jira install is hosted on {atlassian.net}[atlassian.net], it will have no context 
+path by default. If you're having issues connecting, try setting context_path 
+to an empty string in the options hash.
+
   require 'rubygems'
   require 'pp'
   require 'jira'
