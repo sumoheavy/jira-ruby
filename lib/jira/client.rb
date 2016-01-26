@@ -137,6 +137,10 @@ module JIRA
       JIRA::Resource::ApplicationLinkFactory.new(self)
     end
 
+    def Webhook
+      JIRA::Resource::WebhookFactory.new(self)
+    end
+
     def Issuelink
       JIRA::Resource::IssuelinkFactory.new(self)
     end
