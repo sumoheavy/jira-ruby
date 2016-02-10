@@ -86,7 +86,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: ['foo','bar'])).to eq([''])
   end
 
-  it "should search an issue with a jql query string, start at, and maxResults" do
+  it "should search an issue with a jql query string, startAt, and maxResults" do
     response = double()
     issue = double()
 
@@ -97,7 +97,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3)).to eq([''])
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', startAt: 1, maxResults: 3)).to eq([''])
   end
 
   it "should search an issue with a jql query string and string expand" do
