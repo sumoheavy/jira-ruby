@@ -455,8 +455,8 @@ module JIRA
     end
 
     # Returns a JSON representation of the current attributes hash.
-    def to_json
-      attrs.to_json
+    def to_json(options = {})
+      attrs.to_json(options)
     end
 
     # Determines if the resource is newly created by checking whether its
