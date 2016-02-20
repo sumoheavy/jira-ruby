@@ -51,7 +51,16 @@ module JIRA
 
       def self.jql(client, jql, options = {fields: nil, startAt: nil, maxResults: nil, expand: nil})
         url = client.options[:rest_base_path] + "/search?jql=" + CGI.escape(jql)
-        url = url_with_query_params(url, options)
+
+        url << "&fields=#{options[:fields].map{ |value| CGI.escape(value.to_s) }.join(',')}" if options[:fields]
+        url << "&startAt=#{CGI.escape(options[:startAt].to_s)}" if options[:start_at]
+        url << "&maxResults=#{CGI.escape(options[:maxResults].to_s)}" if options[:maxResults]
+
+        if options[:expand]
+          options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
+          url << "&expand=#{options[:expand].to_a.map{ |value| CGI.escape(value.to_s) }.join(',')}"
+        end
+
         response = client.get(url)
         json = parse_json(response.body)
         json['issues'].map do |issue|
