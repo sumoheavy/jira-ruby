@@ -137,6 +137,30 @@ module JIRA
       JIRA::Resource::SprintReportFactory.new(self)
     end
 
+    def ServerInfo
+      JIRA::Resource::ServerInfoFactory.new(self)
+    end
+
+    def ApplicationLink
+      JIRA::Resource::ApplicationLinkFactory.new(self)
+    end
+
+    def Webhook
+      JIRA::Resource::WebhookFactory.new(self)
+    end
+
+    def Issuelink
+      JIRA::Resource::IssuelinkFactory.new(self)
+    end
+
+    def Issuelinktype
+      JIRA::Resource::IssuelinktypeFactory.new(self)
+    end
+
+    def Remotelink
+      JIRA::Resource::RemotelinkFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))

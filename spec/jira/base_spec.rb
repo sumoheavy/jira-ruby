@@ -270,6 +270,13 @@ describe JIRA::Base do
       expect(subject.save("invalid_field" => "foobar")).to be_falsey
     end
 
+    it "returns false with exception details when non json response body (unauthorized)" do # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
+      response = double("Response", body: 'totally invalid json', code: 401, message: "Unauthorized")
+      expect(client).to receive(:post).with('/foo/bar','{"foo":"bar"}').and_raise(JIRA::HTTPError.new(response))
+      expect(subject.save("foo" => "bar")).to be_falsey
+      expect(subject.attrs["exception"]["code"]).to eq(401)
+      expect(subject.attrs["exception"]["message"]).to eq("Unauthorized")
+    end
   end
 
   describe "save!" do
