@@ -67,6 +67,14 @@ module JIRA
         end
       end
 
+      def editmeta
+        editmeta_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{key}/editmeta"
+
+        response = client.get(editmeta_url)
+        json = self.class.parse_json(response.body)
+        json['fields']
+      end
+
       def respond_to?(method_name, include_all=false)
         if attrs.keys.include?('fields') && attrs['fields'].keys.include?(method_name.to_s)
           true
