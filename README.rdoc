@@ -76,6 +76,10 @@ defaults to HTTP Basic Auth.
 Using HTTP Basic Authentication, configure and connect a client to your instance
 of JIRA.
 
+Note: If your Jira install is hosted on {atlassian.net}[atlassian.net], it will have no context 
+path by default. If you're having issues connecting, try setting context_path 
+to an empty string in the options hash.
+
   require 'rubygems'
   require 'pp'
   require 'jira'
@@ -273,7 +277,8 @@ Here's the same example as a Sinatra application:
     # Initiates the OAuth dance by first requesting a token then redirecting to
     # http://<yourserver>/auth to get the @access_token
     get '/signin' do
-      request_token = @jira_client.request_token
+      callback_url = "#{request.base_url}/callback"
+      request_token = @jira_client.request_token(oauth_callback: callback_url)
       session[:request_token] = request_token.token
       session[:request_secret] = request_token.secret
 
@@ -283,7 +288,7 @@ Here's the same example as a Sinatra application:
     # http://<yourserver>/callback
     # Retrieves the @access_token then stores it inside a session cookie. In a real app,
     # you'll want to persist the token in a datastore associated with the user.
-    get "/callback/" do
+    get "/callback" do
       request_token = @jira_client.set_request_token(
         session[:request_token], session[:request_secret]
       )

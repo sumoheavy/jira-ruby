@@ -31,6 +31,7 @@ require 'jira/resource/field'
 require 'jira/resource/rapidview'
 require 'jira/resource/serverinfo'
 require 'jira/resource/createmeta'
+require 'jira/resource/webhook'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
