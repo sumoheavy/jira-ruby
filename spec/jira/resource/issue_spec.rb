@@ -5,7 +5,12 @@ describe JIRA::Resource::Issue do
   class JIRAResourceDelegation < SimpleDelegator # :nodoc:
   end
 
-  let(:client) { double(options: {rest_base_path: '/jira/rest/api/2'}) }
+  let(:client) do
+    client = double(options: {rest_base_path: '/jira/rest/api/2'}  )
+    allow(client).to receive(:Field).and_return(JIRA::Resource::FieldFactory.new(client))
+    allow(client).to receive(:cache).and_return(OpenStruct.new)
+    client
+  end
 
   describe "#respond_to?" do
     describe "when decorated by SimpleDelegator" do

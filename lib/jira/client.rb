@@ -1,5 +1,6 @@
 require 'json'
 require 'forwardable'
+require 'ostruct'
 
 module JIRA
 
@@ -37,7 +38,7 @@ module JIRA
     #
     # The authenticated client instance returned by the respective client type
     # (Oauth, Basic)
-    attr_accessor :consumer, :request_client, :http_debug
+    attr_accessor :consumer, :request_client, :http_debug, :cache
 
     # The configuration options for this client instance
     attr_reader :options
@@ -70,6 +71,8 @@ module JIRA
       @http_debug = @options[:http_debug]
 
       @options.freeze
+
+      @cache = OpenStruct.new
     end
 
     def Project # :nodoc:
