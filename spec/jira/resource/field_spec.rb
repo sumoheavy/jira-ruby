@@ -8,7 +8,7 @@ describe JIRA::Resource::Field do
     allow(client).to receive(:cache).and_return(OpenStruct.new)
     client
   end
-  
+
   describe "field_mappings" do
     subject {
       JIRA::Resource::Field.new(client, :attrs => {
