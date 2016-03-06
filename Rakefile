@@ -19,7 +19,11 @@ task :prepare do
 end
 
 desc 'Run RSpec tests'
-RSpec::Core::RakeTask.new(:spec)
+#RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |task|
+  task.rspec_opts = ['--color', '--format', 'doc']
+end
+
 
 Rake::RDocTask.new(:doc) do |rd|
   rd.main       = 'README.rdoc'
