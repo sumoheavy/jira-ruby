@@ -21,6 +21,7 @@ module JIRA
         field_map = {}
         field_map_reverse = {}
         fields = client.Field.all
+
         # two pass approach, so that a custom field with the same name
         # as a system field can't take precedence
         fields.each do |f|
@@ -42,6 +43,7 @@ module JIRA
           field_map_reverse[f.id] = [f.name, name] # capture both the official name, and the mapped name
           field_map[name] = f.id
         end
+
         client.cache.field_map_reverse = field_map_reverse   # not sure where this will be used yet, but sure to be useful
         client.cache.field_map = field_map
       end
@@ -58,25 +60,20 @@ module JIRA
 
       def respond_to?(method_name, include_all=false)
         if [method_name.to_s, client.Field.name_to_id(method_name)].any? {|k| attrs.key?(k)}
-# "responds to either  #{method_name.to_s}  or #{client.Field.name_to_id(method_name)}"
           true
         else
-#warn "does parent respond to #{method_name}"
           super(method_name)
         end
       end
 
       def method_missing(method_name, *args, &block)
           if attrs.keys.include?(method_name.to_s)
-#warn "responding to key #{method_name.to_s}"
             attrs[method_name.to_s]
           else
             official_name=client.Field.name_to_id(method_name)
-#warn "responding to #{method_name} with official #{official_name}"
             if attrs.keys.include?(official_name)
               attrs[official_name]
             else
-#warn "passing to parent to respond to #{method_name}"
               super(method_name, *args, &block)
             end
           end

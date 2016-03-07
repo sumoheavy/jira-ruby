@@ -42,6 +42,28 @@ end
 issue = client.Issue.find('SAMPLEPROJECT-1')
 pp issue
 
+# # Handling fields by name, rather than by id
+# # ------------------------------------------
+# Cache the Field list from the server
+client.Field.map_fields
+# This allows use of friendlier names for custom fields
+# Say that 'Special Field' is customfield_12345
+# It becomes mapped to Special_Field which is usable as a method call
+#
+# Say that there is a second 'Special Field' is customfield_54321
+# Names are deduplicated so the second 'Special Field' becomes Special_Field_54321
+#
+# Names are massaged to get rid of special characters, and spaces
+# So 'Special & @ Field' becomes Special_____Field - not perfect, but usable
+old_way = issue.customfield_12345
+new_way = issue.Special_Field
+(old_way == new_way) && puts 'much easier'
+#
+# Can also use this to specify fields to be returned in the response
+client.Issue.jql(a_normal_jql_search, fields:[:Special_Field])
+# Or you could always do it the old way - if you can remember the numbers...
+client.Issue.jql(a_normal_jql_search, fields:['customfield_12345'])
+
 # # Find a specific project by key
 # # ------------------------------
 # project = client.Project.find('SAMPLEPROJECT')
