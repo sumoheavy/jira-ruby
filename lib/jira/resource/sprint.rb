@@ -16,7 +16,6 @@ module JIRA
       def self.find(client, key, options = {})
         options[:maxResults] ||= 100
         fields = options[:fields].join(',') unless options[:fields].nil?
-        puts "/rest/api/latest/search?jql=sprint=#{key}&fields=#{fields}&maxResults=#{options[:maxResults]}"
         response = client.get("/rest/api/latest/search?jql=sprint=#{key}&fields=#{fields}&maxResults=#{options[:maxResults]}")
         parse_json(response.body)
       end
