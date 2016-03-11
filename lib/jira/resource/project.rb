@@ -9,6 +9,7 @@ module JIRA
       has_one :lead, :class => JIRA::Resource::User
       has_many :components
       has_many :issuetypes, :attribute_key => 'issueTypes'
+      has_many :status, :attribute_key => 'statuses'
       has_many :versions
 
       def self.key_attribute
@@ -25,6 +26,37 @@ module JIRA
         json['issues'].map do |issue|
           client.Issue.build(issue)
         end
+      end
+      
+      def createmeta(options={})
+        createmeta_url = client.options[:rest_base_path] + '/issue/createmeta/'
+        query_params = {
+          :projectKeys => self.key_value,
+          # :issuetypeNames => ["Story", "Epic"],
+          :expand => "projects.issuetypes.fields"
+        }
+        query_encoded = url_with_query_params(createmeta_url, query_params)
+        response = client.get(query_encoded)
+        
+        json = self.class.parse_json(response.body)
+        custom_fields = ['Story Points', 'Epic Link', 'Sprint', 'Epic Name']
+        
+        meta_data = {}
+
+        issuetypes = json['projects'][0]['issuetypes']
+        issuetypes.each do |issuetype|
+          fields = issuetype.fetch('fields')
+          fields.each do |field|
+            if custom_fields.include? field[1]['name']
+              label = field[1]['name'].parameterize
+              unless meta_data.has_key? label
+                meta_data[label] = field[0]
+              end
+            end
+          end
+        end
+
+        OpenStruct.new meta_data
       end
 
       def users
