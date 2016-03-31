@@ -44,14 +44,14 @@ module JIRA
         meta_data = {}
 
         issuetypes = json['projects'][0]['issuetypes']
+        
+        
         issuetypes.each do |issuetype|
           fields = issuetype.fetch('fields')
           fields.each do |field|
             if custom_fields.include? field[1]['name']
-              label = field[1]['name'].parameterize
-              unless meta_data.has_key? label
-                meta_data[label] = field[0]
-              end
+              label = "#{issuetype['name']} #{field[1]['name']}".downcase.parameterize
+              meta_data[label] = field[0]
             end
           end
         end
