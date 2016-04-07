@@ -64,6 +64,8 @@ module JIRA
         @consumer = @request_client.consumer
       when :basic
         @request_client = HttpClient.new(@options)
+      else
+        raise ArgumentError, 'Options: ":auth_type" must be ":oauth" or ":basic"'
       end
 
       @options.freeze
