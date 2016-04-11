@@ -154,7 +154,7 @@ module JIRA
     end
 
     def IssueCount
-      JIRA::Resource::RemotelinkFactory.new(self)
+      JIRA::Resource::IssueCountFactory.new(self)
     end
 
     # HTTP methods without a body

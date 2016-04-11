@@ -3,7 +3,7 @@ require 'cgi'
 module JIRA
   module Resource
 
-    class IssueFactory < JIRA::BaseFactory # :nodoc:
+    class IssueCountFactory < JIRA::BaseFactory # :nodoc:
     end
 
     class IssueCount < JIRA::Base
