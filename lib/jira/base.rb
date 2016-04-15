@@ -428,6 +428,7 @@ module JIRA
     end
 
     # This method fixes issue that there is no / prefix in url. It is happened when we call for instance
+    # Looks like this issue is actual only in case if you use atlassian sdk your app path is not root (like /jira in example below)
     # issue.save() for existing resource.
     # As a result we got error 400 from JIRA API:
     # [07/Jun/2015:15:32:19 +0400] "PUT jira/rest/api/2/issue/10111 HTTP/1.1" 400 -
