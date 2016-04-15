@@ -435,7 +435,7 @@ module JIRA
     # [07/Jun/2015:15:17:18 +0400] "PUT /jira/rest/api/2/issue/10111 HTTP/1.1" 204 -
     def patched_url
       result = url
-      result if result.start_with?('/')
+      return result if result.start_with?('/')
       "/#{result}"
     end
 
