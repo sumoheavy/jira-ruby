@@ -348,7 +348,7 @@ module JIRA
     # JIRA::HTTPError if the request fails (response is not HTTP 2xx).
     def save!(attrs)
       http_method = new_record? ? :post : :put
-      response = client.send(http_method, url, attrs.to_json)
+      response = client.send(http_method, new_record? ? url : patched_url, attrs.to_json)
       set_attrs(attrs, false)
       set_attrs_from_response(response)
       @expanded = false
