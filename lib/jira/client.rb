@@ -37,7 +37,7 @@ module JIRA
     #
     # The authenticated client instance returned by the respective client type
     # (Oauth, Basic)
-    attr_accessor :consumer, :request_client
+    attr_accessor :consumer, :request_client, :http_debug
 
     # The configuration options for this client instance
     attr_reader :options
@@ -50,7 +50,8 @@ module JIRA
       :rest_base_path     => "/rest/api/2",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
-      :auth_type          => :oauth
+      :auth_type          => :oauth,
+      :http_debug         => false
     }
 
     def initialize(options={})
@@ -65,6 +66,8 @@ module JIRA
       when :basic
         @request_client = HttpClient.new(@options)
       end
+
+      @http_debug = @options[:http_debug]
 
       @options.freeze
     end
@@ -184,6 +187,7 @@ module JIRA
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
     def request(http_method, path, body = '', headers={})
+      puts "#{http_method}: #{path} - [#{body}]" if @http_debug
       @request_client.request(http_method, path, body, headers)
     end
 
