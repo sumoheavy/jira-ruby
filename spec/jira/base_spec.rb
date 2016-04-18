@@ -427,9 +427,12 @@ describe JIRA::Base do
   end
 
   it "converts to json" do
-    subject.attrs = {"foo" => "bar","dead" => "beef"}
-
+    subject.attrs = { 'foo' => 'bar', 'dead' => 'beef' }
     expect(subject.to_json).to eq(subject.attrs.to_json)
+
+    h       = { 'key' => subject }
+    h_attrs = { 'key' => subject.attrs }
+    expect(h.to_json).to eq(h_attrs.to_json)
   end
 
   describe "extract attrs from response" do
