@@ -128,6 +128,21 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client,'foo bar', expand: %w(transitions))).to eq([''])
   end
 
+  it 'should return meta data available for editing an issue' do
+    subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'key' =>'TST=123'}})
+    response = double()
+
+    allow(response).to receive(:body).and_return(
+      '{"fields":{"summary":{"required":true,"name":"Summary","operations":["set"]}}}'
+    )
+    expect(client).to receive(:get)
+      .with('/jira/rest/api/2/issue/TST=123/editmeta')
+      .and_return(response)
+
+    expect(subject.editmeta).to eq({'summary' => {'required' => true, 'name' => 'Summary', 'operations' => ['set']}})
+  end
+
+
   it "provides direct accessors to the fields" do
     subject = JIRA::Resource::Issue.new(client, :attrs => {'fields' => {'foo' =>'bar'}})
     expect(subject).to respond_to(:foo)

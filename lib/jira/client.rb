@@ -133,6 +133,10 @@ module JIRA
       JIRA::Resource::ServerInfoFactory.new(self)
     end
 
+    def Createmeta
+      JIRA::Resource::CreatemetaFactory.new(self)
+    end
+
     def ApplicationLink
       JIRA::Resource::ApplicationLinkFactory.new(self)
     end
