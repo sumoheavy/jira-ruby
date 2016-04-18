@@ -1,3 +1,3 @@
 module JIRA
-  VERSION = "0.1.18-pcc"
+  VERSION = "0.1.18-pcc2"
 end
