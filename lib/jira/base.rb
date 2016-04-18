@@ -348,7 +348,7 @@ module JIRA
     # JIRA::HTTPError if the request fails (response is not HTTP 2xx).
     def save!(attrs)
       http_method = new_record? ? :post : :put
-      response = client.send(http_method, url, attrs.to_json)
+      response = client.send(http_method, new_record? ? url : patched_url, attrs.to_json)
       set_attrs(attrs, false)
       set_attrs_from_response(response)
       @expanded = false
@@ -439,6 +439,7 @@ module JIRA
     end
 
     # This method fixes issue that there is no / prefix in url. It is happened when we call for instance
+    # Looks like this issue is actual only in case if you use atlassian sdk your app path is not root (like /jira in example below)
     # issue.save() for existing resource.
     # As a result we got error 400 from JIRA API:
     # [07/Jun/2015:15:32:19 +0400] "PUT jira/rest/api/2/issue/10111 HTTP/1.1" 400 -
@@ -446,7 +447,7 @@ module JIRA
     # [07/Jun/2015:15:17:18 +0400] "PUT /jira/rest/api/2/issue/10111 HTTP/1.1" 204 -
     def patched_url
       result = url
-      result if result.start_with?('/')
+      return result if result.start_with?('/')
       "/#{result}"
     end
 
