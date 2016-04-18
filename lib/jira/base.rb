@@ -493,17 +493,32 @@ module JIRA
     end
 
     def url_with_query_params(url, query_params)
+      self.class.url_with_query_params(url, query_params)
+    end
+
+    def self.url_with_query_params(url, query_params)
+      query_params.delete_if { |k, v| v.nil? }.to_h
       if not query_params.empty?
-        "#{url}?#{hash_to_query_string query_params}"
+        if url =~ /\?/
+          "#{url}&#{hash_to_query_string query_params}"
+        else
+          "#{url}?#{hash_to_query_string query_params}"
+        end
       else
         url
       end
     end
 
     def hash_to_query_string(query_params)
+      self.class.hash_to_query_string
+    end
+
+    def self.hash_to_query_string(query_params)
       query_params.map do |k,v|
-        CGI.escape(k.to_s) + "=" + CGI.escape(v.to_s)
-      end.join('&')
+        unless v.nil?
+          CGI.escape(k.to_s) + "=" + CGI.escape(v.to_s)
+        end
+      end.compact.join('&')
     end
 
     def self.query_params_for_single_fetch(options)
