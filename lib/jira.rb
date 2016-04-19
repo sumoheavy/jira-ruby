@@ -38,4 +38,4 @@ require 'jira/oauth_client'
 require 'jira/http_client'
 require 'jira/client'
 
-require 'jira/railtie' if defined?(Rails)
+require 'jira/railtie'

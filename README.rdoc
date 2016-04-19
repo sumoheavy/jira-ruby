@@ -123,7 +123,7 @@ Ensure the JIRA gem is loaded correctly
 
   # Gemfile
   ...
-  gem 'jira-ruby', :require => 'jira'
+  gem 'jira-ruby'
   ...
 
 Add common methods to your application controller and ensure access token
