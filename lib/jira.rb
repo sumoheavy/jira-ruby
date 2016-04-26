@@ -2,7 +2,7 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|
-  inflector.singular 'status', 'status'
+  inflector.singular /status$/, 'status'
 end
 
 require 'jira/base'
