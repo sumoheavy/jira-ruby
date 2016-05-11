@@ -21,7 +21,7 @@ describe JIRA::Resource::Board do
     }"
     allow(response).to receive(:body).and_return(api_json_board)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84')
-                        .and_return(response)
+      .and_return(response)
 
     expect(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
     JIRA::Resource::Board.find(client, "84")
@@ -47,7 +47,7 @@ describe JIRA::Resource::Board do
 eos
     allow(response).to receive(:body).and_return(api_json)
     expect(client).to receive(:get).with('/rest/agile/1.0/board')
-                        .and_return(response)
+      .and_return(response)
     expect(client).to receive(:Board).twice.and_return(JIRA::Resource::BoardFactory.new(client))
     boards = JIRA::Resource::Board.all(client)
     expect(boards.count).to eq(2)
