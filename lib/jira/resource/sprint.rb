@@ -19,6 +19,12 @@ module JIRA
         Issue.jql(client, jql)
       end
 
+      def add_issue(issue)
+        request_body = {issues: [issue.id]}.to_json
+        response = client.post(client.options[:site] + '/rest/agile/1.0/sprint/' + self.id + '/issue', request_body)
+        true
+      end
+
       def sprint_report
         get_sprint_details_attribute('sprint_report')
       end
