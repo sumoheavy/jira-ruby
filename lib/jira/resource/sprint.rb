@@ -21,7 +21,7 @@ module JIRA
 
       def add_issue(issue)
         request_body = {issues: [issue.id]}.to_json
-        response = client.post(client.options[:site] + '/rest/agile/1.0/sprint/' + self.id + '/issue', request_body)
+        response = client.post(client.options[:site] + "/rest/agile/1.0/sprint/#{self.id}/issue", request_body)
         true
       end
 
