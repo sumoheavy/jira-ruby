@@ -1,4 +1,5 @@
 require 'cgi'
+require 'json'
 
 module JIRA
   module Resource
@@ -79,6 +80,11 @@ module JIRA
         else
           super(method_name)
         end
+      end
+
+      def get_sprint_for_issue
+        response = client.get("#{client.options[:site]}/rest/agile/1.0/issue/#{id}?fields=sprint")
+        JSON.parse(response.body)
       end
 
     end
