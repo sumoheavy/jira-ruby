@@ -47,6 +47,10 @@ module JIRA
         json['values'][0]
       end
 
+      def add_issue_to_backlog(issue)
+        client.post(path_base(client) + '/backlog', {issues: [issue.id]})
+      end
+
       private
 
       def self.path_base(client)
