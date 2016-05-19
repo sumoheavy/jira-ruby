@@ -34,6 +34,8 @@ module JIRA
                              :nested_under => 'fields'
 
       has_many :worklogs, :nested_under => ['fields','worklog']
+      has_one :sprint, :class => JIRA::Resource::Sprint,
+        :nested_under => 'fields'
 
       def self.all(client)
         url = client.options[:rest_base_path] + "/search?expand=transitions.fields"
