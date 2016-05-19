@@ -85,8 +85,8 @@ module JIRA
       end
 
       def save(attrs = {})
-        return if attrs['originBoardId'].blank? && attrs[:originBoardId].blank?
         url = "#{client.options[:site]}/rest/agile/1.0/sprint/#{self.id}"
+        attrs = @attrs if attrs.empty?
         super(attrs, url)
       end
 

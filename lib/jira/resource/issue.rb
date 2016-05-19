@@ -82,9 +82,10 @@ module JIRA
         end
       end
 
-      def get_sprint_for_issue
+      def get_sprint
         response = client.get("#{client.options[:site]}/rest/agile/1.0/issue/#{id}?fields=sprint")
-        JSON.parse(response.body)
+        response_json = JSON.parse(response.body)
+        self.sprint = JIRA::Resource::Sprint.find(client, response_json["fields"]["sprint"]) if response_json && response_json["fields"] && response_json["fields"]["sprint"]
       end
 
     end
