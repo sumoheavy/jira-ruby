@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe JIRA::Client do
+  before(:each) do
+    stub_request(:post, "https://foo:bar@localhost:2990/rest/auth/1/session").
+      to_return(:status => 200, :body => "", :headers => {})
+  end
 
   let(:oauth_client) do
     JIRA::Client.new({ :consumer_key => 'foo', :consumer_secret => 'bar' })
@@ -10,7 +14,11 @@ describe JIRA::Client do
     JIRA::Client.new({ :username => 'foo', :password => 'bar', :auth_type => :basic })
   end
 
-  let(:clients) { [oauth_client, basic_client] }
+  let(:cookie_client) do
+    JIRA::Client.new({ :username => 'foo', :password => 'bar', :auth_type => :cookie })
+  end
+
+  let(:clients) { [oauth_client, basic_client, cookie_client] }
 
   let(:response) do
     response = double("response")
@@ -54,11 +62,13 @@ describe JIRA::Client do
     specify "that are of the correct class" do
       expect(oauth_client.request_client.class).to eq(JIRA::OauthClient)
       expect(basic_client.request_client.class).to eq(JIRA::HttpClient)
+      expect(cookie_client.request_client.class).to eq(JIRA::HttpClient)
     end
 
     specify "which have a corresponding auth type option" do
       expect(oauth_client.options[:auth_type]).to eq(:oauth)
       expect(basic_client.options[:auth_type]).to eq(:basic)
+      expect(cookie_client.options[:auth_type]).to eq(:cookie)
     end
 
     describe "like oauth" do
@@ -93,8 +103,12 @@ describe JIRA::Client do
       it "sets the username and password" do
         expect(basic_client.options[:username]).to eq('foo')
         expect(basic_client.options[:password]).to eq('bar')
+
+        expect(cookie_client.options[:username]).to eq('foo')
+        expect(cookie_client.options[:password]).to eq('bar')
       end
     end
+
   end
 
   describe "has http methods" do
@@ -106,23 +120,28 @@ describe JIRA::Client do
       # stubbed response for generic client request method
       expect(oauth_client).to receive(:request).exactly(5).times.and_return(response)
       expect(basic_client).to receive(:request).exactly(5).times.and_return(response)
+      expect(cookie_client).to receive(:request).exactly(5).times.and_return(response)
 
       # response for merging headers for http methods with no body
       expect(oauth_client).to receive(:merge_default_headers).exactly(3).times.with({})
       expect(basic_client).to receive(:merge_default_headers).exactly(3).times.with({})
+      expect(cookie_client).to receive(:merge_default_headers).exactly(3).times.with({})
 
       # response for merging headers for http methods with body
       expect(oauth_client).to receive(:merge_default_headers).exactly(2).times.with(content_type_header)
       expect(basic_client).to receive(:merge_default_headers).exactly(2).times.with(content_type_header)
+      expect(cookie_client).to receive(:merge_default_headers).exactly(2).times.with(content_type_header)
 
       [:delete, :get, :head].each do |method|
         oauth_client.send(method, '/path', {})
         basic_client.send(method, '/path', {})
+        cookie_client.send(method, '/path', {})
       end
 
       [:post, :put].each do |method|
         oauth_client.send(method, '/path', '', content_type_header)
         basic_client.send(method, '/path', '', content_type_header)
+        cookie_client.send(method, '/path', '', content_type_header)
       end
     end
 
@@ -130,15 +149,19 @@ describe JIRA::Client do
       [:delete, :get, :head].each do |method|
         expect(oauth_client).to receive(:request).with(method, '/path', nil, headers).and_return(response)
         expect(basic_client).to receive(:request).with(method, '/path', nil, headers).and_return(response)
+        expect(cookie_client).to receive(:request).with(method, '/path', nil, headers).and_return(response)
         oauth_client.send(method, '/path', {})
         basic_client.send(method, '/path', {})
+        cookie_client.send(method, '/path', {})
       end
 
       [:post, :put].each do |method|
         expect(oauth_client).to receive(:request).with(method, '/path', '', merged_headers)
         expect(basic_client).to receive(:request).with(method, '/path', '', merged_headers)
+        expect(cookie_client).to receive(:request).with(method, '/path', '', merged_headers)
         oauth_client.send(method, '/path', '', {})
         basic_client.send(method, '/path', '', {})
+        cookie_client.send(method, '/path', '', {})
       end
     end
 
@@ -160,10 +183,16 @@ describe JIRA::Client do
         [:delete, :get, :head].each do |method|
           expect(basic_client.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(response)
           basic_client.send(method, '/path', headers)
+
+          expect(cookie_client.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(response)
+          cookie_client.send(method, '/path', headers)
         end
         [:post, :put].each do |method|
           expect(basic_client.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(response)
           basic_client.send(method, '/path', '', headers)
+
+          expect(cookie_client.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(response)
+          cookie_client.send(method, '/path', '', headers)
         end
       end
     end
@@ -173,16 +202,22 @@ describe JIRA::Client do
     it "gets all projects" do
       expect(JIRA::Resource::Project).to receive(:all).with(oauth_client).and_return([])
       expect(JIRA::Resource::Project).to receive(:all).with(basic_client).and_return([])
+      expect(JIRA::Resource::Project).to receive(:all).with(cookie_client).and_return([])
+
       expect(oauth_client.Project.all).to eq([])
       expect(basic_client.Project.all).to eq([])
+      expect(cookie_client.Project.all).to eq([])
     end
 
     it "finds a single project" do
       find_result = double()
       expect(JIRA::Resource::Project).to receive(:find).with(oauth_client, '123').and_return(find_result)
       expect(JIRA::Resource::Project).to receive(:find).with(basic_client, '123').and_return(find_result)
+      expect(JIRA::Resource::Project).to receive(:find).with(cookie_client, '123').and_return(find_result)
+
       expect(oauth_client.Project.find('123')).to eq(find_result)
       expect(basic_client.Project.find('123')).to eq(find_result)
+      expect(cookie_client.Project.find('123')).to eq(find_result)
     end
   end
 end
