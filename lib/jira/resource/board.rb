@@ -39,7 +39,16 @@ module JIRA
           sprint['rapidview_id'] = id
           client.Sprint.build(sprint)
         end
+      end
 
+      def project
+        response = client.get(path_base(client) + "/board/#{id}/project")
+        json = self.class.parse_json(response.body)
+        json['values'][0]
+      end
+
+      def add_issue_to_backlog(issue)
+        client.post(path_base(client) + '/backlog/issue', {issues: [issue.id]}.to_json)
       end
 
       private

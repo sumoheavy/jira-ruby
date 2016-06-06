@@ -7,9 +7,9 @@ module JIRA
     class Sprint < JIRA::Base
 
       def self.find(client, key)
-        response = client.get(client.options[:site] + '/rest/greenhopper/1.0/sprint/' + key.to_s + '/edit/model')
+        response = client.get("#{client.options[:site]}/rest/agile/1.0/sprint/#{key}")
         json = parse_json(response.body)
-        client.Sprint.build(json['sprint'])
+        client.Sprint.build(json)
       end
 
       # get all issues of sprint
@@ -17,6 +17,12 @@ module JIRA
         jql = 'sprint = ' + id.to_s
         jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
+      end
+
+      def add_issue(issue)
+        request_body = {issues: [issue.id]}.to_json
+        response = client.post(client.options[:site] + "/rest/agile/1.0/sprint/#{self.id}/issue", request_body)
+        true
       end
 
       def sprint_report
@@ -78,19 +84,17 @@ module JIRA
         end
       end
 
+      def save(attrs = {})
+        url = "#{client.options[:site]}/rest/agile/1.0/sprint/#{self.id}"
+        attrs = @attrs if attrs.empty?
+        super(attrs, url)
+      end
 
       # WORK IN PROGRESS
       def complete
-        complete_url = client.options[:site] + '/rest/greenhopper/1.0/sprint/' + id.to_s + '/complete'
+        complete_url = "#{client.options[:site]}/rest/greenhopper/1.0/sprint/#{self.id}/complete"
         response = client.put(complete_url)
         self.class.parse_json(response.body)
-      end
-
-      def save(attrs = {})
-        return unless rapidview_id.is_a?(Integer)
-        url_key = new_record? ? rapidview_id : id
-        url = client.options[:site] + '/rest/greenhopper/1.0/sprint/' + url_key.to_s
-        super(attrs, url)
       end
 
     end
