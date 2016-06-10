@@ -32,6 +32,7 @@ require 'jira/resource/rapidview'
 require 'jira/resource/sprint'
 require 'jira/resource/sprint_report'
 require 'jira/resource/serverinfo'
+require 'jira/resource/createmeta'
 require 'jira/resource/webhook'
 
 require 'jira/request_client'

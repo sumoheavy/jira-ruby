@@ -15,7 +15,7 @@ module JIRA
       # Need to do a little bit of work here as Module.const_get doesn't work
       # with nested class names, i.e. JIRA::Resource::Foo.
       #
-      # So create a method chain from the class componenets.  This code will
+      # So create a method chain from the class components.  This code will
       # unroll to:
       #   Module.const_get('JIRA').const_get('Resource').const_get('Foo')
       #
@@ -35,7 +35,7 @@ module JIRA
       end
     end
 
-    # The priciple purpose of this class is to delegate methods to the corresponding
+    # The principle purpose of this class is to delegate methods to the corresponding
     # non-factory class and automatically prepend the client argument to the argument
     # list.
     delegate_to_target_class :all, :find, :collection_path, :singular_path, :jql

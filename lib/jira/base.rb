@@ -346,7 +346,8 @@ module JIRA
     #
     # Accepts an attributes hash of the values to be saved.  Will throw a
     # JIRA::HTTPError if the request fails (response is not HTTP 2xx).
-    def save!(attrs, path = url)
+    def save!(attrs, path = nil)
+      path ||= new_record? ? url : patched_url
       http_method = new_record? ? :post : :put
       response = client.send(http_method, path, attrs.to_json)
       set_attrs(attrs, false)
@@ -439,6 +440,7 @@ module JIRA
     end
 
     # This method fixes issue that there is no / prefix in url. It is happened when we call for instance
+    # Looks like this issue is actual only in case if you use atlassian sdk your app path is not root (like /jira in example below)
     # issue.save() for existing resource.
     # As a result we got error 400 from JIRA API:
     # [07/Jun/2015:15:32:19 +0400] "PUT jira/rest/api/2/issue/10111 HTTP/1.1" 400 -
@@ -446,7 +448,7 @@ module JIRA
     # [07/Jun/2015:15:17:18 +0400] "PUT /jira/rest/api/2/issue/10111 HTTP/1.1" 204 -
     def patched_url
       result = url
-      result if result.start_with?('/')
+      return result if result.start_with?('/')
       "/#{result}"
     end
 
@@ -455,8 +457,8 @@ module JIRA
     end
 
     # Returns a JSON representation of the current attributes hash.
-    def to_json
-      attrs.to_json
+    def to_json(options = {})
+      attrs.to_json(options)
     end
 
     # Determines if the resource is newly created by checking whether its
