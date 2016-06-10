@@ -1,4 +1,5 @@
 require 'cgi'
+require 'json'
 
 module JIRA
   module Resource
@@ -34,6 +35,8 @@ module JIRA
                              :nested_under => 'fields'
 
       has_many :worklogs, :nested_under => ['fields','worklog']
+      has_one :sprint, :class => JIRA::Resource::Sprint,
+        :nested_under => 'fields'
 
       has_many :issuelinks, :nested_under => 'fields'
 

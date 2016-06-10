@@ -133,6 +133,10 @@ module JIRA
       JIRA::Resource::FieldFactory.new(self)
     end
 
+    def Board 
+      JIRA::Resource::BoardFactory.new(self)
+    end
+
     def RapidView
       JIRA::Resource::RapidViewFactory.new(self)
     end
