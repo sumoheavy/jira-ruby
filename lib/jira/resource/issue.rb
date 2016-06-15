@@ -38,6 +38,10 @@ module JIRA
       has_one :sprint, :class => JIRA::Resource::Sprint,
         :nested_under => 'fields'
 
+      has_many :closed_sprints, :class => JIRA::Resource::Sprint,
+        :nested_under => 'fields', :attribute_key => 'closedSprints'
+
+
       has_many :issuelinks, :nested_under => 'fields'
 
       has_many :remotelink, :class => JIRA::Resource::Remotelink
