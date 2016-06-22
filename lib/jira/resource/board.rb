@@ -8,6 +8,10 @@ module JIRA
 
     class Board < JIRA::Base
 
+      DEFAULT_OPTIONS = {
+        "maxResults" => 1000
+      }
+
       def self.all(client)
         response = client.get(path_base(client) + '/board')
         json = parse_json(response.body)
@@ -23,6 +27,7 @@ module JIRA
       end
 
       def issues(options = {})
+        options.reverse_merge!(DEFAULT_OPTIONS)
         response = client.get(path_base(client) + "/board/#{id}/issue?#{options.to_query}")
         json = self.class.parse_json(response.body)
         json['issues'].map { |issue| client.Issue.build(issue) }
@@ -30,9 +35,10 @@ module JIRA
 
       # options
       #   - state ~ future, active, closed, you can define multiple states separated by commas, e.g. state=active,closed
-      #   - maxResults ~ default: 50
+      #   - maxResults ~ default: 50 (JIRA API), 1000 (this library)
       #   - startAt ~ base index, starts at 0
       def sprints(options = {})
+        options.reverse_merge!(DEFAULT_OPTIONS)
         response = client.get(path_base(client) + "/board/#{id}/sprint?#{options.to_query}")
         json = self.class.parse_json(response.body)
         json['values'].map do |sprint|
