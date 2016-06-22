@@ -96,6 +96,7 @@ describe JIRA::HttpClient do
     expect(Net::HTTP).to receive(:new).with(host, port).and_return(http_conn)
     expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
+    expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
     expect(basic_client.http_conn(uri)).to eq(http_conn)
   end
 

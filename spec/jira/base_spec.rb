@@ -270,6 +270,13 @@ describe JIRA::Base do
       expect(subject.save("invalid_field" => "foobar")).to be_falsey
     end
 
+    it "returns false with exception details when non json response body (unauthorized)" do # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
+      response = double("Response", body: 'totally invalid json', code: 401, message: "Unauthorized")
+      expect(client).to receive(:post).with('/foo/bar','{"foo":"bar"}').and_raise(JIRA::HTTPError.new(response))
+      expect(subject.save("foo" => "bar")).to be_falsey
+      expect(subject.attrs["exception"]["code"]).to eq(401)
+      expect(subject.attrs["exception"]["message"]).to eq("Unauthorized")
+    end
   end
 
   describe "save!" do
@@ -420,9 +427,12 @@ describe JIRA::Base do
   end
 
   it "converts to json" do
-    subject.attrs = {"foo" => "bar","dead" => "beef"}
-
+    subject.attrs = { 'foo' => 'bar', 'dead' => 'beef' }
     expect(subject.to_json).to eq(subject.attrs.to_json)
+
+    h       = { 'key' => subject }
+    h_attrs = { 'key' => subject.attrs }
+    expect(h.to_json).to eq(h_attrs.to_json)
   end
 
   describe "extract attrs from response" do

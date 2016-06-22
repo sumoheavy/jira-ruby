@@ -1,5 +1,6 @@
 require 'json'
 require 'forwardable'
+require 'ostruct'
 
 module JIRA
 
@@ -37,7 +38,7 @@ module JIRA
     #
     # The authenticated client instance returned by the respective client type
     # (Oauth, Basic)
-    attr_accessor :consumer, :request_client
+    attr_accessor :consumer, :request_client, :http_debug, :cache
 
     # The configuration options for this client instance
     attr_reader :options
@@ -50,7 +51,8 @@ module JIRA
       :rest_base_path     => "/rest/api/2",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
-      :auth_type          => :oauth
+      :auth_type          => :oauth,
+      :http_debug         => false
     }
 
     def initialize(options={})
@@ -64,9 +66,15 @@ module JIRA
         @consumer = @request_client.consumer
       when :basic
         @request_client = HttpClient.new(@options)
+      else
+        raise ArgumentError, 'Options: ":auth_type" must be ":oauth" or ":basic"'
       end
 
+      @http_debug = @options[:http_debug]
+
       @options.freeze
+
+      @cache = OpenStruct.new
     end
 
     def Project # :nodoc:
@@ -141,6 +149,34 @@ module JIRA
       JIRA::Resource::SprintReportFactory.new(self)
     end
 
+    def ServerInfo
+      JIRA::Resource::ServerInfoFactory.new(self)
+    end
+
+    def Createmeta
+      JIRA::Resource::CreatemetaFactory.new(self)
+    end
+
+    def ApplicationLink
+      JIRA::Resource::ApplicationLinkFactory.new(self)
+    end
+
+    def Webhook
+      JIRA::Resource::WebhookFactory.new(self)
+    end
+
+    def Issuelink
+      JIRA::Resource::IssuelinkFactory.new(self)
+    end
+
+    def Issuelinktype
+      JIRA::Resource::IssuelinktypeFactory.new(self)
+    end
+
+    def Remotelink
+      JIRA::Resource::RemotelinkFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
@@ -168,6 +204,7 @@ module JIRA
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
     def request(http_method, path, body = '', headers={})
+      puts "#{http_method}: #{path} - [#{body}]" if @http_debug
       @request_client.request(http_method, path, body, headers)
     end
 

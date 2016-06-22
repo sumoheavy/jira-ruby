@@ -1,6 +1,6 @@
 = JIRA API Gem
 {<img src="https://codeclimate.com/github/sumoheavy/jira-ruby.png" />}[https://codeclimate.com/github/sumoheavy/jira-ruby]
-{<img src="https://travis-ci.org/sumoheavy/jira-ruby.png?branch=master"}[https://travis-ci.org/sumoheavy/jira-ruby]
+{<img src="https://travis-ci.org/sumoheavy/jira-ruby.png?branch=master" />}[https://travis-ci.org/sumoheavy/jira-ruby]
 
 This gem provides access to the Atlassian JIRA REST API.
 
@@ -76,11 +76,15 @@ defaults to HTTP Basic Auth.
 Using HTTP Basic Authentication, configure and connect a client to your instance
 of JIRA.
 
+Note: If your Jira install is hosted on {atlassian.net}[atlassian.net], it will have no context 
+path by default. If you're having issues connecting, try setting context_path 
+to an empty string in the options hash.
+
   require 'rubygems'
   require 'pp'
   require 'jira'
 
-  # Consider the use of :use_ssl and :ssl_verify_mode options if running locally 
+  # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
   # for tests.
 
   username = "myremoteuser"
@@ -91,14 +95,15 @@ of JIRA.
               :password => password,
               :site     => 'http://localhost:8080/',
               :context_path => '/myjira',
-              :auth_type => :basic
+              :auth_type => :basic,
+              :read_timeout => 120
             }
 
   client = JIRA::Client.new(options)
 
   # Show all projects
   projects = client.Project.all
-  
+
   projects.each do |project|
     puts "Project -> key: #{project.key}, name: #{project.name}"
   end
@@ -135,7 +140,7 @@ errors are handled gracefully
     private
 
     def get_jira_client
-      
+
       # add any extra configuration options for your instance of JIRA,
       # e.g. :use_ssl, :ssl_verify_mode, :context_path, :site
       options = {
@@ -148,8 +153,8 @@ errors are handled gracefully
       # Add AccessToken if authorised previously.
       if session[:jira_auth]
         @jira_client.set_access_token(
-          session[:jira_auth][:access_token],
-          session[:jira_auth][:access_key]
+          session[:jira_auth]['access_token'],
+          session[:jira_auth]['access_key']
         )
       end
     end
@@ -253,7 +258,7 @@ Here's the same example as a Sinatra application:
       if !session[:jira_auth]
         # not logged in
         <<-eos
-          <h1>jira-ruby (JIRA 5 Ruby Gem) demo </h1>You're not signed in. Why don't you 
+          <h1>jira-ruby (JIRA 5 Ruby Gem) demo </h1>You're not signed in. Why don't you
           <a href=/signin>sign in</a> first.
         eos
       else
@@ -262,27 +267,28 @@ Here's the same example as a Sinatra application:
 
         # HTTP response inlined with bind data below...
         <<-eos
-          You're now signed in. There #{@issues.count == 1 ? "is" : "are"} #{@issues.count} 
+          You're now signed in. There #{@issues.count == 1 ? "is" : "are"} #{@issues.count}
           issue#{@issues.count == 1 ? "" : "s"} in this JIRA instance. <a href='/signout'>Signout</a>
         eos
       end
     end
 
     # http://<yourserver>/signin
-    # Initiates the OAuth dance by first requesting a token then redirecting to 
+    # Initiates the OAuth dance by first requesting a token then redirecting to
     # http://<yourserver>/auth to get the @access_token
     get '/signin' do
-      request_token = @jira_client.request_token
+      callback_url = "#{request.base_url}/callback"
+      request_token = @jira_client.request_token(oauth_callback: callback_url)
       session[:request_token] = request_token.token
       session[:request_secret] = request_token.secret
 
-      redirect request_token.authorize_url    
+      redirect request_token.authorize_url
     end
 
     # http://<yourserver>/callback
-    # Retrieves the @access_token then stores it inside a session cookie. In a real app, 
+    # Retrieves the @access_token then stores it inside a session cookie. In a real app,
     # you'll want to persist the token in a datastore associated with the user.
-    get "/callback/" do
+    get "/callback" do
       request_token = @jira_client.set_request_token(
         session[:request_token], session[:request_secret]
       )
