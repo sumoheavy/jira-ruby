@@ -1,5 +1,6 @@
 language: ruby
 rvm:
+    - 2.3.1
     - ruby-head
 before_script:
     - rake jira:generate_public_cert
