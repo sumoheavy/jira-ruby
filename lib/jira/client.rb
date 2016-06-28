@@ -165,10 +165,6 @@ module JIRA
       JIRA::Resource::RemotelinkFactory.new(self)
     end
 
-    def IssueCount
-      JIRA::Resource::IssueCountFactory.new(self)
-    end
-
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
