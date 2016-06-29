@@ -165,6 +165,14 @@ module JIRA
       JIRA::Resource::RemotelinkFactory.new(self)
     end
 
+    def Sprint
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
+    def Agile
+      JIRA::Resource::AgileFactory.new(self)
+    end
+
     # HTTP methods without a body
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
