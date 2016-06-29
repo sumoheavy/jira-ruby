@@ -6,6 +6,9 @@ This gem provides access to the Atlassian JIRA REST API.
 
 == Example usage
 
+  require 'rubygems'
+  require 'jira-ruby'
+
   options = {
     :username     => 'username',
     :password     => 'pass1234',
@@ -91,7 +94,7 @@ to an empty string in the options hash.
 
   require 'rubygems'
   require 'pp'
-  require 'jira'
+  require 'jira-ruby'
 
   # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
   # for tests.
@@ -132,7 +135,7 @@ Ensure the JIRA gem is loaded correctly
 
   # Gemfile
   ...
-  gem 'jira-ruby', :require => 'jira'
+  gem 'jira-ruby', :require => 'jira-ruby'
   ...
 
 Add common methods to your application controller and ensure access token
@@ -227,7 +230,7 @@ Create your own controllers for the JIRA resources you wish to access.
 
 Here's the same example as a Sinatra application:
 
-  require 'jira'
+  require 'jira-ruby'
   class App < Sinatra::Base
     enable :sessions
 
