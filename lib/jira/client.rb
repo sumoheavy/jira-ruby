@@ -109,6 +109,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def Resolution # :nodoc:
+      JIRA::Resource::ResolutionFactory.new(self)
+    end
+
     def Comment # :nodoc:
       JIRA::Resource::CommentFactory.new(self)
     end
