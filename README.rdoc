@@ -27,6 +27,13 @@ This gem provides access to the Atlassian JIRA REST API.
 * {Overview}[https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs]
 * {Reference}[http://docs.atlassian.com/jira/REST/latest/]
 
+== Running tests
+
+Before running tests, you will need a public certificate generated.
+
+```
+rake jira:generate_public_cert
+```
 
 == Setting up the JIRA SDK
 
