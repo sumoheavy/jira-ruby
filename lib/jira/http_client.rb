@@ -17,6 +17,11 @@ module JIRA
       @cookies = {}
     end
 
+    def make_cookie_auth_request
+      body = { :username => @options[:username], :password => @options[:password] }.to_json
+      make_request(:post, '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
+    end
+
     def make_request(http_method, path, body='', headers={})
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?

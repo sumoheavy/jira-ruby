@@ -66,8 +66,13 @@ module JIRA
         @consumer = @request_client.consumer
       when :basic
         @request_client = HttpClient.new(@options)
+      when :cookie
+        raise ArgumentError, 'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+        @options[:use_cookies] = true
+        @request_client = HttpClient.new(@options)
+        @request_client.make_cookie_auth_request
       else
-        raise ArgumentError, 'Options: ":auth_type" must be ":oauth" or ":basic"'
+        raise ArgumentError, 'Options: ":auth_type" must be ":oauth", ":cookie" or ":basic"'
       end
 
       @http_debug = @options[:http_debug]
