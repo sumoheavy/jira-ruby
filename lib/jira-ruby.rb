@@ -2,7 +2,7 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|
-  inflector.singular 'status', 'status'
+  inflector.singular /status$/, 'status'
 end
 
 require 'jira/base'
@@ -29,10 +29,12 @@ require 'jira/resource/issue'
 require 'jira/resource/filter'
 require 'jira/resource/field'
 require 'jira/resource/rapidview'
+require 'jira/resource/resolution'
 require 'jira/resource/serverinfo'
 require 'jira/resource/createmeta'
 require 'jira/resource/webhook'
-
+require 'jira/resource/agile'
+require 'jira/resource/sprint'
 require 'jira/request_client'
 require 'jira/oauth_client'
 require 'jira/http_client'

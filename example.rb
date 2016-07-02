@@ -1,5 +1,5 @@
 require 'pp'
-require './lib/jira'
+require './lib/jira-ruby'
 
 CONSUMER_KEY = 'test'
 SITE         = 'https://test.jira.com'

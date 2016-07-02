@@ -6,7 +6,7 @@ module JIRA
 
     class Webhook < JIRA::Base
 
-      REST_BASE_PATH = '/rest/webhooks/1.0/'
+      REST_BASE_PATH = '/rest/webhooks/1.0'
 
       def self.endpoint_name
         'webhook'

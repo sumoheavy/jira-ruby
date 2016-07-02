@@ -6,7 +6,18 @@ This gem provides access to the Atlassian JIRA REST API.
 
 == Example usage
 
-  client = JIRA::Client.new({:consumer_key => CONSUMER_KEY, :consumer_secret => CONSUMER_SECRET})
+  require 'rubygems'
+  require 'jira-ruby'
+
+  options = {
+    :username     => 'username',
+    :password     => 'pass1234',
+    :site         => 'http://mydomain.atlassian.net:443/',
+    :context_path => '',
+    :auth_type    => :basic
+  }
+  
+  client = JIRA::Client.new(options)
 
   project = client.Project.find('SAMPLEPROJECT')
 
@@ -14,17 +25,18 @@ This gem provides access to the Atlassian JIRA REST API.
     puts "#{issue.id} - #{issue.summary}"
   end
 
-  issue.comments.each {|comment| ... }
-
-  comment = issue.comments.build
-  comment.save({'body':'My new comment'})
-  comment.delete
-
 == Links to JIRA REST API documentation
 
 * {Overview}[https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs]
 * {Reference}[http://docs.atlassian.com/jira/REST/latest/]
 
+== Running tests
+
+Before running tests, you will need a public certificate generated.
+
+```
+rake jira:generate_public_cert
+```
 
 == Setting up the JIRA SDK
 
@@ -82,7 +94,7 @@ to an empty string in the options hash.
 
   require 'rubygems'
   require 'pp'
-  require 'jira'
+  require 'jira-ruby'
 
   # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
   # for tests.
@@ -123,7 +135,7 @@ Ensure the JIRA gem is loaded correctly
 
   # Gemfile
   ...
-  gem 'jira-ruby', :require => 'jira'
+  gem 'jira-ruby', :require => 'jira-ruby'
   ...
 
 Add common methods to your application controller and ensure access token
@@ -218,7 +230,7 @@ Create your own controllers for the JIRA resources you wish to access.
 
 Here's the same example as a Sinatra application:
 
-  require 'jira'
+  require 'jira-ruby'
   class App < Sinatra::Base
     enable :sessions
 

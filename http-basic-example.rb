@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'pp'
-require 'jira'
+require 'jira-ruby'
 
 if ARGV.length == 0
   # If not passed any command line arguments, prompt the

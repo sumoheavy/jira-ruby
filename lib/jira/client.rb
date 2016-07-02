@@ -114,6 +114,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def Resolution # :nodoc:
+      JIRA::Resource::ResolutionFactory.new(self)
+    end
+
     def Comment # :nodoc:
       JIRA::Resource::CommentFactory.new(self)
     end
@@ -168,6 +172,14 @@ module JIRA
 
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
+    end
+
+    def Sprint
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
+    def Agile
+      JIRA::Resource::AgileFactory.new(self)
     end
 
     # HTTP methods without a body
