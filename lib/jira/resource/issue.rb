@@ -62,6 +62,9 @@ module JIRA
 
         response = client.get(url)
         json = parse_json(response.body)
+        if options[:max_results] and options[:max_results] == 0
+          return json['total']
+        end
         json['issues'].map do |issue|
           client.Issue.build(issue)
         end

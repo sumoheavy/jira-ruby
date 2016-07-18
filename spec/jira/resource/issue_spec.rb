@@ -105,6 +105,18 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3)).to eq([''])
   end
 
+  it "should search an issue with a jql query string and maxResults equals zero and should return the count of tickets" do
+    response = double()
+    issue = double()
+
+    allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
+    expect(client).to receive(:get)
+      .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=0')
+      .and_return(response)
+
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', max_results: 0)).to eq(1)
+  end
+
   it "should search an issue with a jql query string and string expand" do
     response = double()
     issue = double()
