@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split('\n').map{ |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_development_dependency 'railties', '~> 4.1.12', '>= 4.1.12'
+  s.add_development_dependency 'railties', '~> 4.2.5.2', '>= 4.2.5.2'
   s.add_runtime_dependency 'oauth', '~> 0.4.7'
-  s.add_runtime_dependency 'activesupport', '~> 4.1.12', '>= 4.1.12'
+  s.add_runtime_dependency 'activesupport', '~> 4.2.5.2', '>= 4.2.5.2'
   s.add_development_dependency 'webmock', '~> 1.18.0'
   s.add_development_dependency 'rspec', '~> 3.0.0'
   s.add_development_dependency 'rake', '~> 10.3.2'
