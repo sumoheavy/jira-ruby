@@ -85,9 +85,13 @@ module JIRA
       end
 
       def save(attrs = {})
-        url = "#{client.options[:site]}/rest/agile/1.0/sprint/#{self.id}"
         attrs = @attrs if attrs.empty?
-        super(attrs, url)
+        super(attrs, agile_url)
+      end
+
+      def save!(attrs = {})
+        attrs = @attrs if attrs.empty?
+        super(attrs, agile_url)
       end
 
       # WORK IN PROGRESS
@@ -97,6 +101,11 @@ module JIRA
         self.class.parse_json(response.body)
       end
 
+      private
+
+      def agile_url
+        "#{client.options[:site]}/rest/agile/1.0/sprint/#{self.id}"
+      end
     end
   end
 end
