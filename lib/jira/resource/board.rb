@@ -7,15 +7,20 @@ module JIRA
     end
 
     class Board < JIRA::Base
-
-      DEFAULT_OPTIONS = {
-        "maxResults" => 1000
-      }
-
       def self.all(client)
-        response = client.get(path_base(client) + '/board')
+        path = path_base(client) + '/board'
+        response = client.get(path)
         json = parse_json(response.body)
-        json['values'].map do |board|
+        results = json['values']
+
+        until json['isLast']
+          params = { 'startAt' => (json['startAt'] + json['maxResults']).to_s }
+          response = client.get(url_with_query_params(path, params))
+          json = parse_json(response.body)
+          results += json['values']
+        end
+
+        results.map do |board|
           client.Board.build(board)
         end
       end
@@ -26,11 +31,20 @@ module JIRA
         client.Board.build(json)
       end
 
-      def issues(options = {})
-        options.reverse_merge!(DEFAULT_OPTIONS)
-        response = client.get(path_base(client) + "/board/#{id}/issue?#{options.to_query}")
+      def issues(params = {})
+        path = path_base(client) + "/board/#{id}/issue"
+        response = client.get(url_with_query_params(path, params))
         json = self.class.parse_json(response.body)
-        json['issues'].map { |issue| client.Issue.build(issue) }
+        results = json['issues']
+
+        while (json['startAt'] + json['maxResults']) < json['total']
+          params.merge!('startAt' => (json['startAt'] + json['maxResults']))
+          response = client.get(url_with_query_params(path, params))
+          json = self.class.parse_json(response.body)
+          results += json['issues']
+        end
+
+          results.map { |issue| client.Issue.build(issue) }
       end
 
       # options
