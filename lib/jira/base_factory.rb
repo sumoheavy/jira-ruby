@@ -9,7 +9,7 @@ module JIRA
       @client = client
     end
 
-    # Return the name of the class which this factory generates, i.e. 
+    # Return the name of the class which this factory generates, i.e.
     # JIRA::Resource::FooFactory creates JIRA::Resource::Foo instances.
     def target_class
       # Need to do a little bit of work here as Module.const_get doesn't work

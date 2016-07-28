@@ -84,12 +84,12 @@ module JIRA
         end
       end
 
-      def save(attrs = {})
+      def save(attrs = {}, path = nil)
         attrs = @attrs if attrs.empty?
         super(attrs, agile_url)
       end
 
-      def save!(attrs = {})
+      def save!(attrs = {}, path = nil)
         attrs = @attrs if attrs.empty?
         super(attrs, agile_url)
       end

@@ -61,6 +61,13 @@ describe JIRA::Resource::Sprint do
           sprint.save!
         end
       end
+
+      context "when providing the path argument" do
+        it "ignores it" do
+          expect_any_instance_of(JIRA::Base).to receive(:save!).with(instance_attrs, agile_sprint_url)
+          sprint.save!({}, "mavenlink.com")
+        end
+      end
     end
   end
 end
