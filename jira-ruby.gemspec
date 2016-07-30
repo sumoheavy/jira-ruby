@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'activesupport'
 
   # Development Dependencies
-  s.add_development_dependency 'railties', '~> 4.2', '>= 4.2.0'
+  s.add_development_dependency 'railties'
   s.add_development_dependency 'webmock',  '~> 1.18', '>= 1.18.0'
   s.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
   s.add_development_dependency 'rake', '~> 10.3', '>= 10.3.2'
