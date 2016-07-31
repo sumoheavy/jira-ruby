@@ -83,12 +83,6 @@ describe JIRA::Resource::Field do
 
     context "after fields are mapped" do
 
-      before do
-        silence_stream(STDERR) do
-          expect(client.Field.map_fields.class).to eq(Hash)
-        end
-      end
-
       include_context "mapped or not"
 
       it "warns of duplicate fields" do
