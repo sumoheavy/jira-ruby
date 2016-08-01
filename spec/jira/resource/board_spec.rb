@@ -57,10 +57,11 @@ eos
     expect(board).to be_a(JIRA::Resource::Board)
   end
 
-  it "should find all issues" do
-    issues_response = double()
+  describe "#issues" do
+    it "should find all issues" do
+      issues_response = double()
 
-    api_json_issues = <<eos 
+      api_json_issues = <<eos
     {
         "expand": "names,schema",
         "startAt": 0,
@@ -82,14 +83,66 @@ eos
     }
 eos
 
-    allow(issues_response).to receive(:body).and_return(api_json_issues)
-    allow(board).to receive(:id).and_return(84)
-    expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue?').
-      and_return(issues_response)
-    expect(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
+      allow(issues_response).to receive(:body).and_return(api_json_issues)
+      allow(board).to receive(:id).and_return(84)
+      expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue?').
+        and_return(issues_response)
+      expect(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
 
-    expect(board.issues.size).to be(1)
+      expect(board.issues.size).to be(1)
+    end
+
+    describe "pagination" do
+      subject { described_class.new(client) }
+      let(:client) { JIRA::Client.new }
+
+      before do
+        allow(subject).to receive(:id).and_return("123")
+      end
+
+      context "when there are multiple pages of results" do
+        let(:result_1) {
+          OpenStruct.new(body: {
+            "startAt" => 0,
+            "maxResults" => 1,
+            "total" => 2,
+            "issues" => []
+          }.to_json)
+        }
+        let(:result_2) {
+          OpenStruct.new(body: {
+            "startAt" => 1,
+            "maxResults" => 1,
+            "total" => 2,
+            "issues" => []
+          }.to_json)
+        }
+
+        it "makes multiple requests and increments the startAt param" do
+          expect(client).to receive(:get).and_return(result_1)
+          expect(client).to receive(:get).and_return(result_2)
+          subject.issues
+        end
+      end
+
+      context "when there is only one page of results" do
+        let(:result_1) {
+          OpenStruct.new(body: {
+            "startAt" => 0,
+            "maxResults" => 2,
+            "total" => 2,
+            "issues" => []
+          }.to_json)
+        }
+
+        it "only requires one request" do
+          expect(client).to receive(:get).once.and_return(result_1)
+          subject.issues
+        end
+      end
+    end
   end
+
 
   it "should get all sprints for a board" do
     response = double()
