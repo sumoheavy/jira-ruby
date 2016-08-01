@@ -17,8 +17,7 @@ describe JIRA::Resource::Sprint do
         let(:given_attrs) { { start_date: "2016-06-10" } }
 
         it "calls save on the super class with the given attributes & agile url" do
-          expect_any_instance_of(JIRA::Base).
-            to receive(:save).with(given_attrs, agile_sprint_url).and_return(true)
+          expect_any_instance_of(JIRA::Base).to receive(:save).with(given_attrs, agile_sprint_url)
 
           sprint.save(given_attrs)
         end
@@ -26,10 +25,17 @@ describe JIRA::Resource::Sprint do
 
       context "when attributes are not specified" do
         it "calls save on the super class with the instance attributes & agile url" do
-          expect_any_instance_of(JIRA::Base).
-            to receive(:save).with(instance_attrs, agile_sprint_url).and_return(true)
+          expect_any_instance_of(JIRA::Base).to receive(:save).with(instance_attrs, agile_sprint_url)
 
           sprint.save
+        end
+      end
+
+      context "when providing the path argument" do
+        it "ignores it" do
+          expect_any_instance_of(JIRA::Base).to receive(:save).with(instance_attrs, agile_sprint_url)
+
+          sprint.save({}, "mavenlink.com")
         end
       end
     end
@@ -46,8 +52,7 @@ describe JIRA::Resource::Sprint do
         let(:given_attrs) { { start_date: "2016-06-10" } }
 
         it "calls save! on the super class with the given attributes & agile url" do
-          expect_any_instance_of(JIRA::Base).
-            to receive(:save!).with(given_attrs, agile_sprint_url).and_return(true)
+          expect_any_instance_of(JIRA::Base).to receive(:save!).with(given_attrs, agile_sprint_url)
 
           sprint.save!(given_attrs)
         end
@@ -55,10 +60,17 @@ describe JIRA::Resource::Sprint do
 
       context "when attributes are not specified" do
         it "calls save! on the super class with the instance attributes & agile url" do
-          expect_any_instance_of(JIRA::Base).
-            to receive(:save!).with(instance_attrs, agile_sprint_url).and_return(true)
+          expect_any_instance_of(JIRA::Base).to receive(:save!).with(instance_attrs, agile_sprint_url)
 
           sprint.save!
+        end
+      end
+
+      context "when providing the path argument" do
+        it "ignores it" do
+          expect_any_instance_of(JIRA::Base).to receive(:save!).with(instance_attrs, agile_sprint_url)
+
+          sprint.save!({}, "mavenlink.com")
         end
       end
     end
