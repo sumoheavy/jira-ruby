@@ -63,6 +63,8 @@ new_way = issue.Special_Field
 client.Issue.jql(a_normal_jql_search, fields:[:Special_Field])
 # Or you could always do it the old way - if you can remember the numbers...
 client.Issue.jql(a_normal_jql_search, fields:['customfield_12345'])
+# You can specify the maximum number of results to be returned in the response, i.e. 500
+client.Issue.jql(a_normal_jql_search, max_results: 500)
 
 # # Find a specific project by key
 # # ------------------------------
