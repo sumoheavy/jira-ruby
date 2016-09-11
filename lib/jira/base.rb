@@ -401,6 +401,7 @@ module JIRA
       else
         hash.each do |k, v|
           if v.is_a?(Hash)
+            target[k] = {} if !target.key?(k) || target[k].nil?
             set_attrs(v, clobber, target[k])
           else
             target[k] = v
