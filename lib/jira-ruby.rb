@@ -10,6 +10,7 @@ require 'jira/base_factory'
 require 'jira/has_many_proxy'
 require 'jira/http_error'
 
+require 'jira/resource/watcher'
 require 'jira/resource/user'
 require 'jira/resource/attachment'
 require 'jira/resource/component'

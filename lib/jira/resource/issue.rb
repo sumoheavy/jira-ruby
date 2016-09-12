@@ -39,6 +39,9 @@ module JIRA
 
       has_many :remotelink, :class => JIRA::Resource::Remotelink
 
+      has_many :watchers,   :attribute_key => 'watches',
+                            :nested_under => 'fields'
+
       def self.all(client)
         url = client.options[:rest_base_path] + "/search?expand=transitions.fields"
         response = client.get(url)

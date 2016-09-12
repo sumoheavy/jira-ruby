@@ -158,6 +158,10 @@ module JIRA
       JIRA::Resource::ApplicationLinkFactory.new(self)
     end
 
+    def Watcher
+      JIRA::Resource::WatcherFactory.new(self)
+    end
+
     def Webhook
       JIRA::Resource::WebhookFactory.new(self)
     end
