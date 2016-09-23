@@ -70,6 +70,23 @@ module JIRA
         end
       end
 
+      # Fetches the attributes for the specified resource from JIRA unless
+      # the resource is already expanded and the optional force reload flag
+      # is not set
+      def fetch(reload = false, query_params = {})
+        return if expanded? && !reload
+        response = client.get(url_with_query_params(url, query_params))
+        set_attrs_from_response(response)
+        if @attrs and @attrs['fields'] and @attrs['fields']['worklog'] and @attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults']
+          worklog_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{id}/worklog"
+          response = client.get(worklog_url)
+          unless response.body.nil? or response.body.length < 2
+            set_attrs({'fields' => { 'worklog' => self.class.parse_json(response.body) }}, false)
+          end
+        end
+        @expanded = true
+      end
+
       def editmeta
         editmeta_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{key}/editmeta"
 
