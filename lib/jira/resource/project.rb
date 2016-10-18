@@ -18,8 +18,9 @@ module JIRA
 
       # Returns all the issues for this project
       def issues(options={})
+        options = options.with_indifferent_access
         search_url = client.options[:rest_base_path] + '/search'
-        query_params = {:jql => "project=\"#{key}\""}
+        query_params = { jql: "project=\"#{key}\"" }
         query_params.update Base.query_params_for_search(options)
         response = client.get(url_with_query_params(search_url, query_params))
         json = self.class.parse_json(response.body)
@@ -28,6 +29,10 @@ module JIRA
         end
       end
       
+      def metadata
+        @metadata ||= createmeta
+      end
+
       def createmeta(options={})
         createmeta_url = client.options[:rest_base_path] + '/issue/createmeta/'
         query_params = {
@@ -56,7 +61,9 @@ module JIRA
           end
         end
 
-        OpenStruct.new meta_data
+        metadata_struct = OpenStruct.new meta_data
+        metadata_struct.project_id = self.key
+        metadata_struct
       end
 
       def users

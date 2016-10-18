@@ -52,7 +52,7 @@ module JIRA
   #
   class Base
     QUERY_PARAMS_FOR_SINGLE_FETCH = Set.new [:expand, :fields]
-    QUERY_PARAMS_FOR_SEARCH = Set.new [:expand, :fields, :startAt, :maxResults]
+    QUERY_PARAMS_FOR_SEARCH = Set.new [:expand, :fields, :startAt, :maxResults, :start_at, :max_results]
 
     # A reference to the JIRA::Client used to initialize this resource.
     attr_reader :client
