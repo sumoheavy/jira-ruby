@@ -12,7 +12,6 @@ module JIRA
 
     def request(*args)
       response = make_request(*args)
-      #binding.pry unless response.kind_of?(Net::HTTPSuccess)
       raise HTTPError.new(response) unless response.kind_of?(Net::HTTPSuccess)
       response
     end
