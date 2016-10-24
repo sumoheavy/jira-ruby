@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://www.sumoheavy.com'
   s.summary     = %q{Ruby Gem for use with the Atlassian JIRA REST API}
   s.description = %q{API for JIRA}
-  s.licenses    = ['OSL-3.0']
+  s.licenses    = ['MIT']
 
   s.rubyforge_project = 'jira-ruby'
 
