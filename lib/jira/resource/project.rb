@@ -48,7 +48,7 @@ module JIRA
         
         meta_data = {}
 
-        issuetypes = json['projects'][0]['issuetypes']
+        issuetypes = json['projects'][0].try(:[],'issuetypes') || []
         
         
         issuetypes.each do |issuetype|
