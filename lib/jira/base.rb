@@ -494,11 +494,9 @@ module JIRA
     end
 
     def url_with_query_params(url, query_params)
-      if not query_params.empty?
-        "#{url}?#{hash_to_query_string query_params}"
-      else
-        url
-      end
+      uri = URI.parse(url)
+      uri.query = uri.query.nil? ? "#{hash_to_query_string query_params}" : "#{uri.query}&#{hash_to_query_string query_params}" unless query_params.empty?
+      uri.to_s
     end
 
     def hash_to_query_string(query_params)
