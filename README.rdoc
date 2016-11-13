@@ -5,6 +5,10 @@
 
 This gem provides access to the Atlassian JIRA REST API.
 
+== Slack
+
+Join our Slack channel! You can find us here[http://jira-ruby.slack.com]
+
 == Example usage
 
   require 'rubygems'
