@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.description = %q{API for JIRA}
   s.licenses    = ['MIT']
 
+  s.required_ruby_version = '>= 1.9.3'
+
   s.rubyforge_project = 'jira-ruby'
 
   s.files         = `git ls-files`.split("\n")
@@ -18,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  # Rubtime Dependencies
+  # Runtime Dependencies
   s.add_runtime_dependency 'oauth', '~> 0.5', '>= 0.5.0'
   s.add_runtime_dependency 'activesupport'
 
