@@ -9,6 +9,7 @@ module JIRA
       :username           => '',
       :password           => ''
     }
+    DEFAULT_READ_TIMEOUT = 120
 
     attr_reader :options
 
@@ -40,6 +41,7 @@ module JIRA
       http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
       http_conn.verify_mode = @options[:ssl_verify_mode]
+      http_conn.read_timeout = @options[:read_timeout].presence || DEFAULT_READ_TIMEOUT
       http_conn
     end
 
