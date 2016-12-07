@@ -13,7 +13,7 @@ describe JIRA::Resource::Createmeta do
   let(:response) {
     double(
       'response',
-      :body => '{"expand":"projects","projects":[{"self":"http://localhost:2029/rest/api/2/project/TST"}]}'
+      :body => '{"expand":"projects","projects":[{"self":"http://localhost:2029/rest/api/2/project/TST","id":"10200","key":"test_key","name":"Test Name"}]}'
     )
   }
 
@@ -33,8 +33,16 @@ describe JIRA::Resource::Createmeta do
       JIRA::Resource::Createmeta.all(client, :foo => 'bar')
     end
 
+    it 'should return an array of createmeta objects' do
+      expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta').and_return(response)
+      createmetas = JIRA::Resource::Createmeta.all(client)
+      expect(createmetas).to be_an Array
+      createmeta = createmetas.first
+      expect(createmeta.id).to eq '10200'
+      expect(createmeta.key).to eq 'test_key'
+      expect(createmeta.name).to eq 'Test Name'
+    end
   end
-
 
   describe 'projectKeys' do
     it 'should query correct url when only one `projectKeys` given as string' do
