@@ -37,7 +37,9 @@ module JIRA
         response = params.empty? ? client.get("#{create_meta_url}") : client.get("#{create_meta_url}?#{params}")
 
         json = parse_json(response.body)
-        self.new(client, {:attrs => json['projects']})
+        json['projects'].map do |attrs|
+          self.new(client, {:attrs => attrs})
+        end
       end
 
       def self.hash_to_query_string(query_params)
