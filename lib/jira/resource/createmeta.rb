@@ -41,14 +41,6 @@ module JIRA
           self.new(client, {:attrs => attrs})
         end
       end
-
-      def self.hash_to_query_string(query_params)
-        query_params.map do |k,v|
-          CGI.escape(k.to_s) + '=' + CGI.escape(v.to_s)
-        end.join('&')
-      end
-
     end
-
   end
 end
