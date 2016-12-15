@@ -11,6 +11,12 @@ describe JIRA::Resource::Agile do
 
       JIRA::Resource::Agile.get_sprints(client, 1)
     end
-  end
 
+    it 'should query correct url with parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?startAt=50&maxResults=100').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
+
+      JIRA::Resource::Agile.get_sprints(client, 1, startAt: 50)
+    end
+  end
 end
