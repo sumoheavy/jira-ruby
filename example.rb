@@ -60,10 +60,10 @@ new_way = issue.Special_Field
 (old_way == new_way) && puts 'much easier'
 #
 # You can also specify fields to be returned in the response
-# This is especially useful in regards to shortening API query response times if performance becomes an issue
+# This is especially useful in regards to shortening JQL query response times if performance becomes an issue
 client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :Special_field, :created])
 # Or you could always do it the old way - if you can remember the custom field numbers...
-client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :customfield_10102, :created])
+client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :customfield_1234, :created])
 # You can also specify the maximum number of results to be returned in the response, i.e. 500
 client.Issue.jql(a_normal_jql_search, max_results: 500)
 
