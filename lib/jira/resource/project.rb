@@ -1,3 +1,5 @@
+require_relative "metadata"
+
 module JIRA
   module Resource
 
@@ -50,6 +52,7 @@ module JIRA
 
         issuetypes = json['projects'][0].try(:[],'issuetypes') || []
         
+        struct = Metadata.new(self.key, issuetypes)
         
         issuetypes.each do |issuetype|
           fields = issuetype.fetch('fields')
@@ -60,7 +63,6 @@ module JIRA
             end
           end
         end
-
         metadata_struct = OpenStruct.new meta_data
         metadata_struct.project_id = self.key
         metadata_struct
