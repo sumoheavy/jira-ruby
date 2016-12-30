@@ -109,6 +109,15 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 # pp issue
 #
+# # Transition an issue
+# # -------------------
+# issue_transition = issue.transitions.build
+# issue_transition.save!('transition' => {'id' => transition_id})
+#
+# # Change assignee
+# # -------------------
+# issue.save({'fields' => {'assignee' => {'name' => person_name}}})
+#
 # # Find a user
 # # -----------
 # user = client.User.find('admin')
