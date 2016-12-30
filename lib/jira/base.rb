@@ -500,8 +500,12 @@ module JIRA
     end
 
     def hash_to_query_string(query_params)
+      self.class.hash_to_query_string(query_params)
+    end
+
+    def self.hash_to_query_string(query_params)
       query_params.map do |k,v|
-        CGI.escape(k.to_s) + "=" + CGI.escape(v.to_s)
+        CGI.escape(k.to_s) + '=' + CGI.escape(v.to_s)
       end.join('&')
     end
 
