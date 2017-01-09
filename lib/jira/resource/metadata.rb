@@ -2,9 +2,11 @@ module JIRA
   module Resource
     class Metadata
 
-      attr_accessor :issuetypes, :raw_issuetypes, :main_custom_fields  
-      def initialize(project_id, raw_issuetypes)
-        @project_id       = project_id
+      attr_accessor :issuetypes, :raw_issuetypes, :main_custom_fields, :project, :project_key, :project_id
+      def initialize(project, raw_issuetypes)
+        @project          = project
+        @project_id       = @project.id
+        @project_key      = @project.key
         @raw_issuetypes   = raw_issuetypes
         @issuetypes =  @raw_issuetypes.map do |raw_issuetype|
           raw_issuetype.tap { |issuetype| issuetype["key"] = issuetype["name"].downcase }
@@ -35,6 +37,14 @@ module JIRA
 
       def [](key)
         @main_custom_fields[key] || ""
+      end
+
+      def to_h
+        @main_custom_fields.merge({project_id: @project_id, project_key: @project_key})
+      end
+
+      def id
+        "#{@project_key}-#{@project_id}"
       end
 
     end

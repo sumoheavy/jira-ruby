@@ -52,8 +52,6 @@ module JIRA
 
         issuetypes = json['projects'][0].try(:[],'issuetypes') || []
         
-        struct = Metadata.new(self.key, issuetypes)
-        
         issuetypes.each do |issuetype|
           fields = issuetype.fetch('fields')
           fields.each do |field|
@@ -63,9 +61,7 @@ module JIRA
             end
           end
         end
-        metadata_struct = OpenStruct.new meta_data
-        metadata_struct.project_id = self.key
-        metadata_struct
+        Metadata.new(self, issuetypes)
       end
 
       def users
