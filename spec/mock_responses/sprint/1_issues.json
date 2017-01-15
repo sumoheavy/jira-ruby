@@ -5,198 +5,119 @@
   "total": 1,
   "issues": [
     {
-      "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
-      "id": "1",
-      "self": "https://testhost/jira/rest/agile/1.0/issue/281753",
-      "key": "SAMPLEPROJECT-1",
+      "expand": "",
+      "id": "10001",
+      "self": "http://www.example.com/jira/rest/agile/1.0/board/92/issue/10001",
+      "key": "HSP-1",
       "fields": {
-        "issuetype": {
-          "self": "https://testhost/jira/rest/api/2/issuetype/27",
-          "id": "27",
-          "description": "",
-          "iconUrl": "https://testhost/jira/images/icons/issuetypes/requirement.png",
-          "name": "Task",
-          "subtask": false
-        },
+        "flagged": true,
         "sprint": {
-          "id": 1,
-          "self": "https://testhost/jira/rest/agile/1.0/sprint/1",
-          "state": "active",
-          "name": "Sprint 1",
-          "startDate": "2017-01-03T05:34:25.405-05:00",
-          "endDate": "2017-01-13T14:00:00.000-05:00",
-          "originBoardId": 1
+          "id": 37,
+          "self": "http://www.example.com/jira/rest/agile/1.0/sprint/13",
+          "state": "future",
+          "name": "sprint 2"
         },
+        "closedSprints": [
+          {
+            "id": 37,
+            "self": "http://www.example.com/jira/rest/agile/1.0/sprint/23",
+            "state": "closed",
+            "name": "sprint 1",
+            "startDate": "2015-04-11T15:22:00.000+10:00",
+            "endDate": "2015-04-20T01:22:00.000+10:00",
+            "completeDate": "2015-04-20T11:04:00.000+10:00"
+          }
+        ],
+        "description": "example bug report",
         "project": {
-          "self": "https://testhost/jira/rest/api/2/project/14730",
-          "id": "14730",
-          "key": "SAMPLEPROJECT",
-          "name": "SAMPLE PROJECT",
+          "self": "http://www.example.com/jira/rest/api/2/project/EX",
+          "id": "10000",
+          "key": "EX",
+          "name": "Example",
           "avatarUrls": {
-            "48x48": "https://testhost/jira/secure/projectavatar?pid=14730&avatarId=20730",
-            "24x24": "https://testhost/jira/secure/projectavatar?size=small&pid=14730&avatarId=20730",
-            "16x16": "https://testhost/jira/secure/projectavatar?size=xsmall&pid=14730&avatarId=20730",
-            "32x32": "https://testhost/jira/secure/projectavatar?size=medium&pid=14730&avatarId=20730"
+            "48x48": "http://www.example.com/jira/secure/projectavatar?size=large&pid=10000",
+            "24x24": "http://www.example.com/jira/secure/projectavatar?size=small&pid=10000",
+            "16x16": "http://www.example.com/jira/secure/projectavatar?size=xsmall&pid=10000",
+            "32x32": "http://www.example.com/jira/secure/projectavatar?size=medium&pid=10000"
           },
           "projectCategory": {
-            "self": "https://testhost/jira/rest/api/2/projectCategory/10090",
-            "id": "10090",
-            "description": "Whatever",
-            "name": "Whatever"
+            "self": "http://www.example.com/jira/rest/api/2/projectCategory/10000",
+            "id": "10000",
+            "name": "FIRST",
+            "description": "First Project Category"
           }
         },
-        "fixVersions": [],
-        "aggregatetimespent": 4500,
-        "resolution": {
-          "self": "https://testhost/jira/rest/api/2/resolution/1",
-          "id": "1",
-          "description": "A fix for this issue is checked into the tree and tested.",
-          "name": "Fixed"
-        },
-        "resolutiondate": "2017-01-11T03:38:41.000-0500",
-        "workratio": 100,
-        "watches": {
-          "self": "https://testhost/jira/rest/api/2/issue/NLTS-2372/watchers",
-          "watchCount": 2,
-          "isWatching": false
-        },
-        "created": "2017-01-05T12:02:46.000-0500",
-        "epic": {
-          "id": 253939,
-          "key": "NLTS-1287",
-          "self": "https://testhost/jira/rest/agile/1.0/epic/253939",
-          "name": "Epic",
-          "summary": "An Epic story",
-          "color": {
-            "key": "color_9"
-          },
-          "done": false
-        },
-        "priority": {
-          "self": "https://testhost/jira/rest/api/2/priority/6",
-          "iconUrl": "https://testhost/jira/images/icons/priorities/trivial.svg",
-          "name": "Undefined",
-          "id": "6"
-        },
-        "labels": [
-          "TEST"
-        ],
-        "timeestimate": 0,
-        "aggregatetimeoriginalestimate": 4500,
-        "versions": [
+        "comment": [
           {
-            "self": "https://testhost/jira/rest/api/2/version/52042",
-            "id": "52042",
-            "description": "Whaever",
-            "name": "1.0",
-            "archived": false,
-            "released": false,
-            "releaseDate": "2017-01-16"
+            "self": "http://www.example.com/jira/rest/api/2/issue/10010/comment/10000",
+            "id": "10000",
+            "author": {
+              "self": "http://www.example.com/jira/rest/api/2/user?username=fred",
+              "name": "fred",
+              "displayName": "Fred F. User",
+              "active": false
+            },
+            "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.",
+            "updateAuthor": {
+              "self": "http://www.example.com/jira/rest/api/2/user?username=fred",
+              "name": "fred",
+              "displayName": "Fred F. User",
+              "active": false
+            },
+            "created": "2016-06-22T11:49:57.797+0200",
+            "updated": "2016-06-22T11:49:57.800+0200",
+            "visibility": {
+              "type": "role",
+              "value": "Administrators"
+            }
           }
         ],
-        "issuelinks": [],
-        "assignee": {
-          "self": "https://testhost/jira/rest/api/2/user?username=some.one",
-          "name": "some.one",
-          "key": "some.one",
-          "emailAddress": "some.one@testhost.com",
-          "avatarUrls": {
-            "48x48": "https://testhost/jira/secure/useravatar?ownerId=some.one&avatarId=21333",
-            "24x24": "https://testhost/jira/secure/useravatar?size=small&ownerId=some.one&avatarId=21333",
-            "16x16": "https://testhost/jira/secure/useravatar?size=xsmall&ownerId=some.one&avatarId=21333",
-            "32x32": "https://testhost/jira/secure/useravatar?size=medium&ownerId=some.one&avatarId=21333"
+        "epic": {
+          "id": 37,
+          "self": "http://www.example.com/jira/rest/agile/1.0/epic/23",
+          "name": "epic 1",
+          "summary": "epic 1 summary",
+          "color": {
+            "key": "color_4"
           },
-          "displayName": "Some One",
-          "active": true,
-          "timeZone": "Europe/London"
+          "done": true
         },
-        "updated": "2017-01-11T03:38:46.000-0500",
-        "status": {
-          "self": "https://testhost/jira/rest/api/2/status/6",
-          "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
-          "iconUrl": "https://testhost/jira/images/icons/statuses/closed.png",
-          "name": "Closed",
-          "id": "6",
-          "statusCategory": {
-            "self": "https://testhost/jira/rest/api/2/statuscategory/3",
-            "id": 3,
-            "key": "done",
-            "colorName": "green",
-            "name": "Done"
+        "worklog": [
+          {
+            "self": "http://www.example.com/jira/rest/api/2/issue/10010/worklog/10000",
+            "author": {
+              "self": "http://www.example.com/jira/rest/api/2/user?username=fred",
+              "name": "fred",
+              "displayName": "Fred F. User",
+              "active": false
+            },
+            "updateAuthor": {
+              "self": "http://www.example.com/jira/rest/api/2/user?username=fred",
+              "name": "fred",
+              "displayName": "Fred F. User",
+              "active": false
+            },
+            "comment": "I did some work here.",
+            "updated": "2016-06-22T11:49:57.804+0200",
+            "visibility": {
+              "type": "group",
+              "value": "jira-developers"
+            },
+            "started": "2016-06-22T11:49:57.804+0200",
+            "timeSpent": "3h 20m",
+            "timeSpentSeconds": 12000,
+            "id": "100028",
+            "issueId": "10002"
           }
-        },
-        "components": [       ],
-        "customfield_10290": null,
-        "timeoriginalestimate": 4500,
-        "description": "A job\r\n",
+        ],
+        "updated": 1,
         "timetracking": {
-          "originalEstimate": "1h 15m",
-          "remainingEstimate": "0m",
-          "timeSpent": "1h 15m",
-          "originalEstimateSeconds": 4500,
-          "remainingEstimateSeconds": 0,
-          "timeSpentSeconds": 4500
-        },
-        "attachment": [],
-        "aggregatetimeestimate": 0,
-        "flagged": false,
-        "summary": "QA: Journey Planner: \"Low Floor\" service asset not being shown",
-        "creator": {
-          "self": "https://testhost/jira/rest/api/2/user?username=some.one",
-          "name": "some.one",
-          "key": "some.one",
-          "emailAddress": "some.one@testhost",
-          "avatarUrls": {
-            "48x48": "https://testhost/jira/secure/useravatar?ownerId=some.one&avatarId=21333",
-            "24x24": "https://testhost/jira/secure/useravatar?size=small&ownerId=some.one&avatarId=21333",
-            "16x16": "https://testhost/jira/secure/useravatar?size=xsmall&ownerId=some.one&avatarId=21333",
-            "32x32": "https://testhost/jira/secure/useravatar?size=medium&ownerId=some.one&avatarId=21333"
-          },
-          "displayName": "John Gimber",
-          "active": true,
-          "timeZone": "Europe/London"
-        },
-        "subtasks": [],
-        "customfield_10040": null,
-        "customfield_10041": null,
-        "reporter": {
-          "self": "https://testhost/jira/rest/api/2/user?username=some.one",
-          "name": "some.one",
-          "key": "some.one",
-          "emailAddress": "some.one@testhost",
-          "avatarUrls": {
-            "48x48": "https://testhost/jira/secure/useravatar?ownerId=some.one&avatarId=21333",
-            "24x24": "https://testhost/jira/secure/useravatar?size=small&ownerId=some.one&avatarId=21333",
-            "16x16": "https://testhost/jira/secure/useravatar?size=xsmall&ownerId=some.one&avatarId=21333",
-            "32x32": "https://testhost/jira/secure/useravatar?size=medium&ownerId=some.one&avatarId=21333"
-          },
-          "displayName": "John Gimber",
-          "active": true,
-          "timeZone": "Europe/London"
-        },
-        "aggregateprogress": {
-          "progress": 4500,
-          "total": 4500,
-          "percent": 100
-        },
-        "environment": "",
-        "duedate": null,
-        "progress": {
-          "progress": 4500,
-          "total": 4500,
-          "percent": 100
-        },
-        "comment": {
-          "comments": [],
-          "maxResults": 0,
-          "total": 3,
-          "startAt": 0
-        },
-        "worklog": {
-          "startAt": 0,
-          "maxResults": 20,
-          "total": 2,
-          "worklogs": []
+          "originalEstimate": "10m",
+          "remainingEstimate": "3m",
+          "timeSpent": "6m",
+          "originalEstimateSeconds": 600,
+          "remainingEstimateSeconds": 200,
+          "timeSpentSeconds": 400
         }
       }
     }

@@ -15,7 +15,7 @@ module JIRA
 
       def self.get_backlog_issues(client, board_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get(path_base(client) + "board/#{board_id}/backlog", options)
+        response = client.get(path_base(client) + "/board/#{board_id}/backlog?#{hash_to_query_string(options)}")
         parse_json(response.body)
       end
 

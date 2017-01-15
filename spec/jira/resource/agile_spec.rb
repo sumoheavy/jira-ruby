@@ -4,6 +4,24 @@ describe JIRA::Resource::Agile do
   let(:client) { double(options: {rest_base_path: '/jira/rest/api/2', context_path: '/jira'}) }
   let(:response) { double }
 
+  describe '#all' do
+    it 'should query url without parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
+
+      JIRA::Resource::Agile.all(client)
+    end
+  end
+
+  describe '#get_backlog_issues' do
+    it 'should query the url without parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/backlog?maxResults=100').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
+
+      JIRA::Resource::Agile.get_backlog_issues(client, 1)
+    end
+  end
+
   describe '#get_sprints' do
     it 'should query correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=100').and_return(response)
