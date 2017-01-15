@@ -27,8 +27,7 @@ module JIRA
 
       def self.get_sprint_issues(client, sprint_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get(path_base(client) +
-                                  "rest/agile/1.0/sprint/#{sprint_id}/issue?maxResults=#{options[:maxResults]}")
+        response = client.get(path_base(client) + "/sprint/#{sprint_id}/issue?#{hash_to_query_string(options)}")
         parse_json(response.body)
       end
 
