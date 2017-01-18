@@ -8,7 +8,7 @@ This gem provides access to the Atlassian JIRA REST API.
 
 ## Slack
 
-Join our Slack channel! You can find us [here](http://jira-ruby.slack.com)
+Join our Slack channel! You can find us [here](https://jira-ruby-slackin.herokuapp.com/)
 
 ## Example usage
 
