@@ -94,6 +94,47 @@ Follow the same steps described above to set up a new Application Link in JIRA,
 however there is no need to set up any "incoming authentication" as this
 defaults to HTTP Basic Auth.
 
+## Configuring JIRA to use Cookie-Based Auth
+
+Jira supports cookie based authentication whereby user credentials are passed
+to JIRA via a JIRA REST API call.  This call returns a session cookie which must
+then be sent to all following JIRA REST API calls. 
+
+To enable cookie based authentication, set `:auth_type` to `:cookie`,
+set `:use_cookies` to `true` and set `:username` and `:password` accordingly.
+
+```ruby
+require 'jira-ruby'
+
+options = {
+  :username           => 'username',
+  :password           => 'pass1234',
+  :site               => 'http://mydomain.atlassian.net:443/',
+  :context_path       => '',
+  :auth_type          => :cookie,  # Set cookie based authentication
+  :use_cookies        => true,     # Send cookies with each request
+  :additional_cookies => ['AUTH=vV7uzixt0SScJKg7'] # Optional cookies to send 
+                                                   # with each request
+}
+
+client = JIRA::Client.new(options)
+
+project = client.Project.find('SAMPLEPROJECT')
+
+project.issues.each do |issue|
+  puts "#{issue.id} - #{issue.summary}"
+end
+```
+
+Some authentication schemes might require additional cookies to be sent with
+each request.  Cookies added to the `:additional_cookies` option will be added
+to each request.  This option should be an array of strings representing each
+cookie to add to the request.
+
+Some authentication schemes that require additional cookies ignore the username
+and password sent in the JIRA REST API call.  For those use cases, `:username`
+and `:password` may be omitted from `options`. 
+
 ## Using the API Gem in a command line application
 
 Using HTTP Basic Authentication, configure and connect a client to your instance

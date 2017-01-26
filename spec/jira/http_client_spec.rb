@@ -12,6 +12,14 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:basic_cookie_client_with_additional_cookies) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      :use_cookies => true,
+      :additional_cookies => ['sessionToken=abc123', 'internal=true']
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
     response = double("response")
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
@@ -67,6 +75,27 @@ describe JIRA::HttpClient do
     end
   end
 
+  it "sets additional cookies when they are provided" do
+    client = basic_cookie_client_with_additional_cookies
+    body = ''
+    headers = double()
+    basic_auth_http_conn = double()
+    request = double()
+    allow(client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    expect(request).to receive(:basic_auth).with(client.options[:username], client.options[:password]).exactly(5).times.and_return(request)
+    expect(request).to receive(:add_field).with("Cookie", "sessionToken=abc123; internal=true").exactly(5).times
+    expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
+    expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
+    [:delete, :get, :head].each do |method|
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(client.make_request(method, '/path', nil, headers)).to eq(cookie_response)
+    end
+    [:post, :put].each do |method|
+      expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
+      expect(request).to receive(:body=).with(body).and_return(request)
+      expect(client.make_request(method, '/path', body, headers)).to eq(cookie_response)
+    end
+  end
 
   it "performs a basic http client request" do
     body = nil
