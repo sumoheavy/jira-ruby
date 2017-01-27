@@ -68,6 +68,7 @@ module JIRA
 
     def add_cookies(request)
       cookie_array = @cookies.values.map { |cookie| cookie.to_s }
+      cookie_array +=  Array(@options[:additional_cookies]) if @options.key?(:additional_cookies)
       request.add_field('Cookie', cookie_array.join('; ')) if cookie_array.any?
       request
     end

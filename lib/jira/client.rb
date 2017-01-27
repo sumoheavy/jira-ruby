@@ -23,9 +23,10 @@ module JIRA
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
-  #   :auth_type          => :oauth
-  #   :proxy_address      => nil
-  #   :proxy_port         => nil
+  #   :auth_type          => :oauth,
+  #   :proxy_address      => nil,
+  #   :proxy_port         => nil,
+  #   :additional_cookies => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
