@@ -1,6 +1,7 @@
 module JIRA
   module Resource
     class Metadata
+      DEFAULT_REQUIRED_KEYS = ['project', 'issuetype', 'summary', 'reporter']
 
       attr_accessor :issuetypes, :raw_issuetypes, :main_custom_fields, :project, :project_key, :project_id
       def initialize(project, raw_issuetypes)
@@ -26,13 +27,17 @@ module JIRA
       end
 
       def issuetype_info(issuetype_key)
-        issuetypes.find { |issuetype| issuetype["key"] == issuetype_key.downcase } || {}        
+        issuetypes.find { |issuetype| issuetype["key"] == issuetype_key.downcase } || {}
       end
 
-      def required_fields
-        issuetypes.inject({}.with_indifferent_access) do |hash, issuetype| 
-          hash[ issuetype["key"] ] = issuetype["fields"].select { |field_name, field_data| field_data["required"] }.keys
-        end
+      def required_fields(type)
+        issuetypes.detect { |issuetype| issuetype['name'] == type }['fields']
+            .select { |k, value| value['required'] }
+      end
+
+      def unsupported_fields(type)
+        required_fields(type).reject { |key, v| (main_custom_fields.values+DEFAULT_REQUIRED_KEYS).include? v['key'] }
+             .map { |k, value| value['name'] }
       end
 
       def [](key)
