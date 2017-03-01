@@ -374,7 +374,7 @@ module JIRA
                     }
           )
         end
-        raise ">>>>>>>>> Exception response: #{exception.response.body}"
+        raise exception
       end
       save_status
     end
