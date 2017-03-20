@@ -31,6 +31,18 @@ module JIRA
         parse_json(response.body)
       end
 
+      def self.get_projects_full(client, board_id, options = {})
+        response = client.get("/rest/agile/1.0/board/#{board_id}/project/full")
+        parse_json(response.body)
+      end
+
+      def self.get_projects(client, board_id, options = {})
+        options[:maxResults] ||= 100
+        options[:startAt] ||= 0
+        response = client.get("/rest/agile/1.0/board/#{board_id}/project?maxResults=#{options[:maxResults]}&startAt=#{options[:startAt]}")
+        parse_json(response.body)
+      end
+
       # def self.find(client, key, options = {})
       #   options[:maxResults] ||= 100
       #   fields = options[:fields].join(',') unless options[:fields].nil?
