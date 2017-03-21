@@ -38,11 +38,10 @@ module JIRA
 
       def self.get_projects(client, board_id, options = {})
         options[:maxResults] ||= 100
-        options[:startAt] ||= 0
         create_meta_url = path_base(client) + "/board/#{board_id}/project"
         params = hash_to_query_string(options)
 
-        response = params.empty? ? client.get("#{create_meta_url}") : client.get("#{create_meta_url}?#{params}")
+        response = client.get("#{create_meta_url}?#{params}")
         parse_json(response.body)
       end
 
