@@ -52,6 +52,7 @@ module JIRA
       :rest_base_path     => "/rest/api/2",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
+      :use_client_cert    => false,
       :auth_type          => :oauth,
       :http_debug         => false
     }
@@ -60,6 +61,13 @@ module JIRA
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+
+      if options[:use_client_cert]
+        raise ArgumentError, 'Options: :cert_path must be set when :use_client_cert is true' unless @options[:cert_path]
+        raise ArgumentError, 'Options: :key_path must be set when :use_client_cert is true' unless @options[:key_path]
+        @options[:cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
+        @options[:key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path]))
+      end
 
       case options[:auth_type]
       when :oauth

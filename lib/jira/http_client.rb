@@ -44,6 +44,10 @@ module JIRA
       end
       http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
+      if @options[:use_client_cert]
+        http_conn.cert = @options[:cert]
+        http_conn.key = @options[:key]
+      end
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.read_timeout = @options[:read_timeout]
       http_conn
