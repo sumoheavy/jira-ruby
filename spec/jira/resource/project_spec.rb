@@ -95,7 +95,7 @@ describe JIRA::Resource::Project do
           .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&startAt=#{start_at}")
           .and_return(response)
 
-        project.users(start_at: start_at)
+        project.users({start_at: start_at})
       end
 
       it 'accepts max_results option' do
@@ -105,7 +105,7 @@ describe JIRA::Resource::Project do
           .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&maxResults=#{max_results}")
           .and_return(response)
 
-        project.users(max_results: max_results)
+        project.users({max_results: max_results})
       end
 
       it 'accepts start_at and max_results options' do
@@ -116,7 +116,7 @@ describe JIRA::Resource::Project do
           .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&startAt=#{start_at}&maxResults=#{max_results}")
           .and_return(response)
 
-        project.users(start_at: start_at, max_results: max_results)
+        project.users({start_at: start_at, max_results: max_results})
       end
     end
   end
