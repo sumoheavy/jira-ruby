@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   # Runtime Dependencies
   s.add_runtime_dependency 'oauth', '~> 0.5', '>= 0.5.0'
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependence 'multipart-post'
 
   # Development Dependencies
   s.add_development_dependency 'railties'
