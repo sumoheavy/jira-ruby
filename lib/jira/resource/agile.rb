@@ -31,6 +31,20 @@ module JIRA
         parse_json(response.body)
       end
 
+      def self.get_projects_full(client, board_id, options = {})
+        response = client.get(path_base(client) + "/board/#{board_id}/project/full")
+        parse_json(response.body)
+      end
+
+      def self.get_projects(client, board_id, options = {})
+        options[:maxResults] ||= 100
+        create_meta_url = path_base(client) + "/board/#{board_id}/project"
+        params = hash_to_query_string(options)
+
+        response = client.get("#{create_meta_url}?#{params}")
+        parse_json(response.body)
+      end
+
       # def self.find(client, key, options = {})
       #   options[:maxResults] ||= 100
       #   fields = options[:fields].join(',') unless options[:fields].nil?
