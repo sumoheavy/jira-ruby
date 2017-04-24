@@ -2,7 +2,14 @@ require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
 
-  let(:client) { double() }
+  let(:client) {
+    double(
+      'client',
+      :options => {
+        :rest_base_path => '/jira/rest/api/2'
+      }
+    )
+  }
 
   describe "relationships" do
     subject {
@@ -17,4 +24,17 @@ describe JIRA::Resource::Attachment do
     end
   end
 
+  describe '#meta' do
+    let(:response) {
+      double(
+        'response',
+        :body => '{"enabled":true,"uploadLimit":10485760}'
+      )
+    }
+
+    it 'returns meta information about attachment upload' do
+      expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
+      JIRA::Resource::Attachment.meta(client)
+    end
+  end
 end
