@@ -65,7 +65,7 @@ describe JIRA::Resource::Agile do
 
   describe '#get_projects' do
     it 'should query correct url without parameters' do
-      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/project?maxResults=100&startAt=0').and_return(response)
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/project?maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_projects(client, 1)
