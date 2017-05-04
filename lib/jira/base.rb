@@ -374,7 +374,8 @@ module JIRA
                     }
           )
         end
-        raise exception
+        # raise exception
+        save_status = false
       end
       save_status
     end
