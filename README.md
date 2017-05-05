@@ -18,7 +18,7 @@ require 'jira-ruby'
 options = {
   :username     => 'username',
   :password     => 'pass1234',
-  :site         => 'http://mydomain.atlassian.net:443/',
+  :site         => 'https://mydomain.atlassian.net/',
   :context_path => '',
   :auth_type    => :basic
 }
