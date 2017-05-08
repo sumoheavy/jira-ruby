@@ -390,6 +390,12 @@ describe JIRA::Base do
       attrs['id'] = '98765'
       expect(subject.url).to eq("/foo/bar/deadbeef/98765")
     end
+    
+    it "generates the encoded URL from key value" do
+      attrs['self'] = nil
+      attrs['id'] = 'foo bar'
+      subject.url.should == "/foo/bar/deadbeef/foo%20bar"
+    end
 
     it "generates the URL from collection_path if self and id not set" do
       attrs['self'] = nil
