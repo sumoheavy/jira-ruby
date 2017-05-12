@@ -3,14 +3,16 @@ module JIRA
     class AttachmentFactory < JIRA::BaseFactory # :nodoc:
     end
 
-    class Attachment < JIRA::Base
+    class Attachment < JIRA::Base # :nodoc:
       belongs_to :issue
+
+      has_one :author, :class => JIRA::Resource::User
 
       def self.endpoint_name
         'attachments'
       end
 
-      def save!(attrs)
+      def save!(attrs) # rubocop:disable MethodLength, AbcSize
         path           = attrs['file_path']
         name           = attrs['file_name'] || path
         file           = File.new path
@@ -37,6 +39,12 @@ module JIRA
         @expanded = false
 
         true
+      end
+
+      def self.meta(client)
+        resp = client.get "#{client.options[:rest_base_path]}/attachment/meta"
+
+        parse_json(resp.body)
       end
     end
   end
