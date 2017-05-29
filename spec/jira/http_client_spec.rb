@@ -44,7 +44,7 @@ describe JIRA::HttpClient do
     expect(basic_client.basic_auth_http_conn.class).to eq(Net::HTTP)
   end
 
-  xit "makes a correct HTTP request for make_cookie_auth_request" do
+  it "makes a correct HTTP request for make_cookie_auth_request" do
     request = double()
     basic_auth_http_conn = double()
 

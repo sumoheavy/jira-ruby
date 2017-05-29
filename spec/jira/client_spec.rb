@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Client do
   before(:each) do
-    stub_request(:post, "https://foo:bar@localhost:2990/rest/auth/1/session").
+    stub_request(:post, "https://foo:bar@localhost:2990/jira/rest/auth/1/session").
       to_return(:status => 200, :body => "", :headers => {})
   end
 
