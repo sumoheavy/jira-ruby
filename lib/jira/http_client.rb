@@ -19,6 +19,8 @@ module JIRA
 
     def make_cookie_auth_request
       body = { :username => @options[:username], :password => @options[:password] }.to_json
+      @options.delete(:username)
+      @options.delete(:password)
       make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
     end
 
@@ -26,8 +28,9 @@ module JIRA
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?
       add_cookies(request) if options[:use_cookies]
-      request.basic_auth(@options[:username], @options[:password])
+      request.basic_auth(@options[:username], @options[:password]) if @options[:username] && @options[:password]
       response = basic_auth_http_conn.request(request)
+      @authenticated = response.is_a? Net::HTTPOK
       store_cookies(response) if options[:use_cookies]
       response
     end
@@ -53,6 +56,10 @@ module JIRA
       uri = URI.parse(@options[:site])
     end
 
+    def authenticated?
+      @authenticated
+    end
+
     private
 
     def store_cookies(response)
@@ -67,7 +74,7 @@ module JIRA
     end
 
     def add_cookies(request)
-      cookie_array = @cookies.values.map { |cookie| cookie.to_s }
+      cookie_array = @cookies.values.map { |cookie| "#{cookie.name}=#{cookie.value[0]}" }
       cookie_array +=  Array(@options[:additional_cookies]) if @options.key?(:additional_cookies)
       request.add_field('Cookie', cookie_array.join('; ')) if cookie_array.any?
       request

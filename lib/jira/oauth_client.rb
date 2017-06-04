@@ -62,6 +62,8 @@ module JIRA
     # Sets the access token from a preexisting token and secret.
     def set_access_token(token, secret)
       @access_token = OAuth::AccessToken.new(@consumer, token, secret)
+      @authenticated = true
+      @access_token
     end
 
     # Returns the current access token. Raises an
@@ -78,7 +80,12 @@ module JIRA
       when :post, :put
         response = access_token.send http_method, path, body, headers
       end
+      @authenticated = true
       response
+    end
+
+    def authenticated?
+      @authenticated
     end
   end
 end

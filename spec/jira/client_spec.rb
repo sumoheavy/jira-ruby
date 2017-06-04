@@ -115,8 +115,16 @@ describe JIRA::Client do
 
     it 'fails with wrong user name and password' do
       bad_login = JIRA::Client.new(username: 'foo', password: 'badpassword', auth_type: :basic)
+      expect(bad_login.authenticated?).to be_falsey
       expect{bad_login.Project.all}.to raise_error JIRA::HTTPError
     end
+
+    it 'only returns a true for #authenticated? once we have requested some data' do
+      expect(subject.authenticated?).to be_falsey
+      expect(subject.Project.all).to be_empty
+      expect(subject.authenticated?).to be_truthy
+    end
+
   end
 
   context 'with cookie authentication' do
@@ -153,11 +161,18 @@ describe JIRA::Client do
     specify { expect(subject.request_client).to be_a JIRA::HttpClient }
 
     it 'authenticates with a correct username and password' do
+      expect(subject).to be_authenticated
       expect(subject.Project.all).to be_empty
     end
 
     it 'does not authenticate with an incorrect username and password' do
       bad_client = JIRA::Client.new(username: 'foo', password: 'bad_password', auth_type: :cookie)
+      expect(bad_client).not_to be_authenticated
+    end
+
+    it 'destroys the username and password once authenticated' do
+      expect(subject.options[:username]).to be_nil
+      expect(subject.options[:password]).to be_nil
     end
   end
 
@@ -171,10 +186,12 @@ describe JIRA::Client do
     it 'allows setting an access token' do
       token = double
       expect(OAuth::AccessToken).to receive(:new).with(subject.consumer, 'foo', 'bar').and_return(token)
-      access_token = subject.set_access_token('foo', 'bar')
 
+      expect(subject.authenticated?).to be_falsey
+      access_token = subject.set_access_token('foo', 'bar')
       expect(access_token).to eq(token)
       expect(subject.access_token).to eq(token)
+      expect(subject.authenticated?).to be_truthy
     end
 
     it 'allows initializing the access token' do
