@@ -105,6 +105,7 @@ describe JIRA::Client do
     end
 
     include_examples 'Client Common Tests'
+    include_examples 'HttpClient tests'
 
     specify { expect(subject.request_client).to be_a JIRA::HttpClient }
 
@@ -157,6 +158,7 @@ describe JIRA::Client do
     end
 
     include_examples 'Client Common Tests'
+    include_examples 'HttpClient tests'
 
     specify { expect(subject.request_client).to be_a JIRA::HttpClient }
 
