@@ -19,7 +19,7 @@ module JIRA
 
     def make_cookie_auth_request
       body = { :username => @options[:username], :password => @options[:password] }.to_json
-      make_request(:post, '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
+      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
     end
 
     def make_request(http_method, path, body='', headers={})
