@@ -22,6 +22,26 @@ describe JIRA::Resource::Agile do
     end
   end
 
+  describe '#get_board_issues' do
+    it 'should query correct url without parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?maxResults=100').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      issues = JIRA::Resource::Agile.get_board_issues(client, 1)
+      expect(issues).to be_an(Array)
+      expect(issues.size).to eql(1)
+      expected_issue = client.Issue.build(JSON.parse(jql_issue.to_json))
+      expect(issues.first.attrs).to eql(expected_issue.attrs)
+    end
+
+    it 'should query correct url with parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?startAt=50&maxResults=100').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      JIRA::Resource::Agile.get_board_issues(client, 1, startAt: 50)
+    end
+  end
+
   describe '#get_sprints' do
     it 'should query correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=100').and_return(response)
