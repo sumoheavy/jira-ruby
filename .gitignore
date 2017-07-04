@@ -8,3 +8,4 @@ pkg/*
 *.pem
 .DS_STORE
 doc
+**/*.swp

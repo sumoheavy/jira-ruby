@@ -10,8 +10,10 @@ module JIRA
 
       has_one :reporter,  :class => JIRA::Resource::User,
                           :nested_under => 'fields'
+
       has_one :assignee,  :class => JIRA::Resource::User,
                           :nested_under => 'fields'
+
       has_one :project,   :nested_under => 'fields'
 
       has_one :issuetype, :nested_under => 'fields'
@@ -27,9 +29,10 @@ module JIRA
       has_many :comments, :nested_under => ['fields','comment']
 
       has_many :attachments, :nested_under => 'fields',
-                          :attribute_key => 'attachment'
+                             :attribute_key => 'attachment'
 
       has_many :versions,    :nested_under => 'fields'
+
       has_many :fixVersions, :class => JIRA::Resource::Version,
                              :nested_under => 'fields'
 
@@ -38,6 +41,8 @@ module JIRA
       has_many :issuelinks, :nested_under => 'fields'
 
       has_many :remotelink, :class => JIRA::Resource::Remotelink
+
+      has_many :watchers, :nested_under => ['fields','watchers']
 
       def self.all(client)
         url = client.options[:rest_base_path] + "/search?expand=transitions.fields"
