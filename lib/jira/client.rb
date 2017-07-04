@@ -44,7 +44,7 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
+    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',
@@ -72,6 +72,8 @@ module JIRA
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
         @request_client.make_cookie_auth_request
+        @options.delete(:username)
+        @options.delete(:password)
       else
         raise ArgumentError, 'Options: ":auth_type" must be ":oauth", ":cookie" or ":basic"'
       end
