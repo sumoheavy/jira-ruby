@@ -5,7 +5,7 @@ require 'jira/version'
 Gem::Specification.new do |s|
   s.name        = 'jira-ruby'
   s.version     = JIRA::VERSION
-  s.authors     = ['SUMO Heavy Industries']
+  s.authors     = ['SUMO Heavy Industries', 'test IO']
   s.homepage    = 'http://www.sumoheavy.com'
   s.summary     = %q{Ruby Gem for use with the Atlassian JIRA REST API}
   s.description = %q{API for JIRA}
