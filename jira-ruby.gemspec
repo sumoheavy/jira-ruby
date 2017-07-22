@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Ruby Gem for use with the Atlassian JIRA REST API}
   s.description = %q{API for JIRA}
   s.licenses    = ['MIT']
+  s.metadata    = { 'source_code_uri' => 'https://github.com/sumoheavy/jira-ruby' }
 
   s.required_ruby_version = '>= 1.9.3'
 
