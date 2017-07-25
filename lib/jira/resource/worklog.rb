@@ -14,8 +14,8 @@ module JIRA
         url = client.options[:rest_base_path] + "/issue/#{options[:issue].key}/worklog"
         response = client.get(url)
         json = parse_json(response.body)
-        json['worklogs'].map do |worklog|
-          client.Worklog.build(worklog)
+        json['worklogs'].map do |attrs|
+          self.new(client, {:attrs => attrs})
         end
       end
     end
