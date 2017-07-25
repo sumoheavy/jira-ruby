@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Agile do
-  let(:client) { double(options: {rest_base_path: '/jira/rest/api/2', context_path: '/jira'}) }
+  let(:client) do
+    client = double(options: {rest_base_path: '/jira/rest/api/2', context_path: '/jira'})
+    allow(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
+    client
+  end
   let(:response) { double }
 
   describe '#all' do
@@ -19,6 +23,44 @@ describe JIRA::Resource::Agile do
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_backlog_issues(client, 1)
+    end
+  end
+
+  describe '#get_board_issues' do
+    it 'should query correct url without parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      issues = JIRA::Resource::Agile.get_board_issues(client, 1)
+      expect(issues).to be_an(Array)
+      expect(issues.size).to eql(9)
+
+      issues.each do |issue|
+        expect(issue.class).to eq(JIRA::Resource::Issue)
+        expect(issue.expanded?).to be_falsey
+      end
+
+    end
+
+    it 'should query correct url with parameters' do
+      expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?startAt=50').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
+      expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
+
+      issues = JIRA::Resource::Agile.get_board_issues(client, 1, startAt: 50)
+      expect(issues).to be_an(Array)
+      expect(issues.size).to eql(9)
+
+      issues.each do |issue|
+        expect(issue.class).to eq(JIRA::Resource::Issue)
+        expect(issue.expanded?).to be_falsey
+      end
+
     end
   end
 

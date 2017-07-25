@@ -19,6 +19,16 @@ module JIRA
         parse_json(response.body)
       end
 
+      def self.get_board_issues(client, board_id, options = {})
+        response = client.get(path_base(client) + "/board/#{board_id}/issue?#{hash_to_query_string(options)}")
+        json = parse_json(response.body)
+        # To get Issue objects with the same structure as for Issue.all
+        issue_ids = json['issues'].map { |issue|
+          issue['id']
+        }
+        client.Issue.jql("id IN(#{issue_ids.join(', ')})")
+      end
+
       def self.get_sprints(client, board_id, options = {})
         options[:maxResults] ||= 100
         response = client.get(path_base(client) + "/board/#{board_id}/sprint?#{hash_to_query_string(options)}")
