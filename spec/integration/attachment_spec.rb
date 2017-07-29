@@ -8,6 +8,8 @@ describe JIRA::Resource::Attachment do
 
     let(:key) { "10000" }
 
+    let(:target) { JIRA::Resource::Attachment.new(client, :attrs => {'id' => '99999'}, :issue_id => '10002') }
+
     let(:expected_attributes) do
       {
         'self' => "http://localhost:2990/jira/rest/api/2/attachment/10000",
@@ -16,7 +18,15 @@ describe JIRA::Resource::Attachment do
       }
     end
 
-    it_should_behave_like "a resource"
+    let(:belongs_to) {
+      JIRA::Resource::Issue.new(client, :attrs => {
+        'id' => '10002',
+        'fields' => {
+          'attachment' => {'attachments' => []}
+        }
+      })
+    }
+
     it_should_behave_like "a resource with a singular GET endpoint"
     it_should_behave_like "a resource with a DELETE endpoint"
   end
