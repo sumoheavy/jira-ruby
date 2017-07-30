@@ -123,6 +123,11 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # user = client.User.find('admin')
 # pp user
 #
+# # Get all issue watchers
+# # ----------------------
+# issue = client.Issue.find("10002")
+# watchers = issue.watchers.all
+# watchers = client.Watcher.all(:issue => issue)
 # # Get all issue types
 # # -------------------
 # issuetypes = client.Issuetype.all
