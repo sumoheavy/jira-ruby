@@ -138,6 +138,19 @@ describe JIRA::HttpClient do
     basic_client.make_request(:get, '/foo', body, headers)
   end
 
+  it "performs a basic http client request with a full domain" do
+    body = nil
+    headers = double()
+    basic_auth_http_conn = double()
+    http_request = double()
+    expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
+
+    expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
+    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
+    allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    basic_client.make_request(:get, 'http://mydomain.com/foo', body, headers)
+  end
+
   it "returns a URI" do
     uri = URI.parse(basic_client.options[:site])
     expect(basic_client.uri).to eq(uri)
