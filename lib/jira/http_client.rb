@@ -1,6 +1,7 @@
 require 'json'
 require 'net/https'
 require 'cgi/cookie'
+require 'uri'
 
 module JIRA
   class HttpClient < RequestClient
@@ -24,7 +25,9 @@ module JIRA
       make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
     end
 
-    def make_request(http_method, path, body='', headers={})
+    def make_request(http_method, url, body='', headers={})
+      # When a proxy is enabled, Net::HTTP expects that the request path omits the domain name
+      path = request_path(url)
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?
       add_cookies(request) if options[:use_cookies]
@@ -61,6 +64,14 @@ module JIRA
     end
 
     private
+
+    def request_path(url)
+      parsed_uri = URI(url)
+
+      return url unless parsed_uri.is_a?(URI::HTTP)
+
+      parsed_uri.request_uri
+    end
 
     def store_cookies(response)
       cookies = response.get_fields('set-cookie')
