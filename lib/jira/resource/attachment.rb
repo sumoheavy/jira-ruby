@@ -4,6 +4,7 @@ module JIRA
   module Resource
 
     class AttachmentFactory < JIRA::BaseFactory # :nodoc:
+      delegate_to_target_class :meta
     end
 
     class Attachment < JIRA::Base

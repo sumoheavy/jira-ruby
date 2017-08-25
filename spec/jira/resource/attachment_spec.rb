@@ -42,6 +42,12 @@ describe JIRA::Resource::Attachment do
       expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
       JIRA::Resource::Attachment.meta(client)
     end
+
+    subject { JIRA::Resource::AttachmentFactory.new(client) }
+
+    it 'delegates #meta to to target class' do
+      expect(subject).to respond_to(:meta)
+    end
   end
 
   describe '#save!' do
