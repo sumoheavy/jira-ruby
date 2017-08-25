@@ -11,6 +11,10 @@ module JIRA
       belongs_to :issue
       has_one :author, :class => JIRA::Resource::User
 
+      def self.endpoint_name
+        'attachments'
+      end
+
       def self.meta(client)
         response = client.get(client.options[:rest_base_path] + '/attachment/meta')
         parse_json(response.body)
