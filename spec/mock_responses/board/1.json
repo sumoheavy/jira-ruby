@@ -1,0 +1,33 @@
+{
+  "maxResults": 50,
+  "startAt": 0,
+  "isLast": true,
+  "values": [
+    {
+      "id": 1,
+      "self": "https://test.com/jira/rest/agile/1.0/sprint/1",
+      "state": "closed",
+      "name": "Test Sprint 1",
+      "startDate": "2016-05-03T01:45:17.624-04:00",
+      "endDate": "2016-05-06T13:30:00.000-04:00",
+      "completeDate": "2016-05-08T04:05:31.959-04:00",
+      "originBoardId": 1
+    },
+    {
+      "id": 2,
+      "self": "https://test.com/jira/rest/agile/1.0/sprint/2",
+      "state": "active",
+      "name": "Test Sprint 2",
+      "startDate": "2016-12-12T04:42:46.184-05:00",
+      "endDate": "2017-01-02T13:56:00.000-05:00",
+      "originBoardId": 1
+    },
+    {
+      "id": 3,
+      "self": "https://test.com/jira/rest/agile/1.0/sprint/2",
+      "state": "future",
+      "name": "Test Sprint 2",
+      "originBoardId": 1
+    }
+  ]
+}

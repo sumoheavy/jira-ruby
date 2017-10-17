@@ -380,7 +380,6 @@ describe JIRA::Base do
     end
 
     it "returns self as the URL if set" do
-      pending("Identified bug on real jira instance")
       attrs['self'] = 'http://foo/bar'
       expect(subject.url).to eq("http://foo/bar")
     end

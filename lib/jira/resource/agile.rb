@@ -15,19 +15,43 @@ module JIRA
 
       def self.get_backlog_issues(client, board_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/board/#{board_id}/backlog?maxResults=#{options[:maxResults]}")
+        response = client.get(path_base(client) + "/board/#{board_id}/backlog?#{hash_to_query_string(options)}")
         parse_json(response.body)
+      end
+
+      def self.get_board_issues(client, board_id, options = {})
+        response = client.get(path_base(client) + "/board/#{board_id}/issue?#{hash_to_query_string(options)}")
+        json = parse_json(response.body)
+        # To get Issue objects with the same structure as for Issue.all
+        issue_ids = json['issues'].map { |issue|
+          issue['id']
+        }
+        client.Issue.jql("id IN(#{issue_ids.join(', ')})")
       end
 
       def self.get_sprints(client, board_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/board/#{board_id}/sprint?maxResults=#{options[:maxResults]}")
+        response = client.get(path_base(client) + "/board/#{board_id}/sprint?#{hash_to_query_string(options)}")
         parse_json(response.body)
       end
 
       def self.get_sprint_issues(client, sprint_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/sprint/#{sprint_id}/issue?maxResults=#{options[:maxResults]}")
+        response = client.get(path_base(client) + "/sprint/#{sprint_id}/issue?#{hash_to_query_string(options)}")
+        parse_json(response.body)
+      end
+
+      def self.get_projects_full(client, board_id, options = {})
+        response = client.get(path_base(client) + "/board/#{board_id}/project/full")
+        parse_json(response.body)
+      end
+
+      def self.get_projects(client, board_id, options = {})
+        options[:maxResults] ||= 100
+        create_meta_url = path_base(client) + "/board/#{board_id}/project"
+        params = hash_to_query_string(options)
+
+        response = client.get("#{create_meta_url}?#{params}")
         parse_json(response.body)
       end
 
@@ -47,7 +71,6 @@ module JIRA
       def path_base(client)
         self.class.path_base(client)
       end
-
     end
 
   end

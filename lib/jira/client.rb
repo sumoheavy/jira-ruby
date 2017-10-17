@@ -23,9 +23,10 @@ module JIRA
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
-  #   :auth_type          => :oauth
-  #   :proxy_address      => nil
-  #   :proxy_port         => nil
+  #   :auth_type          => :oauth,
+  #   :proxy_address      => nil,
+  #   :proxy_port         => nil,
+  #   :additional_cookies => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -43,7 +44,7 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token
+    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
 
     DEFAULT_OPTIONS = {
       :site               => 'http://localhost:2990',
@@ -71,6 +72,8 @@ module JIRA
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
         @request_client.make_cookie_auth_request
+        @options.delete(:username)
+        @options.delete(:password)
       else
         raise ArgumentError, 'Options: ":auth_type" must be ":oauth", ":cookie" or ":basic"'
       end
@@ -156,6 +159,10 @@ module JIRA
 
     def ApplicationLink
       JIRA::Resource::ApplicationLinkFactory.new(self)
+    end
+
+    def Watcher
+      JIRA::Resource::WatcherFactory.new(self)
     end
 
     def Webhook

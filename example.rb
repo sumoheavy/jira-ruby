@@ -59,11 +59,12 @@ old_way = issue.customfield_12345
 new_way = issue.Special_Field
 (old_way == new_way) && puts 'much easier'
 #
-# Can also use this to specify fields to be returned in the response
-client.Issue.jql(a_normal_jql_search, fields:[:Special_Field])
-# Or you could always do it the old way - if you can remember the numbers...
-client.Issue.jql(a_normal_jql_search, fields:['customfield_12345'])
-# You can specify the maximum number of results to be returned in the response, i.e. 500
+# You can also specify fields to be returned in the response
+# This is especially useful in regards to shortening JQL query response times if performance becomes an issue
+client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :Special_field, :created])
+# Or you could always do it the old way - if you can remember the custom field numbers...
+client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :customfield_1234, :created])
+# You can also specify the maximum number of results to be returned in the response, i.e. 500
 client.Issue.jql(a_normal_jql_search, max_results: 500)
 
 # # Find a specific project by key
@@ -108,11 +109,25 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 # pp issue
 #
+# # Transition an issue
+# # -------------------
+# issue_transition = issue.transitions.build
+# issue_transition.save!('transition' => {'id' => transition_id})
+#
+# # Change assignee
+# # -------------------
+# issue.save({'fields' => {'assignee' => {'name' => person_name}}})
+#
 # # Find a user
 # # -----------
 # user = client.User.find('admin')
 # pp user
 #
+# # Get all issue watchers
+# # ----------------------
+# issue = client.Issue.find("10002")
+# watchers = issue.watchers.all
+# watchers = client.Watcher.all(:issue => issue)
 # # Get all issue types
 # # -------------------
 # issuetypes = client.Issuetype.all
