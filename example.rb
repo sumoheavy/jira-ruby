@@ -157,6 +157,54 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # # --------------------------
 # issue.comments.first.save({"body" => "an updated comment frome example.rb"})
 
+# # # # # Easy to use Issue methods
+# # # # # -------------------------
+
+# # Add a comment
+# # -------------
+issue.add_comment('some comment')
+
+# # Find available transitions names for an issue. 
+# # Returns an array of strings.
+# # ----------------------------------------------
+JIRA::Resource::Transition.available_names(issue)
+
+# # Transition an issue using string or symbol.
+# # Note that it is not case sensitive
+# # -------------------------------------------
+issue.transition_to(:in_progress)
+issue.transition_to('closed')
+issue.transition_to('Reopen')
+
+# # Change the assignee of an issue
+# # -------------------------------
+issue.assign_to('username')
+
+# # Add an attachment
+# # -------------------------------
+issue.add_attachment('/path/to/file.txt')
+
+# # Load the contents of an attachment
+# # ----------------------------------
+attachment = issue.open_attachment('attachment_filename.csv')
+
+# # Download the first attachment. Defaults to
+# # /tmp dir and the first attachment
+# # ------------------------------------------
+issue.download_attachment
+
+# # Download all attachments and specify a destination dir
+# # ------------------------------------------------------
+issue.download_attachment('/dest/path/to/download', true)
+
+# # Linking issues together
+# # -----------------------
+issue1.link_to(issue2.key)
+
+# Reload an issue
+# ---------------
+issue = issue.reload
+
 # List all available link types
 # ------------------------------
 pp client.Issuelinktype.all

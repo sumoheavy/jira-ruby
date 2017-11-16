@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class TransitionFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -12,6 +11,21 @@ module JIRA
 
       def self.endpoint_name
         'transitions'
+      end
+
+      def self.available_names(issue)
+        transition_names = []
+        transitions      = all(issue.client, :issue => issue)
+        transitions.each { |t| transition_names << t.name }
+        transition_names
+      end
+
+      def self.find_id(issue, transition_name)
+        transition = all(issue.client, issue: issue).detect do |trans|
+          # Allows either a symbol or string to be passed through
+          trans.name.downcase == transition_name.to_s.downcase.gsub('_', ' ')
+        end
+        transition ? transition.id : transition
       end
 
       def self.all(client, options = {})
@@ -28,6 +42,5 @@ module JIRA
         end
       end
     end
-
   end
 end

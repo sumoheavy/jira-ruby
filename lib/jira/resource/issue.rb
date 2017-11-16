@@ -2,7 +2,6 @@ require 'cgi'
 
 module JIRA
   module Resource
-
     class IssueFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -112,7 +111,7 @@ module JIRA
           if attrs['fields'].keys.include?(method_name.to_s)
             attrs['fields'][method_name.to_s]
           else
-            official_name=client.Field.name_to_id(method_name)
+            official_name = client.Field.name_to_id(method_name)
             if attrs['fields'].keys.include?(official_name)
               attrs['fields'][official_name]
             else
@@ -124,7 +123,62 @@ module JIRA
         end
       end
 
-    end
+      def link_to(child_issue_key, link_type = 'Related')
+        link = client.Issuelink.build
+        link.save({
+                    :type         => { :name => link_type },
+                    :inwardIssue  => { :key  => child_issue_key },
+                    :outwardIssue => { :key  => key }
+                  })
+      end
 
+      def transition_to(transition_name)
+        # Allow the user to pass in an string or symbol
+        transition_id = JIRA::Resource::Transition.find_id(self, transition_name)
+
+        unless transition_id
+          raise "ERROR: Invalid transition_name: #{transition_name}. Your available_transitions"\
+                "are:\n#{JIRA::Resource::Transition.available_names(self).join("\n")}"
+        end
+
+        transition = transitions.build
+        transition.save!('transition' => { 'id' => transition_id })
+      end
+
+      def add_comment(comment_text)
+        comment = comments.build
+        comment.save('body' => comment_text)
+      end
+
+      def assign_to(username)
+        save({ 'fields' => { 'assignee' => { 'name' => username } } })
+      end
+
+      def reload
+        client.Issue.find(self.key)
+      end
+
+      def download_attachment(dest_directory = '/tmp/', download_all = false)
+        dest_directory = File.join(dest_directory, '') # Add a trailing slash if not there
+
+        attachments.each do |attachment|
+          File.open("#{dest_directory}#{attachment.filename}", 'wb') do |file|
+            file << client.get(attachment.content).body
+          end
+          break unless download_all
+        end
+      end
+
+      def open_attachment(attachment_filename)
+        attachment = attachments.detect { |att| att.filename == attachment_filename }
+        return "No attachment found: #{attachment_filename}" unless attachment
+        client.get(attachment.content).body
+      end
+
+      def add_attachment(path_to_file)
+        attachment = attachments.build
+        attachment.save!('file' => path_to_file)
+      end
+    end
   end
 end
