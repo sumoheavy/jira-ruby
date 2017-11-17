@@ -220,6 +220,20 @@ module JIRA
       @request_client.request(http_method, path, body, headers)
     end
 
+    def create_issue(attrs)
+      fields = { :summary     => attrs[:summary],
+                 :description => attrs[:desc],
+                 :project     => { :key  => attrs[:project] },
+                 :priority    => { :id   => attrs[:priority].to_s },
+                 :issuetype   => { :name => attrs[:issuetype] } }
+      issue = self.Issue.build
+      issue.save(:fields => fields)
+
+      issue.add_attachment(attrs[:attachment]) if attrs[:attachment]
+
+      issue.reload
+    end
+
     protected
 
       def merge_default_headers(headers)

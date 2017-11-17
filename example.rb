@@ -160,6 +160,16 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # # # # # Easy to use Issue methods
 # # # # # -------------------------
 
+# # Create an Issue
+# # ---------------
+attrs = { :summary    => 'This is my issue summary',
+          :desc       => "Here's a detailed description of my summary",
+          :project    => 'OPSAUTOUK',
+          :priority   => '3',
+          :issuetype  => 'exact_issue_type',
+          :attachment => '/path/to/attachment.txt' }
+issue = client.create_issue(attrs)
+
 # # Add a comment
 # # -------------
 issue.add_comment('some comment')
