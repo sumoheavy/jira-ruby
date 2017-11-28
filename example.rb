@@ -99,7 +99,16 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # # Create an issue
 # # ---------------
 # issue = client.Issue.build
-# issue.save({"fields"=>{"summary"=>"blarg from in example.rb","project"=>{"id"=>"10001"},"issuetype"=>{"id"=>"3"}}})
+# labels = ['label1', 'label2']
+# issue.save({
+#   "fields" => {
+#     "summary"   => "blarg from in example.rb",
+#     "project"   => {"key" => "SAMPLEPROJECT"},
+#     "issuetype" => {"id" => "3"},
+#     "labels"    => labels,
+#     "priority"  => {"id" => "1"}
+#   }
+# })
 # issue.fetch
 # pp issue
 #
@@ -123,6 +132,11 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # user = client.User.find('admin')
 # pp user
 #
+# # Get all issue watchers
+# # ----------------------
+# issue = client.Issue.find("10002")
+# watchers = issue.watchers.all
+# watchers = client.Watcher.all(:issue => issue)
 # # Get all issue types
 # # -------------------
 # issuetypes = client.Issuetype.all

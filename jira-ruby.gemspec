@@ -5,11 +5,12 @@ require 'jira/version'
 Gem::Specification.new do |s|
   s.name        = 'jira-ruby'
   s.version     = JIRA::VERSION
-  s.authors     = ['SUMO Heavy Industries']
+  s.authors     = ['SUMO Heavy Industries', 'test IO']
   s.homepage    = 'http://www.sumoheavy.com'
   s.summary     = %q{Ruby Gem for use with the Atlassian JIRA REST API}
   s.description = %q{API for JIRA}
   s.licenses    = ['MIT']
+  s.metadata    = { 'source_code_uri' => 'https://github.com/sumoheavy/jira-ruby' }
 
   s.required_ruby_version = '>= 1.9.3'
 
@@ -23,6 +24,7 @@ Gem::Specification.new do |s|
   # Runtime Dependencies
   s.add_runtime_dependency 'oauth', '~> 0.5', '>= 0.5.0'
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'multipart-post'
 
   # Development Dependencies
   s.add_development_dependency 'railties'

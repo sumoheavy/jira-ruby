@@ -12,6 +12,14 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:basic_cookie_client_with_context_path) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      :use_cookies => true,
+      :context_path => '/context'
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:basic_cookie_client_with_additional_cookies) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
       :use_cookies => true,
@@ -34,6 +42,26 @@ describe JIRA::HttpClient do
 
   it "creates an instance of Net:HTTP for a basic auth client" do
     expect(basic_client.basic_auth_http_conn.class).to eq(Net::HTTP)
+  end
+
+  it "makes a correct HTTP request for make_cookie_auth_request" do
+    request = double()
+    basic_auth_http_conn = double()
+
+    headers = {"Content-Type" => "application/json"}
+    expected_path = '/context/rest/auth/1/session'
+    expected_body = '{"username":"","password":""}'
+
+    allow(basic_cookie_client_with_context_path).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    expect(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
+
+    allow(request).to receive(:basic_auth)
+    allow(response).to receive(:get_fields).with('set-cookie')
+
+    expect(request).to receive(:body=).with(expected_body)
+    expect(Net::HTTP.const_get(:post.to_s.capitalize)).to receive(:new).with(expected_path, headers).and_return(request)
+
+    basic_cookie_client_with_context_path.make_cookie_auth_request
   end
 
   it "responds to the http methods" do
@@ -108,6 +136,19 @@ describe JIRA::HttpClient do
     expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, '/foo', body, headers)
+  end
+
+  it "performs a basic http client request with a full domain" do
+    body = nil
+    headers = double()
+    basic_auth_http_conn = double()
+    http_request = double()
+    expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
+
+    expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
+    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
+    allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    basic_client.make_request(:get, 'http://mydomain.com/foo', body, headers)
   end
 
   it "returns a URI" do

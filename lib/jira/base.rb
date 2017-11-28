@@ -374,7 +374,8 @@ module JIRA
                     }
           )
         end
-        raise exception
+        # raise exception
+        save_status = false
       end
       save_status
     end
@@ -427,8 +428,8 @@ module JIRA
         end
       end
       if @attrs['self']
-        the_url = @attrs['self'].sub(@client.options[:site],'')
-        the_url = "/#{the_url}" if (the_url =~ /^\//).nil?
+        the_url = @attrs['self']
+        the_url = the_url.sub(@client.options[:site], '') if @client.options[:site]
         the_url
       elsif key_value
         self.class.singular_path(client, key_value.to_s, prefix)
