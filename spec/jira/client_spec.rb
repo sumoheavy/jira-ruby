@@ -74,6 +74,36 @@ RSpec.shared_examples 'HttpClient tests' do
   end
 end
 
+RSpec.shared_examples 'OAuth Common Tests' do
+  include_examples 'Client Common Tests'
+
+  specify { expect(subject.request_client).to be_a JIRA::OauthClient }
+
+  it 'allows setting an access token' do
+    token = double
+    expect(OAuth::AccessToken).to receive(:new).with(subject.consumer, '', '').and_return(token)
+
+    expect(subject.authenticated?).to be_falsey
+    access_token = subject.set_access_token('', '')
+    expect(access_token).to eq(token)
+    expect(subject.access_token).to eq(token)
+    expect(subject.authenticated?).to be_truthy
+  end
+
+  describe 'that call a oauth client' do
+    specify 'which makes a request' do
+      [:delete, :get, :head].each do |method|
+        expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(successful_response)
+        subject.send(method, '/path', {})
+      end
+      [:post, :put].each do |method|
+        expect(subject.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(successful_response)
+        subject.send(method, '/path', '', {})
+      end
+    end
+  end
+end
+
 describe JIRA::Client do
   let(:request) { subject.request_client.class }
   let(:successful_response) do
@@ -178,51 +208,16 @@ describe JIRA::Client do
     end
   end
 
-  context 'oath2 authentication' do
+  context 'oauth authentication' do
     subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
-    include_examples 'Client Common Tests'
+    include_examples 'OAuth Common Tests'
+  end
 
-    specify { expect(subject.request_client).to be_a JIRA::OauthClient }
+  context 'with oauth_2legged' do
+    subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged) }
 
-    it 'allows setting an access token' do
-      token = double
-      expect(OAuth::AccessToken).to receive(:new).with(subject.consumer, 'foo', 'bar').and_return(token)
-
-      expect(subject.authenticated?).to be_falsey
-      access_token = subject.set_access_token('foo', 'bar')
-      expect(access_token).to eq(token)
-      expect(subject.access_token).to eq(token)
-      expect(subject.authenticated?).to be_truthy
-    end
-
-    it 'allows initializing the access token' do
-      request_token = OAuth::RequestToken.new(subject.consumer)
-      allow(subject.consumer).to receive(:get_request_token).and_return(request_token)
-      mock_access_token = double
-      expect(request_token).to receive(:get_access_token).with(:oauth_verifier => 'abc123').and_return(mock_access_token)
-      subject.init_access_token(:oauth_verifier => 'abc123')
-      expect(subject.access_token).to eq(mock_access_token)
-    end
-
-    specify 'that has specific default options' do
-      [:signature_method, :private_key_file].each do |key|
-        expect(subject.options[key]).to eq(JIRA::Client::DEFAULT_OPTIONS[key])
-      end
-    end
-
-    describe 'that call a oauth client' do
-      specify 'which makes a request' do
-        [:delete, :get, :head].each do |method|
-          expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(successful_response)
-          subject.send(method, '/path', {})
-        end
-        [:post, :put].each do |method|
-          expect(subject.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(successful_response)
-          subject.send(method, '/path', '', {})
-        end
-      end
-    end
+    include_examples 'OAuth Common Tests'
   end
 end
 
