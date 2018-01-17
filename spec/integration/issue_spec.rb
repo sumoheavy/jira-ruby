@@ -46,8 +46,11 @@ describe JIRA::Resource::Issue do
         }
       }
       before(:each) do
-        stub_request(:get, site_url + "/jira/rest/api/2/search?expand=transitions.fields").
+        stub_request(:get, site_url + "/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0").
                     to_return(:status => 200, :body => get_mock_response('issue.json'))
+
+        stub_request(:get, site_url + "/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=11").
+                    to_return(:status => 200, :body => get_mock_response('empty_issues.json'))
       end
       it_should_behave_like "a resource with a collection GET endpoint"
     end

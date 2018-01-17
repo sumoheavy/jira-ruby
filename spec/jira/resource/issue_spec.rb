@@ -37,11 +37,16 @@ describe JIRA::Resource::Issue do
 
   it "should find all issues" do
     response = double()
+    empty_response = double()
     issue = double()
 
     allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields').
+    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0').
       and_return(response)
+    allow(empty_response).to receive(:body).and_return('{"issues":[]}')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=1').
+      and_return(empty_response)
+      
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({"id"=>"1","summary"=>"Bugs Everywhere"})
 
