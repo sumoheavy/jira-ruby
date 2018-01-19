@@ -43,12 +43,21 @@ module JIRA
                             :nested_under => ['fields', 'watches']
 
       def self.all(client)
-        url = client.options[:rest_base_path] + "/search?expand=transitions.fields"
-        response = client.get(url)
-        json = parse_json(response.body)
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
+        start_at = 0
+        max_results = 1000
+        result = []
+        loop do
+          url = client.options[:rest_base_path] +
+                "/search?expand=transitions.fields&maxResults=#{max_results}&startAt=#{start_at}"
+          response = client.get(url)
+          json = parse_json(response.body)
+          json['issues'].map do |issue|
+            result.push(client.Issue.build(issue))
+          end
+          break if json['issues'].size == 0
+          start_at += json['issues'].size
         end
+        result
       end
 
       def self.jql(client, jql, options = {fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true})
