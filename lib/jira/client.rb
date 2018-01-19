@@ -62,7 +62,7 @@ module JIRA
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
 
       case options[:auth_type]
-      when :oauth
+      when :oauth, :oauth_2legged
         @request_client = OauthClient.new(@options)
         @consumer = @request_client.consumer
       when :basic
@@ -75,7 +75,7 @@ module JIRA
         @options.delete(:username)
         @options.delete(:password)
       else
-        raise ArgumentError, 'Options: ":auth_type" must be ":oauth", ":cookie" or ":basic"'
+        raise ArgumentError, 'Options: ":auth_type" must be ":oauth",":oauth_2legged", ":cookie" or ":basic"'
       end
 
       @http_debug = @options[:http_debug]

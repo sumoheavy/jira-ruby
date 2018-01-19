@@ -107,5 +107,41 @@ describe JIRA::OauthClient do
         oauth_client.request(:get, '/foo', body, headers)
       end
     end
+
+    describe "auth type is oauth_2legged" do
+      let(:oauth__2legged_client) do
+        options = { :consumer_key => 'foo', :consumer_secret => 'bar', :auth_type => :oauth_2legged }
+        options = JIRA::Client::DEFAULT_OPTIONS.merge(options)
+        JIRA::OauthClient.new(options)
+      end
+
+      it "responds to the http methods adding oauth_token parameter" do
+        headers = double()
+        mock_access_token = double()
+        allow(oauth__2legged_client).to receive(:access_token).and_return(mock_access_token)
+        [:delete, :get, :head].each do |method|
+          expect(mock_access_token).to receive(method).with('/path?oauth_token=', headers).and_return(response)
+          oauth__2legged_client.make_request(method, '/path', '', headers)
+        end
+        [:post, :put].each do |method|
+          expect(mock_access_token).to receive(method).with('/path?oauth_token=', '', headers).and_return(response)
+          oauth__2legged_client.make_request(method, '/path', '', headers)
+        end
+      end
+
+      it "responds to the http methods adding oauth_token parameter to any existing parameters" do
+        headers = double()
+        mock_access_token = double()
+        allow(oauth__2legged_client).to receive(:access_token).and_return(mock_access_token)
+        [:delete, :get, :head].each do |method|
+          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', headers).and_return(response)
+          oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
+        end
+        [:post, :put].each do |method|
+          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', '', headers).and_return(response)
+          oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
+        end
+      end
+    end
   end
 end

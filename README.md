@@ -87,6 +87,8 @@ key.
 > After you have entered all the information click OK and ensure OAuth authentication is
 > enabled.
 
+For 2 legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
+
 ## Configuring JIRA to use HTTP Basic Auth
 
 Follow the same steps described above to set up a new Application Link in JIRA,
@@ -387,5 +389,35 @@ class App < Sinatra::Base
     session.delete(:jira_auth)
     redirect "/"
   end
+end
+```
+
+## Using the API Gem in a 2 legged context
+
+Here's an example on how to use 2 legged OAuth:
+```ruby
+require 'rubygems'
+require 'pp'
+require 'jira-ruby'
+
+options = {
+            :site               => 'http://localhost:2990',
+            :context_path       => '/jira',
+            :signature_method   => 'RSA-SHA1',
+            :private_key_file   => "rsakey.pem",
+            :rest_base_path     => "/rest/api/2",
+            :auth_type => :oauth_2legged,
+            :consumer_key       => "jira-ruby-example"
+          }
+
+client = JIRA::Client.new(options)
+
+client.set_access_token("","")
+
+# Show all projects
+projects = client.Project.all
+
+projects.each do |project|
+  puts "Project -> key: #{project.key}, name: #{project.name}"
 end
 ```
