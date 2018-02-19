@@ -54,6 +54,8 @@ module JIRA
         http_conn.cert = @options[:cert]
         http_conn.key = @options[:key]
       end
+      http_conn.ca_path = @options[:ca_path] if @options[:ca_path]
+      http_conn.ca_file = @options[:ca_file] if @options[:ca_file]
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.read_timeout = @options[:read_timeout]
       http_conn
