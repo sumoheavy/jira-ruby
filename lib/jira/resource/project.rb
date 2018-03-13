@@ -9,7 +9,6 @@ module JIRA
       has_one :lead, :class => JIRA::Resource::User
       has_many :components
       has_many :issuetypes, :attribute_key => 'issueTypes'
-      has_many :versions
 
       def self.key_attribute
         :key
@@ -27,6 +26,14 @@ module JIRA
         end
       end
 
+      def versions(paginated=false, options={})
+        if paginated
+          paginated_versions(options)
+        else
+          all_versions
+        end
+      end
+
       def users(start_at: nil, max_results: nil)
         users_url = client.options[:rest_base_path] + '/user/assignable/search'
         query_params = { project: self.key_value }
@@ -38,6 +45,35 @@ module JIRA
           client.User.build(jira_user)
         end
       end
+
+      protected
+
+      # https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/#api/2/project-getProjectVersions
+      def all_versions
+        search_url = client.options[:rest_base_path] + "/project/#{self.key_value}/versions"
+
+        response = client.get(search_url)
+        json = self.class.parse_json(response.body)
+
+        json.map do |version|
+          client.Version.build(version)
+        end
+      end
+
+      # https://docs.atlassian.com/software/jira/docs/api/REST/7.6.1/#api/2/project-getProjectVersionsPaginated
+      def paginated_versions(options={})
+        search_url = client.options[:rest_base_path] + "/project/#{self.key_value}/version"
+        query_params = {}
+        query_params.update Base.query_params_for_search(options)
+
+        response = client.get(url_with_query_params(search_url, query_params))
+        json = self.class.parse_json(response.body)
+
+        json['values'].map do |version|
+          client.Version.build(version)
+        end
+      end
+
     end
   end
 end
