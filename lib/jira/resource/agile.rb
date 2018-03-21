@@ -1,4 +1,5 @@
 require 'cgi'
+require 'uri'
 
 module JIRA
   module Resource
@@ -15,19 +16,22 @@ module JIRA
 
       def self.get_backlog_issues(client, board_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/board/#{board_id}/backlog?maxResults=#{options[:maxResults]}")
+        params = URI.encode_www_form(options)
+        response = client.get(path_base(client) + "/board/#{board_id}/backlog?#{params}")
         parse_json(response.body)
       end
 
       def self.get_sprints(client, board_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/board/#{board_id}/sprint?maxResults=#{options[:maxResults]}")
+        params = URI.encode_www_form(options)
+        response = client.get(path_base(client) + "/board/#{board_id}/sprint?#{params}")
         parse_json(response.body)
       end
 
       def self.get_sprint_issues(client, sprint_id, options = {})
         options[:maxResults] ||= 100
-        response = client.get("/rest/agile/1.0/sprint/#{sprint_id}/issue?maxResults=#{options[:maxResults]}")
+        params = URI.encode_www_form(options)
+        response = client.get(path_base(client) + "/sprint/#{sprint_id}/issue?#{params}")
         parse_json(response.body)
       end
 
