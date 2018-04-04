@@ -43,12 +43,12 @@ module JIRA
     end
 
     def http_conn(uri)
+      http_conn = nil
       if @options[:proxy_address]
-          http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] ? @options[:proxy_port] : 80)
+        http_conn = Net::HTTP::new(uri.host, uri.port, @options[:proxy_address], @options.fetch(:proxy_port, 80), @options[:proxy_user], @options[:proxy_pass])
       else
-          http_class = Net::HTTP
+        http_conn = Net::HTTP::new(uri.host, uri.port)
       end
-      http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
       if @options[:use_client_cert]
         http_conn.cert = @options[:cert]
