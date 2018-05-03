@@ -50,7 +50,7 @@ rake jira:generate_public_cert
 
 On Mac OS,
 
-* Follow the instructions under "Mac OSX Installer" here: https://developer.atlassian.com/display/DOCS/Install+the+Atlassian+SDK+on+a+Linux+or+Mac+System
+* Follow the instructions under "Mac OSX Installer" here: https://developer.atlassian.com/server/framework/atlassian-sdk/install-the-atlassian-sdk-on-a-linux-or-mac-system
 * From within the archive directory, run:
 
 ```shell
