@@ -30,4 +30,16 @@ describe JIRA::Resource::UserFactory do
     end
   end
 
+  describe 'proxy' do
+    it "proxies search path to the target class" do
+      expect(JIRA::Resource::User).to receive(:search_path).with(client, 'FOO')
+      subject.search_path('FOO')
+    end
+
+    it "proxies search to the target class" do
+      expect(JIRA::Resource::User).to receive(:search).with(client, 'FOO')
+      subject.search('FOO')
+    end
+  end
+
 end
