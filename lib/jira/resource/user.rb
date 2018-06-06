@@ -15,7 +15,7 @@ module JIRA
       # and use the assignable users endpoint to get a list of users that can be assigned to all projects.
       def self.all(client)
         all_users           = []
-        grouped_project_ids = client.Project.all.map(&:key).each_slice(SMALLER_SAMPLE_SIZE).to_a.uniq
+        grouped_project_ids = client.Project.all.map(&:key).uniq.each_slice(SMALLER_SAMPLE_SIZE).to_a
 
         grouped_project_ids.each do |project_ids|
           project_list = project_ids.join(",")
