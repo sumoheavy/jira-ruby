@@ -24,35 +24,19 @@ describe JIRA::Resource::User do
     describe "#all" do
       let(:client) do
         client = double(options: {rest_base_path: '/jira/rest/api/2'}  )
-        allow(client).to receive(:User).and_return(JIRA::Resource::UserFactory.new(client))
+        allow(client).to receive(:get).with("/rest/api/2/user/search?username=_&maxResults=1000").and_return(JIRA::Resource::UserFactory.new(client))
         client
       end
 
-      let(:project_keys1) { (0...100).to_a.join(",") }
-
-      let(:project_keys2) { (100...200).to_a.join(",") }
-
-      let(:project_keys3) { (200...220).to_a.join(",") }
-
-      projects = 220.times.map.with_index do |i|
-        [OpenStruct.new(key: i.to_s) , OpenStruct.new(key: i.to_s)]
-      end.flatten
-
       before do
-        allow(client).to receive_message_chain(:Project, :all) { projects }
         allow(client).to receive(:get)
-          .with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys1}&maxResults=1000") { OpenStruct.new(body: '{"users":[]}') }
-        allow(client).to receive(:get)
-          .with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys2}&maxResults=1000") { OpenStruct.new(body: '{"users":[]}') }
-        allow(client).to receive(:get)
-          .with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys3}&maxResults=1000") { OpenStruct.new(body: '{"users":[]}') }
-        allow(client).to receive_message_chain(:User, :build).with({"users"=>[]}) { "user" }
+          .with("/rest/api/2/user/search?username=_&maxResults=1000") { OpenStruct.new(body: '["User1"]') }
+        allow(client).to receive_message_chain(:User, :build).with("users") { [] }
       end
 
-      it "splits the projects by 100 and uniqs them to get users on projects" do
-        expect(client).to receive(:get).with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys1}&maxResults=1000")
-        expect(client).to receive(:get).with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys2}&maxResults=1000")
-        expect(client).to receive(:get).with("/jira/rest/api/2/user/assignable/multiProjectSearch?projectKeys=#{project_keys3}&maxResults=1000")
+      it "gets users with maxResults of 1000" do
+        expect(client).to receive(:get).with("/rest/api/2/user/search?username=_&maxResults=1000")
+        expect(client).to receive_message_chain(:User, :build).with("User1")
         JIRA::Resource::User.all(client)
       end
     end
