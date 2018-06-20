@@ -20,7 +20,7 @@ module JIRA
           raise ArgumentError.new("parent issue is required")
         end
 
-        path = "#{issue.self}/#{endpoint_name}?expand=transitions.fields"
+        path = client.options[:rest_base_path] + "/issue/#{issue.key}/#{endpoint_name}?expand=transitions.fields"
         response = client.get(path)
         json = parse_json(response.body)
         json['transitions'].map do |transition|

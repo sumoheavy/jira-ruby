@@ -19,7 +19,7 @@ module JIRA
           raise ArgumentError.new("parent issue is required")
         end
 
-        path = "#{issue.self}/#{endpoint_name}"
+        path = client.options[:rest_base_path] + "/issue/#{issue.id}/#{endpoint_name}"
         response = client.get(path)
         json = parse_json(response.body)
         json['watchers'].map do |watcher|
