@@ -12,8 +12,8 @@ module JIRA
       # @param options [Hash<Symbol, Object>]
       # @return [Hash]
       def self.all(client, options = {})
-        options[:maxResults] ||= 100
-        response = client.get(path_base(client) + "/board?#{hash_to_query_string(options)}")
+        opts = options.empty? ? '' : "?#{hash_to_query_string(options)}"
+        response = client.get(path_base(client) + "/board#{opts}")
         parse_json(response.body)
       end
 
