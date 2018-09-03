@@ -8,8 +8,12 @@ module JIRA
 
     class Agile < JIRA::Base
 
-      def self.all(client)
-        response = client.get(path_base(client) + '/board')
+      # @param client [JIRA::Client]
+      # @param options [Hash<Symbol, Object>]
+      # @return [Hash]
+      def self.all(client, options = {})
+        options[:maxResults] ||= 100
+        response = client.get(path_base(client) + "/board?#{hash_to_query_string(options)}")
         parse_json(response.body)
       end
 
