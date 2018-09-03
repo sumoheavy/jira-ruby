@@ -32,6 +32,9 @@ describe JIRA::Resource::Board do
     response = double
     api_json = <<eos
     {
+         "maxResults": 50,
+         "startAt": 0,
+         "isLast": true,
          "values": [
             {
                 "id": 84,

@@ -108,7 +108,7 @@ describe JIRA::Client do
   let(:request) { subject.request_client.class }
   let(:successful_response) do
     response = double('response')
-    allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
+    allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
     response
   end
   let(:content_type_header) { { 'Content-Type' => 'application/json' } }

@@ -31,7 +31,7 @@ module JIRA
       end
 
       def issues(params = {})
-        path = path_base(client) + "/board/#{id}/issue"
+        path = path_base(client) + "/board/#{id}/issue?"
         response = client.get(url_with_query_params(path, params))
         json = self.class.parse_json(response.body)
         results = json['issues']
@@ -51,7 +51,7 @@ module JIRA
       #   - maxResults ~ default: 50 (JIRA API), 1000 (this library)
       #   - startAt ~ base index, starts at 0
       def sprints(options = {})
-        options.reverse_merge!(DEFAULT_OPTIONS)
+        # options.reverse_merge!(DEFAULT_OPTIONS)
         response = client.get(path_base(client) + "/board/#{id}/sprint?#{options.to_query}")
         json = self.class.parse_json(response.body)
         json['values'].map do |sprint|

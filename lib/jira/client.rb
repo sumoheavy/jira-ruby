@@ -151,8 +151,20 @@ module JIRA
       JIRA::Resource::FieldFactory.new(self)
     end
 
+    def Board
+      JIRA::Resource::BoardFactory.new(self)
+    end
+
     def RapidView
       JIRA::Resource::RapidViewFactory.new(self)
+    end
+
+    def Sprint
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
+    def SprintReport
+      JIRA::Resource::SprintReportFactory.new(self)
     end
 
     def ServerInfo
