@@ -27,6 +27,7 @@ module JIRA
         response = client.get(path_base(client) + "/board/#{board_id}/issue?#{hash_to_query_string(options)}")
         json = parse_json(response.body)
         # To get Issue objects with the same structure as for Issue.all
+        return {} if json['issues'].size.zero?
         issue_ids = json['issues'].map { |issue|
           issue['id']
         }
