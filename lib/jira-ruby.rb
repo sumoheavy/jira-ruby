@@ -1,4 +1,4 @@
-$: << File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH << __dir__
 
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|

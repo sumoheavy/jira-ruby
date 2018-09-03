@@ -2,12 +2,10 @@ require 'cgi'
 
 module JIRA
   module Resource
-
     class RapidViewFactory < JIRA::BaseFactory # :nodoc:
     end
 
     class RapidView < JIRA::Base
-
       def self.all(client)
         response = client.get(path_base(client) + '/rapidview')
         json = parse_json(response.body)
@@ -16,7 +14,7 @@ module JIRA
         end
       end
 
-      def self.find(client, key, options = {})
+      def self.find(client, key, _options = {})
         response = client.get(path_base(client) + "/rapidview/#{key}")
         json = parse_json(response.body)
         client.RapidView.build(json)
@@ -39,8 +37,6 @@ module JIRA
       def path_base(client)
         self.class.path_base(client)
       end
-
     end
-
   end
 end

@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class CommentFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -9,6 +8,5 @@ module JIRA
 
       nested_collections true
     end
-
   end
 end

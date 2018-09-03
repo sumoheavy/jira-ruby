@@ -4,11 +4,11 @@ module JIRA
     end
 
     class Filter < JIRA::Base
-      has_one :owner, :class => JIRA::Resource::User
+      has_one :owner, class: JIRA::Resource::User
 
       # Returns all the issues for this filter
       def issues
-        Issue.jql(self.client, self.jql)
+        Issue.jql(client, jql)
       end
     end
   end

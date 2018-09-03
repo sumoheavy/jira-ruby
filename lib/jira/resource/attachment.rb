@@ -2,14 +2,13 @@ require 'net/http/post/multipart'
 
 module JIRA
   module Resource
-
     class AttachmentFactory < JIRA::BaseFactory # :nodoc:
       delegate_to_target_class :meta
     end
 
     class Attachment < JIRA::Base
       belongs_to :issue
-      has_one :author, :class => JIRA::Resource::User
+      has_one :author, class: JIRA::Resource::User
 
       def self.endpoint_name
         'attachments'

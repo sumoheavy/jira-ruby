@@ -2,12 +2,10 @@ require 'cgi'
 
 module JIRA
   module Resource
-
     class SprintFactory < JIRA::BaseFactory # :nodoc:
     end
 
     class Sprint < JIRA::Base
-
       def self.all(client, key)
         response = client.get(path_base(client) + '/sprintquery/' + key.to_s)
         parse_json(response.body)
@@ -30,8 +28,6 @@ module JIRA
       def path_base(client)
         self.class.path_base(client)
       end
-
     end
-
   end
 end

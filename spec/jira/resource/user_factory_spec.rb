@@ -1,19 +1,18 @@
 require 'spec_helper'
 
 describe JIRA::Resource::UserFactory do
-
-  let(:client) {
+  let(:client) do
     instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
-  }
+  end
 
   subject { JIRA::Resource::UserFactory.new(client) }
 
-  describe "#myself" do
-    let(:response) {
+  describe '#myself' do
+    let(:response) do
       instance_double(
         'Response', body: get_mock_response('user_username=admin.json')
       )
-    }
+    end
 
     let(:user) { subject.myself }
 
@@ -23,11 +22,10 @@ describe JIRA::Resource::UserFactory do
       ).and_return(response)
     end
 
-    it "returns a JIRA::Resource::User with correct attrs" do
+    it 'returns a JIRA::Resource::User with correct attrs' do
       expect(user).to be_a(JIRA::Resource::User)
       expect(user.name).to eq('admin')
       expect(user.emailAddress).to eq('admin@example.com')
     end
   end
-
 end

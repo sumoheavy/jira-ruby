@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class UserFactory < JIRA::BaseFactory # :nodoc:
       def myself
         instance = build
@@ -15,6 +14,5 @@ module JIRA
         collection_path(client, prefix) + '?username=' + key
       end
     end
-
   end
 end

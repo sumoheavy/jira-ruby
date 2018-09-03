@@ -16,7 +16,7 @@ RSpec.shared_examples 'Client Common Tests' do
   end
 
   it 'merges headers' do
-    expect(subject.send(:merge_default_headers, {})).to eq({'Accept' => 'application/json'})
+    expect(subject.send(:merge_default_headers, {})).to eq('Accept' => 'application/json')
   end
 
   describe 'http methods' do
@@ -30,17 +30,17 @@ RSpec.shared_examples 'Client Common Tests' do
       # response for merging headers for http methods with body
       expect(subject).to receive(:merge_default_headers).exactly(2).times.with(content_type_header)
 
-      [:delete, :get, :head].each { |method| subject.send(method, '/path', {}) }
-      [:post, :put].each {|method| subject.send(method, '/path', '', content_type_header)}
+      %i[delete get head].each { |method| subject.send(method, '/path', {}) }
+      %i[post put].each { |method| subject.send(method, '/path', '', content_type_header) }
     end
 
     it 'calls the generic request method' do
-      [:delete, :get, :head].each do |method|
+      %i[delete get head].each do |method|
         expect(subject).to receive(:request).with(method, '/path', nil, headers).and_return(successful_response)
         subject.send(method, '/path', {})
       end
 
-      [:post, :put].each do |method|
+      %i[post put].each do |method|
         expect(subject).to receive(:request).with(method, '/path', '', merged_headers)
         subject.send(method, '/path', '', {})
       end
@@ -63,11 +63,11 @@ end
 
 RSpec.shared_examples 'HttpClient tests' do
   it 'makes a valid request' do
-    [:delete, :get, :head].each do |method|
+    %i[delete get head].each do |method|
       expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(successful_response)
       subject.send(method, '/path', headers)
     end
-    [:post, :put].each do |method|
+    %i[post put].each do |method|
       expect(subject.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(successful_response)
       subject.send(method, '/path', '', headers)
     end
@@ -92,11 +92,11 @@ RSpec.shared_examples 'OAuth Common Tests' do
 
   describe 'that call a oauth client' do
     specify 'which makes a request' do
-      [:delete, :get, :head].each do |method|
+      %i[delete get head].each do |method|
         expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, headers).and_return(successful_response)
         subject.send(method, '/path', {})
       end
-      [:post, :put].each do |method|
+      %i[post put].each do |method|
         expect(subject.request_client).to receive(:make_request).with(method, '/path', '', merged_headers).and_return(successful_response)
         subject.send(method, '/path', '', {})
       end
@@ -111,13 +111,13 @@ describe JIRA::Client do
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
     response
   end
-  let(:content_type_header) { {'Content-Type' => 'application/json'} }
-  let(:headers) { {'Accept' => 'application/json'} }
+  let(:content_type_header) { { 'Content-Type' => 'application/json' } }
+  let(:headers) { { 'Accept' => 'application/json' } }
   let(:merged_headers) { headers.merge(content_type_header) }
 
   context 'behaviour that applies to all client classes irrespective of authentication method' do
     it 'allows the overriding of some options' do
-      client = JIRA::Client.new({:consumer_key => 'foo', :consumer_secret => 'bar', :site => 'http://foo.com/'})
+      client = JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar', site: 'http://foo.com/')
       expect(client.options[:site]).to eq('http://foo.com/')
       expect(JIRA::Client::DEFAULT_OPTIONS[:site]).not_to eq('http://foo.com/')
     end
@@ -128,10 +128,10 @@ describe JIRA::Client do
 
     before(:each) do
       stub_request(:get, 'https://foo:bar@localhost:2990/jira/rest/api/2/project')
-        .to_return(status: 200, body: '[]', headers: {} )
+        .to_return(status: 200, body: '[]', headers: {})
 
-      stub_request(:get, 'https://foo:badpassword@localhost:2990/jira/rest/api/2/project').
-        to_return(status: 401, headers: {} )
+      stub_request(:get, 'https://foo:badpassword@localhost:2990/jira/rest/api/2/project')
+        .to_return(status: 401, headers: {})
     end
 
     include_examples 'Client Common Tests'
@@ -147,7 +147,7 @@ describe JIRA::Client do
     it 'fails with wrong user name and password' do
       bad_login = JIRA::Client.new(username: 'foo', password: 'badpassword', auth_type: :basic)
       expect(bad_login.authenticated?).to be_falsey
-      expect{bad_login.Project.all}.to raise_error JIRA::HTTPError
+      expect { bad_login.Project.all }.to raise_error JIRA::HTTPError
     end
 
     it 'only returns a true for #authenticated? once we have requested some data' do
@@ -155,7 +155,6 @@ describe JIRA::Client do
       expect(subject.Project.all).to be_empty
       expect(subject.authenticated?).to be_truthy
     end
-
   end
 
   context 'with cookie authentication' do
@@ -164,27 +163,27 @@ describe JIRA::Client do
     let(:session_cookie) { '6E3487971234567896704A9EB4AE501F' }
     let(:session_body) do
       {
-        'session': {'name' => "JSESSIONID", 'value' => session_cookie },
-        'loginInfo': {'failedLoginCount' => 1, 'loginCount' => 2,
-                      'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
-                      'previousLoginTime' => (DateTime.now - 5).iso8601 }
+        'session': { 'name' => 'JSESSIONID', 'value' => session_cookie },
+        'loginInfo': { 'failedLoginCount' => 1, 'loginCount' => 2,
+                       'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
+                       'previousLoginTime' => (DateTime.now - 5).iso8601 }
       }
     end
 
     before(:each) do
       # General case of API call with no authentication, or wrong authentication
-      stub_request(:post, 'https://localhost:2990/jira/rest/auth/1/session').
-        to_return(status: 401, headers: {} )
+      stub_request(:post, 'https://localhost:2990/jira/rest/auth/1/session')
+        .to_return(status: 401, headers: {})
 
       # Now special case of API with correct authentication.  This gets checked first by RSpec.
       stub_request(:post, 'https://localhost:2990/jira/rest/auth/1/session')
         .with(body: '{"username":"foo","password":"bar"}')
         .to_return(status: 200, body: session_body.to_json,
-                   headers: { 'Set-Cookie': "JSESSIONID=#{session_cookie}; Path=/; HttpOnly"})
+                   headers: { 'Set-Cookie': "JSESSIONID=#{session_cookie}; Path=/; HttpOnly" })
 
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-        .with(headers: { cookie: "JSESSIONID=#{session_cookie}" } )
-        .to_return(status: 200, body: '[]', headers: {} )
+        .with(headers: { cookie: "JSESSIONID=#{session_cookie}" })
+        .to_return(status: 200, body: '[]', headers: {})
     end
 
     include_examples 'Client Common Tests'
@@ -220,4 +219,3 @@ describe JIRA::Client do
     include_examples 'OAuth Common Tests'
   end
 end
-

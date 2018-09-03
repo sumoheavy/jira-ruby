@@ -2,7 +2,6 @@ require 'cgi'
 
 module JIRA
   module Resource
-
     class BoardFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -25,7 +24,7 @@ module JIRA
         end
       end
 
-      def self.find(client, key, options = {})
+      def self.find(client, key, _options = {})
         response = client.get(path_base(client) + "/board/#{key}")
         json = parse_json(response.body)
         client.Board.build(json)
@@ -38,13 +37,13 @@ module JIRA
         results = json['issues']
 
         while (json['startAt'] + json['maxResults']) < json['total']
-          params.merge!('startAt' => (json['startAt'] + json['maxResults']))
+          params['startAt'] = (json['startAt'] + json['maxResults'])
           response = client.get(url_with_query_params(path, params))
           json = self.class.parse_json(response.body)
           results += json['issues']
         end
 
-          results.map { |issue| client.Issue.build(issue) }
+        results.map { |issue| client.Issue.build(issue) }
       end
 
       # options
@@ -68,7 +67,7 @@ module JIRA
       end
 
       def add_issue_to_backlog(issue)
-        client.post(path_base(client) + '/backlog/issue', {issues: [issue.id]}.to_json)
+        client.post(path_base(client) + '/backlog/issue', { issues: [issue.id] }.to_json)
       end
 
       private
@@ -80,8 +79,6 @@ module JIRA
       def path_base(client)
         self.class.path_base(client)
       end
-
     end
-
   end
 end

@@ -5,11 +5,10 @@ require 'uri'
 
 module JIRA
   class HttpClient < RequestClient
-
     DEFAULT_OPTIONS = {
-      :username           => '',
-      :password           => ''
-    }
+      username: '',
+      password: ''
+    }.freeze
 
     attr_reader :options
 
@@ -19,13 +18,13 @@ module JIRA
     end
 
     def make_cookie_auth_request
-      body = { :username => @options[:username], :password => @options[:password] }.to_json
+      body = { username: @options[:username], password: @options[:password] }.to_json
       @options.delete(:username)
       @options.delete(:password)
-      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, {'Content-Type' => 'application/json'})
+      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
     end
 
-    def make_request(http_method, url, body='', headers={})
+    def make_request(http_method, url, body = '', headers = {})
       # When a proxy is enabled, Net::HTTP expects that the request path omits the domain name
       path = request_path(url)
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
@@ -44,9 +43,9 @@ module JIRA
 
     def http_conn(uri)
       if @options[:proxy_address]
-          http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] ? @options[:proxy_port] : 80)
+        http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80)
       else
-          http_class = Net::HTTP
+        http_class = Net::HTTP
       end
       http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
@@ -90,7 +89,7 @@ module JIRA
 
     def add_cookies(request)
       cookie_array = @cookies.values.map { |cookie| "#{cookie.name}=#{cookie.value[0]}" }
-      cookie_array +=  Array(@options[:additional_cookies]) if @options.key?(:additional_cookies)
+      cookie_array += Array(@options[:additional_cookies]) if @options.key?(:additional_cookies)
       request.add_field('Cookie', cookie_array.join('; ')) if cookie_array.any?
       request
     end

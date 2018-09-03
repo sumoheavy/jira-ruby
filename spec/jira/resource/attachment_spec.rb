@@ -1,42 +1,41 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
-
-  let(:client) {
+  let(:client) do
     double(
       'client',
-      :options => {
-        :rest_base_path => '/jira/rest/api/2'
+      options: {
+        rest_base_path: '/jira/rest/api/2'
       },
-      :request_client => double(
-        :options => {
-          :username => 'username',
-          :password => 'password'
+      request_client: double(
+        options: {
+          username: 'username',
+          password: 'password'
         }
       )
     )
-  }
+  end
 
-  describe "relationships" do
-    subject {
+  describe 'relationships' do
+    subject do
       JIRA::Resource::Attachment.new(client,
-                                     :issue => JIRA::Resource::Issue.new(client),
-                                     :attrs => { 'author' => {'foo' => 'bar'} })
-    }
+                                     issue: JIRA::Resource::Issue.new(client),
+                                     attrs: { 'author' => { 'foo' => 'bar' } })
+    end
 
-    it "has the correct relationships" do
+    it 'has the correct relationships' do
       expect(subject).to have_one(:author, JIRA::Resource::User)
       expect(subject.author.foo).to eq('bar')
     end
   end
 
   describe '#meta' do
-    let(:response) {
+    let(:response) do
       double(
         'response',
-        :body => '{"enabled":true,"uploadLimit":10485760}'
+        body: '{"enabled":true,"uploadLimit":10485760}'
       )
-    }
+    end
 
     it 'returns meta information about attachment upload' do
       expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
@@ -52,16 +51,16 @@ describe JIRA::Resource::Attachment do
 
   describe '#save!' do
     it 'successfully update the attachment' do
-      basic_auth_http_conn = double()
+      basic_auth_http_conn = double
       response = double(
         body: [
           {
-            "id": 10001,
-            "self": "http://www.example.com/jira/rest/api/2.0/attachments/10000",
-            "filename": "picture.jpg",
-            "created": "2017-07-19T12:23:06.572+0000",
-            "size": 23123,
-            "mimeType": "image/jpeg",
+            "id": 10_001,
+            "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+            "filename": 'picture.jpg',
+            "created": '2017-07-19T12:23:06.572+0000',
+            "size": 23_123,
+            "mimeType": 'image/jpeg'
           }
         ].to_json
       )
@@ -76,7 +75,7 @@ describe JIRA::Resource::Attachment do
 
       expect(attachment.filename).to eq 'picture.jpg'
       expect(attachment.mimeType).to eq 'image/jpeg'
-      expect(attachment.size).to eq 23123
+      expect(attachment.size).to eq 23_123
     end
   end
 end

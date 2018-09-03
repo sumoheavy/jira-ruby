@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class WatcherFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -15,9 +14,7 @@ module JIRA
 
       def self.all(client, options = {})
         issue = options[:issue]
-        unless issue
-          raise ArgumentError.new("parent issue is required")
-        end
+        raise ArgumentError, 'parent issue is required' unless issue
 
         path = "#{issue.self}/#{endpoint_name}"
         response = client.get(path)
@@ -27,6 +24,5 @@ module JIRA
         end
       end
     end
-
   end
 end
