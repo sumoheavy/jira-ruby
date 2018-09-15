@@ -1,12 +1,10 @@
 module JIRA
   module Resource
-
     class WebhookFactory < JIRA::BaseFactory # :nodoc:
     end
 
     class Webhook < JIRA::Base
-
-      REST_BASE_PATH = '/rest/webhooks/1.0'
+      REST_BASE_PATH = '/rest/webhooks/1.0'.freeze
 
       def self.endpoint_name
         'webhook'
@@ -17,14 +15,14 @@ module JIRA
       end
 
       def self.collection_path(client, prefix = '/')
-        self.full_url(client) + prefix + self.endpoint_name
+        full_url(client) + prefix + endpoint_name
       end
 
       def self.all(client, options = {})
         response = client.get(collection_path(client))
         json = parse_json(response.body)
         json.map do |attrs|
-          self.new(client, {:attrs => attrs}.merge(options))
+          new(client, { attrs: attrs }.merge(options))
         end
       end
 
@@ -34,7 +32,6 @@ module JIRA
       # def self.delete(options={})
 
       # end
-
     end
   end
 end

@@ -1,6 +1,5 @@
 require 'forwardable'
 module JIRA
-
   class HTTPError < StandardError
     extend Forwardable
 
@@ -11,7 +10,5 @@ module JIRA
       @response = response
       @message = response.try(:message) || response.try(:body)
     end
-
   end
-
 end

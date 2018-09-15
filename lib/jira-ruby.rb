@@ -1,4 +1,4 @@
-$: << File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH << __dir__
 
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|
@@ -26,6 +26,8 @@ require 'jira/resource/applinks'
 require 'jira/resource/issuelinktype'
 require 'jira/resource/issuelink'
 require 'jira/resource/remotelink'
+require 'jira/resource/sprint'
+require 'jira/resource/sprint_report'
 require 'jira/resource/issue'
 require 'jira/resource/filter'
 require 'jira/resource/field'
@@ -35,7 +37,8 @@ require 'jira/resource/serverinfo'
 require 'jira/resource/createmeta'
 require 'jira/resource/webhook'
 require 'jira/resource/agile'
-require 'jira/resource/sprint'
+require 'jira/resource/board'
+
 require 'jira/request_client'
 require 'jira/oauth_client'
 require 'jira/http_client'
