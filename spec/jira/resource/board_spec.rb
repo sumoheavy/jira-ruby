@@ -89,7 +89,7 @@ eos
 
       allow(issues_response).to receive(:body).and_return(api_json_issues)
       allow(board).to receive(:id).and_return(84)
-      expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue?')
+      expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue')
                                      .and_return(issues_response)
       expect(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
 
