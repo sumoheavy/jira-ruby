@@ -25,7 +25,8 @@ module JIRA
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
-  #   :additional_cookies => nil
+  #   :additional_cookies => nil,
+  #   :default_headers    => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -241,7 +242,7 @@ module JIRA
     protected
 
     def merge_default_headers(headers)
-      { 'Accept' => 'application/json' }.merge(headers)
+      { 'Accept' => 'application/json' }.merge(headers).merge(@options[:default_headers])
     end
   end
 end
