@@ -25,7 +25,8 @@ module JIRA
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
-  #   :additional_cookies => nil
+  #   :additional_cookies => nil,
+  #   :default_headers    => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
