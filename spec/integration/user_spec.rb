@@ -20,22 +20,36 @@ describe JIRA::Resource::User do
 
     it_should_behave_like "a resource"
     it_should_behave_like "a resource with a singular GET endpoint"
+  end
 
-    describe "#all" do
-      let(:client) do
-        client = double(options: {rest_base_path: '/jira/rest/api/2'}  )
-        allow(client).to receive(:get).with("/rest/api/2/user/search?username=_&maxResults=1000").and_return(JIRA::Resource::UserFactory.new(client))
-        client
-      end
+  describe "#all" do
+    let(:client) { JIRA::Client.new({ :username => 'foo', :password => 'bar', :auth_type => :basic, site: site }) }
+
+    context "when the client is a cloud instance" do
+      let(:site) { "https://foo.atlassian.net" }
 
       before do
-        allow(client).to receive(:get)
-          .with("/rest/api/2/user/search?username=_&maxResults=1000") { OpenStruct.new(body: '["User1"]') }
+        expect(client).to receive(:get)
+                            .with("/rest/api/2/user/search?username=_&maxResults=1000") { OpenStruct.new(body: '["User1"]') }
         allow(client).to receive_message_chain(:User, :build).with("users") { [] }
       end
 
       it "gets users with maxResults of 1000" do
-        expect(client).to receive(:get).with("/rest/api/2/user/search?username=_&maxResults=1000")
+        expect(client).to receive_message_chain(:User, :build).with("User1")
+        JIRA::Resource::User.all(client)
+      end
+    end
+
+    context "when the client is not a cloud instance" do
+      let(:site) { "https://foo.onprem.com" }
+
+      before do
+        expect(client).to receive(:get)
+                            .with("/rest/api/2/user/search?username=@&maxResults=1000") { OpenStruct.new(body: '["User1"]') }
+        allow(client).to receive_message_chain(:User, :build).with("users") { [] }
+      end
+
+      it "gets users with maxResults of 1000" do
         expect(client).to receive_message_chain(:User, :build).with("User1")
         JIRA::Resource::User.all(client)
       end
