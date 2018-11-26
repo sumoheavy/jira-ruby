@@ -208,6 +208,10 @@ module JIRA
       @request_client.request(http_method, path, body, headers)
     end
 
+    def cloud_instance?
+      options[:site].include?("atlassian.net")
+    end
+
     protected
 
       def merge_default_headers(headers)

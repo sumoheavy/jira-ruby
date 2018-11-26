@@ -185,4 +185,32 @@ describe JIRA::Client do
       expect(basic_client.Project.find('123')).to eq(find_result)
     end
   end
+
+  describe "#cloud_instance?" do
+    let(:client) { JIRA::Client.new({ :username => 'foo', :password => 'bar', :auth_type => :basic, site: site }) }
+
+    context "when site is not present in options" do
+      let(:site) { "" }
+
+      it "returns false" do
+        expect(client).to_not be_cloud_instance
+      end
+    end
+
+    context "when the site has a cloud url" do
+      let(:site) { "https://foo.atlassian.net" }
+
+      it "returns true" do
+        expect(client).to be_cloud_instance
+      end
+    end
+
+    context "when the site does not have a cloud url (does not reference atlassian)" do
+      let(:site) { "https://foo.onprem.com" }
+
+      it "returns false" do
+        expect(client).to_not be_cloud_instance
+      end
+    end
+  end
 end
