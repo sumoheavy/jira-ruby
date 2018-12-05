@@ -243,7 +243,7 @@ module JIRA
     protected
 
     def merge_default_headers(headers)
-      { 'Accept' => 'application/json' }.merge(headers).merge(@options[:default_headers])
+      { 'Accept' => 'application/json' }.merge(@options[:default_headers]).merge(headers)
     end
   end
 end
