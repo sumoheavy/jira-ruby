@@ -207,6 +207,54 @@ describe JIRA::Client do
     end
   end
 
+  context 'with jwt authentication' do
+    subject do
+      JIRA::Client.new(
+        issuer: 'foo',
+        base_url: 'https://host.tld',
+        shared_secret: 'shared_secret_key',
+        auth_type: :jwt
+      )
+    end
+
+    before(:each) do
+      stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
+          .with(query: hash_including(:jwt))
+          .to_return(status: 200, body: '[]', headers: {})
+    end
+
+    include_examples 'Client Common Tests'
+    include_examples 'HttpClient tests'
+
+    specify { expect(subject.request_client).to be_a JIRA::JwtClient }
+
+    it 'sets the username and password' do
+      expect(subject.options[:shared_secret]).to eq('shared_secret_key')
+    end
+
+    context 'with a incorrect jwt key' do
+      before do
+        stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
+            .with(query: hash_including(:jwt))
+            .to_return(status: 401, body: '[]', headers: {})
+      end
+
+      it 'is not authenticated' do
+        expect(subject.authenticated?).to be_falsey
+      end
+
+      it 'raises a JIRA::HTTPError when trying to fetch projects' do
+        expect { subject.Project.all }.to raise_error JIRA::HTTPError
+      end
+    end
+
+    it 'only returns a true for #authenticated? once we have requested some data' do
+      expect(subject.authenticated?).to be_falsey
+      expect(subject.Project.all).to be_empty
+      expect(subject.authenticated?).to be_truthy
+    end
+  end
+
   context 'oauth authentication' do
     subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
