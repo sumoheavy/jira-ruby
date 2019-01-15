@@ -1,3 +1,4 @@
+require 'openssl'
 require 'json'
 require 'forwardable'
 require 'ostruct'
