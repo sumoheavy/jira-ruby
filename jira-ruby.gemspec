@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   # Runtime Dependencies
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'atlassian-jwt'
   s.add_runtime_dependency 'multipart-post'
   s.add_runtime_dependency 'oauth', '~> 0.5', '>= 0.5.0'
 

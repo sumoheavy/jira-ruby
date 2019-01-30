@@ -71,6 +71,8 @@ module JIRA
       when :oauth, :oauth_2legged
         @request_client = OauthClient.new(@options)
         @consumer = @request_client.consumer
+      when :jwt
+        @request_client = JwtClient.new(@options)
       when :basic
         @request_client = HttpClient.new(@options)
       when :cookie
