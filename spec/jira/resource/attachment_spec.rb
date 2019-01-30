@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
+  subject(:attachment) do
+    JIRA::Resource::Attachment.new(
+        client,
+        issue: JIRA::Resource::Issue.new(client),
+        attrs: { 'author' => { 'foo' => 'bar' } }
+    )
+  end
+
   let(:client) do
     double(
       'client',
@@ -17,42 +25,46 @@ describe JIRA::Resource::Attachment do
   end
 
   describe 'relationships' do
-    subject do
-      JIRA::Resource::Attachment.new(client,
-                                     issue: JIRA::Resource::Issue.new(client),
-                                     attrs: { 'author' => { 'foo' => 'bar' } })
+    it 'has an author' do
+      expect(subject).to have_one(:author, JIRA::Resource::User)
     end
 
-    it 'has the correct relationships' do
-      expect(subject).to have_one(:author, JIRA::Resource::User)
+    it 'has the correct author name' do
       expect(subject.author.foo).to eq('bar')
     end
   end
 
-  describe '#meta' do
+  describe '.meta' do
+    subject { JIRA::Resource::Attachment.meta(client) }
+
     let(:response) do
       double(
-        'response',
-        body: '{"enabled":true,"uploadLimit":10485760}'
+          'response',
+          body: '{"enabled":true,"uploadLimit":10485760}'
       )
     end
 
     it 'returns meta information about attachment upload' do
       expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
-      JIRA::Resource::Attachment.meta(client)
+
+      subject
     end
 
-    subject { JIRA::Resource::AttachmentFactory.new(client) }
+    context 'the factory delegates correctly' do
+      subject { JIRA::Resource::AttachmentFactory.new(client) }
 
-    it 'delegates #meta to to target class' do
-      expect(subject).to respond_to(:meta)
+      it 'delegates #meta to to target class' do
+        expect(subject).to respond_to(:meta)
+      end
     end
   end
 
   describe '#save!' do
-    it 'successfully update the attachment' do
-      basic_auth_http_conn = double
-      response = double(
+    subject { attachment.save!(:file => path_to_file) }
+
+    let(:path_to_file) { './spec/mock_responses/issue.json' }
+    let(:response) do
+      double(
         body: [
           {
             "id": 10_001,
@@ -64,14 +76,15 @@ describe JIRA::Resource::Attachment do
           }
         ].to_json
       )
+    end
+    let(:issue) { JIRA::Resource::Issue.new(client) }
 
-      allow(client.request_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-      allow(basic_auth_http_conn).to receive(:request).and_return(response)
+    before do
+      allow(client).to receive(:post_multipart).and_return(response)
+    end
 
-      issue = JIRA::Resource::Issue.new(client)
-      path_to_file = './spec/mock_responses/issue.json'
-      attachment = JIRA::Resource::Attachment.new(client, issue: issue)
-      attachment.save!('file' => path_to_file)
+    it 'successfully update the attachment' do
+      subject
 
       expect(attachment.filename).to eq 'picture.jpg'
       expect(attachment.mimeType).to eq 'image/jpeg'
