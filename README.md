@@ -153,14 +153,18 @@ require 'jira-ruby'
 # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
 # for tests.
 
+# NOTE basic auth no longer works with Jira, you must generate an API token, to do so you must have jira instance access rights. You can generate a token here: https://id.atlassian.com/manage/api-tokens
+
+# You will see JIRA::HTTPError (JIRA::HTTPError) if you attempt to use basic auth with your user's password
+
 username = "myremoteuser"
-password = "myuserspassword"
+api_token = "myApiToken"
 
 options = {
             :username => username,
-            :password => password,
-            :site     => 'http://localhost:8080/',
-            :context_path => '/myjira',
+            :password => api_token,
+            :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net'
+            :context_path => '/myjira', # often blank
             :auth_type => :basic,
             :read_timeout => 120
           }
