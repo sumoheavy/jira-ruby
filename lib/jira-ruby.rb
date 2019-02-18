@@ -38,6 +38,7 @@ require 'jira/resource/createmeta'
 require 'jira/resource/webhook'
 require 'jira/resource/agile'
 require 'jira/resource/board'
+require 'jira/resource/board_configuration'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
