@@ -33,9 +33,9 @@ module JIRA
       execute_request(request)
     end
 
-    def make_multipart_request(url, data, headers = {})
+    def make_multipart_request(url, body, headers = {})
       path = request_path(url)
-      request = Net::HTTP::Post::Multipart.new path, data, headers
+      request = Net::HTTP::Post::Multipart.new(path, body, headers)
 
       execute_request(request)
     end

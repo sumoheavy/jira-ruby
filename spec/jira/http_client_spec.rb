@@ -254,24 +254,26 @@ describe JIRA::HttpClient do
   end
 
   describe '#make_multipart_request' do
-    subject { JIRA::HttpClient.new(client_options).make_multipart_request(path, data, headers) }
+    subject do
+      basic_client.make_multipart_request(path, data, headers)
+    end
 
-    let(:client_options) { JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS) }
-    let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
-    let(:data) { {} }
     let(:path) { '/foo' }
+    let(:data) { {} }
+    let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
     let(:basic_auth_http_conn) { double }
-    let(:request){  double }
+    let(:request) { double('Http Request', path: path) }
     let(:response) { double('response') }
 
     before do
       allow(request).to receive(:basic_auth)
-      allow(response).to receive(:get_fields).with('set-cookie')
       allow(Net::HTTP::Post::Multipart).to receive(:new).with(path, data, headers).and_return(request)
+      allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+      allow(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
     end
 
     it 'performs a basic http client request' do
-      expect(request).to receive(:basic_auth).with(client.options[:username], client.options[:password]).and_return(request)
+      expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(request)
 
       subject
     end

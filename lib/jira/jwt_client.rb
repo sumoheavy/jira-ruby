@@ -52,7 +52,9 @@ module JIRA
 
     private
 
-    def request_path(http_method, url)
+    attr_reader :http_method
+
+    def request_path(url)
       JwtUriBuilder.new(
         url,
         http_method.to_s,

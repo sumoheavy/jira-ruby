@@ -60,7 +60,7 @@ describe JIRA::Resource::Attachment do
   end
 
   describe '#save!' do
-    subject { attachment.save!(:file => path_to_file) }
+    subject { attachment.save!('file' => path_to_file) }
 
     let(:path_to_file) { './spec/mock_responses/issue.json' }
     let(:response) do
@@ -89,6 +89,18 @@ describe JIRA::Resource::Attachment do
       expect(attachment.filename).to eq 'picture.jpg'
       expect(attachment.mimeType).to eq 'image/jpeg'
       expect(attachment.size).to eq 23_123
+    end
+
+    context 'when passing in a symbol as file key' do
+      subject { attachment.save!(file: path_to_file) }
+
+      it 'successfully update the attachment' do
+        subject
+
+        expect(attachment.filename).to eq 'picture.jpg'
+        expect(attachment.mimeType).to eq 'image/jpeg'
+        expect(attachment.size).to eq 23_123
+      end
     end
   end
 end
