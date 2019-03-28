@@ -5,11 +5,13 @@ ActiveSupport::Inflector.inflections do |inflector|
   inflector.singular /status$/, 'status'
 end
 
+# JIRA Base
 require 'jira/base'
 require 'jira/base_factory'
 require 'jira/has_many_proxy'
 require 'jira/http_error'
 
+# JIRA Resources
 require 'jira/resource/user'
 require 'jira/resource/watcher'
 require 'jira/resource/attachment'
@@ -39,10 +41,10 @@ require 'jira/resource/webhook'
 require 'jira/resource/agile'
 require 'jira/resource/board'
 
-require 'jira/request_client'
-require 'jira/oauth_client'
-require 'jira/http_client'
-require 'jira/jwt_client'
-require 'jira/client'
+# Confluence Resources
+require 'jira/resource/content'
 
-require 'jira/railtie' if defined?(Rails)
+# Clients
+require 'jira/request_client'
+require 'jira/http_client'
+require 'jira/client'

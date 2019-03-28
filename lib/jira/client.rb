@@ -34,11 +34,9 @@ module JIRA
   class Client
     extend Forwardable
 
-    # The OAuth::Consumer instance returned by the OauthClient
-    #
     # The authenticated client instance returned by the respective client type
-    # (Oauth, Basic)
-    attr_accessor :consumer, :request_client, :http_debug, :cache
+    # (Basic)
+    attr_accessor :request_client, :http_debug, :cache
 
     # The configuration options for this client instance
     attr_reader :options
@@ -70,11 +68,6 @@ module JIRA
       end
 
       case options[:auth_type]
-      when :oauth, :oauth_2legged
-        @request_client = OauthClient.new(@options)
-        @consumer = @request_client.consumer
-      when :jwt
-        @request_client = JwtClient.new(@options)
       when :basic
         @request_client = HttpClient.new(@options)
       when :cookie
@@ -85,7 +78,7 @@ module JIRA
         @options.delete(:username)
         @options.delete(:password)
       else
-        raise ArgumentError, 'Options: ":auth_type" must be ":oauth",":oauth_2legged", ":cookie" or ":basic"'
+        raise ArgumentError, 'Options: ":auth_type" must be ":cookie" or ":basic"'
       end
 
       @http_debug = @options[:http_debug]
@@ -209,6 +202,10 @@ module JIRA
 
     def Agile
       JIRA::Resource::AgileFactory.new(self)
+    end
+
+    def Content
+      JIRA::Resource::ContentFactory.new(self)
     end
 
     # HTTP methods without a body
