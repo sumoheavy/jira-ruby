@@ -28,6 +28,7 @@ module JIRA
                            client.request_client.options[:password])
 
         response = client.request_client.basic_auth_http_conn.request(request)
+        raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
 
         set_attrs(attrs, false)
         unless response.body.nil? || response.body.length < 2
