@@ -70,6 +70,8 @@ module JIRA
       end
 
       case options[:auth_type]
+      when :oauth2_3legged_simple
+        @request_client = Oauth2ClientSimple.new(@options)
       when :oauth, :oauth_2legged
         @request_client = OauthClient.new(@options)
         @consumer = @request_client.consumer
