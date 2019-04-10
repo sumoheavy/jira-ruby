@@ -6,6 +6,7 @@ module JIRA
   # Supports 3LO from the point where the user has their access token
   class Oauth2ClientSimple < RequestClient
     DEFAULT_OPTIONS = {
+      cloud_id: nil
     }.freeze
 
     # This exception is thrown when the client is used before
@@ -13,6 +14,13 @@ module JIRA
     class UninitializedAccessTokenError < StandardError
       def message
         'init_access_token must be called before using the client'
+      end
+    end
+
+    # This exception is thrown if a cloud_id has not been set
+    class UninitializedCloudIDError < StandardError
+      def message
+        'set_cloud_id must be called before using the client'
       end
     end
 
@@ -25,6 +33,10 @@ module JIRA
 
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
+    end
+
+    def set_cloud_id(cloud_id)
+      @options[:cloud_id] = cloud_id
     end
 
     # Sets the access token from a preexisting token and secret.
@@ -42,7 +54,16 @@ module JIRA
       @access_token
     end
 
+    # Returns the current cloud_id. Raises an
+    # JIRA::Client::UninitializedCloudIDError exception if it is not set.
+    def cloud_id
+      raise UninitializedCloudIDError unless @options[:cloud_id]
+
+      @options[:cloud_id]
+    end
+
     def make_request(http_method, path, body = '', headers = {})
+      path = path % { cloud_id: cloud_id }
       case http_method
       when :delete, :get, :head
         response = access_token.request(http_method, path, headers)
