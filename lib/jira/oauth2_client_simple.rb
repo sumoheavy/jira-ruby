@@ -53,7 +53,7 @@ module JIRA
 
     def make_request(http_method, path, body = '', headers = {})
       puts "METHOD: #{http_method}"
-      puts "PATH: #{http_method}"
+      puts "PATH: #{path}"
       case http_method
       when :delete, :get, :head
         response = access_token.request(http_method, path, headers)
