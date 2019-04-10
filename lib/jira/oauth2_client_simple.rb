@@ -6,7 +6,6 @@ module JIRA
   # Supports 3LO from the point where the user has their access token
   class Oauth2ClientSimple < RequestClient
     DEFAULT_OPTIONS = {
-      client: nil
     }.freeze
 
     # This exception is thrown when the client is used before
@@ -26,19 +25,11 @@ module JIRA
 
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
-      # @consumer = init_oauth_consumer(@options)
     end
-
-    # def init_oauth_consumer(_options)
-    #   @options[:request_token_path] = @options[:context_path] + @options[:request_token_path]
-    #   @options[:authorize_path] = @options[:context_path] + @options[:authorize_path]
-    #   @options[:access_token_path] = @options[:context_path] + @options[:access_token_path]
-    #   OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], @options)
-    # end
 
     # Sets the access token from a preexisting token and secret.
     def set_access_token(token)
-      @access_token = OAuth2::AccessToken.new(@options[:client], token)
+      @access_token = token
       @authenticated = true
       @access_token
     end
@@ -52,8 +43,6 @@ module JIRA
     end
 
     def make_request(http_method, path, body = '', headers = {})
-      puts "METHOD: #{http_method}"
-      puts "PATH: #{path}"
       case http_method
       when :delete, :get, :head
         response = access_token.request(http_method, path, headers)
