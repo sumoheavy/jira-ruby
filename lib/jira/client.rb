@@ -43,7 +43,9 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
+    def_delegators :@request_client, :init_access_token, :set_access_token,
+                   :set_request_token, :request_token, :access_token,
+                   :authenticated?, :set_cloud_id
 
     DEFAULT_OPTIONS = {
       site: 'http://localhost:2990',
