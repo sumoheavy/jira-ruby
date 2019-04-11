@@ -19,7 +19,7 @@ module JIRA
 
     def successful?(response)
       return true if response.is_a?(Net::HTTPSuccess)
-      return true if response.is_a?(OAuth2::Response) && good?
+      return true if response.is_a?(OAuth2::Response) && good?(response.status)
 
       false
     end
