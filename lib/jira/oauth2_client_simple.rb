@@ -45,10 +45,11 @@ module JIRA
     def make_request(http_method, path, body = '', headers = {})
       case http_method
       when :delete, :get, :head
-        response = access_token.request(http_method, path, headers)
+        opts = { headers: headers }
       when :post, :put
-        response = access_token.request(http_method, path, body, headers)
+        opts = { headers: headers, body: body }
       end
+      response = access_token.request(http_method, path, opts)
       @authenticated = true
       response
     end
