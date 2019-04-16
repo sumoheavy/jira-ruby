@@ -25,6 +25,8 @@ module JIRA
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
+  #   :proxy_username     => nil,
+  #   :proxy_password     => nil,
   #   :additional_cookies => nil,
   #   :default_headers    => {}
   #
