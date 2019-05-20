@@ -27,8 +27,18 @@ module JIRA
         path = "#{issue.self}?expand=#{self.expand_value}"
         response = client.get(path)
         json = parse_json(response.body)
-        json['changelog'].map do |changelog|
-          issue.changelogs.build('items' => changelog)
+        # [
+        #   'startAt',
+        #   0,
+        #   'maxResults',
+        #   77,
+        #   'total',
+        #   77,
+        #   'histories',
+        #   [.......]
+        # ]
+        json['changelog'][3][1].map do |changelog|
+          issue.changelogs.build(changelog)
         end
       end
     end
