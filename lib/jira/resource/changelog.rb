@@ -37,7 +37,7 @@ module JIRA
         #   'histories',
         #   [.......]
         # ]
-        json['changelog'][3][1].map do |changelog|
+        json['changelog']['histories'].map do |changelog|
           issue.changelogs.build(changelog)
         end
       end
