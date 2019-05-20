@@ -20,6 +20,8 @@ module JIRA
       has_one :status,    nested_under: 'fields'
 
       has_many :transitions
+      has_many :worklogs
+      has_many :changelogs
 
       has_many :components, nested_under: 'fields'
 
@@ -32,7 +34,7 @@ module JIRA
       has_many :fixVersions, class: JIRA::Resource::Version,
                              nested_under: 'fields'
 
-      has_many :worklogs, nested_under: %w[fields worklog]
+
       has_one :sprint, class: JIRA::Resource::Sprint,
                        nested_under: 'fields'
 
