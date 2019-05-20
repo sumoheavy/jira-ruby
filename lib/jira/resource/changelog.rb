@@ -17,7 +17,7 @@ module JIRA
       end
 
       def differences
-        items
+        items[1]
       end
 
       def self.all(client, options = {})
