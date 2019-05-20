@@ -16,6 +16,10 @@ module JIRA
         :changelog
       end
 
+      def differences
+        items
+      end
+
       def self.all(client, options = {})
         issue = options[:issue]
         raise ArgumentError, 'parent issue is required' unless issue
@@ -24,7 +28,7 @@ module JIRA
         response = client.get(path)
         json = parse_json(response.body)
         json['changelog'].map do |changelog|
-          issue.changelogs.build(changelog)
+          issue.changelogs.build('items' => changelog)
         end
       end
     end
