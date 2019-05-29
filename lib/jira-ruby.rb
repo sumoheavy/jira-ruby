@@ -41,6 +41,7 @@ require 'jira/resource/board'
 
 require 'jira/request_client'
 require 'jira/oauth_client'
+require 'jira/oauth2_client_simple'
 require 'jira/http_client'
 require 'jira/jwt_client'
 require 'jira/client'

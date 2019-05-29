@@ -43,7 +43,9 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
+    def_delegators :@request_client, :init_access_token, :set_access_token,
+                   :set_request_token, :request_token, :access_token,
+                   :authenticated?
 
     DEFAULT_OPTIONS = {
       site: 'http://localhost:2990',
@@ -70,6 +72,8 @@ module JIRA
       end
 
       case options[:auth_type]
+      when :oauth2_3legged_simple
+        @request_client = Oauth2ClientSimple.new(@options)
       when :oauth, :oauth_2legged
         @request_client = OauthClient.new(@options)
         @consumer = @request_client.consumer
