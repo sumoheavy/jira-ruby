@@ -22,6 +22,7 @@ module JIRA
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
+  #   :api_access_token   => nil,
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
@@ -76,9 +77,11 @@ module JIRA
       when :jwt
         @request_client = JwtClient.new(@options)
       when :basic
+        raise ArgumentError, 'Options: :you must specify a :api_access_token as opposed to a :password' if @options.key?(:password) && !@options.key?(:api_access_token)
         @request_client = HttpClient.new(@options)
       when :cookie
         raise ArgumentError, 'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+        raise ArgumentError, 'Options: when :use_cookies is true you must specify a :password as opposed to an :api_access_token' if @options.key?(:api_access_token) && !@options.key?(:password)
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
         @request_client.make_cookie_auth_request

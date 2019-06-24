@@ -17,7 +17,7 @@ require 'jira-ruby'
 
 options = {
   :username     => 'username',
-  :password     => 'pass1234',
+  :api_access_token     => 'myAPIAccessToken1234', # see link below to generate one.
   :site         => 'http://mydomain.atlassian.net:443/',
   :context_path => '',
   :auth_type    => :basic
@@ -37,6 +37,8 @@ end
 * [Overview](https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs)
 
 * [Reference](http://docs.atlassian.com/jira/REST/latest/)
+
+* [Generate API Access Token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
 
 ## Running tests
 
@@ -162,7 +164,7 @@ api_token = "myApiToken"
 
 options = {
             :username => username,
-            :password => api_token,
+            :api_access_token => api_token,
             :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net'
             :context_path => '/myjira', # often blank
             :auth_type => :basic,
