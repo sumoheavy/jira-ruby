@@ -38,7 +38,7 @@ end
 
 * [Reference](http://docs.atlassian.com/jira/REST/latest/)
 
-* [Generate API Access Token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
+* [How to generate an API Access Token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
 
 ## Running tests
 
@@ -154,10 +154,6 @@ require 'jira-ruby'
 
 # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
 # for tests.
-
-# NOTE basic auth no longer works with Jira, you must generate an API token, to do so you must have jira instance access rights. You can generate a token here: https://id.atlassian.com/manage/api-tokens
-
-# You will see JIRA::HTTPError (JIRA::HTTPError) if you attempt to use basic auth with your user's password
 
 username = "myremoteuser"
 api_token = "myApiToken"
