@@ -64,28 +64,42 @@ module JIRA
         result
       end
 
-      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true })
-        url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
-
-        url << "&fields=#{options[:fields].map { |value| CGI.escape(client.Field.name_to_id(value)) }.join(',')}" if options[:fields]
-        url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
-        url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
-        url << '&validateQuery=false' if options[:validate_query] === false
-
+      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true, autopaginate: true })
+        search_url = client.options[:rest_base_path] + '/search'
+        query_params = { jql: jql }
+        query_params.update(fields: options[:fields].map { |value| client.Field.name_to_id(value) }.join(',')) if options[:fields]
+        query_params.update(startAt: options[:start_at].to_s) if options[:start_at]
+        query_params.update(maxResults: options[:max_results].to_s) if options[:max_results]
+        query_params.update(validateQuery: 'false') if options[:validate_query] === false
         if options[:expand]
           options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
-          url << "&expand=#{options[:expand].to_a.map { |value| CGI.escape(value.to_s) }.join(',')}"
+          query_params.update(expand: options[:expand].to_a.join(','))
         end
 
-        response = client.get(url)
+        response = client.get(url_with_query_params(search_url, query_params))
+
         json = parse_json(response.body)
         if options[:max_results] && (options[:max_results] == 0)
           return json['total']
         end
+
+        results = json['issues']
+
+        autopaginate = options[:autopaginate]
+        if autopaginate
+          while (json['startAt'] + json['maxResults']) < json['total']
+            query_params['startAt'] = (json['startAt'] + json['maxResults'])
+            response = client.get(url_with_query_params(search_url, query_params))
+            json = parse_json(response.body)
+            results += json['issues']
+          end
+        end
+
         json['issues'].map do |issue|
           client.Issue.build(issue)
         end
       end
+
 
       # Fetches the attributes for the specified resource from JIRA unless
       # the resource is already expanded and the optional force reload flag
