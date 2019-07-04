@@ -83,7 +83,7 @@ module JIRA
           return json['total']
         end
 
-        results = json['issues']
+        result_issues = json['issues']
 
         autopaginate = options[:autopaginate]
         if autopaginate
@@ -91,11 +91,11 @@ module JIRA
             query_params['startAt'] = (json['startAt'] + json['maxResults'])
             response = client.get(url_with_query_params(search_url, query_params))
             json = parse_json(response.body)
-            results += json['issues']
+            result_issues += json['issues']
           end
         end
 
-        json['issues'].map do |issue|
+        result_issues.map do |issue|
           client.Issue.build(issue)
         end
       end
