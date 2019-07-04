@@ -14,7 +14,7 @@ module JIRA
         'worklog'
       end
 
-      def self.find(client, ids, remote_limit: 1000)
+      def self.find(client, ids, remote_limit: 666)
         return [] unless ids
         ids = Array(ids)
         worklogs_by_issue =
@@ -35,24 +35,36 @@ module JIRA
             end
           end.flatten.group_by {|worklog| worklog.issue.id }
 
-          worklog_issue_ids = worklogs_by_issue.keys
-          issues =
-            worklog_issue_ids.each_slice(remote_limit).map do |the_issue_ids|
+        worklog_issue_ids = worklogs_by_issue.keys.compact
+        issues =
+          worklog_issue_ids.each_slice(100).map do |the_issue_ids|
               client.Issue.jql("id IN (#{the_issue_ids.join(',')})")
-            end.flatten
+          end.compact.flatten
 
-          worklogs_by_issue.map do |issue_id, worklogs|
-            the_issue = issues.find {|issue| issue.id == issue_id }
-            worklogs.map do |worklog|
-              self.new(
+        worklogs_by_issue.map do |issue_id, worklogs|
+          found_issue = issues.find {|issue| issue.id == issue_id }
+          the_issue = case
+            when found_issue
+              found_issue
+            else
+              iss = JIRA::Resource::Issue.new(
                 client,
-                {
-                  :attrs => worklog.attrs,
-                  :issue => the_issue
-                }
+                :attrs => {'id' => issue_id }
               )
+              iss.instance_variable_set('@deleted', true)
+              iss
             end
-          end.flatten
+
+          worklogs.map do |worklog|
+            self.new(
+              client,
+              {
+                :attrs => worklog.attrs,
+                :issue => the_issue
+              }
+            )
+          end
+        end.flatten
       end
 
       def self.modified_after(client, timestamp)
