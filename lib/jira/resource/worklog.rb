@@ -14,7 +14,7 @@ module JIRA
         'worklog'
       end
 
-      def self.find(client, ids, remote_limit: 666)
+      def self.find(client, ids, remote_limit: 666, with_hydrated_issues: true)
         return [] unless ids
         ids = Array(ids)
         worklogs_by_issue =
@@ -35,10 +35,12 @@ module JIRA
             end
           end.flatten.group_by {|worklog| worklog.issue.id }
 
+        return worklogs_by_issue.values.flatten unless with_hydrated_issues
+
         worklog_issue_ids = worklogs_by_issue.keys.compact
         issues =
-          worklog_issue_ids.each_slice(100).map do |the_issue_ids|
-              client.Issue.jql("id IN (#{the_issue_ids.join(',')})")
+          worklog_issue_ids.each_slice(200).map do |the_issue_ids|
+              client.Issue.jql("id IN (#{the_issue_ids.join(',')})", max_results: 200)
           end.compact.flatten
 
         worklogs_by_issue.map do |issue_id, worklogs|
@@ -67,7 +69,7 @@ module JIRA
         end.flatten
       end
 
-      def self.modified_after(client, timestamp)
+      def self.modified_after(client, timestamp, with_hydrated_issues: true)
         response = client.get("#{client.options[:rest_base_path]}/#{endpoint_name}/updated?since=#{(timestamp.to_f * 1000).to_i}")
         json = JSON.parse(response.body)
         results = json['values']
@@ -76,10 +78,10 @@ module JIRA
           json = JSON.parse(response.body)
           results += json['values']
         end
-        find(client, results.map{|result| result['worklogId']})
+        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues)
       end
 
-      def self.deleted_after(client, timestamp)
+      def self.deleted_after(client, timestamp, with_hydrated_issues: true)
         response = client.get("#{client.options[:rest_base_path]}/#{endpoint_name}/deleted?since=#{(timestamp.to_f * 1000)}")
         json = JSON.parse response.body
         results = json['values']
@@ -88,7 +90,7 @@ module JIRA
           json = JSON.parse(response.body)
           results += json['values']
         end
-        find(client, results.map{|result| result['worklogId']})
+        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues)
       end
 
       def self.all(client, options = {})
