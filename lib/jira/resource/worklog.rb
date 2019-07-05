@@ -14,10 +14,10 @@ module JIRA
         'worklog'
       end
 
-      def self.find(client, ids, remote_limit: 666, with_hydrated_issues: true)
+      def self.find(client, ids, remote_limit: 666, with_hydrated_issues: true, filter: nil)
         return [] unless ids
         ids = Array(ids)
-        worklogs_by_issue =
+        worklogs =
           ids.each_slice(remote_limit).map do |the_ids|
             response = client.post("#{client.options[:rest_base_path]}/#{endpoint_name}/list", JSON.dump({"ids"=>the_ids}))
             json = parse_json(response.body)
@@ -33,10 +33,21 @@ module JIRA
                 }
               )
             end
-          end.flatten.group_by {|worklog| worklog.issue.id }
+          end.flatten
 
-        return worklogs_by_issue.values.flatten unless with_hydrated_issues
+        filtered_worklogs =
+          case
+          when filter
+            filter.call(worklogs)
+          else
+            worklogs
+          end
+        return filtered_worklogs unless with_hydrated_issues
+        rehydrate_worklog_issues_for_worklogs client, filtered_worklogs
+      end
 
+      def self.rehydrate_worklog_issues_for_worklogs(client, worklawgs)
+        worklogs_by_issue = worklawgs.group_by {|worklog| worklog.issue.id }
         worklog_issue_ids = worklogs_by_issue.keys.compact
         issues =
           worklog_issue_ids.each_slice(200).map do |the_issue_ids|
@@ -69,7 +80,7 @@ module JIRA
         end.flatten
       end
 
-      def self.modified_after(client, timestamp, with_hydrated_issues: true)
+      def self.modified_after(client, timestamp, with_hydrated_issues: true, filter: nil)
         response = client.get("#{client.options[:rest_base_path]}/#{endpoint_name}/updated?since=#{(timestamp.to_f * 1000).to_i}")
         json = JSON.parse(response.body)
         results = json['values']
@@ -78,10 +89,10 @@ module JIRA
           json = JSON.parse(response.body)
           results += json['values']
         end
-        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues)
+        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues, filter: filter)
       end
 
-      def self.deleted_after(client, timestamp, with_hydrated_issues: true)
+      def self.deleted_after(client, timestamp, with_hydrated_issues: true, filter: nil)
         response = client.get("#{client.options[:rest_base_path]}/#{endpoint_name}/deleted?since=#{(timestamp.to_f * 1000)}")
         json = JSON.parse response.body
         results = json['values']
@@ -90,7 +101,7 @@ module JIRA
           json = JSON.parse(response.body)
           results += json['values']
         end
-        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues)
+        find(client, results.map{|result| result['worklogId']}, with_hydrated_issues: with_hydrated_issues, filter: filter)
       end
 
       def self.all(client, options = {})
