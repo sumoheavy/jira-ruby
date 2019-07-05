@@ -50,8 +50,8 @@ module JIRA
         worklogs_by_issue = worklawgs.group_by {|worklog| worklog.issue.id }
         worklog_issue_ids = worklogs_by_issue.keys.compact
         issues =
-          worklog_issue_ids.each_slice(200).map do |the_issue_ids|
-              client.Issue.jql("id IN (#{the_issue_ids.join(',')})", max_results: 200)
+          worklog_issue_ids.each_slice(100).map do |the_issue_ids|
+              client.Issue.jql("id IN (#{the_issue_ids.join(',')})")
           end.compact.flatten
 
         worklogs_by_issue.map do |issue_id, worklogs|
