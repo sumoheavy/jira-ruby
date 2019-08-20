@@ -36,6 +36,16 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:proxy_client) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      proxy_address: 'proxyAddress',
+      proxy_port: 42,
+      proxy_username: 'proxyUsername',
+      proxy_password: 'proxyPassword'
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
     response = double('response')
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
@@ -176,6 +186,36 @@ describe JIRA::HttpClient do
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
     expect(basic_client.http_conn(uri)).to eq(http_conn)
+  end
+
+  it 'sets up a non-proxied http connection by default' do
+    uri = double
+    host = double
+    port = double
+
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+
+    proxy_configuration = basic_client.http_conn(uri).class
+    expect(proxy_configuration.proxy_address).to be_nil
+    expect(proxy_configuration.proxy_port).to be_nil
+    expect(proxy_configuration.proxy_user).to be_nil
+    expect(proxy_configuration.proxy_pass).to be_nil
+  end
+
+  it 'sets up a proxied http connection when using proxy options' do
+    uri = double
+    host = double
+    port = double
+
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+
+    proxy_configuration = proxy_client.http_conn(uri).class
+    expect(proxy_configuration.proxy_address).to eq(proxy_client.options[:proxy_address])
+    expect(proxy_configuration.proxy_port).to eq(proxy_client.options[:proxy_port])
+    expect(proxy_configuration.proxy_user).to eq(proxy_client.options[:proxy_username])
+    expect(proxy_configuration.proxy_pass).to eq(proxy_client.options[:proxy_password])
   end
 
   it 'can use client certificates' do
