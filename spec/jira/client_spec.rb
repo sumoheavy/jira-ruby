@@ -141,7 +141,7 @@ describe JIRA::Client do
 
     it 'sets the username and password' do
       expect(subject.options[:username]).to eq('foo')
-      expect(subject.options[:password]).to eq('bar')
+      expect(subject.options[:api_access_token]).to eq('bar')
     end
 
     it 'fails with wrong user name and password' do
@@ -154,6 +154,12 @@ describe JIRA::Client do
       expect(subject.authenticated?).to be_falsey
       expect(subject.Project.all).to be_empty
       expect(subject.authenticated?).to be_truthy
+    end
+
+    it 'raises an Exception when constructed with a password' do
+      expect(lambda {
+        JIRA::Client.new(username: 'foo', password: 'bad_password', auth_type: :basic)
+      }).to raise_exception(ArgumentError, 'can only construct an auth_type: :basic client with an :api_access_token')
     end
   end
 
@@ -204,6 +210,13 @@ describe JIRA::Client do
     it 'destroys the username and password once authenticated' do
       expect(subject.options[:username]).to be_nil
       expect(subject.options[:password]).to be_nil
+    end
+
+    it 'raises an Exception when constructed with an api_access_token' do
+      expect(lambda {
+        JIRA::Client.new(username: 'foo', api_access_token: 'incorrect_usage_of_token', auth_type: :cookie)
+      }).to raise_exception(ArgumentError, 'can only construct a auth_type: :cookie client with a :password')
+
     end
   end
 

@@ -25,7 +25,7 @@ module JIRA
 
         request = Net::HTTP::Post::Multipart.new url, data, headers
         request.basic_auth(client.request_client.options[:username],
-                           client.request_client.options[:password])
+                           client.request_client.options[:api_access_token])
 
         response = client.request_client.basic_auth_http_conn.request(request)
 

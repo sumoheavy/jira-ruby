@@ -17,7 +17,7 @@ require 'jira-ruby'
 
 options = {
   :username     => 'username',
-  :password     => 'pass1234',
+  :api_access_token     => 'myAPIAccessToken1234', # see link below to generate one.
   :site         => 'http://mydomain.atlassian.net:443/',
   :context_path => '',
   :auth_type    => :basic
@@ -37,6 +37,8 @@ end
 * [Overview](https://developer.atlassian.com/display/JIRADEV/JIRA+REST+APIs)
 
 * [Reference](http://docs.atlassian.com/jira/REST/latest/)
+
+* [How to generate an API Access Token](https://confluence.atlassian.com/cloud/api-tokens-938839638.html)
 
 ## Running tests
 
@@ -153,16 +155,12 @@ require 'jira-ruby'
 # Consider the use of :use_ssl and :ssl_verify_mode options if running locally
 # for tests.
 
-# NOTE basic auth no longer works with Jira, you must generate an API token, to do so you must have jira instance access rights. You can generate a token here: https://id.atlassian.com/manage/api-tokens
-
-# You will see JIRA::HTTPError (JIRA::HTTPError) if you attempt to use basic auth with your user's password
-
 username = "myremoteuser"
 api_token = "myApiToken"
 
 options = {
             :username => username,
-            :password => api_token,
+            :api_access_token => api_token,
             :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net'
             :context_path => '/myjira', # often blank
             :auth_type => :basic,
