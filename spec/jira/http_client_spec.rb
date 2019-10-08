@@ -11,6 +11,11 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:custom_ssl_version_client) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(ssl_version: :TLSv1_2)
+    JIRA::HttpClient.new(options)
+  end
+
   let(:basic_cookie_client_with_context_path) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
       use_cookies: true,
@@ -176,6 +181,21 @@ describe JIRA::HttpClient do
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
     expect(basic_client.http_conn(uri)).to eq(http_conn)
+  end
+
+  it 'sets the SSL version when one is provided' do
+    http_conn = double
+    uri = double
+    host = double
+    port = double
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+    expect(Net::HTTP).to receive(:new).with(host, port).and_return(http_conn)
+    expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
+    expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
+    expect(http_conn).to receive(:ssl_version=).with(custom_ssl_version_client.options[:ssl_version]).and_return(http_conn)
+    expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
+    expect(custom_ssl_version_client.http_conn(uri)).to eq(http_conn)
   end
 
   it 'can use client certificates' do
