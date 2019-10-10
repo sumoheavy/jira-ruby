@@ -6,8 +6,8 @@ require 'uri'
 module JIRA
   class HttpClient < RequestClient
     DEFAULT_OPTIONS = {
-      username: '',
-      password: ''
+      username: nil,
+      password: nil
     }.freeze
 
     attr_reader :options
@@ -18,7 +18,7 @@ module JIRA
     end
 
     def make_cookie_auth_request
-      body = { username: @options[:username], password: @options[:password] }.to_json
+      body = { username: @options[:username].to_s, password: @options[:password].to_s }.to_json
       @options.delete(:username)
       @options.delete(:password)
       make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')

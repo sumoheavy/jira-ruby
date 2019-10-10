@@ -2,12 +2,17 @@ require 'spec_helper'
 
 describe JIRA::HttpClient do
   let(:basic_client) do
-    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS)
+    options = JIRA::Client::DEFAULT_OPTIONS
+              .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
+              .merge(basic_auth_credentials)
     JIRA::HttpClient.new(options)
   end
 
   let(:basic_cookie_client) do
-    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(use_cookies: true)
+    options = JIRA::Client::DEFAULT_OPTIONS
+              .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
+              .merge(use_cookies: true)
+              .merge(basic_auth_credentials)
     JIRA::HttpClient.new(options)
   end
 
@@ -20,10 +25,13 @@ describe JIRA::HttpClient do
   end
 
   let(:basic_cookie_client_with_additional_cookies) do
-    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
-      use_cookies: true,
-      additional_cookies: ['sessionToken=abc123', 'internal=true']
-    )
+    options = JIRA::Client::DEFAULT_OPTIONS
+              .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
+              .merge(
+                use_cookies: true,
+                additional_cookies: ['sessionToken=abc123', 'internal=true']
+              )
+              .merge(basic_auth_credentials)
     JIRA::HttpClient.new(options)
   end
 
@@ -34,6 +42,16 @@ describe JIRA::HttpClient do
       key: 'private key contents'
     )
     JIRA::HttpClient.new(options)
+  end
+
+  let(:basic_client_with_no_auth_credentials) do
+    options = JIRA::Client::DEFAULT_OPTIONS
+              .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
+    JIRA::HttpClient.new(options)
+  end
+
+  let(:basic_auth_credentials) do
+    { username: 'donaldduck', password: 'supersecret' }
   end
 
   let(:response) do
@@ -157,6 +175,19 @@ describe JIRA::HttpClient do
     expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, 'http://mydomain.com/foo', body, headers)
+  end
+
+  it 'does not try to use basic auth if the credentials are not set' do
+    body = nil
+    headers = double
+    basic_auth_http_conn = double
+    http_request = double
+    expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
+
+    expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
+    expect(http_request).not_to receive(:basic_auth)
+    allow(basic_client_with_no_auth_credentials).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+    basic_client_with_no_auth_credentials.make_request(:get, '/foo', body, headers)
   end
 
   it 'returns a URI' do
