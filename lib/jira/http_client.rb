@@ -54,6 +54,7 @@ module JIRA
         http_conn.key = @options[:key]
       end
       http_conn.verify_mode = @options[:ssl_verify_mode]
+      http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
       http_conn.read_timeout = @options[:read_timeout]
       http_conn
     end

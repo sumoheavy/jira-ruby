@@ -19,6 +19,7 @@ module JIRA
   #   :consumer_key       => nil,
   #   :consumer_secret    => nil,
   #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+  #   :ssl_version        => nil,
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
