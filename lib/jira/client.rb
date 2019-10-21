@@ -204,10 +204,6 @@ module JIRA
       JIRA::Resource::RemotelinkFactory.new(self)
     end
 
-    def Sprint
-      JIRA::Resource::SprintFactory.new(self)
-    end
-
     def Agile
       JIRA::Resource::AgileFactory.new(self)
     end
