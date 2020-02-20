@@ -31,6 +31,9 @@ describe JIRA::Resource::Board do
     response = double()
     api_json = <<eos
     {
+        "startAt": 0,
+        "maxResults": 50,
+        "isLast": true,
          "values": [
             {
                 "id": 84,
@@ -85,7 +88,7 @@ eos
 
       allow(issues_response).to receive(:body).and_return(api_json_issues)
       allow(board).to receive(:id).and_return(84)
-      expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue?').
+      expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue').
         and_return(issues_response)
       expect(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
 
@@ -165,7 +168,7 @@ eos
     eos
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
-    expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
+    expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?auth_type=oauth&context_path=%2Fjira&http_debug=false&rest_base_path=%2Frest%2Fapi%2F2&site=http%3A%2F%2Flocalhost%3A2990&ssl_verify_mode=1&use_ssl=true').and_return(response)
     expect(client).to receive(:Sprint).twice.and_return(JIRA::Resource::SprintFactory.new(client))
     expect(board.sprints.size).to be(2)
   end

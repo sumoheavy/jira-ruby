@@ -47,7 +47,15 @@ describe JIRA::Resource::RapidView do
 
         stub_request(
           :get,
-          site_url + '/jira/rest/api/2/search?jql=id IN(10000, 10001)'
+          site_url + '/jira/rest/api/2/search?jql=id IN(10000, 10001)%20AND%20sprint%20IS%20NOT%20EMPTY'
+        ).to_return(
+          :status => 200,
+          :body => get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json')
+        )
+
+        stub_request(
+          :get,
+          site_url + '/jira/rest/api/2/search?jql=id IN(10001, 10000)'
         ).to_return(
           :status => 200,
           :body => get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json')
