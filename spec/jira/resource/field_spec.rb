@@ -83,49 +83,11 @@ describe JIRA::Resource::Field do
 
     context "after fields are mapped" do
 
-      before do
-        silence_stream(STDERR) do
-          expect(client.Field.map_fields.class).to eq(Hash)
-        end
-      end
-
       include_context "mapped or not"
 
       it "warns of duplicate fields" do
         expect{client.Field.map_fields}.to output(/renaming as Priority_10666/).to_stderr
         expect{client.Field.map_fields}.to output(/renaming as SingleWord_10444/).to_stderr
-      end
-
-      it "can find a mapped field after mapping and returns results" do
-        expect{subject.SingleWord}.to_not raise_error
-        expect(subject.SingleWord).to eq subject.customfield_10111
-      end
-
-      it "handles duplicate names in a safe fashion" do
-        expect{subject.Multi_Word}.to_not raise_error
-        expect(subject.Multi_Word).to eq subject.customfield_10222
-      end
-
-      it "handles special characters in a safe fashion" do
-        expect{subject.Why_N_t}.to_not raise_error
-        expect(subject.Why_N_t).to eq subject.customfield_10333
-      end
-
-      it "handles duplicates in custom names" do
-        expect{subject.SingleWord_10444}.to_not raise_error
-        expect(subject.SingleWord_10444).to eq subject.customfield_10444
-      end
-
-      it "keeps custom names from overwriting system names" do
-        #expect(client.Field.map_fields.class).to eq(Hash)
-        expect{subject.Priority_10666}.to_not raise_error
-        expect(subject.Priority_10666).to eq subject.customfield_10666
-      end
-
-      it "can find a standard field by an expanded name" do
-        #expect(client.Field.map_fields.class).to eq(Hash)
-        expect(subject.priority).to eq(1)
-        expect(subject.Priority).to eq(1)
       end
     end
   end
