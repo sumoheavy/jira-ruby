@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-    - 2.0.0
+    - 2.3
 before_script:
     - rake jira:generate_public_cert
 script: bundle exec rake spec
