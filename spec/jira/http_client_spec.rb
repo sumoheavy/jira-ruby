@@ -59,6 +59,16 @@ describe JIRA::HttpClient do
     { username: 'donaldduck', password: 'supersecret' }
   end
 
+  let(:proxy_client) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      proxy_address: 'proxyAddress',
+      proxy_port: 42,
+      proxy_username: 'proxyUsername',
+      proxy_password: 'proxyPassword'
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
     response = double('response')
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
