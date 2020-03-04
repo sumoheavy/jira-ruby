@@ -19,6 +19,7 @@ module JIRA
   #   :consumer_key       => nil,
   #   :consumer_secret    => nil,
   #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+  #   :ssl_version        => nil,
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
@@ -203,10 +204,6 @@ module JIRA
 
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
-    end
-
-    def Sprint
-      JIRA::Resource::SprintFactory.new(self)
     end
 
     def Agile
