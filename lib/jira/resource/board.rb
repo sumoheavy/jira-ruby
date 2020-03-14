@@ -46,6 +46,13 @@ module JIRA
         results.map { |issue| client.Issue.build(issue) }
       end
 
+      def configuration(params = {})
+        path = path_base(client) + "/board/#{id}/configuration"
+        response = client.get(url_with_query_params(path, params))
+        json = self.class.parse_json(response.body)
+        client.BoardConfiguration.build(json)
+      end
+
       # options
       #   - state ~ future, active, closed, you can define multiple states separated by commas, e.g. state=active,closed
       #   - maxResults ~ default: 50 (JIRA API), 1000 (this library)

@@ -162,6 +162,10 @@ module JIRA
       JIRA::Resource::BoardFactory.new(self)
     end
 
+    def BoardConfiguration
+      JIRA::Resource::BoardConfigurationFactory.new(self)
+    end
+
     def RapidView
       JIRA::Resource::RapidViewFactory.new(self)
     end
