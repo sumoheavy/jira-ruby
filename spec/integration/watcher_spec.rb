@@ -33,21 +33,30 @@ describe JIRA::Resource::Watcher do
     end
 
     describe 'watchers' do
-      it 'should returns all the watchers' do
-        stub_request(:get,
-                     site_url + '/jira/rest/api/2/issue/10002')
+      before(:each) do
+        stub_request(:get, site_url + '/jira/rest/api/2/issue/10002')
           .to_return(status: 200, body: get_mock_response('issue/10002.json'))
 
-        stub_request(:get,
-                     site_url + '/jira/rest/api/2/issue/10002/watchers')
+        stub_request(:get, site_url + '/jira/rest/api/2/issue/10002/watchers')
           .to_return(status: 200, body: get_mock_response('issue/10002/watchers.json'))
 
+        stub_request(:post, site_url + '/jira/rest/api/2/issue/10002/watchers')
+          .to_return(status: 204, body: nil)
+      end
+
+      it 'should returns all the watchers' do
         issue = client.Issue.find('10002')
         watchers = client.Watcher.all(options = { issue: issue })
         expect(watchers.length).to eq(1)
       end
+
+      it 'should add a watcher' do
+        issue = client.Issue.find('10002')
+        watcher = JIRA::Resource::Watcher.new(client, issue: issue)
+        user_id = "tester"
+        watcher.save!(user_id)
+      end
     end
 
-    it_should_behave_like 'a resource'
   end
 end

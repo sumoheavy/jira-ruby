@@ -26,6 +26,8 @@ module JIRA
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
+  #   :proxy_username     => nil,
+  #   :proxy_password     => nil,
   #   :additional_cookies => nil,
   #   :default_headers    => {}
   #
@@ -158,6 +160,10 @@ module JIRA
 
     def Board
       JIRA::Resource::BoardFactory.new(self)
+    end
+
+    def BoardConfiguration
+      JIRA::Resource::BoardConfigurationFactory.new(self)
     end
 
     def RapidView

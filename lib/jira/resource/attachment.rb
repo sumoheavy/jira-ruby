@@ -19,13 +19,14 @@ module JIRA
         parse_json(response.body)
       end
 
-      def save!(attrs)
-        headers = { 'X-Atlassian-Token' => 'no-check' }
-        file = attrs['file'] || attrs[:file]
-        data = { 'file' => UploadIO.new(file, 'application/binary', file) }
+      def save!(attrs, path = url)
+        file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
+        mime_type = attrs[:mimeType] || 'application/binary'
 
-        # Execute the multipart post here
-        response = client.post_multipart(url, data , headers)
+        headers = { 'X-Atlassian-Token' => 'nocheck' }
+        data = { 'file' => UploadIO.new(file, mime_type, file) }
+
+        response = client.post_multipart(path, data , headers)
 
         set_attributes(attrs, response)
 
