@@ -60,9 +60,10 @@ describe JIRA::Resource::Attachment do
   end
 
   describe '#save' do
-    it 'successfully update the attachment' do
-      basic_auth_http_conn = double
-      response = double(
+    subject { attachment.save('file' => path_to_file) }
+    let(:path_to_file) { './spec/mock_responses/issue.json' }
+    let(:response) do
+      double(
         body: [
           {
             "id": 10_001,
@@ -74,14 +75,15 @@ describe JIRA::Resource::Attachment do
           }
         ].to_json
       )
+    end
+    let(:issue) { JIRA::Resource::Issue.new(client) }
 
-      allow(client.request_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-      allow(basic_auth_http_conn).to receive(:request).and_return(response)
+    before do
+      allow(client).to receive(:post_multipart).and_return(response)
+    end
 
-      issue = JIRA::Resource::Issue.new(client)
-      path_to_file = './spec/mock_responses/issue.json'
-      attachment = JIRA::Resource::Attachment.new(client, issue: issue)
-      attachment.save('file' => path_to_file)
+    it 'successfully update the attachment' do
+      subject
 
       expect(attachment.filename).to eq 'picture.jpg'
       expect(attachment.mimeType).to eq 'image/jpeg'
