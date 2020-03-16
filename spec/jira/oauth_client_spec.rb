@@ -82,27 +82,44 @@ describe JIRA::OauthClient do
     end
 
     describe 'http' do
+      let(:headers) { double }
+      let(:access_token) { double }
+      let(:body) { nil }
+
+      before do
+        allow(oauth_client).to receive(:access_token).and_return(access_token)
+      end
+
       it 'responds to the http methods' do
-        headers = double
-        mock_access_token = double
-        allow(oauth_client).to receive(:access_token).and_return(mock_access_token)
         %i[delete get head].each do |method|
-          expect(mock_access_token).to receive(method).with('/path', headers).and_return(response)
+          expect(access_token).to receive(method).with('/path', headers).and_return(response)
           oauth_client.make_request(method, '/path', '', headers)
         end
         %i[post put].each do |method|
-          expect(mock_access_token).to receive(method).with('/path', '', headers).and_return(response)
+          expect(access_token).to receive(method).with('/path', '', headers).and_return(response)
           oauth_client.make_request(method, '/path', '', headers)
         end
       end
 
       it 'performs a request' do
-        body = nil
-        headers = double
-        access_token = double
         expect(access_token).to receive(:send).with(:get, '/foo', headers).and_return(response)
-        allow(oauth_client).to receive(:access_token).and_return(access_token)
+
+
         oauth_client.request(:get, '/foo', body, headers)
+      end
+
+      context 'for a multipart request' do
+        subject { oauth_client.make_multipart_request('/path', data, headers) }
+
+        let(:data) { {} }
+        let(:headers) { {} }
+
+        it 'signs the access_token and performs the request' do
+          expect(access_token).to receive(:sign!).with(an_instance_of(Net::HTTP::Post::Multipart))
+          expect(oauth_client.consumer).to receive_message_chain(:http, :request).with(an_instance_of(Net::HTTP::Post::Multipart))
+
+          subject
+        end
       end
     end
 

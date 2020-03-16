@@ -3,16 +3,15 @@ require 'atlassian/jwt'
 module JIRA
   class JwtClient < HttpClient
     def make_request(http_method, url, body = '', headers = {})
-      # When a proxy is enabled, Net::HTTP expects that the request path omits the domain name
-      path = request_path(http_method, url)
+      @http_method = http_method
 
-      request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
-      request.body = body unless body.nil?
+      super(http_method, url, body, headers)
+    end
 
-      response = basic_auth_http_conn.request(request)
-      @authenticated = response.is_a? Net::HTTPOK
-      store_cookies(response) if options[:use_cookies]
-      response
+    def make_multipart_request(url, data, headers = {})
+      @http_method = :post
+
+      super(url, data, headers)
     end
 
     class JwtUriBuilder
@@ -53,7 +52,9 @@ module JIRA
 
     private
 
-    def request_path(http_method, url)
+    attr_reader :http_method
+
+    def request_path(url)
       JwtUriBuilder.new(
         url,
         http_method.to_s,

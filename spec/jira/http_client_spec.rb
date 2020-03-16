@@ -292,4 +292,37 @@ describe JIRA::HttpClient do
     expect(basic_client).to receive(:http_conn).and_return(http_conn)
     expect(basic_client.basic_auth_http_conn).to eq(http_conn)
   end
+
+  describe '#make_multipart_request' do
+    subject do
+      basic_client.make_multipart_request(path, data, headers)
+    end
+
+    let(:path) { '/foo' }
+    let(:data) { {} }
+    let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
+    let(:basic_auth_http_conn) { double }
+    let(:request) { double('Http Request', path: path) }
+    let(:response) { double('response') }
+
+    before do
+      allow(request).to receive(:basic_auth)
+      allow(Net::HTTP::Post::Multipart).to receive(:new).with(path, data, headers).and_return(request)
+      allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+      allow(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
+    end
+
+    it 'performs a basic http client request' do
+      expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(request)
+
+      subject
+    end
+
+    it 'makes a correct HTTP request' do
+      expect(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
+      expect(response).to receive(:is_a?).with(Net::HTTPOK)
+
+      subject
+    end
+  end
 end

@@ -29,12 +29,15 @@ module JIRA
       path = request_path(url)
       request = Net::HTTP.const_get(http_method.to_s.capitalize).new(path, headers)
       request.body = body unless body.nil?
-      add_cookies(request) if options[:use_cookies]
-      request.basic_auth(@options[:username], @options[:password]) if @options[:username] && @options[:password]
-      response = basic_auth_http_conn.request(request)
-      @authenticated = response.is_a? Net::HTTPOK
-      store_cookies(response) if options[:use_cookies]
-      response
+
+      execute_request(request)
+    end
+
+    def make_multipart_request(url, body, headers = {})
+      path = request_path(url)
+      request = Net::HTTP::Post::Multipart.new(path, body, headers)
+
+      execute_request(request)
     end
 
     def basic_auth_http_conn
@@ -60,7 +63,7 @@ module JIRA
     end
 
     def uri
-      uri = URI.parse(@options[:site])
+      URI.parse(@options[:site])
     end
 
     def authenticated?
@@ -68,6 +71,17 @@ module JIRA
     end
 
     private
+
+    def execute_request(request)
+      add_cookies(request) if options[:use_cookies]
+      request.basic_auth(@options[:username], @options[:password]) if @options[:username] && @options[:password]
+
+      response = basic_auth_http_conn.request(request)
+      @authenticated = response.is_a? Net::HTTPOK
+      store_cookies(response) if options[:use_cookies]
+
+      response
+    end
 
     def request_path(url)
       parsed_uri = URI(url)

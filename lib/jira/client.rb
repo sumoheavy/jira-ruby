@@ -233,6 +233,11 @@ module JIRA
       request(:post, path, body, merge_default_headers(headers))
     end
 
+    def post_multipart(path, file, headers = {})
+      puts "post multipart: #{path} - [#{file}]" if @http_debug
+      @request_client.request_multipart(path, file, headers)
+    end
+
     def put(path, body = '', headers = {})
       headers = { 'Content-Type' => 'application/json' }.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
