@@ -101,7 +101,7 @@ describe JIRA::Resource::Attachment do
       issue = JIRA::Resource::Issue.new(client)
       path_to_file = './spec/mock_responses/issue.json'
       attachment = JIRA::Resource::Attachment.new(client, issue: issue)
-      attachment.save!('file' => path_to_file)
+      attachment.save!('file' => path_to_file, mimeType: 'image/jpeg')
 
       expect(attachment.filename).to eq 'picture.jpg'
       expect(attachment.mimeType).to eq 'image/jpeg'
