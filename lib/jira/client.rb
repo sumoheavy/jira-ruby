@@ -19,12 +19,15 @@ module JIRA
   #   :consumer_key       => nil,
   #   :consumer_secret    => nil,
   #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+  #   :ssl_version        => nil,
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
+  #   :proxy_username     => nil,
+  #   :proxy_password     => nil,
   #   :additional_cookies => nil,
   #   :default_headers    => {}
   #
@@ -159,6 +162,10 @@ module JIRA
       JIRA::Resource::BoardFactory.new(self)
     end
 
+    def BoardConfiguration
+      JIRA::Resource::BoardConfigurationFactory.new(self)
+    end
+
     def RapidView
       JIRA::Resource::RapidViewFactory.new(self)
     end
@@ -201,10 +208,6 @@ module JIRA
 
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
-    end
-
-    def Sprint
-      JIRA::Resource::SprintFactory.new(self)
     end
 
     def Agile

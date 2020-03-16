@@ -6,8 +6,8 @@ require 'uri'
 module JIRA
   class HttpClient < RequestClient
     DEFAULT_OPTIONS = {
-      username: '',
-      password: ''
+      username: nil,
+      password: nil
     }.freeze
 
     attr_reader :options
@@ -18,7 +18,7 @@ module JIRA
     end
 
     def make_cookie_auth_request
-      body = { username: @options[:username], password: @options[:password] }.to_json
+      body = { username: @options[:username].to_s, password: @options[:password].to_s }.to_json
       @options.delete(:username)
       @options.delete(:password)
       make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
@@ -43,7 +43,7 @@ module JIRA
 
     def http_conn(uri)
       if @options[:proxy_address]
-        http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80)
+        http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
       else
         http_class = Net::HTTP
       end
@@ -54,6 +54,7 @@ module JIRA
         http_conn.key = @options[:key]
       end
       http_conn.verify_mode = @options[:ssl_verify_mode]
+      http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
       http_conn.read_timeout = @options[:read_timeout]
       http_conn
     end
