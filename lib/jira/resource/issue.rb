@@ -4,6 +4,9 @@ require 'json'
 module JIRA
   module Resource
     class IssueFactory < JIRA::BaseFactory # :nodoc:
+      def Properties # :nodoc:
+        JIRA::Resource::PropertiesFactory.new(self.client)
+      end
     end
 
     class Issue < JIRA::Base
@@ -45,6 +48,8 @@ module JIRA
 
       has_many :watchers,   attribute_key: 'watches',
                             nested_under: %w[fields watches]
+
+      has_many :properties, class: JIRA::Resource::Properties
 
       def self.all(client)
         start_at = 0
