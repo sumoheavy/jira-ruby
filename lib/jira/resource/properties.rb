@@ -10,6 +10,12 @@ module JIRA
         'key'
       end
 
+      ## Make sure Properties 'key' has been supplied
+      def self.build(client, attrs)
+        raise ArgumentError, "#{self.name} {#{key_attribute}} is required" unless attrs.key?(key_attribute)
+        super(client, attrs)
+      end
+
       def self.all(client, options = {})
         issue = options[:issue]
         raise ArgumentError, 'parent issue is required' unless issue
@@ -40,7 +46,8 @@ module JIRA
 
       ## Override save so we can default the attrs
       def save!(attrs = {}, _path = nil)
-        attrs = @attrs if attrs.empty?
+        ## Note: dup here prevents set_attrs from trying to re-insert value into itself
+        attrs['value'] = @attrs['value'].dup if attrs.empty?
         super(attrs['value'])
       end
 
