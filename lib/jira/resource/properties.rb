@@ -38,16 +38,16 @@ module JIRA
         false
       end
 
-      def save!(attrs = {})
+      ## Override save so we can default the attrs
+      def save!(attrs = {}, _path = nil)
         attrs = @attrs if attrs.empty?
-        super(attrs['value'], "#{url}/#{key_value}")
+        super(attrs['value'])
       end
 
-      def save(attrs = {})
-        attrs = @attrs if attrs.empty?
-        super(attrs['value'], "#{url}/#{key_value}")
+      ## Note: save ultimately calls save!, so put the real logic in there
+      def save(attrs = {}, _path = nil)
+        super(attrs)
       end
-
     end
   end
 end

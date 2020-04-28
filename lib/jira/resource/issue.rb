@@ -4,9 +4,6 @@ require 'json'
 module JIRA
   module Resource
     class IssueFactory < JIRA::BaseFactory # :nodoc:
-      def Properties # :nodoc:
-        JIRA::Resource::PropertiesFactory.new(self.client)
-      end
     end
 
     class Issue < JIRA::Base
