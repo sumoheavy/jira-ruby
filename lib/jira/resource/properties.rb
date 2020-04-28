@@ -1,4 +1,3 @@
-require 'byebug'
 module JIRA
   module Resource
     class PropertiesFactory < JIRA::BaseFactory # :nodoc:
