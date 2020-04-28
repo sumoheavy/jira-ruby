@@ -12,6 +12,7 @@ module JIRA
 
       ## Make sure Properties 'key' has been supplied
       def self.build(client, attrs)
+        attrs = {'key' => attrs} unless attrs.is_a?(Hash)
         raise ArgumentError, "#{self.name} {#{key_attribute}} is required" unless attrs.key?(key_attribute)
         super(client, attrs)
       end
@@ -46,14 +47,14 @@ module JIRA
 
       ## Override save so we can default the attrs
       def save!(attrs = {}, _path = nil)
-        ## Note: dup here prevents set_attrs from trying to re-insert value into itself
-        attrs['value'] = @attrs['value'].dup if attrs.empty?
-        super(attrs['value'])
+        attrs = {'value' => attrs} unless attrs.is_a?(Hash)
+        ## Note: the .dup here prevents set_attrs from trying to re-insert the same value into itself
+        super(attrs.empty? ? @attrs['value'].dup : attrs.key?('value') ? attrs['value'] : attrs, _path)
       end
 
       ## Note: save ultimately calls save!, so put the real logic in there
       def save(attrs = {}, _path = nil)
-        super(attrs)
+        super(attrs, _path)
       end
     end
   end
