@@ -166,33 +166,6 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # # Update an existing comment
 # # --------------------------
 # issue.comments.first.save({"body" => "an updated comment frome example.rb"})
-#
-# # Get all issue properties
-# # ----------------------
-# issue = client.Issue.find("10002")
-# properties = issue.properties.all
-# properties.each { |a_prop| pp a_prop.attrs }
-#
-# # Create a new issue property
-# # ----------------------
-# issue = client.Issue.find("10002")
-# new_prop = issue.properties.build('key' => 'MyPropertyKey', 'value' => { 'example' => 'example property' })
-# new_prop.save
-# OR
-# new_prop = issue.properties.build('key' => 'MyPropertyKey')
-# new_prop.save('value' => { 'example' => 'example property' })
-# OR
-# new_prop = issue.properties.build('MyPropertyKey')  ## 'key' is assumed
-# new_prop.save('example' => 'example property')      ## 'value' is assumed
-#
-# # Update an issue property
-# # ----------------------
-# issue = client.Issue.find("10002")
-# properties = issue.properties.all
-# my_prop = properties.select { |a_prop| a_prop.key.eql?('MyPropsKey') }.first
-# my_prop.value['associations'] = { 'example' => 'example property updated' }
-# my_prop.save
-#
 
 # List all available link types
 # ------------------------------
@@ -250,3 +223,30 @@ remote_link.save(
         }
     }
 )
+
+# Get all issue properties
+# ----------------------
+issue = client.Issue.find("10002")
+properties = issue.properties.all
+properties.each { |a_prop| pp a_prop.attrs }
+
+# Create a new issue property
+# ----------------------
+issue = client.Issue.find("10002")
+new_prop = issue.properties.build('key' => 'MyPropertyKey', 'value' => { 'example' => 'example property' })
+new_prop.save
+OR
+new_prop = issue.properties.build('key' => 'MyPropertyKey')
+new_prop.save('value' => { 'example' => 'example property' })
+OR
+new_prop = issue.properties.build('MyPropertyKey')  ## 'key' is assumed
+new_prop.save('example' => 'example property')      ## 'value' is assumed
+
+# Update an issue property
+# ----------------------
+issue = client.Issue.find("10002")
+properties = issue.properties.all
+my_prop = properties.select { |a_prop| a_prop.key.eql?('MyPropsKey') }.first
+my_prop.value['associations'] = { 'example' => 'example property updated' }
+my_prop.save
+
