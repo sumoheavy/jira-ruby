@@ -10,13 +10,6 @@ module JIRA
         'key'
       end
 
-      ## Make sure Properties 'key' has been supplied
-      def self.build(client, attrs)
-        attrs = {'key' => attrs} unless attrs.is_a?(Hash)
-        raise ArgumentError, "#{self.name} {#{key_attribute}} is required" unless attrs.key?(key_attribute)
-        super(client, attrs)
-      end
-
       def self.all(client, options = {})
         issue = options[:issue]
         raise ArgumentError, 'parent issue is required' unless issue
@@ -38,6 +31,16 @@ module JIRA
         response = client.get("#{issue.url}/#{endpoint_name}/#{key}")
         property = parse_json(response.body)
         issue.properties.build(property)
+      end
+
+      def initialize(client, options = {})
+        super(client, options)
+        ## Automatically convert attrs to a hash of just the resource key
+        ## if it's just a String (this simplifies the use case of build with just the key)
+        @attrs = {self.class.key_attribute => @attrs} if @attrs.is_a?(String)
+        if @attrs[self.class.key_attribute].nil?
+          raise ArgumentError, "Required option #{self.class.key_attribute.inspect} is required"
+        end
       end
 
       ## force new_record? to false to always force :put (the only REST option for setting issue property)
