@@ -6,7 +6,14 @@ module JIRA
     class ServerInfo < JIRA::Base
       def self.endpoint_name
         'serverInfo'
+      end 
+
+      def self.all(client, options = {})
+        response = client.get(collection_path(client))
+        json = parse_json(response.body)
+        new(client, { attrs: json }.merge(options))
       end
+
       def self.revelio(client, options = {})
       #   response = client.get(collection_path(client))
       #   json = parse_json(response.body)
