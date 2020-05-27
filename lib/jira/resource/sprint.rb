@@ -5,7 +5,7 @@ module JIRA
 
     class Sprint < JIRA::Base
       def self.find(client, key)
-        response = client.get("#{client.options[:site]}/rest/agile/1.0/sprint/#{key}")
+        response = client.get(agile_path(client, key))
         json = parse_json(response.body)
         client.Sprint.build(json)
       end
@@ -19,7 +19,7 @@ module JIRA
 
       def add_issue(issue)
         request_body = { issues: [issue.id] }.to_json
-        response = client.post(client.options[:site] + "/rest/agile/1.0/sprint/#{id}/issue", request_body)
+        response = client.post("#{agile_path}/issue", request_body)
         true
       end
 
@@ -47,8 +47,8 @@ module JIRA
       end
 
       def get_sprint_details
-        search_url = client.options[:site] + '/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=' +
-                     rapidview_id.to_s + '&sprintId=' + id.to_s
+        search_url =
+          "#{client.options[:site]}#{client.options[:client_path]}/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=#{rapidview_id}&sprintId=#{id}"
         begin
           response = client.get(search_url)
         rescue StandardError
@@ -76,12 +76,12 @@ module JIRA
 
       def save(attrs = {}, _path = nil)
         attrs = @attrs if attrs.empty?
-        super(attrs, agile_url)
+        super(attrs, agile_path)
       end
 
       def save!(attrs = {}, _path = nil)
         attrs = @attrs if attrs.empty?
-        super(attrs, agile_url)
+        super(attrs, agile_path)
       end
 
       # WORK IN PROGRESS
@@ -93,8 +93,12 @@ module JIRA
 
       private
 
-      def agile_url
-        "#{client.options[:site]}/rest/agile/1.0/sprint/#{id}"
+      def agile_path
+        self.class.agile_path(client, id)
+      end
+
+      def self.agile_path(client, key)
+        "#{client.options[:context_path]}/rest/agile/1.0/sprint/#{key}"
       end
     end
   end
