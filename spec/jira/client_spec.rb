@@ -266,4 +266,13 @@ describe JIRA::Client do
 
     include_examples 'OAuth Common Tests'
   end
+
+  context 'with unknown options' do
+    let(:options) { { 'username' => 'foo', 'password' => 'bar', auth_type: :basic } }
+    subject { JIRA::Client.new(options) }
+
+    it 'raises an ArgumentError' do
+      expect { subject }.to raise_exception(ArgumentError, 'Unknown option(s) given: ["username", "password"]')
+    end
+  end
 end

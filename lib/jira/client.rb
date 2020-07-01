@@ -29,7 +29,10 @@ module JIRA
   #   :proxy_username     => nil,
   #   :proxy_password     => nil,
   #   :additional_cookies => nil,
-  #   :default_headers    => {}
+  #   :default_headers    => {},
+  #   :use_client_cert    => false,
+  #   :http_debug         => false,
+  #   :shared_secret      => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -48,6 +51,36 @@ module JIRA
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
 
+    DEFINED_OPTIONS = [
+      :site,
+      :context_path,
+      :signature_method,
+      :request_token_path,
+      :authorize_path,
+      :access_token_path,
+      :private_key_file,
+      :rest_base_path,
+      :consumer_key,
+      :consumer_secret,
+      :ssl_verify_mode,
+      :ssl_version,
+      :use_ssl,
+      :username,
+      :password,
+      :auth_type,
+      :proxy_address,
+      :proxy_port,
+      :proxy_username,
+      :proxy_password,
+      :additional_cookies,
+      :default_headers,
+      :use_client_cert,
+      :http_debug,
+      :issuer,
+      :base_url,
+      :shared_secret
+    ].freeze
+
     DEFAULT_OPTIONS = {
       site: 'http://localhost:2990',
       context_path: '/jira',
@@ -64,6 +97,9 @@ module JIRA
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
+
+      unknown_options = options.keys.reject { |o| DEFINED_OPTIONS.include?(o) }
+      raise ArgumentError, "Unknown option(s) given: #{unknown_options}" unless unknown_options.empty?
 
       if options[:use_client_cert]
         raise ArgumentError, 'Options: :cert_path must be set when :use_client_cert is true' unless @options[:cert_path]
