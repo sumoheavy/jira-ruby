@@ -120,8 +120,8 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 #
 # # Transition an issue
 # # -------------------
-# issue_transition = issue.transitions.build
-# issue_transition.save!('transition' => {'id' => transition_id})
+# issue_transition = underlying_jira.transitions.all.find { |t| t.name == "Transition" }
+# issue_transition.save('transition' => { 'id' => transition.id })
 #
 # # Change assignee
 # # -------------------
