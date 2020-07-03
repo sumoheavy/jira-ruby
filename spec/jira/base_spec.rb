@@ -369,6 +369,18 @@ describe JIRA::Base do
       expect(subject.url).to eq('http://foo/bar')
     end
 
+    it 'returns path as the URL if set and site options is specified' do
+      allow(client).to receive(:options) { { site: 'http://foo' } }
+      attrs['self'] = 'http://foo/bar'
+      expect(subject.url).to eq('/bar')
+    end
+
+    it 'returns path as the URL if set and site options is specified and ends with a slash' do
+      allow(client).to receive(:options) { { site: 'http://foo/' } }
+      attrs['self'] = 'http://foo/bar'
+      expect(subject.url).to eq('/bar')
+    end
+
     it 'generates the URL from id if self not set' do
       attrs['self'] = nil
       attrs['id'] = '98765'
