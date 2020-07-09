@@ -280,8 +280,8 @@ describe JIRA::HttpClient do
     expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl])
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode])
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout])
-    expect(http_conn).to receive(:cert=).with(basic_client_cert_client.options[:ssl_client_cert])
-    expect(http_conn).to receive(:key=).with(basic_client_cert_client.options[:ssl_client_key])
+    expect(http_conn).to receive(:cert=).with(basic_client_cert_client.options[:cert])
+    expect(http_conn).to receive(:key=).with(basic_client_cert_client.options[:key])
     expect(basic_client_cert_client.http_conn(uri)).to eq(http_conn)
   end
 
