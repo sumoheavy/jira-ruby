@@ -106,8 +106,8 @@ module JIRA
       if options[:use_client_cert]
         raise ArgumentError, 'Options: :cert_path must be set when :use_client_cert is true' unless @options[:cert_path]
         raise ArgumentError, 'Options: :key_path must be set when :use_client_cert is true' unless @options[:key_path]
-        @options[:cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
-        @options[:key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path]))
+        @options[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
+        @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path]))
       end
 
       case options[:auth_type]

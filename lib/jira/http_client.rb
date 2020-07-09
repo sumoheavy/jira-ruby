@@ -46,6 +46,8 @@ module JIRA
 
     def http_conn(uri)
       if @options[:proxy_address]
+        # proxy_address does not exist in oauth's gem context but proxy does
+        @options[:proxy] = @options[:proxy_address]
         http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
       else
         http_class = Net::HTTP
@@ -53,8 +55,8 @@ module JIRA
       http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
       if @options[:use_client_cert]
-        http_conn.cert = @options[:cert]
-        http_conn.key = @options[:key]
+        http_conn.cert = @options[:ssl_client_cert]
+        http_conn.key = @options[:ssl_client_key]
       end
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
