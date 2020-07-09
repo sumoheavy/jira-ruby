@@ -31,6 +31,7 @@ module JIRA
   #   :additional_cookies => nil,
   #   :default_headers    => {},
   #   :use_client_cert    => false,
+  #   :read_timeout       => nil,
   #   :http_debug         => false,
   #   :shared_secret      => nil
   #
@@ -75,6 +76,7 @@ module JIRA
       :additional_cookies,
       :default_headers,
       :use_client_cert,
+      :read_timeout,
       :http_debug,
       :issuer,
       :base_url,
