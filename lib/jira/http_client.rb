@@ -53,8 +53,8 @@ module JIRA
       http_conn = http_class.new(uri.host, uri.port)
       http_conn.use_ssl = @options[:use_ssl]
       if @options[:use_client_cert]
-        http_conn.cert = @options[:cert]
-        http_conn.key = @options[:key]
+        http_conn.cert = @options[:ssl_client_cert]
+        http_conn.key = @options[:ssl_client_key]
       end
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
