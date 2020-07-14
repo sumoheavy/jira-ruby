@@ -36,7 +36,9 @@ module JIRA
   #   :http_debug         => false,
   #   :shared_secret      => nil,
   #   :cert_path          => nil,
-  #   :key_path           => nil
+  #   :key_path           => nil,
+  #   :ssl_client_cert    => nil,
+  #   :ssl_client_key     => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -86,7 +88,9 @@ module JIRA
       :base_url,
       :shared_secret,
       :cert_path,
-      :key_path
+      :key_path,
+      :ssl_client_cert,
+      :ssl_client_key
     ].freeze
 
     DEFAULT_OPTIONS = {
@@ -110,10 +114,11 @@ module JIRA
       raise ArgumentError, "Unknown option(s) given: #{unknown_options}" unless unknown_options.empty?
 
       if options[:use_client_cert]
-        raise ArgumentError, 'Options: :cert_path must be set when :use_client_cert is true' unless @options[:cert_path]
-        raise ArgumentError, 'Options: :key_path must be set when :use_client_cert is true' unless @options[:key_path]
-        @options[:cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
-        @options[:key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path]))
+        @options[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cert_path]
+        @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
+
+        raise ArgumentError, 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
+        raise ArgumentError, 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
       end
 
       case options[:auth_type]

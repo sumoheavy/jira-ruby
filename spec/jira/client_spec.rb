@@ -59,6 +59,19 @@ RSpec.shared_examples 'Client Common Tests' do
       expect(subject.Project.find('123')).to eq(find_result)
     end
   end
+
+  describe 'SSL client options' do
+    context 'without certificate and key' do
+      let(:options) { { use_client_cert: true } }
+      subject { JIRA::Client.new(options) }
+
+      it 'raises an ArgumentError' do
+        expect { subject }.to raise_exception(ArgumentError, 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
+        options[:ssl_client_cert] = '<cert></cert>'
+        expect { subject }.to raise_exception(ArgumentError, 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'HttpClient tests' do
