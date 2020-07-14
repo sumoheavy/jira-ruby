@@ -14,6 +14,8 @@ module JIRA
 
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
+      # proxy_address does not exist in oauth's gem context but proxy does
+      @options[:proxy] = @options[:proxy_address] if @options[:proxy_address]
       @cookies = {}
     end
 
@@ -46,8 +48,6 @@ module JIRA
 
     def http_conn(uri)
       if @options[:proxy_address]
-        # proxy_address does not exist in oauth's gem context but proxy does
-        @options[:proxy] = @options[:proxy_address]
         http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
       else
         http_class = Net::HTTP
