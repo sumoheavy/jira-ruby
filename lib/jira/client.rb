@@ -35,6 +35,8 @@ module JIRA
   #   :read_timeout       => nil,
   #   :http_debug         => false,
   #   :shared_secret      => nil,
+  #   :cert_path          => nil,
+  #   :key_path           => nil,
   #   :ssl_client_cert    => nil,
   #   :ssl_client_key     => nil
   #
@@ -85,6 +87,8 @@ module JIRA
       :issuer,
       :base_url,
       :shared_secret,
+      :cert_path,
+      :key_path,
       :ssl_client_cert,
       :ssl_client_key
     ].freeze
