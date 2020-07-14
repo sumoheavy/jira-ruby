@@ -14,8 +14,6 @@ module JIRA
 
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
-      # proxy_address does not exist in oauth's gem context but proxy does
-      @options[:proxy] = @options[:proxy_address] if @options[:proxy_address]
       @cookies = {}
     end
 
