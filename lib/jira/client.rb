@@ -14,6 +14,7 @@ module JIRA
   #   :request_token_path => "/plugins/servlet/oauth/request-token",
   #   :authorize_path     => "/plugins/servlet/oauth/authorize",
   #   :access_token_path  => "/plugins/servlet/oauth/access-token",
+  #   :private_key        => nil,
   #   :private_key_file   => "rsakey.pem",
   #   :rest_base_path     => "/rest/api/2",
   #   :consumer_key       => nil,
@@ -33,7 +34,9 @@ module JIRA
   #   :use_client_cert    => false,
   #   :read_timeout       => nil,
   #   :http_debug         => false,
-  #   :shared_secret      => nil
+  #   :shared_secret      => nil,
+  #   :cert_path          => nil,
+  #   :key_path           => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -59,6 +62,7 @@ module JIRA
       :request_token_path,
       :authorize_path,
       :access_token_path,
+      :private_key,
       :private_key_file,
       :rest_base_path,
       :consumer_key,
@@ -80,7 +84,9 @@ module JIRA
       :http_debug,
       :issuer,
       :base_url,
-      :shared_secret
+      :shared_secret,
+      :cert_path,
+      :key_path
     ].freeze
 
     DEFAULT_OPTIONS = {
