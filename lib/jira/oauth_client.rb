@@ -38,6 +38,8 @@ module JIRA
       @options[:request_token_path] = @options[:context_path] + @options[:request_token_path]
       @options[:authorize_path] = @options[:context_path] + @options[:authorize_path]
       @options[:access_token_path] = @options[:context_path] + @options[:access_token_path]
+      # proxy_address does not exist in oauth's gem context but proxy does
+      @options[:proxy] = @options[:proxy_address] if @options[:proxy_address]
       OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], @options)
     end
 
