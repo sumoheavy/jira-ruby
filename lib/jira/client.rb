@@ -299,6 +299,11 @@ module JIRA
       @request_client.request(http_method, path, body, headers)
     end
 
+    # Stops sensitive client information from being displayed in logs
+    def inspect
+      "#<JIRA::Client:#{object_id}>"
+    end
+
     protected
 
     def merge_default_headers(headers)
