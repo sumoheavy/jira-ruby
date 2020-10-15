@@ -163,7 +163,7 @@ api_token = "myApiToken"
 options = {
             :username => username,
             :password => api_token,
-            :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net'
+            :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net/'
             :context_path => '/myjira', # often blank
             :auth_type => :basic,
             :read_timeout => 120
@@ -307,7 +307,7 @@ class App < Sinatra::Base
   # site uri, and the request token, access token, and authorize paths
   before do
     options = {
-      :site               => 'http://localhost:2990',
+      :site               => 'http://localhost:2990/',
       :context_path       => '/jira',
       :signature_method   => 'RSA-SHA1',
       :request_token_path => "/plugins/servlet/oauth/request-token",
@@ -405,7 +405,7 @@ require 'pp'
 require 'jira-ruby'
 
 options = {
-            :site               => 'http://localhost:2990',
+            :site               => 'http://localhost:2990/',
             :context_path       => '/jira',
             :signature_method   => 'RSA-SHA1',
             :private_key_file   => "rsakey.pem",
