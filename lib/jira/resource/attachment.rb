@@ -48,6 +48,18 @@ module JIRA
         true
       end
 
+      def download
+        # Actually fetch the attachment
+        # Note: Jira handles attachment's weird!
+        # Typically, they respond with a redirect location that should not have the same authentication
+        begin
+          client.get(attrs['content'])
+        rescue JIRA::HTTPError => ex
+          raise ex unless ex.response.code_type.eql?(Net::HTTPFound)
+          Net::HTTP.get(URI(ex.response['location']))
+        end
+      end
+
       private
 
       def set_attributes(attributes, response)
