@@ -48,7 +48,7 @@ module JIRA
         true
       end
 
-      def download
+      def http_download
         # Actually fetch the attachment
         # Note: Jira handles attachment's weird!
         # Typically, they respond with a redirect location that should not have the same authentication
