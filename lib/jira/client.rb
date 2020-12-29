@@ -6,7 +6,7 @@ module JIRA
   # This class is the main access point for all JIRA::Resource instances.
   #
   # The client must be initialized with an options hash containing
-  # configuration options.  The available options are:
+  # configuration options. The available options are:
   #
   #   :site               => 'http://localhost:2990',
   #   :context_path       => '/jira',
@@ -29,6 +29,7 @@ module JIRA
   #   :proxy_port         => nil,
   #   :proxy_username     => nil,
   #   :proxy_password     => nil,
+  #   :use_cookies        => nil,
   #   :additional_cookies => nil,
   #   :default_headers    => {},
   #   :use_client_cert    => false,
@@ -79,6 +80,7 @@ module JIRA
       :proxy_port,
       :proxy_username,
       :proxy_password,
+      :use_cookies,
       :additional_cookies,
       :default_headers,
       :use_client_cert,
