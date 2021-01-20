@@ -286,7 +286,9 @@ module JIRA
 
     def post_multipart(path, file, headers = {})
       puts "post multipart: #{path} - [#{file}]" if @http_debug
-      @request_client.request_multipart(path, file, headers)
+      res = @request_client.request_multipart(path, file, headers)
+      puts "response: #{res}" if @http_debug
+      res
     end
 
     def put(path, body = '', headers = {})
@@ -298,7 +300,9 @@ module JIRA
     # appropriate method (oauth, basic).
     def request(http_method, path, body = '', headers = {})
       puts "#{http_method}: #{path} - [#{body}]" if @http_debug
-      @request_client.request(http_method, path, body, headers)
+      res = @request_client.request(http_method, path, body, headers)
+      puts "response: #{res}" if @http_debug
+      res
     end
 
     # Stops sensitive client information from being displayed in logs
