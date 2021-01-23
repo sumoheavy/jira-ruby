@@ -11,7 +11,8 @@ module JIRA
       access_token_path: '/plugins/servlet/oauth/access-token',
       private_key_file: 'rsakey.pem',
       consumer_key: nil,
-      consumer_secret: nil
+      consumer_secret: nil,
+      append_explicit_oauth_token_parameter: true
     }.freeze
 
     # This exception is thrown when the client is used before the OAuth access token
@@ -75,8 +76,9 @@ module JIRA
     end
 
     def make_request(http_method, url, body = '', headers = {})
-      # When using oauth_2legged we need to add an empty oauth_token parameter to every request.
-      if @options[:auth_type] == :oauth_2legged
+      # Apparently we don't need to add an empty oauth_token parameter to every request; feature flagged here
+      # with :append_explicit_oauth_token_parameter to allow backwards compatibility
+      if @options[:auth_type] == :oauth_2legged && @options[:append_explicit_oauth_token_parameter]
         oauth_params_str = 'oauth_token='
         uri = URI.parse(url)
         uri.query = if uri.query.to_s == ''

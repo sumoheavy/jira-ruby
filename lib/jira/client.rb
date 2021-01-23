@@ -65,6 +65,7 @@ module JIRA
       :request_token_path,
       :authorize_path,
       :access_token_path,
+      :append_explicit_oauth_token_parameter,
       :private_key,
       :private_key_file,
       :rest_base_path,
