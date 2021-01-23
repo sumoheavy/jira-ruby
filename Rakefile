@@ -20,7 +20,7 @@ end
 
 desc 'Run RSpec tests'
 # RSpec::Core::RakeTask.new(:spec)
-RSpec::Core::RakeTask.new(:spec) do |task|
+RSpec::Core::RakeTask.new(:spec, [] => [:prepare]) do |task|
   task.rspec_opts = ['--color', '--format', 'doc']
 end
 
