@@ -136,6 +136,21 @@ describe JIRA::Resource::Attachment do
     end
 
     context 'when passing in a string value for file name' do
+      let(:response) do
+        double(
+          body: [
+            {
+              "id": 10_001,
+              "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+              "filename": 'test.jpg',
+              "created": '2017-07-19T12:23:06.572+0000',
+              "size": 23_123,
+              "mimeType": 'image/jpeg'
+            }
+          ].to_json
+        )
+      end
+
       subject do
         attachment.save!(file: path_to_file, 'name' => 'test.jpg')
       end
@@ -144,12 +159,25 @@ describe JIRA::Resource::Attachment do
         subject
 
         expect(attachment.filename).to eq 'test.jpg'
-        expect(attachment.mimeType).to eq 'image/jpeg'
-        expect(attachment.size).to eq 23_123
       end
     end
 
     context 'when passing in a symbol value for file name' do
+      let(:response) do
+        double(
+          body: [
+            {
+              "id": 10_001,
+              "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+              "filename": 'test.jpg',
+              "created": '2017-07-19T12:23:06.572+0000',
+              "size": 23_123,
+              "mimeType": 'image/jpeg'
+            }
+          ].to_json
+        )
+      end
+
       subject do
         attachment.save!(file: path_to_file, name: 'test.jpg')
       end
@@ -158,20 +186,6 @@ describe JIRA::Resource::Attachment do
         subject
 
         expect(attachment.filename).to eq 'test.jpg'
-        expect(attachment.mimeType).to eq 'image/jpeg'
-        expect(attachment.size).to eq 23_123
-      end
-    end
-
-    context 'when passing in a no value for file name' do
-      subject { attachment.save!(file: path_to_file) }
-
-      it 'successfully update the attachment using default filename' do
-        subject
-
-        expect(attachment.filename).to eq 'picture.jpg'
-        expect(attachment.mimeType).to eq 'image/jpeg'
-        expect(attachment.size).to eq 23_123
       end
     end
   end

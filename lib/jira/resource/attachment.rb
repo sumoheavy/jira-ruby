@@ -32,6 +32,7 @@ module JIRA
         set_attributes(attrs, response)
 
         @expanded = false
+
         true
       end
 
