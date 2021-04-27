@@ -134,5 +134,45 @@ describe JIRA::Resource::Attachment do
         expect(attachment.size).to eq 23_123
       end
     end
+
+    context 'when passing in a string value for file name' do
+      subject do
+        attachment.save!(file: path_to_file, 'name' => 'test.jpg')
+      end
+
+      it 'successfully update the attachment' do
+        subject
+
+        expect(attachment.filename).to eq 'test.jpg'
+        expect(attachment.mimeType).to eq 'image/jpeg'
+        expect(attachment.size).to eq 23_123
+      end
+    end
+
+    context 'when passing in a symbol value for file name' do
+      subject do
+        attachment.save!(file: path_to_file, name: 'test.jpg')
+      end
+
+      it 'successfully update the attachment' do
+        subject
+
+        expect(attachment.filename).to eq 'test.jpg'
+        expect(attachment.mimeType).to eq 'image/jpeg'
+        expect(attachment.size).to eq 23_123
+      end
+    end
+
+    context 'when passing in a no value for file name' do
+      subject { attachment.save!(file: path_to_file) }
+
+      it 'successfully update the attachment using default filename' do
+        subject
+
+        expect(attachment.filename).to eq 'picture.jpg'
+        expect(attachment.mimeType).to eq 'image/jpeg'
+        expect(attachment.size).to eq 23_123
+      end
+    end
   end
 end
