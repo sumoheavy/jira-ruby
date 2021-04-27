@@ -15,12 +15,22 @@ module JIRA
 
       # Returns all the issues for this project
       def issues(options = {})
+        autopaginate = options[:autopaginate_results]
         search_url = client.options[:rest_base_path] + '/search'
         query_params = { jql: "project=\"#{key}\"" }
-        query_params.update Base.query_params_for_search(options)
+        query_params.update Base.query_params_for_search(options.except(:autopaginate_results))
         response = client.get(url_with_query_params(search_url, query_params))
         json = self.class.parse_json(response.body)
-        json['issues'].map do |issue|
+        results = json['issues']
+        if autopaginate
+          while (json['startAt'] + json['maxResults']) < json['total']
+            query_params['startAt'] = (json['startAt'] + json['maxResults'])
+            response = client.get(url_with_query_params(search_url, query_params))
+            json = self.class.parse_json(response.body)
+            results += json['issues']
+          end
+        end
+        results.map do |issue|
           client.Issue.build(issue)
         end
       end
