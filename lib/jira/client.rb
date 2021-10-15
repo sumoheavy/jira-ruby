@@ -257,6 +257,10 @@ module JIRA
       JIRA::Resource::IssuelinktypeFactory.new(self)
     end
 
+    def IssuePickerSuggestions
+      JIRA::Resource::IssuePickerSuggestionsFactory.new(self)
+    end
+
     def Remotelink
       JIRA::Resource::RemotelinkFactory.new(self)
     end
