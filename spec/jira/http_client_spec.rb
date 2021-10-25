@@ -59,6 +59,16 @@ describe JIRA::HttpClient do
     { username: 'donaldduck', password: 'supersecret' }
   end
 
+  let(:proxy_client) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      proxy_address: 'proxyAddress',
+      proxy_port: 42,
+      proxy_username: 'proxyUsername',
+      proxy_password: 'proxyPassword'
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
     response = double('response')
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
@@ -229,6 +239,36 @@ describe JIRA::HttpClient do
     expect(custom_ssl_version_client.http_conn(uri)).to eq(http_conn)
   end
 
+  it 'sets up a non-proxied http connection by default' do
+    uri = double
+    host = double
+    port = double
+
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+
+    proxy_configuration = basic_client.http_conn(uri).class
+    expect(proxy_configuration.proxy_address).to be_nil
+    expect(proxy_configuration.proxy_port).to be_nil
+    expect(proxy_configuration.proxy_user).to be_nil
+    expect(proxy_configuration.proxy_pass).to be_nil
+  end
+
+  it 'sets up a proxied http connection when using proxy options' do
+    uri = double
+    host = double
+    port = double
+
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+
+    proxy_configuration = proxy_client.http_conn(uri).class
+    expect(proxy_configuration.proxy_address).to eq(proxy_client.options[:proxy_address])
+    expect(proxy_configuration.proxy_port).to eq(proxy_client.options[:proxy_port])
+    expect(proxy_configuration.proxy_user).to eq(proxy_client.options[:proxy_username])
+    expect(proxy_configuration.proxy_pass).to eq(proxy_client.options[:proxy_password])
+  end
+
   it 'can use client certificates' do
     http_conn = double
     uri = double
@@ -240,8 +280,8 @@ describe JIRA::HttpClient do
     expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl])
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode])
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout])
-    expect(http_conn).to receive(:cert=).with(basic_client_cert_client.options[:cert])
-    expect(http_conn).to receive(:key=).with(basic_client_cert_client.options[:key])
+    expect(http_conn).to receive(:cert=).with(basic_client_cert_client.options[:ssl_client_cert])
+    expect(http_conn).to receive(:key=).with(basic_client_cert_client.options[:ssl_client_key])
     expect(basic_client_cert_client.http_conn(uri)).to eq(http_conn)
   end
 
@@ -251,5 +291,38 @@ describe JIRA::HttpClient do
     expect(basic_client).to receive(:uri).and_return(uri)
     expect(basic_client).to receive(:http_conn).and_return(http_conn)
     expect(basic_client.basic_auth_http_conn).to eq(http_conn)
+  end
+
+  describe '#make_multipart_request' do
+    subject do
+      basic_client.make_multipart_request(path, data, headers)
+    end
+
+    let(:path) { '/foo' }
+    let(:data) { {} }
+    let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
+    let(:basic_auth_http_conn) { double }
+    let(:request) { double('Http Request', path: path) }
+    let(:response) { double('response') }
+
+    before do
+      allow(request).to receive(:basic_auth)
+      allow(Net::HTTP::Post::Multipart).to receive(:new).with(path, data, headers).and_return(request)
+      allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
+      allow(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
+    end
+
+    it 'performs a basic http client request' do
+      expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(request)
+
+      subject
+    end
+
+    it 'makes a correct HTTP request' do
+      expect(basic_auth_http_conn).to receive(:request).with(request).and_return(response)
+      expect(response).to receive(:is_a?).with(Net::HTTPOK)
+
+      subject
+    end
   end
 end

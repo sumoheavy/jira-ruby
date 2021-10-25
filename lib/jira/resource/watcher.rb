@@ -23,6 +23,13 @@ module JIRA
           issue.watchers.build(watcher)
         end
       end
+
+      def save!(user_id, path = nil)
+        path ||= new_record? ? url : patched_url
+        response = client.post(path, user_id.to_json)
+        true
+      end
+
     end
   end
 end

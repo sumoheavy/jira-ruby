@@ -424,7 +424,7 @@ module JIRA
       end
       if @attrs['self']
         the_url = @attrs['self']
-        the_url = the_url.sub(@client.options[:site], '') if @client.options[:site]
+        the_url = the_url.sub(@client.options[:site].chomp('/'), '') if @client.options[:site]
         the_url
       elsif key_value
         self.class.singular_path(client, key_value.to_s, prefix)

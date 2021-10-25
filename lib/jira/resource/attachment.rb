@@ -19,26 +19,31 @@ module JIRA
         parse_json(response.body)
       end
 
-      def save!(attrs)
+      def save!(attrs, path = url)
+        file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
+        mime_type = attrs[:mimeType] || 'application/binary'
+
         headers = { 'X-Atlassian-Token' => 'nocheck' }
-        data = { 'file' => UploadIO.new(attrs['file'], 'application/binary', attrs['file']) }
+        data = { 'file' => UploadIO.new(file, mime_type, file) }
 
-        request = Net::HTTP::Post::Multipart.new url, data, headers
-        request.basic_auth(client.request_client.options[:username],
-                           client.request_client.options[:password])
+        response = client.post_multipart(path, data , headers)
 
-        response = client.request_client.basic_auth_http_conn.request(request)
-
-        set_attrs(attrs, false)
-        unless response.body.nil? || response.body.length < 2
-          json = self.class.parse_json(response.body)
-          attachment = json[0]
-
-          set_attrs(attachment)
-        end
+        set_attributes(attrs, response)
 
         @expanded = false
         true
+      end
+
+      private
+
+      def set_attributes(attributes, response)
+        set_attrs(attributes, false)
+        return if response.body.nil? || response.body.length < 2
+
+        json = self.class.parse_json(response.body)
+        attachment = json[0]
+
+        set_attrs(attachment)
       end
     end
   end

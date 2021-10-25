@@ -1,3 +1,3 @@
 module JIRA
-  VERSION = '1.7.1'.freeze
+  VERSION = '2.1.5'.freeze
 end
