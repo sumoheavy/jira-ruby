@@ -99,7 +99,7 @@ defaults to HTTP Basic Auth.
 
 Jira supports cookie based authentication whereby user credentials are passed
 to JIRA via a JIRA REST API call.  This call returns a session cookie which must
-then be sent to all following JIRA REST API calls. 
+then be sent to all following JIRA REST API calls.
 
 To enable cookie based authentication, set `:auth_type` to `:cookie`,
 set `:use_cookies` to `true` and set `:username` and `:password` accordingly.
@@ -114,7 +114,7 @@ options = {
   :context_path       => '',
   :auth_type          => :cookie,  # Set cookie based authentication
   :use_cookies        => true,     # Send cookies with each request
-  :additional_cookies => ['AUTH=vV7uzixt0SScJKg7'] # Optional cookies to send 
+  :additional_cookies => ['AUTH=vV7uzixt0SScJKg7'] # Optional cookies to send
                                                    # with each request
 }
 
@@ -134,15 +134,39 @@ cookie to add to the request.
 
 Some authentication schemes that require additional cookies ignore the username
 and password sent in the JIRA REST API call.  For those use cases, `:username`
-and `:password` may be omitted from `options`. 
+and `:password` may be omitted from `options`.
 
+## Configuring JIRA to use Personal Access Tokens Auth
+If your JIRA system is configured to support Personal Access Token authorization, minor modifications are needed in how credentials are communicated to the server.  Specifically, the paremeters `:username` and `:password` are not needed.  Also, the parameter `:default_headers` is needed to contain the api_token, which can be obtained following the official documentation from [Atlassian](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html).  Please note that the Personal Access Token can only be used as it is. If it is encoded (with base64 or any other encoding method) then the token will not work correctly and authentication will fail.
+
+```ruby
+require 'jira-ruby'
+
+# NOTE: the token should not be encoded
+api_token = API_TOKEN_OBTAINED_FROM_JIRA_UI
+
+options = {
+  :site               => 'http://mydomain.atlassian.net:443/',
+  :context_path       => '',
+  :auth_type          => :basic,
+  :default_headers    => { 'Authorization' =>  "Bearer #{api_token}"}
+}
+
+client = JIRA::Client.new(options)
+
+project = client.Project.find('SAMPLEPROJECT')
+
+project.issues.each do |issue|
+  puts "#{issue.id} - #{issue.summary}"
+end
+```
 ## Using the API Gem in a command line application
 
 Using HTTP Basic Authentication, configure and connect a client to your instance
 of JIRA.
 
 Note: If your Jira install is hosted on [atlassian.net](atlassian.net), it will have no context
-path by default. If you're having issues connecting, try setting context_path 
+path by default. If you're having issues connecting, try setting context_path
 to an empty string in the options hash.
 
 ```ruby
