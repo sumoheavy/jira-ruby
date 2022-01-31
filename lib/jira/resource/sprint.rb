@@ -18,7 +18,11 @@ module JIRA
       end
 
       def add_issue(issue)
-        request_body = { issues: [issue.id] }.to_json
+        add_issues([issue.id])
+      end
+
+      def add_issues(issues)
+        request_body = { issues: issues }.to_json
         response = client.post("#{agile_path}/issue", request_body)
         true
       end
