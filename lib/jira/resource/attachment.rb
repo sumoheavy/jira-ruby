@@ -55,7 +55,7 @@ module JIRA
         begin
           client.get(attrs['content'])
         rescue JIRA::HTTPError => ex
-          raise ex unless ex.response.code_type.eql?(Net::HTTPFound)
+          raise ex unless ex.response.code =~ /\A3\d\d\z/ && ex.response['location'].present?
           Net::HTTP.get_response(URI(ex.response['location']))
         end
       end
