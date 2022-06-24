@@ -32,13 +32,13 @@ module JIRA
       def save!(attrs, path = url)
         file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
         # If :filename does not exist or is nil, that is fine as it will force
-        # UpdateIO to determine the filename automatically from file.
+        # Upload to determine the filename automatically from file.
         # Breaking the filename out allows this to support any IO-based file parameter.
         fname = attrs['filename'] || attrs[:filename]
         mime_type = attrs['mimeType'] || attrs[:mimeType] || 'application/binary'
 
         headers = { 'X-Atlassian-Token' => 'nocheck' }
-        data = { 'file' => UploadIO.new(file, mime_type, fname) }
+        data = { 'file' => Multipart::Post::UploadIO.new(file, mime_type, fname) }
 
         response = client.post_multipart(path, data, headers)
 
