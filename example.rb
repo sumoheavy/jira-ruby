@@ -167,6 +167,14 @@ client.Issue.jql(a_normal_jql_search, max_results: 500)
 # # --------------------------
 # issue.comments.first.save({"body" => "an updated comment frome example.rb"})
 
+
+# # Add attachment to Issue
+# # ------------------------
+#  issue = client.Issue.find('PROJ-1')
+#  attachment = issue.attachments.build
+#  attachment.save('file': '/path/to/file')
+#
+
 # List all available link types
 # ------------------------------
 pp client.Issuelinktype.all

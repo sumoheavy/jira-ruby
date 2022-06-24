@@ -1,5 +1,6 @@
 $LOAD_PATH << __dir__
 
+require 'active_support'
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|
   inflector.singular /status$/, 'status'
@@ -26,6 +27,9 @@ require 'jira/resource/worklog'
 require 'jira/resource/applinks'
 require 'jira/resource/issuelinktype'
 require 'jira/resource/issuelink'
+require 'jira/resource/suggested_issue'
+require 'jira/resource/issue_picker_suggestions_issue'
+require 'jira/resource/issue_picker_suggestions'
 require 'jira/resource/remotelink'
 require 'jira/resource/sprint'
 require 'jira/resource/sprint_report'
