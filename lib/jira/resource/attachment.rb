@@ -24,6 +24,8 @@ module JIRA
         mime_type = attrs[:mimeType] || 'application/binary'
 
         headers = { 'X-Atlassian-Token' => 'nocheck' }
+        headers.merge!(client.options[:default_headers]) if client.options[:default_headers]
+        
         data = { 'file' => UploadIO.new(file, mime_type, file) }
 
         response = client.post_multipart(path, data , headers)
