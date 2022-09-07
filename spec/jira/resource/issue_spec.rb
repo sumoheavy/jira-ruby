@@ -47,7 +47,7 @@ describe JIRA::Resource::Issue do
                                    .and_return(empty_response)
 
     expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with('id' => '1', 'summary' => 'Bugs Everywhere')
+    expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
 
     issues = JIRA::Resource::Issue.all(client)
   end
