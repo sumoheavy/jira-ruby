@@ -58,7 +58,7 @@ describe JIRA::OauthClient do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
         allow(oauth_client).to receive(:get_request_token).and_return(request_token)
         mock_access_token = double
-        expect(request_token).to receive(:get_access_token).with(oauth_verifier: 'abc123').and_return(mock_access_token)
+        expect(request_token).to receive(:get_access_token).with({ oauth_verifier: 'abc123' }).and_return(mock_access_token)
         oauth_client.init_access_token(oauth_verifier: 'abc123')
         expect(oauth_client.access_token).to eq(mock_access_token)
       end
