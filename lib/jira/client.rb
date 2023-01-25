@@ -40,6 +40,7 @@ module JIRA
   #   :key_path           => nil,
   #   :ssl_client_cert    => nil,
   #   :ssl_client_key     => nil
+  #   :ca_file            => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
