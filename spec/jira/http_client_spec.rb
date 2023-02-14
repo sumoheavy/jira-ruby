@@ -69,6 +69,13 @@ describe JIRA::HttpClient do
     JIRA::HttpClient.new(options)
   end
 
+  let(:basic_client_with_max_retries) do
+    options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
+      max_retries: 2
+    )
+    JIRA::HttpClient.new(options)
+  end
+
   let(:response) do
     response = double('response')
     allow(response).to receive(:kind_of?).with(Net::HTTPSuccess).and_return(true)
@@ -288,6 +295,21 @@ describe JIRA::HttpClient do
   it 'can use a certificate authority file' do
     client = JIRA::HttpClient.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
     expect(client.http_conn(client.uri).ca_file).to eql('/opt/custom.ca.pem')
+  end
+
+  it 'allows overriding max_retries' do
+    http_conn = double
+    uri = double
+    host = double
+    port = double
+    expect(uri).to receive(:host).and_return(host)
+    expect(uri).to receive(:port).and_return(port)
+    expect(Net::HTTP).to receive(:new).with(host, port).and_return(http_conn)
+    expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
+    expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
+    expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
+    expect(http_conn).to receive(:max_retries=).with(basic_client_with_max_retries.options[:max_retries]).and_return(http_conn)
+    expect(basic_client_with_max_retries.http_conn(uri)).to eq(http_conn)
   end
 
   it 'returns a http connection' do
