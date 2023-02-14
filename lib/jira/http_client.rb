@@ -59,6 +59,7 @@ module JIRA
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
       http_conn.read_timeout = @options[:read_timeout]
+      http_conn.max_retries = @options[:max_retries] if @options[:max_retries]
       http_conn.ca_file = @options[:ca_file] if @options[:ca_file]
       http_conn
     end
