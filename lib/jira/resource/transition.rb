@@ -24,6 +24,19 @@ module JIRA
           issue.transitions.build(transition)
         end
       end
+
+      # Saves the specified resource attributes by sending either a POST or PUT
+      # request to JIRA, depending on resource.new_record?
+      #
+      # Accepts an attributes hash of the values to be saved.  Will throw a
+      # JIRA::HTTPError if the request fails (response is not HTTP 2xx).
+      def save!(attrs, path = nil)
+        path = "#{client.options[:site]}#{client.options[:context]}/rest/api/2/issue/#{self.issue_id}/transitions"
+        response = client.send(:post, path, attrs.to_json)
+        set_attrs_from_response(response)
+        @expanded = false
+        true
+      end
     end
   end
 end
