@@ -494,6 +494,11 @@ describe JIRA::Base do
       end
     end
 
+    it 'returns an empty collection for empty nested has_many relationships' do
+      subject = JIRA::Resource::HasManyExample.new(client)
+      expect(subject.brunchmuffins.length).to eq(0)
+    end
+
     it 'allows it to be deeply nested' do
       subject = JIRA::Resource::HasManyExample.new(client, attrs: { 'nested' => {
                                                      'breakfastscone' => { 'breakfastscones' => [{ 'id' => '123' }, { 'id' => '456' }] }
