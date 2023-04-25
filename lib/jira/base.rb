@@ -356,7 +356,7 @@ module JIRA
     #
     # Accepts an attributes hash of the values to be saved. Will return false
     # if the request fails.
-    def save(attrs, path = url)
+    def save(attrs, path = nil)
       begin
         save_status = save!(attrs, path)
       rescue JIRA::HTTPError => exception
