@@ -134,7 +134,7 @@ module JIRA
       JIRA::Resource::FieldFactory.new(self)
     end
 
-    def Board 
+    def Board
       JIRA::Resource::BoardFactory.new(self)
     end
 
@@ -210,7 +210,7 @@ module JIRA
     end
 
     def cloud_instance?
-      options[:site].include?("atlassian.net")
+      options[:site].include?("atlassian.net") || options[:site].include?("jira.com")
     end
 
     protected
