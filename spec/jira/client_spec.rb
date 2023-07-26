@@ -197,7 +197,7 @@ describe JIRA::Client do
       end
     end
 
-    context "when the site has a cloud url" do
+    context "when the site has an atlassian.net url" do
       let(:site) { "https://foo.atlassian.net" }
 
       it "returns true" do
@@ -205,7 +205,15 @@ describe JIRA::Client do
       end
     end
 
-    context "when the site does not have a cloud url (does not reference atlassian)" do
+    context "when the site has a jira.com url" do
+      let(:site) { "https://foo.jira.com" }
+
+      it "returns true" do
+        expect(client).to be_cloud_instance
+      end
+    end
+
+    context "when the site does not have a cloud url (does not reference atlassian or jira)" do
       let(:site) { "https://foo.onprem.com" }
 
       it "returns false" do
