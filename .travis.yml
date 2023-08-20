@@ -1,9 +1,0 @@
-language: ruby
-rvm:
-    - 2.4
-    - 2.5
-    - 2.6
-    - 2.7
-before_script:
-    - rake jira:generate_public_cert
-script: bundle exec rake spec

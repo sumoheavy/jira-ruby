@@ -1,7 +1,7 @@
 # JIRA API Gem
 
 [![Code Climate](https://codeclimate.com/github/sumoheavy/jira-ruby.svg)](https://codeclimate.com/github/sumoheavy/jira-ruby)
-[![Build Status](https://travis-ci.org/sumoheavy/jira-ruby.svg?branch=master)](https://travis-ci.org/sumoheavy/jira-ruby)
+[![Build Status](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml/badge.svg)](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml)
 
 This gem provides access to the Atlassian JIRA REST API.
 
