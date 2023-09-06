@@ -39,6 +39,34 @@ module JIRA
       end
     end
 
+    class JwtUriBuilder
+      attr_reader :request_url, :http_method, :shared_secret, :site, :issuer
+
+      def initialize(request_url, http_method, shared_secret, site, issuer)
+        @request_url = request_url
+        @http_method = http_method
+        @shared_secret = shared_secret
+        @site = site
+        @issuer = issuer
+      end
+
+      def build
+        uri = URI.parse(request_url)
+        new_query = URI.decode_www_form(String(uri.query)) << ['jwt', jwt_header]
+        uri.query = URI.encode_www_form(new_query)
+
+        return uri.to_s unless uri.is_a?(URI::HTTP)
+
+        uri.request_uri
+      end
+
+      private
+
+      def jwt_header
+        JwtBuilder.new(request_url, http_method, shared_secret, site, issuer).build
+      end
+    end
+
     private
 
     attr_reader :http_method, :jwt
