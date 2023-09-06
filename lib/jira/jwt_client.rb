@@ -4,8 +4,9 @@ module JIRA
   class JwtClient < HttpClient
     def make_request(http_method, url, body = '', headers = {})
       @http_method = http_method
+      @jwt = build_jwt(url)
 
-      super(http_method, url, body, headers)
+      super(http_method, url, body, headers.merge(jwt_header))
     end
 
     def make_multipart_request(url, data, headers = {})
@@ -14,7 +15,7 @@ module JIRA
       super(url, data, headers)
     end
 
-    class JwtUriBuilder
+    class JwtBuilder
       attr_reader :request_url, :http_method, :shared_secret, :site, :issuer
 
       def initialize(request_url, http_method, shared_secret, site, issuer)
@@ -26,18 +27,6 @@ module JIRA
       end
 
       def build
-        uri = URI.parse(request_url)
-        new_query = URI.decode_www_form(String(uri.query)) << ['jwt', jwt_header]
-        uri.query = URI.encode_www_form(new_query)
-
-        return uri.to_s unless uri.is_a?(URI::HTTP)
-
-        uri.request_uri
-      end
-
-      private
-
-      def jwt_header
         claim = Atlassian::Jwt.build_claims \
           issuer,
           request_url,
@@ -52,16 +41,20 @@ module JIRA
 
     private
 
-    attr_reader :http_method
+    attr_reader :http_method, :jwt
 
-    def request_path(url)
-      JwtUriBuilder.new(
+    def build_jwt(url)
+      JwtBuilder.new(
         url,
         http_method.to_s,
         @options[:shared_secret],
         @options[:site],
         @options[:issuer]
       ).build
+    end
+
+    def jwt_header
+      {'Authorization' => "JWT #{jwt}"}
     end
   end
 end
