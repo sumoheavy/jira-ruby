@@ -103,8 +103,16 @@ module JIRA
         worklog_issue_ids = worklogs_by_issue.keys.compact
         vputs 'rehydrating issues'
         rehydrated = 0
-        issues =
-          worklog_issue_ids.each_slice(100).map do |the_issue_ids|
+        issue_batch_size = 
+          case client.request_client 
+          when JIRA::OauthClient
+            25 
+          else 
+            100 
+          end 
+
+          issues =
+          worklog_issue_ids.each_slice(issue_batch_size).map do |the_issue_ids|
             rehydrated += the_issue_ids.count
             vputs 'Rehydrated issue count'
             vputs rehydrated 
