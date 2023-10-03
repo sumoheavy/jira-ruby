@@ -106,8 +106,13 @@ module JIRA
         issue_batch_size = 
           case client.request_client 
           when JIRA::OauthClient
-            25 
+            puts '== Y! REQUEST CLIENT IS'
+            puts client.request_client.class.name 
+            20
           else 
+            puts '== N! REQUEST CLIENT IS'
+            puts client.request_client.class.name 
+
             100 
           end 
 
