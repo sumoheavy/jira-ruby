@@ -35,6 +35,8 @@ module JIRA
     end
 
     def init_oauth_consumer(_options)
+      puts '--- init oauth consumer'
+      puts @options.to_yaml
       @options[:request_token_path] = @options[:context_path] + @options[:request_token_path]
       @options[:authorize_path] = @options[:context_path] + @options[:authorize_path]
       @options[:access_token_path] = @options[:context_path] + @options[:access_token_path]
@@ -44,22 +46,32 @@ module JIRA
     # Returns the current request token if it is set, else it creates
     # and sets a new token.
     def request_token(options = {}, *arguments, &block)
+    puts '--- request token'
+    puts options.to_yaml
       @request_token ||= get_request_token(options, *arguments, block)
     end
 
     # Sets the request token from a given token and secret.
     def set_request_token(token, secret)
+      puts '--- set request token'
+      puts token 
+      puts secret
       @request_token = OAuth::RequestToken.new(@consumer, token, secret)
     end
 
     # Initialises and returns a new access token from the params hash
     # returned by the OAuth transaction.
     def init_access_token(params)
+      puts '--- Init Access Token'
+      puts params.to_yaml
       @access_token = request_token.get_access_token(params)
     end
 
     # Sets the access token from a preexisting token and secret.
     def set_access_token(token, secret)
+      puts '---Set Access Token'
+      puts token 
+      puts secret
       @access_token = OAuth::AccessToken.new(@consumer, token, secret)
       @authenticated = true
       @access_token
@@ -68,6 +80,7 @@ module JIRA
     # Returns the current access token. Raises an
     # JIRA::Client::UninitializedAccessTokenError exception if it is not set.
     def access_token
+      puts '--- access token'
       raise UninitializedAccessTokenError unless @access_token
       @access_token
     end
@@ -79,7 +92,7 @@ module JIRA
         uri = URI.parse(path)
         uri.query = if uri.query.to_s == ''
                       oauth_params_str
-                    else
+                    else.g
                       uri.query + '&' + oauth_params_str
                     end
         path = uri.to_s

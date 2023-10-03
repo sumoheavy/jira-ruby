@@ -108,7 +108,7 @@ module JIRA
           when JIRA::OauthClient
             puts '== Y! REQUEST CLIENT IS'
             puts client.request_client.class.name 
-            20
+            5
           else 
             puts '== N! REQUEST CLIENT IS'
             puts client.request_client.class.name 
@@ -123,6 +123,8 @@ module JIRA
             vputs rehydrated 
             vputs 'of' 
             vputs worklog_issue_ids.count
+            puts the_issue_ids.count
+            puts "id IN (#{the_issue_ids.join(',')})"
             client.Issue.jql("id IN (#{the_issue_ids.join(',')})")
           end.compact.flatten
     
