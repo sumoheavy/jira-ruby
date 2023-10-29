@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
+  let(:issue_id) { 27676 }
+  let(:attachment_id) { 30076 }
   subject(:attachment) do
-    described_class.new(
-      client,
-      issue: JIRA::Resource::Issue.new(client),
-      attrs: { 'author' => { 'foo' => 'bar' } }
+    JIRA::Resource::Attachment.new(
+        client,
+        issue: JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}),
+        attrs: { 'author' => { 'foo' => 'bar' }, 'id' => attachment_id }
     )
   end
 
@@ -73,6 +75,15 @@ describe JIRA::Resource::Attachment do
     end
     let(:attachment_file_contents) { 'file contents' }
     let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
+    let(:issue_id) { 3232 }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}) }
+    subject(:attachment) do
+      JIRA::Resource::Attachment.new(
+        client,
+        issue: issue,
+        attrs: { 'author' => { 'foo' => 'bar' } }
+      )
+    end
 
     before do
       stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
@@ -125,6 +136,8 @@ describe JIRA::Resource::Attachment do
       end
 
       it 'successfully update the attachment' do
+        expect(client).to receive(:post_multipart).and_return(response).with("/jira/rest/api/2/issue/#{issue.id}/attachments", anything, anything)
+
         subject
 
         expect(attachment.filename).to eq file_name
@@ -222,6 +235,17 @@ describe JIRA::Resource::Attachment do
 
           bearer_attachment.save!('file' => path_to_file)
         end
+      end
+    end
+  end
+
+  context 'an attachment is on an issue' do
+    describe '#delete' do
+
+      it 'removes the attachment' do
+        expect(client).to receive(:delete).with("/jira/rest/api/2/issue/#{issue_id}/attachments/#{attachment_id}")
+
+        attachment.delete
       end
     end
   end
