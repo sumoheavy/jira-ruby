@@ -11,8 +11,9 @@ module JIRA
 
     def make_multipart_request(url, data, headers = {})
       @http_method = :post
+      @jwt = build_jwt(url)
 
-      super(url, data, headers)
+      super(url, data, headers.merge(jwt_header))
     end
 
     class JwtBuilder
