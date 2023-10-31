@@ -27,69 +27,14 @@ module JIRA
     #
     # === Adding an attachment to an issue
     #
-    #     client = JIRA::Client.new(options)
-    #
-    #     Tempfile.create('prefix_', Rails.configuration.cache_tmp, encoding: 'ascii-8bit') do |tempfile|
-    #       tempfile.write('data'.encode('binary'))
-    #       tempfile.rewind
+    #     Dir.mktmpdir do |dir|
+    #       path = File.join(dir, filename)
+    #       IO.copy_stream(file.path, path)
     #
     #       issue =  JIRA::Resource::Issue.find(client, 'SUP-3000', { fields: 'attachment' } )
     #       attachment = issue.attachments.build
-    #       attachment = JIRA::Resource::Attachment.new( client, issue: issue )
-    #       attachment.save!(file: tempfile.path, mimeType: 'application/octet-stream')
+    #       attachment.save!( { file: path, mimeType: content_type } )
     #     end
-    #
-    #       upload_file = UploadIO.new(tempfile, 'application/octet-stream', 'filename.dat')
-    #       upload_file = UploadIO.new(tempfile.path, 'application/octet-stream', 'filename.dat')
-    #     tempfile = Tempfile.new('prefix_')
-    #     tempfile.write(data.to_json)
-    #     tempfile.rewind
-    #     upload_file = UploadIO.new('/tmp/input', 'application/octet-stream', 'filename.dat')
-    # tempfile.path
-    #     upload_file = UploadIO.new('/tmp/input', 'application/json', 'filename.json')
-    #     upload_file = UploadIO.new('/tmp/input', 'application/octet-stream', 'filename.dat')
-    #     issue =  JIRA::Resource::Issue.find(client, 'SUP-3000', { fields: 'attachment' } )
-    #     attachment = issue.attachments.build
-    #     attachment.save(file: upload_file)
-    #
-    #     client.instance_variable_get("@options")[:default_headers].merge(headers)
-    #
-    # === Creating a resource
-    # TBD
-    #
-    #   resource = client.Resource.build({'name' => '')
-    #   resource.save
-    #
-    # === Updating a resource
-    # TBD
-    #
-    #   resource = client.Resource.find(id)
-    #   resource.save('updated_attribute' => 'new value')
-    #
-    # === Deleting a resource
-    # TBD
-    #
-    #   resource = client.Resource.find(id)
-    #   resource.delete
-    #
-    # == Nested resources
-    #
-    # Some resources are not defined in the top level of the URL namespace
-    # within the JIRA API, but are always nested under the context of another
-    # resource.  For example, a JIRA::Resource::Comment always belongs to a
-    # JIRA::Resource::Issue.
-    #
-    # These resources must be indexed and built from an instance of the class
-    # they are nested under:
-    #
-    #   issue = client.Issue.find(id)
-    #   comments = issue.comments
-    #   new_comment = issue.comments.build
-    #
-    #
-    #
-    #
-    #
     #
     #
     #
