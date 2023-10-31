@@ -232,7 +232,7 @@ describe JIRA::Client do
 
     before(:each) do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-          .with(query: hash_including(:jwt))
+          .with(headers: {"Authorization" => /JWT .+/})
           .to_return(status: 200, body: '[]', headers: {})
     end
 
@@ -248,7 +248,7 @@ describe JIRA::Client do
     context 'with a incorrect jwt key' do
       before do
         stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-            .with(query: hash_including(:jwt))
+            .with(headers: {"Authorization" => /JWT .+/})
             .to_return(status: 401, body: '[]', headers: {})
       end
 
