@@ -26,9 +26,10 @@ gem install jira-ruby
 ### Sample Usage
 Connect to JIRA
 Firstly, establish a connection with your JIRA instance by providing a few configuration parameters:
-	•	﻿private_key_file: The path to your RSA private key file.
-	•	﻿consumer_key: Your consumer key.
-	•	﻿site: The URL of your JIRA instance.
+There are other ways to connect to JIRA listed below |  [Personal Access Token](#configuring-jira-to-use-personal-access-tokens-auth)
+- ﻿private_key_file: The path to your RSA private key file.
+- ﻿consumer_key: Your consumer key.
+- site: The URL of your JIRA instance.
 
 ```ruby
 options = {
@@ -46,6 +47,7 @@ client = JIRA::Client.new(options)
 After establishing the connection, you can fetch all projects and display their key and name:
 ```ruby
 projects = client.Project.all
+
 projects.each do |project|
   puts "Project -> key: #{project.key}, name: #{project.name}"
 end
@@ -56,7 +58,9 @@ The ﻿jira-ruby gem allows you to refer to fields by their custom names rather 
 
 ```ruby
 client.Field.map_fields
+
 old_way = issue.customfield_12345
+
 # Note: The methods mapped here adopt a unique style combining PascalCase and snake_case conventions.
 new_way = issue.Special_Field
 ```
@@ -87,17 +91,18 @@ issue.save({
 ### Updating/Transitioning an Issue
 ```ruby
 issue = client.Issue.find("10002")
-issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA ```markdown
-!"}})
+issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
 
 issue_transition = issue.transitions.build
 issue_transition.save!('transition' => {'id' => transition_id})
 ```
+
 ### Deleting an Issue
 ```ruby
 issue = client.Issue.find('SAMPLEPROJECT-2')
 issue.delete
 ```
+
 ### Other Capabilities
 Apart from the operations listed above, this API wrapper supports several other capabilities like:
 	•	Searching for a user
@@ -106,7 +111,7 @@ Apart from the operations listed above, this API wrapper supports several other 
 	•	Adding attachments and comments to issues
 	•	Managing issue links and much more.
 
-Not all examples are shown in this README, refer to the complete script example for a full overview of the capabilities supported by this API wrapper.
+Not all examples are shown in this README; refer to the complete script example for a full overview of the capabilities supported by this API wrapper.
 
 ## Links to JIRA REST API documentation
 
@@ -163,7 +168,7 @@ key.
 > After you have entered all the information click OK and ensure OAuth authentication is
 > enabled.
 
-For 2 legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
+For two legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
 
 ## Configuring JIRA to use HTTP Basic Auth
 
