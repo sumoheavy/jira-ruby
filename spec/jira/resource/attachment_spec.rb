@@ -157,7 +157,6 @@ describe JIRA::Resource::Attachment do
     end
     let(:issue) { JIRA::Resource::Issue.new(client) }
 
-    # anything
     describe '#save!' do
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
