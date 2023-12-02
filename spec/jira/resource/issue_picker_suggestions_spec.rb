@@ -36,7 +36,7 @@ describe JIRA::Resource::IssuePickerSuggestions do
                                      .and_return(response)
 
       expect(client).to receive(:IssuePickerSuggestions).and_return(issue_picker_suggestions)
-      expect(issue_picker_suggestions).to receive(:build).with('sections' => [{ 'id' => 'cs' }])
+      expect(issue_picker_suggestions).to receive(:build).with({ 'sections' => [{ 'id' => 'cs' }] })
 
       JIRA::Resource::IssuePickerSuggestions.all(client, 'query')
     end

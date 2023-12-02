@@ -35,6 +35,26 @@ describe JIRA::OauthClient do
       expect(oauth_client.get_request_token).to eq(request_token)
     end
 
+    it 'could pre-process the response body in a block' do
+      response = Net::HTTPSuccess.new(1.0, '200', 'OK')
+      allow_any_instance_of(OAuth::Consumer).to receive(:request).and_return(response)
+      allow(response).to receive(:body).and_return('&oauth_token=token&oauth_token_secret=secret&password=top_secret')
+
+      result = oauth_client.request_token do |response_body|
+        CGI.parse(response_body).each_with_object({}) do |(k, v), h|
+          next if k == 'password'
+
+          h[k.strip.to_sym] = v.first
+        end
+      end
+
+      expect(result).to be_an_instance_of(OAuth::RequestToken)
+      expect(result.consumer).to eql(oauth_client.consumer)
+      expect(result.params[:oauth_token]).to eql('token')
+      expect(result.params[:oauth_token_secret]).to eql('secret')
+      expect(result.params[:password]).to be_falsey
+    end
+
     it 'allows setting the request token' do
       token = double
       expect(OAuth::RequestToken).to receive(:new).with(oauth_client.consumer, 'foo', 'bar').and_return(token)
@@ -58,7 +78,7 @@ describe JIRA::OauthClient do
         request_token = OAuth::RequestToken.new(oauth_client.consumer)
         allow(oauth_client).to receive(:get_request_token).and_return(request_token)
         mock_access_token = double
-        expect(request_token).to receive(:get_access_token).with(oauth_verifier: 'abc123').and_return(mock_access_token)
+        expect(request_token).to receive(:get_access_token).with({ oauth_verifier: 'abc123' }).and_return(mock_access_token)
         oauth_client.init_access_token(oauth_verifier: 'abc123')
         expect(oauth_client.access_token).to eq(mock_access_token)
       end

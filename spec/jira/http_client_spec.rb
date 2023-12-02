@@ -285,6 +285,11 @@ describe JIRA::HttpClient do
     expect(basic_client_cert_client.http_conn(uri)).to eq(http_conn)
   end
 
+  it 'can use a certificate authority file' do
+    client = JIRA::HttpClient.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
+    expect(client.http_conn(client.uri).ca_file).to eql('/opt/custom.ca.pem')
+  end
+
   it 'returns a http connection' do
     http_conn = double
     uri = double
