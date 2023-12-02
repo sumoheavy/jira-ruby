@@ -135,4 +135,53 @@ describe JIRA::Resource::Attachment do
       end
     end
   end
+
+  context 'when there is a local file' do
+    let(:file_name) { 'short.txt' }
+    let(:file_size) { 11 }
+    let(:file_mime_type) { 'text/plain' }
+    let(:path_to_file) { "./spec/data/files/#{file_name}" }
+    let(:response) do
+      double(
+        body: [
+          {
+            "id": 10_001,
+            "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+            "filename": file_name,
+            "created": '2017-07-19T12:23:06.572+0000',
+            "size": file_size,
+            "mimeType": file_mime_type
+          }
+        ].to_json
+      )
+    end
+    let(:issue) { JIRA::Resource::Issue.new(client) }
+
+    # anything
+    describe '#save!' do
+      context 'when using custom client headers' do
+        subject(:bearer_attachment) do
+          JIRA::Resource::Attachment.new(
+            bearer_client,
+            issue: JIRA::Resource::Issue.new(bearer_client),
+            attrs: { 'author' => { 'foo' => 'bar' } }
+          )
+        end
+        let(:default_headers_given) { { 'authorization' => "Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2" } }
+        let(:bearer_client) do
+          JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
+                           default_headers: default_headers_given )
+        end
+        let(:merged_headers) do
+          {"Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck"}.merge(default_headers_given)
+        end
+        it 'passes the custom headers' do
+          expect(bearer_client.request_client).to receive(:request_multipart).with("/jira/rest/api/2/issue/attachments", anything, merged_headers).and_return(response)
+
+          bearer_attachment.save!('file' => path_to_file)
+
+        end
+      end
+    end
+  end
 end
