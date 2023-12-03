@@ -29,7 +29,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec', '~> 4.6', '>= 4.6.5'
   s.add_development_dependency 'pry', '~> 0.10', '>= 0.10.3'
   s.add_development_dependency 'railties'
-  s.add_development_dependency 'rake', '~> 10.3', '>= 10.3.2'
+  s.add_development_dependency 'byebug', '~> 11.1'
+  s.add_development_dependency 'rake', '< 14.0', '>= 10.3.2'
   s.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
   s.add_development_dependency 'webmock', '~> 1.18', '>= 1.18.0'
 end
