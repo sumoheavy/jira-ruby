@@ -55,9 +55,9 @@ shared_examples 'a resource' do
     stub_request(:put, site_url + subject.url)
       .to_return(status: 405, body: '<html><body>Some HTML</body></html>')
     expect(subject.save('foo' => 'bar')).to be_falsey
-    expect(lambda do
+    expect do
       expect(subject.save!('foo' => 'bar')).to be_falsey
-    end).to raise_error(JIRA::HTTPError)
+    end.to raise_error(JIRA::HTTPError)
   end
 end
 
@@ -115,9 +115,9 @@ shared_examples 'a resource with a singular GET endpoint' do
   it 'handles a 404' do
     stub_request(:get, site_url + described_class.singular_path(client, '99999', prefix))
       .to_return(status: 404, body: '{"errorMessages":["' + class_basename + ' Does Not Exist"],"errors": {}}')
-    expect(lambda do
+    expect do
       client.send(class_basename).find('99999', options)
-    end).to raise_exception(JIRA::HTTPError)
+    end.to raise_exception(JIRA::HTTPError)
   end
 end
 
@@ -170,8 +170,8 @@ shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
     subject.fetch
 
     expect(subject.save('fields' => { 'invalid' => 'field' })).to be_falsey
-    expect(lambda do
+    expect do
       subject.save!('fields' => { 'invalid' => 'field' })
-    end).to raise_error(JIRA::HTTPError)
+    end.to raise_error(JIRA::HTTPError)
   end
 end
