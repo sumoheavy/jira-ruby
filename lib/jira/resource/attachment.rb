@@ -17,9 +17,11 @@ module JIRA
     #
     # === Retrieving a single attachment by Issue and attachment id
     #
+    #     # Find attachment with id 30076 on issue SUP-3000.
     #     issue =  JIRA::Resource::Issue.find(client, 'SUP-3000', { fields: 'attachment' } )
-    #     attachments = issue.attachments.find(30076)
-    #     attachment = attachments.first
+    #     attachment = issue.attachments.find do |attachment_curr|
+    #         30076 == attachment_curr.id.to_i
+    #     end
     #
     # === Retrieving file contents of attachment
     #
@@ -51,7 +53,9 @@ module JIRA
     # @!attribute [r] mimeType
     #   @return [String] MIME of the content type
     # @!attribute [r] content
-    #   @return [String] URI to download the contents of the attachment
+    #   @return [String] URL to download the contents of the attachment
+    # @!attribute [r] thumbnail
+    #   @return [String] URL to download the thumbnail of the attachment
     #
     class Attachment < JIRA::Base
       belongs_to :issue
@@ -61,6 +65,13 @@ module JIRA
         'attachments'
       end
 
+      # Gets meta data about attachments on the server.
+      # @example Return metadata
+      #     {
+      #       "enabled" => true,
+      #       "uploadLimit" => 1000000
+      #     }
+      # @return [Hash] The meta data for attachments.  (See example.)
       def self.meta(client)
         response = client.get("#{client.options[:rest_base_path]}/attachment/meta")
         parse_json(response.body)
@@ -103,6 +114,13 @@ module JIRA
         download_file(headers, &:read)
       end
 
+      # Uploads a file as an attachment to its issue.
+      #
+      # Filename used will be the basename of the given file.
+      #
+      # @param [Hash] attrs the options to create a message with.
+      # @option attrs [IO,String] :file The file to upload, either a file object or a file path to find the file.
+      # @option attrs [String] :mimeType The MIME type of the file.
       def save!(attrs, path = url)
         file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
         mime_type = attrs[:mimeType] || 'application/binary'
