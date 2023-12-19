@@ -94,9 +94,6 @@ describe JIRA::Resource::Attachment do
         expect(attachment.mimeType).to eq file_mime_type
         expect(attachment.size).to eq file_size
       end
-    end
-
-    describe '#save' do
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
           JIRA::Resource::Attachment.new(
@@ -122,7 +119,10 @@ describe JIRA::Resource::Attachment do
         end
       end
 
-      subject { attachment.save!('file' => path_to_file) }
+    end
+
+    describe '#save!' do
+    subject { attachment.save!('file' => path_to_file) }
 
       before do
         allow(client).to receive(:post_multipart).and_return(response)
