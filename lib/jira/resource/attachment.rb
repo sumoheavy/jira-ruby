@@ -22,6 +22,10 @@ module JIRA
     #         30076 == attachment_curr.id.to_i
     #     end
     #
+    # === Retrieving meta information for an attachments
+    #
+    #     attachment.meta
+    #
     # === Retrieving file contents of attachment
     #
     #     content = URI.open(attachment.content).read
@@ -42,6 +46,15 @@ module JIRA
     #   resource = client.Resource.find(id)
     #   resource.delete
     #
+    # @!method save(attrs, path = url)
+    #   Uploads a file as an attachment to its issue.
+    #
+    #   Filename used will be the basename of the given file.
+    #
+    #   @param [Hash] attrs the options to create a message with.
+    #   @option attrs [IO,String] :file The file to upload, either a file object or a file path to find the file.
+    #   @option attrs [String] :mimeType The MIME type of the file.
+    #   @return [Boolean] True if successful, false if failed.
     #
     # @!attribute [r] self
     #   @return [String] URL to JSON of this attachment
@@ -64,6 +77,7 @@ module JIRA
       belongs_to :issue
       has_one :author, class: JIRA::Resource::User
 
+      # @private
       def self.endpoint_name
         'attachments'
       end
@@ -124,6 +138,7 @@ module JIRA
       # @param [Hash] attrs the options to create a message with.
       # @option attrs [IO,String] :file The file to upload, either a file object or a file path to find the file.
       # @option attrs [String] :mimeType The MIME type of the file.
+      # @raise [JIRA::HTTPError] if failed
       def save!(attrs, path = url)
         file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
         mime_type = attrs[:mimeType] || 'application/binary'
