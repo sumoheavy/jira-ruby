@@ -20,11 +20,22 @@ module JIRA
         parse_json(response.body)
       end
 
+      # Opens a file streaming the download of the attachment.
+      # @example Read the file contents
+      #   download_file(headers) do |file|
+      #     file.read
+      #   end
+      # @param [Hash] headers Any additional headers to call Jira.
+      # @yield |file|
+      # @yieldparam [IO] file The IO object streaming the download.
       def download_file(headers = {}, &block)
         default_headers = client.options[:default_headers]
         URI.open(content, default_headers.merge(headers), &block)
       end
 
+      # Downloads the file contents as a string object.
+      # @param [Hash] headers Any additional headers to call Jira.
+      # @return [String,NilClass] The file contents.
       def download_contents(headers = {})
         download_file(headers) do |file|
           file.read
