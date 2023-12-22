@@ -1,4 +1,5 @@
 require 'net/http/post/multipart'
+require 'open-uri'
 
 module JIRA
   module Resource
@@ -17,6 +18,17 @@ module JIRA
       def self.meta(client)
         response = client.get(client.options[:rest_base_path] + '/attachment/meta')
         parse_json(response.body)
+      end
+
+      def download_file(headers = {}, &block)
+        default_headers = client.options[:default_headers]
+        URI.open(content, default_headers.merge(headers), &block)
+      end
+
+      def download_contents(headers = {})
+        download_file(headers) do |file|
+          file.read
+        end
       end
 
       def save!(attrs, path = url)
