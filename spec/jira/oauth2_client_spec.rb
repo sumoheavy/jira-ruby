@@ -30,20 +30,19 @@ describe JIRA::Oauth2Client do
   let(:client_key) { 'jira_client.key' }
   let(:minimum_options) do
     {
-
+      site: site,
+      client_id: client_id,
+      client_secret: client_secret,
+      redirect_uri: redirect_uri,
     }
   end
   let(:full_options) do
     minimum_options.merge(
       {
-        client_id: client_id,
-        client_secret: client_secret,
-        site: site,
         use_ssl: ssl_flag,
         auth_scheme: auth_scheme,
         authorize_site: auth_site,
         authorize_url: authorize_url,
-        redirect_uri: redirect_uri,
         token_url: token_url,
         max_redirects: max_redirects,
         default_headers: headers,
@@ -70,13 +69,12 @@ describe JIRA::Oauth2Client do
     describe '.new' do
       context 'setting options' do
         subject(:request_client) do
-          # JIRA::Oauth2Client.new(client_id: client_id, client_secret: client_secret, site: site,
-          #                        oauth2_client_options: { site: auth_site })
           JIRA::Oauth2Client.new(full_options)
         end
 
         it 'sets oauth2 client options' do
-          # expect(request_client.options[:site]).to eq(site)
+          expect(request_client.class).to eq(JIRA::Oauth2Client)
+          expect(request_client.oauth2_client.class).to eq(OAuth2::Client)
           expect(request_client.client_id).to eq(client_id)
           expect(request_client.client_secret).to eq(client_secret)
           expect(request_client.oauth2_client_options[:site]).to eq(site)
@@ -92,90 +90,88 @@ describe JIRA::Oauth2Client do
           expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_cert)).to eq(client_cert)
           expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_key)).to eq(client_key)
           expect(request_client.oauth2_client_options.dig(:connection_opts, :headers)).to eq(headers)
-          #         authorize_url: 'oauth/authorize',
-          # redirect_uri: ?
-          # authorize_url: ?
-          #         token_url: 'oauth/token',
-          #         token_method: :post,
-          #         auth_scheme: :basic_auth,
-          #         connection_opts: {},   # <-- Faraday
-          #         connection_build: block,
-          #         max_redirects: 5,
-          #         raise_errors: true,
-          #         logger: ::Logger.new($stdout),
-          #         access_token_class: AccessToken,
-          # Faraday:
-          #     # @option options [Hash] :params Hash of unencoded URI query params.
-          #     # @option options [Hash] :headers Hash of unencoded HTTP headers.
-          #     # @option options [Hash] :request Hash of request options.
-          #     # @option options [Hash] :ssl Hash of SSL options.
-          #     # @option options [Hash] :proxy Hash of Proxy options.
-          # expect(request_client.oauth2_client_options[:auth_scheme]).to eq(JIRA::Oauth2Client::DEFAULT_AUTHORIZE_OPTIONS[:auth_scheme])
-          # expect(request_client.oauth2_client_options[:authorize_url]).to eq(JIRA::Oauth2Client::DEFAULT_AUTHORIZE_OPTIONS[:authorize_url])
-          # expect(request_client.options[:token_url]).to eq(JIRA::Oauth2Client::DEFAULT_OPTIONS[:token_url])
-          #       use_ssl:          config.tls,
-          #       ssl_verify_mode:  ('verify-none' == config.verify_mode ? OpenSSL::SSL::VERIFY_NONE : OpenSSL::SSL::VERIFY_PEER),
-          #       cert_path:        config.ca_cert_file,
-          #       read_timeout:     config.read_timeout,
-          #
-          #:verify => OpenSSL::SSL::VERIFY_NONE
-          # version: :TLSv1_2
-          #     :client_cert  => ...,
-          #     :client_key   => ...,
-          #     :ca_file      => ...,
-          #     :ca_path      => ...,
+          expect(request_client.oauth2_client.site).to eq(site)
+          expect(request_client.oauth2_client.id).to eq(client_id)
+          expect(request_client.oauth2_client.secret).to eq(client_secret)
         end
       end
 
       context 'using default options' do
         subject(:request_client) do
-          # JIRA::Oauth2Client.new(client_id: client_id, client_secret: client_secret, site: site,
-          #                        oauth2_client_options: { site: auth_site })
           JIRA::Oauth2Client.new(minimum_options)
         end
 
         it 'uses default oauth2 client options' do
-
-        end
-      end
-
-      context 'initialize oauth2 request client' do
-        it 'creates a Oauth2::Client on initialize' do
+          expect(request_client.class).to eq(JIRA::Oauth2Client)
           expect(request_client.oauth2_client.class).to eq(OAuth2::Client)
-          expect(request_client.oauth2_client.site).to eq(auth_site)
+          expect(request_client.client_id).to eq(client_id)
+          expect(request_client.client_secret).to eq(client_secret)
+          expect(request_client.oauth2_client_options[:site]).to eq(site)
+          expect(request_client.oauth2_client_options[:use_ssl]).to eq(JIRA::Oauth2Client::DEFAULT_OAUTH2_CLIENT_OPTIONS[:use_ssl])
+          expect(request_client.oauth2_client_options[:auth_scheme]).to eq(JIRA::Oauth2Client::DEFAULT_OAUTH2_CLIENT_OPTIONS[:auth_scheme])
+          expect(request_client.oauth2_client_options[:authorize_url]).to eq(JIRA::Oauth2Client::DEFAULT_OAUTH2_CLIENT_OPTIONS[:authorize_url])
+          expect(request_client.oauth2_client_options[:token_url]).to eq(JIRA::Oauth2Client::DEFAULT_OAUTH2_CLIENT_OPTIONS[:token_url])
+          expect(request_client.oauth2_client_options[:redirect_uri]).to eq(redirect_uri)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :version)).to be_nil
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :verify)).to be_nil
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :ca_path)).to be_nil
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_cert)).to be_nil
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_key)).to be_nil
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :headers)).to be_nil
+          expect(request_client.oauth2_client.site).to eq(site)
           expect(request_client.oauth2_client.id).to eq(client_id)
           expect(request_client.oauth2_client.secret).to eq(client_secret)
-          expect(request_client.oauth2_client.options[:auth_scheme]).to eq(JIRA::Oauth2Client::DEFAULT_AUTHORIZE_OPTIONS[:auth_scheme])
-          expect(request_client.oauth2_client.options[:authorize_url]).to eq(JIRA::Oauth2Client::DEFAULT_AUTHORIZE_OPTIONS[:authorize_url])
         end
       end
 
       context 'using a proxy' do
-        let(:proxy_site) { 'https://auth_server' }
+        let(:proxy_site) { 'https://proxy_server' }
         let(:proxy_user) { 'ironman' }
         let(:proxy_password) { 'iamironman' }
-        subject(:proxy_request_client) do
-          JIRA::Oauth2Client.new(client_id: client_id, client_secret: client_secret, site: site,
-                                 oauth2_client_options: { site: auth_site,
-                                              proxy_uri: proxy_site,
-                                              proxy_user: proxy_user,
-                                              proxy_password: proxy_password })
+        subject(:request_client) do
+          JIRA::Oauth2Client.new(proxy_options)
         end
 
         it 'creates a proxy configured Oauth2::Client on initialize' do
+          expect(request_client.class).to eq(JIRA::Oauth2Client)
           expect(request_client.oauth2_client.class).to eq(OAuth2::Client)
-          expect(request_client.oauth2_client.site).to eq(auth_site)
+          expect(request_client.client_id).to eq(client_id)
+          expect(request_client.client_secret).to eq(client_secret)
+          expect(request_client.oauth2_client_options[:site]).to eq(site)
+          expect(request_client.oauth2_client_options[:use_ssl]).to eq(ssl_flag)
+          expect(request_client.oauth2_client_options[:auth_scheme]).to eq(auth_scheme)
+          expect(request_client.oauth2_client_options[:authorize_url]).to eq(authorize_url)
+          expect(request_client.oauth2_client_options[:redirect_uri]).to eq(redirect_uri)
+          expect(request_client.oauth2_client_options[:token_url]).to eq(token_url)
+          expect(request_client.oauth2_client_options[:max_redirects]).to eq(max_redirects)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :version)).to eq(ssl_version)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :verify)).to eq(ssl_verify)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :ca_path)).to eq(ca_path)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_cert)).to eq(client_cert)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :ssl, :client_key)).to eq(client_key)
+          expect(request_client.oauth2_client_options.dig(:connection_opts, :headers)).to eq(headers)
+          expect(request_client.oauth2_client.site).to eq(site)
           expect(request_client.oauth2_client.id).to eq(client_id)
           expect(request_client.oauth2_client.secret).to eq(client_secret)
-          # expect(request_client.oauth2_client.options[:token_url]).to eq(JIRA::Oauth2Client::DEFAULT_OPTIONS[:token_url])
-          expect(proxy_request_client.oauth2_client.options.dig(:connection_opts, :proxy, :uri)).to eq(proxy_site)
-          expect(proxy_request_client.oauth2_client.options.dig(:connection_opts, :proxy, :user)).to eq(proxy_user)
-          expect(proxy_request_client.oauth2_client.options.dig(:connection_opts, :proxy, :password)).to eq(proxy_password)
+          expect(request_client.oauth2_client.options.dig(:connection_opts, :proxy, :uri)).to eq(proxy_site)
+          expect(request_client.oauth2_client.options.dig(:connection_opts, :proxy, :user)).to eq(proxy_user)
+          expect(request_client.oauth2_client.options.dig(:connection_opts, :proxy, :password)).to eq(proxy_password)
         end
       end
 
       context 'passing options to oauth2 client' do
-        it 'passes oauth2 client options to creating oauth2 client'
+        let(:oauth2_client) { instance_double(OAuth2::Client) }
+        subject(:request_client) do
+          JIRA::Oauth2Client.new(full_options)
+        end
+
+        it 'passes oauth2 client options to creating oauth2 client' do
+          expect(OAuth2::Client).to receive(:new).with(client_id, client_secret, request_client.oauth2_client_options).and_return(oauth2_client)
+
+          oauth2_client_result = request_client.oauth2_client
+
+          expect(oauth2_client_result).to eq(oauth2_client)
+        end
       end
     end
   end

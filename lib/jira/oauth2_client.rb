@@ -5,7 +5,7 @@ module JIRA
   #
   # == OAuth 2.0 Overview
   #
-  # OAuth 2.0 sepearates the roles of Resource Server and Authentication Server.
+  # OAuth 2.0 separates the roles of Resource Server and Authentication Server.
   #
   # The Resource Server will be Jira.
   # The Authentication Server can be Jira or some other OAuth 2.0 Authentication server.
@@ -94,12 +94,16 @@ module JIRA
   #   @return [String] The CLIENT ID registered with the Authentication Server
   # @!attribute [r] client_secret
   #   @return [String] The CLIENT SECRET registered with the Authentication Server
-  # @!attribute [r] cstf_state
+  # @!attribute [r] csrf_state
   #   @return [String] An unpredictable value which a CSRF forger would not be able to provide
   # @!attribute [r] oauth2_client
   #   @return [OAuth2::Client] The oauth2 gem client object used.
-  # @!attribute [r] options
+  # @!attribute [r] oauth2_client_options
   #   @return [Hash] The oauth2 gem options for the client object.
+  # @!attribute [r] prior_grant_type
+  #   @return [String] The grant type used to create the current Access Token.
+  # @!attribute [r] access_token
+  #   @return [OAuth2::AccessToken] An object for the Access Token.
   #
   class Oauth2Client < RequestClient
 
@@ -107,60 +111,59 @@ module JIRA
     OAUTH2_CLIENT_OPTIONS_KEYS =
       %i[auth_scheme authorize_url redirect_uri token_url max_redirects site
          use_ssl ssl_verify_mode ssl_version]
-    # @private
-    DEFAULT_AUTHORIZE_OPTIONS = {
-      authorize_url: '/rest/oauth2/latest/authorize',
-      auth_scheme: 'request_body'
-    }.freeze
+
     # @private
     DEFAULT_OAUTH2_CLIENT_OPTIONS = {
+      use_ssl: true,
       auth_scheme: 'request_body',
       authorize_url: '/rest/oauth2/latest/authorize',
-      token_url: '/rest/oauth2/latest/token'
-    }.freeze
-    DEFAULT_OPTIONS = {
       token_url: '/rest/oauth2/latest/token',
     }.freeze
-    attr_reader :prior_grant_type, :access_token
-    # attr_reader :options
-    attr_reader :oauth2_client_options, :client_id, :client_secret, :csrf_state
 
-    # @param [Hash] options
-    # @option options [String] :client_id The registered client id
-    # @option options [String] :client_secret The registered client secret
-    # @option options [String] :site The hostname of the Authentication Server
-    # @option options [String] :authorize_url The Authorization Request URI (default '/rest/oauth2/latest/authorize')
-    # @option options [String] :token_url The Jira Resource Server Access Request URI (default '/rest/oauth2/latest/token')
-    # @option options [String] :auth_scheme Way of passing parameters for authentication (default 'request_body')
+    attr_reader :prior_grant_type, :access_token
+    attr_reader :oauth2_client_options, :client_id, :client_secret, :csrf_state
+    # attr_reader :options
+
+    # @param [Hash] options Options as passed from JIRA::Client constructor.
+    # @option options [String] :site The hostname of the Jira in the role as Resource Server
+    # @option options [String] :auth_site The hostname of the Authentication Server
+    # @option options [String] :client_id The OAuth 2.0 client id as registered with the Authentication Server
+    # @option options [String] :client_secret The OAuth 2.0 client secret as registered with the Authentication Server
+    # @option options [String] :auth_scheme Way of passing parameters for authentication (defaults to 'request_body')
+    # @option options [String] :authorize_url The Authorization Request URI (defaults to '/rest/oauth2/latest/authorize')
+    # @option options [String] :token_url The Jira Resource Server Access Request URI (defaults to '/rest/oauth2/latest/token')
     # @option options [String] :redirect_uri Callback for result of Authentication Request
+    # @option options [Integer] :max_redirects Number of redirects allowed
+    # @option options [Hash] :default_headers Additional headers for requests
+    # @option options [Boolean] :use_ssl true if using HTTPS, false for HTTP
+    # @option options [Integer] :ssl_verify_mode OpenSSL::SSL::VERIFY_PEER or OpenSSL::SSL::VERIFY_NONE
+    # @option options [String] :cert_path Full path to certificate verifying server identity.
+    # @option options [String] :ssl_client_cert Path to client public key certificate.
+    # @option options [String] :ssl_client_key Path to client private key.
+    # @option options [Symbol] :ssl_version Version of TLS or SSL, (e.g. :TLSv1_2)
     # @option options [String] :proxy_uri Proxy URI
     # @option options [String] :proxy_user Proxy user
     # @option options [String] :proxy_password Proxy Password
-    def initialize(options = {})
-      @options = init_oauth2_options(options)
+    def initialize(options)
+      # @options = init_oauth2_options(options)
+      init_oauth2_options(options)
       if options.has_key?(:access_token_options)
         @access_token = access_token_from_options(options[:access_token_options])
       end
+      nil
     end
 
     # @private
     private def init_oauth2_options(options)
-      # byebug
-      options_local = options.dup
-      @client_id = options_local.delete(:client_id)
-      @client_secret = options_local.delete(:client_secret)
+      @client_id = options[:client_id]
+      @client_secret = options[:client_secret]
 
-      options_local = DEFAULT_OAUTH2_CLIENT_OPTIONS.merge(options)
-      # @oauth2_client_options = DEFAULT_AUTHORIZE_OPTIONS.merge(options_local.delete(:oauth2_client_options) || {})
-      # @oauth2_client_options = DEFAULT_AUTHORIZE_OPTIONS.merge(options_local.delete(:oauth2_client_options) || {})
-      @oauth2_client_options = options_local.slice(*OAUTH2_CLIENT_OPTIONS_KEYS)
+      @oauth2_client_options = DEFAULT_OAUTH2_CLIENT_OPTIONS.merge(options).slice(*OAUTH2_CLIENT_OPTIONS_KEYS)
 
 
       @oauth2_client_options[:connection_opts] ||= {}
 
-
       @oauth2_client_options[:connection_opts][:headers] ||= options[:default_headers] if options[:default_headers]
-
 
       if options[:use_ssl]
         @oauth2_client_options[:connection_opts][:ssl] ||= {}
@@ -171,10 +174,9 @@ module JIRA
         @oauth2_client_options[:connection_opts][:ssl][:client_key] = options[:ssl_client_key] if options[:ssl_client_key]
       end
 
-
-      proxy_uri = oauth2_client_options.delete(:proxy_uri)
-      proxy_user = oauth2_client_options.delete(:proxy_user)
-      proxy_password = oauth2_client_options.delete(:proxy_password)
+      proxy_uri = options[:proxy_uri]
+      proxy_user = options[:proxy_user]
+      proxy_password = options[:proxy_password]
       if proxy_uri
         @oauth2_client_options[:connection_opts][:proxy] ||= {}
         proxy_opts = @oauth2_client_options[:connection_opts][:proxy]
@@ -185,13 +187,6 @@ module JIRA
 
       @oauth2_client_options
     end
-
-    # @private
-    # private def init_oauth2_client(oauth2_client_options)
-    #   OAuth2::Client.new(client_id,
-    #                      client_secret,
-    #                      oauth2_client_options)
-    # end
 
     def oauth2_client
       @oauth2_client ||=
