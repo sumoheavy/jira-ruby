@@ -179,10 +179,9 @@ describe JIRA::Oauth2Client do
   context 'prior to Authentication Request' do
     let(:redirect_uri) { 'http://localhost/auth_response' }
     subject(:request_client) do
-      JIRA::Oauth2Client.new(client_id: client_id,
-                             client_secret: client_secret,
-                             site: auth_site,
-                             oauth2_client_options: { site: auth_site, redirect_uri: redirect_uri })
+      JIRA::Oauth2Client.new(site: auth_site,
+                             client_id: client_id,
+                             client_secret: client_secret)
     end
 
     describe '.authorize_url' do
@@ -191,7 +190,7 @@ describe JIRA::Oauth2Client do
       context 'default generated CSRF state' do
         it 'provides authorization redirect URI' do
 
-          authorize_url = request_client.authorize_url
+          authorize_url = request_client.authorize_url(params: { redirect_uri: redirect_uri })
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -208,7 +207,7 @@ describe JIRA::Oauth2Client do
       context 'without using CSRF state' do
         it 'disables CSRF STATE' do
 
-          authorize_url = request_client.authorize_url(state: false)
+          authorize_url = request_client.authorize_url(state: false, params: { redirect_uri: redirect_uri })
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -225,7 +224,7 @@ describe JIRA::Oauth2Client do
       context 'using given CSRF state' do
         it 'uses given CSRF STATE' do
 
-          authorize_url = request_client.authorize_url(state: state_given)
+          authorize_url = request_client.authorize_url(state: state_given, params: { redirect_uri: redirect_uri })
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -253,7 +252,7 @@ describe JIRA::Oauth2Client do
 
         it 'provides authorization redirect URI' do
 
-          params = { proxy_uri: proxy_site, proxy_user: proxy_user, proxy_password: proxy_password }
+          params = { redirect_uri: redirect_uri, proxy_uri: proxy_site, proxy_user: proxy_user, proxy_password: proxy_password }
           authorize_url = proxy_request_client.authorize_url(params: params)
 
           expect(authorize_url).to_not be_nil
@@ -277,6 +276,11 @@ describe JIRA::Oauth2Client do
     let(:code) { 'Authentication Code String Value' }
     let(:token) { 'Access Token String Value' }
     let(:refresh_token) { 'Refresh Token String Value' }
+    subject(:request_client) do
+      JIRA::Oauth2Client.new(site: site,
+                             client_id: client_id,
+                             client_secret: client_secret)
+    end
     let(:access_token) do
       OAuth2::AccessToken.new(request_client.oauth2_client,
                               token,
@@ -291,7 +295,7 @@ describe JIRA::Oauth2Client do
 
         request_client.get_token(code)
 
-        expect(request_client.grant_type).to eq('authorization_code')
+        expect(request_client.prior_grant_type).to eq('authorization_code')
         expect(request_client.token).to eq(token)
         expect(request_client.refresh_token).to eq(refresh_token)
       end
@@ -309,11 +313,9 @@ describe JIRA::Oauth2Client do
         request_client = JIRA::Oauth2Client.new(client_id: client_id,
                                                 client_secret: client_secret,
                                                 site: auth_site,
-                                                access_token_options: {
-                                                  token: token
-                                                })
+                                                access_token: token)
 
-        expect(request_client.grant_type).to eq('access_token')
+        expect(request_client.prior_grant_type).to eq('access_token')
         expect(request_client.token).to eq(token)
       end
     end
@@ -328,9 +330,7 @@ describe JIRA::Oauth2Client do
       JIRA::Oauth2Client.new(client_id: client_id,
                              client_secret: client_secret,
                              site: auth_site,
-                             access_token_options: {
-                               refresh_token: refresh_token
-                             })
+                             refresh_token: refresh_token)
     end
     let(:access_token_updated) do
       OAuth2::AccessToken.new(request_client.oauth2_client,
@@ -346,7 +346,7 @@ describe JIRA::Oauth2Client do
 
         request_client.refresh
 
-        expect(request_client.grant_type).to eq('refresh_token')
+        expect(request_client.prior_grant_type).to eq('refresh_token')
         expect(request_client.token).to eq(token_updated)
         expect(request_client.refresh_token).to eq(refresh_token_updated)
       end
@@ -357,6 +357,7 @@ describe JIRA::Oauth2Client do
     let(:oauth2_client) { instance_double(OAuth2::Client) }
     let(:token) { 'Access Token String Value' }
     let(:refresh_token) { 'Refresh Token String Value' }
+    let(:redirect_uri) { 'http://localhost/auth_response' }
     let(:access_token) do
       OAuth2::AccessToken.new(oauth2_client,
                               token,
@@ -364,40 +365,18 @@ describe JIRA::Oauth2Client do
                                 expires_in: 3600,
                                 expires_at: (Time.now + 3600).to_i })
     end
-    let(:redirect_uri) { 'http://localhost/auth_response' }
     subject(:client) do
       JIRA::Client.new(auth_type: :oauth2,
                        client_id: client_id,
                        client_secret: client_secret,
-                       site: auth_site,
-                       oauth2_client_options: {
-                         site: site
-                       },
-                       access_token_options: {
-                         token: token,
-                         refresh_token: refresh_token
-                       })
+                       site: site,
+                       access_token: token,
+                       refresh_token: refresh_token)
     end
     let(:response) do
       response = Net::HTTPSuccess.new(1.0, '200', 'OK')
       allow(response).to receive(:body).and_return('{}')
       response
-    end
-
-    describe '.request_client.oauth2_client' do
-      it 'initializes the oauth2 client from an Access Token' do
-        expect(OAuth2::Client).to receive(:new).with(client_id,
-                                                     client_secret,
-                                                     {
-                                                       site: site,
-                                                       auth_scheme: "request_body",
-                                                       authorize_url: "/rest/oauth2/latest/authorize"
-                                                     }).and_return(oauth2_client)
-
-        oauth2_client_result = client.request_client.oauth2_client
-
-        expect(oauth2_client_result).to_not be_nil
-      end
     end
 
     describe '.request_client.access_token' do
@@ -412,6 +391,7 @@ describe JIRA::Oauth2Client do
 
         access_token_result = client.request_client.access_token
 
+        expect(access_token_result).to_not be_nil
         expect(access_token_result.token).to eq(token)
         expect(access_token_result.refresh_token).to eq(refresh_token)
       end

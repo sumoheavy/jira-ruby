@@ -125,8 +125,8 @@ module JIRA
     # attr_reader :options
 
     # @param [Hash] options Options as passed from JIRA::Client constructor.
-    # @option options [String] :site The hostname of the Jira in the role as Resource Server
-    # @option options [String] :auth_site The hostname of the Authentication Server
+    # @option options [String] :site The URL of the Jira in the role as Resource Server
+    # @option options [String] :auth_site The URL of the Authentication Server
     # @option options [String] :client_id The OAuth 2.0 client id as registered with the Authentication Server
     # @option options [String] :client_secret The OAuth 2.0 client secret as registered with the Authentication Server
     # @option options [String] :auth_scheme Way of passing parameters for authentication (defaults to 'request_body')
@@ -147,8 +147,8 @@ module JIRA
     def initialize(options)
       # @options = init_oauth2_options(options)
       init_oauth2_options(options)
-      if options.has_key?(:access_token_options)
-        @access_token = access_token_from_options(options[:access_token_options])
+      if 0 < options.slice(:access_token, :refresh_token).size
+        @access_token = access_token_from_options(options)
       end
       nil
     end
@@ -198,13 +198,7 @@ module JIRA
 
     def access_token_from_options(_options)
       @prior_grant_type = 'access_token'
-      OAuth2::AccessToken.from_hash(oauth2_client, _options)
-    end
-
-    # @private
-    private def init_access_token(_options)
-      @prior_grant_type = 'access_token'
-      hash = { token: _options[:token], refresh_token: _options[:refresh_token] }
+      hash = { token: _options[:access_token], refresh_token: _options[:refresh_token] }
       OAuth2::AccessToken.from_hash(oauth2_client, hash)
     end
 
