@@ -145,7 +145,6 @@ module JIRA
     # @option options [String] :proxy_user Proxy user
     # @option options [String] :proxy_password Proxy Password
     def initialize(options)
-      # @options = init_oauth2_options(options)
       init_oauth2_options(options)
       if 0 < options.slice(:access_token, :refresh_token).size
         @access_token = access_token_from_options(options)
@@ -217,12 +216,15 @@ module JIRA
     # @param [Hash] params Additional parameters to pass to the oauth2 gem.
     # @option params [String,NilClass] :redirect_uri Callback for result of Authentication Request
     # @return [String] URI to redirect to for Authentication Request
-    def authorize_url(scope: "WRITE", state: nil, params: {})
+    def authorize_url(params = {})
+      #TODO: Change to one hash argument
       params = params.dup
-      params[:scope] = scope
+      # params[:scope] ||= scope
+      params[:scope] ||= 'WRITE'
 
       unless false == state
-        @csrf_state = state || generate_encoded_state
+        # @csrf_state = state || generate_encoded_state
+        @csrf_state = params[:state] || generate_encoded_state
         params[:state] = @csrf_state
       end
 
