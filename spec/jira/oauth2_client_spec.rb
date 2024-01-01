@@ -374,7 +374,8 @@ describe JIRA::Oauth2Client do
                        refresh_token: refresh_token)
     end
     let(:response) do
-      response = Net::HTTPSuccess.new(1.0, '200', 'OK')
+      response = instance_double(OAuth2::Response)
+      allow(response).to receive(:status).and_return(200)
       allow(response).to receive(:body).and_return('{}')
       response
     end

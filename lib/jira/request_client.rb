@@ -10,13 +10,13 @@ module JIRA
 
     def request(*args)
       response = make_request(*args)
-      raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+      raise HTTPError, response unless (200..299).include?(response&.status)
       response
     end
 
     def request_multipart(*args)
       response = make_multipart_request(*args)
-      raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+      raise HTTPError, response unless (200..299).include?(response&.status)
       response
     end
 
