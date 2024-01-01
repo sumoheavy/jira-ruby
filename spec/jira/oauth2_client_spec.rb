@@ -190,7 +190,7 @@ describe JIRA::Oauth2Client do
       context 'default generated CSRF state' do
         it 'provides authorization redirect URI' do
 
-          authorize_url = request_client.authorize_url(params: { redirect_uri: redirect_uri })
+          authorize_url = request_client.authorize_url( redirect_uri: redirect_uri )
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -207,7 +207,7 @@ describe JIRA::Oauth2Client do
       context 'without using CSRF state' do
         it 'disables CSRF STATE' do
 
-          authorize_url = request_client.authorize_url(state: false, params: { redirect_uri: redirect_uri })
+          authorize_url = request_client.authorize_url(state: false, redirect_uri: redirect_uri )
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -224,7 +224,7 @@ describe JIRA::Oauth2Client do
       context 'using given CSRF state' do
         it 'uses given CSRF STATE' do
 
-          authorize_url = request_client.authorize_url(state: state_given, params: { redirect_uri: redirect_uri })
+          authorize_url = request_client.authorize_url(state: state_given, redirect_uri: redirect_uri )
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
@@ -253,7 +253,7 @@ describe JIRA::Oauth2Client do
         it 'provides authorization redirect URI' do
 
           params = { redirect_uri: redirect_uri, proxy_uri: proxy_site, proxy_user: proxy_user, proxy_password: proxy_password }
-          authorize_url = proxy_request_client.authorize_url(params: params)
+          authorize_url = proxy_request_client.authorize_url( params )
 
           expect(authorize_url).to_not be_nil
           uri = URI.parse(authorize_url)
