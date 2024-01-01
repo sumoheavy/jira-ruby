@@ -222,7 +222,7 @@ module JIRA
       # params[:scope] ||= scope
       params[:scope] ||= 'WRITE'
 
-      unless false == state
+      unless false == params[:state]
         # @csrf_state = state || generate_encoded_state
         @csrf_state = params[:state] || generate_encoded_state
         params[:state] = @csrf_state
