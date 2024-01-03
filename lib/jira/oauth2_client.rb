@@ -255,8 +255,26 @@ module JIRA
       @access_token = @access_token.refresh(grant_type: 'refresh_token', refresh_token: refresh_token)
     end
 
+    def authenticated?
+      !!(@authenticated)
+    end
+
     def make_request(http_method, url, body = '', headers = {})
-      access_token.send(http_method, url, headers)
+      opts = {
+        headers: headers
+      }
+      if [:post, :put, :patch].include?(http_method)
+        opts[:body] = body
+      end
+
+      response = access_token.request(http_method, url, opts)
+
+      @authenticated = true
+      response
+    end
+
+    def make_multipart_request(url, data, headers = {})
+      byebug
     end
   end
 end

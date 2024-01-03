@@ -366,6 +366,7 @@ describe JIRA::Oauth2Client do
                                 expires_at: (Time.now + 3600).to_i })
     end
     subject(:client) do
+      allow(OAuth2::AccessToken).to receive(:from_hash).and_return(access_token)
       JIRA::Client.new(auth_type: :oauth2,
                        client_id: client_id,
                        client_secret: client_secret,
@@ -382,7 +383,6 @@ describe JIRA::Oauth2Client do
 
     describe '.request_client.access_token' do
       it 'initializes the oauth2 Access Token' do
-        # OAuth2::AccessToken.from_hash(oauth2_client, _options)
         allow(OAuth2::Client).to receive(:new).and_return(oauth2_client)
         expect(OAuth2::AccessToken).to receive(:from_hash).with(oauth2_client,
                                                                 {
@@ -398,16 +398,64 @@ describe JIRA::Oauth2Client do
       end
     end
 
-    describe 'ServerInfo.all' do
-      it 'makes an HTTP get request' do
-        allow(OAuth2::AccessToken).to receive(:from_hash).and_return(access_token)
-        expect(access_token).to receive(:get).and_return( response )
+    describe 'JIRA::Resource::ServerInfo.all' do
+      it 'makes an HTTP GET request' do
+        expect(access_token).to receive(:request).with(:get, '/jira/rest/api/2/serverInfo', anything).and_return( response )
 
-        client.request_client
         result = JIRA::Resource::ServerInfo.all(client)
 
       end
     end
 
+    describe 'JIRA::Resource::Attachment#delete' do
+      let(:issue_id) { 37208 }
+      let(:issue) { JIRA::Resource::Issue.new(client) }
+      subject(:attachment) do
+        _attachment = JIRA::Resource::Attachment.new(client, issue: issue)
+        allow(_attachment).to receive(:issue_id).and_return(issue_id)
+        _attachment
+      end
+
+      it 'makes an HTTP DELETE request' do
+        expect(access_token).to receive(:request).with(:delete, "/jira/rest/api/2/issue/#{issue_id}/attachments", anything).and_return( response )
+
+        result = attachment.delete
+
+        expect(result).to eq(true)
+      end
+    end
+
+    describe 'JIRA::Resource::Issue#save!' do
+      let(:custom_key) { :custom_99000 }
+      let(:custom_value_new) { 'New Custom Text String' }
+      let(:issue_id) { 37208 }
+      subject(:issue) do
+        _issue = JIRA::Resource::Issue.new(client)
+        allow(_issue).to receive(:key_value).and_return(issue_id)
+        _issue
+      end
+
+      it 'makes an HTTP PUT request' do
+        allow(issue).to receive(:new_record?).and_return(false)
+        expect(access_token).to receive(:request).with(:put,
+                                                       "/jira/rest/api/2/issue/#{issue_id}",
+                                                       anything).and_return( response )
+
+        result = issue.save!(custom_key => custom_value_new)
+
+        expect(result).to eq(true)
+      end
+
+      it 'makes an HTTP POST request' do
+        allow(issue).to receive(:new_record?).and_return(true)
+        expect(access_token).to receive(:request).with(:post,
+                                                       "/jira/rest/api/2/issue/#{issue_id}",
+                                                       anything).and_return( response )
+
+        result = issue.save!(custom_key => custom_value_new)
+
+        expect(result).to eq(true)
+      end
+    end
   end
 end
