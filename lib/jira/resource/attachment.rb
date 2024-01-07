@@ -21,10 +21,22 @@ module JIRA
       end
 
       # Opens a file streaming the download of the attachment.
-      # @example Read the file contents
-      #   download_file(headers) do |file|
-      #     file.read
+      # @example Write file contents to a file.
+      #   File.open('some-filename', 'wb') do |output|
+      #     download_file do |file|
+      #       IO.copy_stream(file, output)
+      #     end
       #   end
+      # @example Stream file contents for an HTTP response.
+      #   response.headers[ "Content-Type" ] = "application/octet-stream"
+      #   download_file do |file|
+      #     chunk = file.read(8000)
+      #     while chunk.present? do
+      #       response.stream.write(chunk)
+      #       chunk = file.read(8000)
+      #     end
+      #   end
+      #   response.stream.close
       # @param [Hash] headers Any additional headers to call Jira.
       # @yield |file|
       # @yieldparam [IO] file The IO object streaming the download.
@@ -34,6 +46,11 @@ module JIRA
       end
 
       # Downloads the file contents as a string object.
+      #
+      # Note that this reads the contents into a ruby string in memory.
+      # A file might be very large so it is recommend to avoid this unless you are certain about doing so.
+      # Use the download_file method instead and avoid calling the read method without a limit.
+      #
       # @param [Hash] headers Any additional headers to call Jira.
       # @return [String,NilClass] The file contents.
       def download_contents(headers = {})
