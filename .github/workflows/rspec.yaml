@@ -29,4 +29,5 @@ jobs:
         env:
           RAILS_ENV: test
         run: |
+          touch rsakey.pem
           bundle exec rspec
