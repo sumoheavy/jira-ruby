@@ -1,0 +1,34 @@
+name: CI
+
+on: [pull_request]
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    environment: test
+    container:
+      image: ruby:3.0.6
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Gem cache
+        id: cache-bundle
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+
+      - name: Bundle install
+        env:
+          RAILS_ENV: test
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+        run: |
+          echo "${{ secrets.RSAKEY }}" > rsakey.pem
+          bundle exec rspec

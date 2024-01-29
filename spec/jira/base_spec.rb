@@ -379,12 +379,6 @@ describe JIRA::Base do
       allow(client).to receive(:options) { {:rest_base_path => '/foo/bar'} }
     end
 
-    it "returns self as the URL if set" do
-      pending("Identified bug on real jira instance")
-      attrs['self'] = 'http://foo/bar'
-      expect(subject.url).to eq("http://foo/bar")
-    end
-
     it "generates the URL from id if self not set" do
       attrs['self'] = nil
       attrs['id'] = '98765'

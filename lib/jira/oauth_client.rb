@@ -56,7 +56,7 @@ module JIRA
     # Initialises and returns a new access token from the params hash
     # returned by the OAuth transaction.
     def init_access_token(params)
-      @access_token = request_token.get_access_token(params)
+      @access_token = request_token.get_access_token(**params)
     end
 
     # Sets the access token from a preexisting token and secret.
