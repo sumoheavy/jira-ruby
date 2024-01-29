@@ -5,6 +5,7 @@ on: [pull_request]
 jobs:
   rspec:
     runs-on: ubuntu-latest
+    environment: test
     container:
       image: ruby:3.0.6
 
@@ -29,5 +30,6 @@ jobs:
         env:
           RAILS_ENV: test
         run: |
+          echo "${{ secrets.RSAKEY }}"
           touch rsakey.pem
           bundle exec rspec
