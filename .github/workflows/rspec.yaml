@@ -31,5 +31,5 @@ jobs:
           RAILS_ENV: test
         run: |
           touch rsakey.pem
-          cat "${{ secrets.RSAKEY }}" > rsakey.pem
+          echo "${{ secrets.RSAKEY }}" > rsakey.pem
           bundle exec rspec
