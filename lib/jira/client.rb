@@ -182,6 +182,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def StatusCategory # :nodoc:
+      JIRA::Resource::StatusCategoryFactory.new(self)
+    end
+
     def Resolution # :nodoc:
       JIRA::Resource::ResolutionFactory.new(self)
     end
