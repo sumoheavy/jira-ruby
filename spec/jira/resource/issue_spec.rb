@@ -180,6 +180,7 @@ describe JIRA::Resource::Issue do
                                     'priority'    => { 'foo' => 'bar' },
                                     'issuetype'   => { 'foo' => 'bar' },
                                     'status'      => { 'foo' => 'bar' },
+                                    'resolution'  => { 'foo' => 'bar' },
                                     'components'  => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                                     'versions'    => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                                     'comment'     => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
@@ -207,6 +208,9 @@ describe JIRA::Resource::Issue do
 
       expect(subject).to have_one(:status, JIRA::Resource::Status)
       expect(subject.status.foo).to eq('bar')
+
+      expect(subject).to have_one(:resolution, JIRA::Resource::Resolution)
+      expect(subject.resolution.foo).to eq('bar')
 
       expect(subject).to have_many(:components, JIRA::Resource::Component)
       expect(subject.components.length).to eq(2)

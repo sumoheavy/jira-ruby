@@ -1,6 +1,7 @@
 require 'cgi'
 require 'json'
 
+
 module JIRA
   module Resource
     class IssueFactory < JIRA::BaseFactory # :nodoc:
@@ -18,6 +19,8 @@ module JIRA
       has_one :priority,  nested_under: 'fields'
 
       has_one :status,    nested_under: 'fields'
+
+      has_one :resolution, nested_under: 'fields'
 
       has_many :transitions
 
