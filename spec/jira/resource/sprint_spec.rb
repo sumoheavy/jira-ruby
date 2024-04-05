@@ -86,5 +86,62 @@ describe JIRA::Resource::Sprint do
         end
       end
     end
+
+    context 'an issue exists' do
+      let(:issue_id) { 1001 }
+      let(:post_issue_path) do
+        described_class.agile_path(client, sprint.id)
+        "/jira/rest/agile/1.0/sprint//issue"
+      end
+      let(:issue) do
+        issue = double
+        allow(issue).to receive(:id).and_return(issue_id)
+        issue
+      end
+      let(:post_issue_input) do
+        {"issues":[issue.id]}
+      end
+
+
+      describe '#add_issu' do
+        context 'when an issue is passed' do
+
+          it 'posts with the issue id' do
+            expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
+
+            sprint.add_issue(issue)
+          end
+        end
+      end
+    end
+
+    context 'multiple issues exists' do
+      let(:issue_ids) { [ 1001, 1012 ] }
+      let(:post_issue_path) do
+        described_class.agile_path(client, sprint.id)
+        "/jira/rest/agile/1.0/sprint//issue"
+      end
+      let(:issues) do
+        issue_ids.map do |issue_id|
+          issue = double
+          allow(issue).to receive(:id).and_return(issue_id)
+          issue
+        end
+      end
+      let(:post_issue_input) do
+        {"issues": issue_ids}
+      end
+
+      describe '#add_issues' do
+        context 'when an issue is passed' do
+
+          it 'posts with the issue id' do
+            expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
+
+            sprint.add_issues(issues)
+          end
+        end
+      end
+    end
   end
 end
