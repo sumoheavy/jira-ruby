@@ -59,6 +59,43 @@ describe JIRA::Resource::Attachment do
     end
   end
 
+  context 'there is an attachment on an issue' do
+    let(:client) do
+      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false )
+    end
+    let(:attachment_file_contents) { 'file contents' }
+    let(:file_target) { double(read: :attachment_file_contents) }
+    let(:attachment_url) { "https:jirahost/secure/attachment/32323/myfile.txt" }
+    subject(:attachment) do
+      JIRA::Resource::Attachment.new(
+        client,
+        issue: JIRA::Resource::Issue.new(client),
+        attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
+      )
+    end
+
+    describe '.download_file' do
+      it 'passes file object to block' do
+        expect(URI).to receive(:open).with(attachment_url, anything).and_yield(file_target)
+
+        attachment.download_file do |file|
+          expect(file).to eq(file_target)
+        end
+
+      end
+    end
+
+    describe '.download_contents' do
+      it 'downloads the file contents as a string' do
+        expect(URI).to receive(:open).with(attachment_url, anything).and_return(attachment_file_contents)
+
+        result_str = attachment.download_contents
+
+        expect(result_str).to eq(attachment_file_contents)
+      end
+    end
+  end
+
   context 'when there is a local file' do
     let(:file_name) { 'short.txt' }
     let(:file_size) { 11 }
