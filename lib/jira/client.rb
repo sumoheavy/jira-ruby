@@ -184,6 +184,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def StatusCategory # :nodoc:
+      JIRA::Resource::StatusCategoryFactory.new(self)
+    end
+
     def Resolution # :nodoc:
       JIRA::Resource::ResolutionFactory.new(self)
     end
@@ -293,7 +297,7 @@ module JIRA
 
     def post_multipart(path, file, headers = {})
       puts "post multipart: #{path} - [#{file}]" if @http_debug
-      @request_client.request_multipart(path, file, headers)
+      @request_client.request_multipart(path, file, merge_default_headers(headers))
     end
 
     def put(path, body = '', headers = {})
