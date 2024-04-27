@@ -1,7 +1,7 @@
 {
   "expand": "schema,names",
   "startAt": 0,
-  "maxResults": 50,
+  "maxResults": 1000,
   "total": 11,
   "issues": [
     {

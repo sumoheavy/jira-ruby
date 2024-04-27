@@ -1,16 +1,15 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Issuetype do
-
   with_each_client do |site_url, client|
     let(:client) { client }
     let(:site_url) { site_url }
 
-    let(:key) { "5" }
+    let(:key) { '5' }
 
     let(:expected_attributes) do
       {
-        'self' => "http://localhost:2990/jira/rest/api/2/issuetype/5",
+        'self' => 'http://localhost:2990/jira/rest/api/2/issuetype/5',
         'id' => key,
         'name' => 'Sub-task'
       }
@@ -18,9 +17,8 @@ describe JIRA::Resource::Issuetype do
 
     let(:expected_collection_length) { 5 }
 
-    it_should_behave_like "a resource"
-    it_should_behave_like "a resource with a collection GET endpoint"
-    it_should_behave_like "a resource with a singular GET endpoint"
-
+    it_should_behave_like 'a resource'
+    it_should_behave_like 'a resource with a collection GET endpoint'
+    it_should_behave_like 'a resource with a singular GET endpoint'
   end
 end

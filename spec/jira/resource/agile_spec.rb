@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Agile do
   let(:client) do
-    client = double(options: {rest_base_path: '/jira/rest/api/2', context_path: '/jira'})
+    client = double(options: { rest_base_path: '/jira/rest/api/2', context_path: '/jira' })
     allow(client).to receive(:Issue).and_return(JIRA::Resource::IssueFactory.new(client))
     client
   end
@@ -42,7 +42,6 @@ describe JIRA::Resource::Agile do
         expect(issue.class).to eq(JIRA::Resource::Issue)
         expect(issue.expanded?).to be_falsey
       end
-
     end
 
     it 'should query correct url with parameters' do
@@ -60,7 +59,6 @@ describe JIRA::Resource::Agile do
         expect(issue.class).to eq(JIRA::Resource::Issue)
         expect(issue.expanded?).to be_falsey
       end
-
     end
   end
 
@@ -78,18 +76,18 @@ describe JIRA::Resource::Agile do
 
       JIRA::Resource::Agile.get_sprints(client, 1, startAt: 50)
     end
-    
+
     it 'should work with pagination starting at 0' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=1&startAt=0').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
-      
+
       JIRA::Resource::Agile.get_sprints(client, 1, maxResults: 1, startAt: 0)
     end
-    
+
     it 'should work with pagination not starting at 0' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=1&startAt=1').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
-      
+
       JIRA::Resource::Agile.get_sprints(client, 1, maxResults: 1, startAt: 1)
     end
   end

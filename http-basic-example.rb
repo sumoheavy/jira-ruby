@@ -2,29 +2,30 @@ require 'rubygems'
 require 'pp'
 require 'jira-ruby'
 
-if ARGV.length == 0
+if ARGV.empty?
   # If not passed any command line arguments, prompt the
   # user for the username and password.
-  puts "Enter the username: "
+  puts 'Enter the username: '
   username = gets.strip
 
-  puts "Enter the password: "
+  puts 'Enter the password: '
   password = gets.strip
 elsif ARGV.length == 2
-  username, password = ARGV[0], ARGV[1]
+  username = ARGV[0]
+  password = ARGV[1]
 else
   # Script must be passed 0 or 2 arguments
-  raise "Usage: #{$0} [ username password ]"
+  raise "Usage: #{$PROGRAM_NAME} [ username password ]"
 end
 
 options = {
-            :username => username,
-            :password => password,
-            :site     => 'http://localhost:8080/',
-            :context_path => '',
-            :auth_type => :basic,
-            :use_ssl => false
-          }
+  username: username,
+  password: password,
+  site: 'http://localhost:8080/',
+  context_path: '',
+  auth_type: :basic,
+  use_ssl: false
+}
 
 client = JIRA::Client.new(options)
 

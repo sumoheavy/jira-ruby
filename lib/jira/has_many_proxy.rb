@@ -7,7 +7,6 @@
 # In practice, instances of this class behave exactly like an Array.
 #
 class JIRA::HasManyProxy
-
   attr_reader :target_class, :parent
   attr_accessor :collection
 

@@ -8,3 +8,6 @@ pkg/*
 *.pem
 .DS_STORE
 doc
+.ruby-version
+
+.rakeTasks

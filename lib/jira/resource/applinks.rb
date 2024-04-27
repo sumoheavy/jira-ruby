@@ -1,13 +1,11 @@
 module JIRA
   module Resource
-
     class ApplicationLinkFactory < JIRA::BaseFactory # :nodoc:
       delegate_to_target_class :manifest
     end
 
     class ApplicationLink < JIRA::Base
-
-      REST_BASE_PATH = '/rest/applinks/1.0'
+      REST_BASE_PATH = '/rest/applinks/1.0'.freeze
 
       def self.endpoint_name
         'listApplicationlinks'
@@ -18,7 +16,7 @@ module JIRA
       end
 
       def self.collection_path(client, prefix = '/')
-        self.full_url(client) + prefix + self.endpoint_name
+        full_url(client) + prefix + endpoint_name
       end
 
       def self.all(client, options = {})
@@ -26,17 +24,16 @@ module JIRA
         json = parse_json(response.body)
         json = json['list']
         json.map do |attrs|
-          self.new(client, {:attrs => attrs}.merge(options))
+          new(client, { attrs: attrs }.merge(options))
         end
       end
 
       def self.manifest(client)
-        url = self.full_url(client) + '/manifest'
+        url = full_url(client) + '/manifest'
         response = client.get(url)
         json = parse_json(response.body)
-        JIRA::Base.new(client, {:attrs => json})
+        JIRA::Base.new(client, attrs: json)
       end
-
     end
   end
 end

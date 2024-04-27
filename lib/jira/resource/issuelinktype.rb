@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class IssuelinktypeFactory < JIRA::BaseFactory # :nodoc:
     end
 
