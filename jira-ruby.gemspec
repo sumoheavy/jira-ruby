@@ -31,5 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'railties'
   s.add_development_dependency 'rake', '~> 13.2', '>= 13.2.1'
   s.add_development_dependency 'rspec', '~> 3.0', '>= 3.13'
-  s.add_development_dependency 'webmock', '~> 1.18', '>= 1.18.0'
+  s.add_development_dependency 'webmock', '~> 3.23', '>= 3.23.0'
 end
