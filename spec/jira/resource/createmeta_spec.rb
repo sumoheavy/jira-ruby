@@ -1,21 +1,21 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Createmeta do
-  let(:client) {
+  let(:client) do
     double(
       'client',
-      :options => {
-        :rest_base_path => '/jira/rest/api/2'
+      options: {
+        rest_base_path: '/jira/rest/api/2'
       }
     )
-  }
+  end
 
-  let(:response) {
+  let(:response) do
     double(
       'response',
-      :body => '{"expand":"projects","projects":[{"self":"http://localhost:2029/rest/api/2/project/TST","id":"10200","key":"test_key","name":"Test Name"}]}'
+      body: '{"expand":"projects","projects":[{"self":"http://localhost:2029/rest/api/2/project/TST","id":"10200","key":"test_key","name":"Test Name"}]}'
     )
-  }
+  end
 
   describe 'general' do
     it 'should query correct url without parameters' do
@@ -25,12 +25,12 @@ describe JIRA::Resource::Createmeta do
 
     it 'should query correct url with `expand` parameter' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields').and_return(response)
-      JIRA::Resource::Createmeta.all(client, :expand => 'projects.issuetypes.fields')
+      JIRA::Resource::Createmeta.all(client, expand: 'projects.issuetypes.fields')
     end
 
     it 'should query correct url with `foo` parameter' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?foo=bar').and_return(response)
-      JIRA::Resource::Createmeta.all(client, :foo => 'bar')
+      JIRA::Resource::Createmeta.all(client, foo: 'bar')
     end
 
     it 'should return an array of createmeta objects' do
@@ -49,7 +49,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectKeys=PROJECT_1').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectKeys => 'PROJECT_1',
+        projectKeys: 'PROJECT_1'
       )
     end
 
@@ -57,7 +57,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectKeys=PROJECT_1%2CPROJECT_2').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectKeys => ['PROJECT_1', 'PROJECT_2'],
+        projectKeys: %w[PROJECT_1 PROJECT_2]
       )
     end
 
@@ -68,7 +68,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectKeys=PRJ').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectKeys => prj,
+        projectKeys: prj
       )
     end
 
@@ -81,7 +81,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectKeys=PRJ_2%2CPRJ_1').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectKeys => [prj_2, prj_1],
+        projectKeys: [prj_2, prj_1]
       )
     end
 
@@ -92,18 +92,17 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectKeys=PROJECT_1%2CPRJ_5').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectKeys => ['PROJECT_1', prj_5],
+        projectKeys: ['PROJECT_1', prj_5]
       )
     end
   end
-
 
   describe 'projectIds' do
     it 'should query correct url when only one `projectIds` given as string' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectIds=10101').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectIds => '10101',
+        projectIds: '10101'
       )
     end
 
@@ -111,7 +110,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectIds=10101%2C20202').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectIds => ['10101', '20202'],
+        projectIds: %w[10101 20202]
       )
     end
 
@@ -122,7 +121,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectIds=30303').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectIds => prj,
+        projectIds: prj
       )
     end
 
@@ -135,7 +134,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectIds=50505%2C30303').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectIds => [prj_2, prj_1],
+        projectIds: [prj_2, prj_1]
       )
     end
 
@@ -146,18 +145,17 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?projectIds=10101%2C60606').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :projectIds => ['10101', prj_5],
+        projectIds: ['10101', prj_5]
       )
     end
   end
-
 
   describe 'issuetypeNames' do
     it 'should query correct url when only one `issuetypeNames` given as string' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeNames=Feature').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeNames => 'Feature',
+        issuetypeNames: 'Feature'
       )
     end
 
@@ -165,7 +163,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeNames=Feature%2CBug').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeNames => ['Feature', 'Bug'],
+        issuetypeNames: %w[Feature Bug]
       )
     end
 
@@ -176,7 +174,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeNames=Epic').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeNames => issue_type,
+        issuetypeNames: issue_type
       )
     end
 
@@ -189,7 +187,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeNames=Sub-Task%2CEpic').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeNames => [issue_type_2, issue_type_1],
+        issuetypeNames: [issue_type_2, issue_type_1]
       )
     end
 
@@ -200,18 +198,17 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeNames=Feature%2CEpic').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeNames => ['Feature', issue_type],
+        issuetypeNames: ['Feature', issue_type]
       )
     end
   end
-
 
   describe 'issuetypeIds' do
     it 'should query correct url when only one `issuetypeIds` given as string' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeIds=10101').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeIds => '10101',
+        issuetypeIds: '10101'
       )
     end
 
@@ -219,7 +216,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeIds=10101%2C20202').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeIds => ['10101', '20202'],
+        issuetypeIds: %w[10101 20202]
       )
     end
 
@@ -230,7 +227,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeIds=30303').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeIds => issue_type,
+        issuetypeIds: issue_type
       )
     end
 
@@ -243,7 +240,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeIds=50505%2C30303').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeIds => [issue_type_2, issue_type_1],
+        issuetypeIds: [issue_type_2, issue_type_1]
       )
     end
 
@@ -254,7 +251,7 @@ describe JIRA::Resource::Createmeta do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/createmeta?issuetypeIds=10101%2C30303').and_return(response)
       JIRA::Resource::Createmeta.all(
         client,
-        :issuetypeIds => ['10101', issue_type],
+        issuetypeIds: ['10101', issue_type]
       )
     end
   end

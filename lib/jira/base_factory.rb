@@ -1,8 +1,6 @@
 module JIRA
-
   # This is the base class for all the JIRA resource factory instances.
   class BaseFactory
-
     attr_reader :client
 
     def initialize(client)
@@ -41,9 +39,8 @@ module JIRA
     delegate_to_target_class :all, :find, :collection_path, :singular_path, :jql, :get_backlog_issues, :get_board_issues, :get_sprints, :get_sprint_issues, :get_projects, :get_projects_full
 
     # This method needs special handling as it has a default argument value
-    def build(attrs={})
+    def build(attrs = {})
       target_class.build(@client, attrs)
     end
-
   end
 end

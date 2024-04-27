@@ -6,24 +6,23 @@ require 'rdoc/task'
 
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
-task :default => [:test]
+task default: [:test]
 
-task :test => [:prepare, :spec]
+task test: %i[prepare spec]
 
 desc 'Prepare and run rspec tests'
 task :prepare do
   rsa_key = File.expand_path('rsakey.pem')
-  unless File.exists?(rsa_key)
-    raise 'rsakey.pem does not exist, tests will fail.  Run `rake jira:generate_public_cert` first'
+  unless File.exist?(rsa_key)
+    Rake::Task['jira:generate_public_cert'].invoke
   end
 end
 
 desc 'Run RSpec tests'
-#RSpec::Core::RakeTask.new(:spec)
-RSpec::Core::RakeTask.new(:spec) do |task|
+# RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec, [] => [:prepare]) do |task|
   task.rspec_opts = ['--color', '--format', 'doc']
 end
-
 
 Rake::RDocTask.new(:doc) do |rd|
   rd.main       = 'README.rdoc'

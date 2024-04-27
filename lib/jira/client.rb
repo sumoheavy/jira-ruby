@@ -3,11 +3,10 @@ require 'forwardable'
 require 'ostruct'
 
 module JIRA
-
   # This class is the main access point for all JIRA::Resource instances.
   #
   # The client must be initialized with an options hash containing
-  # configuration options.  The available options are:
+  # configuration options. The available options are:
   #
   #   :site               => 'http://localhost:2990',
   #   :context_path       => '/jira',
@@ -15,24 +14,38 @@ module JIRA
   #   :request_token_path => "/plugins/servlet/oauth/request-token",
   #   :authorize_path     => "/plugins/servlet/oauth/authorize",
   #   :access_token_path  => "/plugins/servlet/oauth/access-token",
+  #   :private_key        => nil,
   #   :private_key_file   => "rsakey.pem",
   #   :rest_base_path     => "/rest/api/2",
   #   :consumer_key       => nil,
   #   :consumer_secret    => nil,
   #   :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
+  #   :ssl_version        => nil,
   #   :use_ssl            => true,
   #   :username           => nil,
   #   :password           => nil,
   #   :auth_type          => :oauth,
   #   :proxy_address      => nil,
   #   :proxy_port         => nil,
-  #   :additional_cookies => nil
+  #   :proxy_username     => nil,
+  #   :proxy_password     => nil,
+  #   :use_cookies        => nil,
+  #   :additional_cookies => nil,
+  #   :default_headers    => {},
+  #   :use_client_cert    => false,
+  #   :read_timeout       => nil,
+  #   :http_debug         => false,
+  #   :shared_secret      => nil,
+  #   :cert_path          => nil,
+  #   :key_path           => nil,
+  #   :ssl_client_cert    => nil,
+  #   :ssl_client_key     => nil
+  #   :ca_file            => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
 
   class Client
-
     extend Forwardable
 
     # The OAuth::Consumer instance returned by the OauthClient
@@ -46,33 +59,77 @@ module JIRA
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
 
-    DEFAULT_OPTIONS = {
-      :site               => 'http://localhost:2990',
-      :context_path       => '/jira',
-      :rest_base_path     => "/rest/api/2",
-      :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
-      :use_ssl            => true,
-      :use_client_cert    => false,
-      :auth_type          => :oauth,
-      :http_debug         => false
-    }
+    DEFINED_OPTIONS = [
+      :site,
+      :context_path,
+      :signature_method,
+      :request_token_path,
+      :authorize_path,
+      :access_token_path,
+      :private_key,
+      :private_key_file,
+      :rest_base_path,
+      :consumer_key,
+      :consumer_secret,
+      :ssl_verify_mode,
+      :ssl_version,
+      :use_ssl,
+      :username,
+      :password,
+      :auth_type,
+      :proxy_address,
+      :proxy_port,
+      :proxy_username,
+      :proxy_password,
+      :use_cookies,
+      :additional_cookies,
+      :default_headers,
+      :use_client_cert,
+      :read_timeout,
+      :http_debug,
+      :issuer,
+      :base_url,
+      :shared_secret,
+      :cert_path,
+      :key_path,
+      :ssl_client_cert,
+      :ssl_client_key
+    ].freeze
 
-    def initialize(options={})
+    DEFAULT_OPTIONS = {
+      site: 'http://localhost:2990',
+      context_path: '/jira',
+      rest_base_path: '/rest/api/2',
+      ssl_verify_mode: OpenSSL::SSL::VERIFY_PEER,
+      use_ssl: true,
+      use_client_cert: false,
+      auth_type: :oauth,
+      http_debug: false,
+      default_headers: {}
+    }.freeze
+
+    def initialize(options = {})
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
 
+      unknown_options = options.keys.reject { |o| DEFINED_OPTIONS.include?(o) }
+      raise ArgumentError, "Unknown option(s) given: #{unknown_options}" unless unknown_options.empty?
+
       if options[:use_client_cert]
-        raise ArgumentError, 'Options: :cert_path must be set when :use_client_cert is true' unless @options[:cert_path]
-        raise ArgumentError, 'Options: :key_path must be set when :use_client_cert is true' unless @options[:key_path]
-        @options[:cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
-        @options[:key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path]))
+        @options[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cert_path]
+        @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
+
+        raise ArgumentError, 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
+        raise ArgumentError, 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
       end
 
       case options[:auth_type]
       when :oauth, :oauth_2legged
         @request_client = OauthClient.new(@options)
         @consumer = @request_client.consumer
+      when :jwt
+        @request_client = JwtClient.new(@options)
       when :basic
         @request_client = HttpClient.new(@options)
       when :cookie
@@ -125,6 +182,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def StatusCategory # :nodoc:
+      JIRA::Resource::StatusCategoryFactory.new(self)
+    end
+
     def Resolution # :nodoc:
       JIRA::Resource::ResolutionFactory.new(self)
     end
@@ -153,8 +214,24 @@ module JIRA
       JIRA::Resource::FieldFactory.new(self)
     end
 
+    def Board
+      JIRA::Resource::BoardFactory.new(self)
+    end
+
+    def BoardConfiguration
+      JIRA::Resource::BoardConfigurationFactory.new(self)
+    end
+
     def RapidView
       JIRA::Resource::RapidViewFactory.new(self)
+    end
+
+    def Sprint
+      JIRA::Resource::SprintFactory.new(self)
+    end
+
+    def SprintReport
+      JIRA::Resource::SprintReportFactory.new(self)
     end
 
     def ServerInfo
@@ -185,12 +262,12 @@ module JIRA
       JIRA::Resource::IssuelinktypeFactory.new(self)
     end
 
-    def Remotelink
-      JIRA::Resource::RemotelinkFactory.new(self)
+    def IssuePickerSuggestions
+      JIRA::Resource::IssuePickerSuggestionsFactory.new(self)
     end
 
-    def Sprint
-      JIRA::Resource::SprintFactory.new(self)
+    def Remotelink
+      JIRA::Resource::RemotelinkFactory.new(self)
     end
 
     def Agile
@@ -212,27 +289,36 @@ module JIRA
 
     # HTTP methods with a body
     def post(path, body = '', headers = {})
-      headers = {'Content-Type' => 'application/json'}.merge(headers)
+      headers = { 'Content-Type' => 'application/json' }.merge(headers)
       request(:post, path, body, merge_default_headers(headers))
     end
 
+    def post_multipart(path, file, headers = {})
+      puts "post multipart: #{path} - [#{file}]" if @http_debug
+      @request_client.request_multipart(path, file, merge_default_headers(headers))
+    end
+
     def put(path, body = '', headers = {})
-      headers = {'Content-Type' => 'application/json'}.merge(headers)
+      headers = { 'Content-Type' => 'application/json' }.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
     end
 
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
-    def request(http_method, path, body = '', headers={})
+    def request(http_method, path, body = '', headers = {})
       puts "#{http_method}: #{path} - [#{body}]" if @http_debug
       @request_client.request(http_method, path, body, headers)
     end
 
+    # Stops sensitive client information from being displayed in logs
+    def inspect
+      "#<JIRA::Client:#{object_id}>"
+    end
+
     protected
 
-      def merge_default_headers(headers)
-        {'Accept' => 'application/json'}.merge(headers)
-      end
-
+    def merge_default_headers(headers)
+      { 'Accept' => 'application/json' }.merge(@options[:default_headers]).merge(headers)
+    end
   end
 end

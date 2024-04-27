@@ -1,11 +1,10 @@
 module JIRA
   module Resource
-
     class TransitionFactory < JIRA::BaseFactory # :nodoc:
     end
 
     class Transition < JIRA::Base
-      has_one :to, :class => JIRA::Resource::Status
+      has_one :to, class: JIRA::Resource::Status
       belongs_to :issue
 
       nested_collections true
@@ -16,9 +15,7 @@ module JIRA
 
       def self.all(client, options = {})
         issue = options[:issue]
-        unless issue
-          raise ArgumentError.new("parent issue is required")
-        end
+        raise ArgumentError, 'parent issue is required' unless issue
 
         path = client.options[:rest_base_path] + "/issue/#{issue.key}/#{endpoint_name}?expand=transitions.fields"
         response = client.get(path)
@@ -28,6 +25,5 @@ module JIRA
         end
       end
     end
-
   end
 end

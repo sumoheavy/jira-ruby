@@ -1,6 +1,5 @@
 module JIRA
   module Resource
-
     class WatcherFactory < JIRA::BaseFactory # :nodoc:
     end
 
@@ -15,9 +14,7 @@ module JIRA
 
       def self.all(client, options = {})
         issue = options[:issue]
-        unless issue
-          raise ArgumentError.new("parent issue is required")
-        end
+        raise ArgumentError, 'parent issue is required' unless issue
 
         path = client.options[:rest_base_path] + "/issue/#{issue.id}/#{endpoint_name}"
         response = client.get(path)
@@ -26,7 +23,13 @@ module JIRA
           issue.watchers.build(watcher)
         end
       end
-    end
 
+      def save!(user_id, path = nil)
+        path ||= new_record? ? url : patched_url
+        response = client.post(path, user_id.to_json)
+        true
+      end
+
+    end
   end
 end
