@@ -145,7 +145,7 @@ describe JIRA::Resource::Attachment do
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          {"Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck"}.merge(default_headers_given)
+          { "Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck" }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do
@@ -199,7 +199,7 @@ describe JIRA::Resource::Attachment do
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          {"Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck"}.merge(default_headers_given)
+          { "Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck" }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do

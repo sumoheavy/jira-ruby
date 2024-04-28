@@ -10,7 +10,7 @@ describe JIRA::Resource::IssuePickerSuggestions do
   describe 'relationships' do
     subject do
       JIRA::Resource::IssuePickerSuggestions.new(client, attrs: {
-        'sections' => [{ 'id' => 'hs'}, { 'id' => 'cs' }]
+        'sections' => [{ 'id' => 'hs' }, { 'id' => 'cs' }]
       })
     end
 
