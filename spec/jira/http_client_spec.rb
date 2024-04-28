@@ -375,7 +375,7 @@ describe JIRA::HttpClient do
     let(:data) { {} }
     let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
     let(:basic_auth_http_conn) { double }
-    let(:request) { double('Http Request', path: path) }
+    let(:request) { double('Http Request', path:) }
     let(:response) { double('response') }
 
     before do

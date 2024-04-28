@@ -24,7 +24,7 @@ module JIRA
         response = client.get(collection_path(client))
         json = parse_json(response.body)
         json.map do |attrs|
-          new(client, { attrs: attrs }.merge(options))
+          new(client, { attrs: }.merge(options))
         end
       end
 

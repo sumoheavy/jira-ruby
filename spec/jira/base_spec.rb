@@ -35,7 +35,7 @@ describe JIRA::Base do
   let(:client)  { double('client') }
   let(:attrs)   { {} }
 
-  subject { JIRA::Resource::Deadbeef.new(client, attrs: attrs) }
+  subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
 
   let(:decorated) { JIRADelegation.new(subject) }
 
@@ -148,7 +148,7 @@ describe JIRA::Base do
 
   describe 'dynamic instance methods' do
     let(:attrs) { { 'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy' } }
-    subject     { JIRA::Resource::Deadbeef.new(client, attrs: attrs) }
+    subject     { JIRA::Resource::Deadbeef.new(client, attrs:) }
 
     it 'responds to each of the top level attribute names' do
       expect(subject).to respond_to(:foo)
@@ -577,7 +577,7 @@ describe JIRA::Base do
 
     let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
 
-    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef: deadbeef) }
+    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
 
     it 'sets up an accessor for the belongs to relationship' do
       expect(subject.deadbeef).to eq(deadbeef)

@@ -91,7 +91,7 @@ shared_examples 'a resource with a singular GET endpoint' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.find()
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     subject = client.send(class_basename).find(key, options)
 
     expect(subject).to have_attributes(expected_attributes)
@@ -101,7 +101,7 @@ shared_examples 'a resource with a singular GET endpoint' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.build('key' => 'ABC123')
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -145,9 +145,9 @@ end
 shared_examples 'a resource with a PUT endpoint' do
   it 'saves an existing component' do
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     stub_request(:put, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:put, key: key, value_if_not_found: nil))
+      .to_return(status: 200, body: get_mock_from_path(:put, key:, value_if_not_found: nil))
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
     expect(subject.save(attributes_for_put)).to be_truthy
@@ -160,9 +160,9 @@ end
 shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
   it 'fails to save with an invalid field' do
     stub_request(:get, site_url + described_class.singular_path(client, key))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     stub_request(:put, site_url + described_class.singular_path(client, key))
-      .to_return(status: 400, body: get_mock_from_path(:put, key: key, suffix: 'invalid'))
+      .to_return(status: 400, body: get_mock_from_path(:put, key:, suffix: 'invalid'))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
 

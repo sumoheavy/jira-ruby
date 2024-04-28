@@ -98,7 +98,7 @@ module JIRA
       json = parse_json(response.body)
       json = json[endpoint_name.pluralize] if collection_attributes_are_nested
       json.map do |attrs|
-        new(client, { attrs: attrs }.merge(options))
+        new(client, { attrs: }.merge(options))
       end
     end
 
@@ -113,7 +113,7 @@ module JIRA
     # Builds a new instance of the resource with the given attributes.
     # These attributes will be posted to the JIRA Api if save is called.
     def self.build(client, attrs)
-      new(client, attrs: attrs)
+      new(client, attrs:)
     end
 
     # Returns the name of this resource for use in URL components.

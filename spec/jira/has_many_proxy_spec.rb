@@ -25,7 +25,7 @@ describe JIRA::HasManyProxy do
     foo = double('foo')
     allow(parent).to receive(:client).and_return(client)
     allow(parent).to receive(:to_sym).and_return(:parent)
-    expect(Foo).to receive(:new).with(client, attrs: { 'foo' => 'bar' }, parent: parent).and_return(foo)
+    expect(Foo).to receive(:new).with(client, attrs: { 'foo' => 'bar' }, parent:).and_return(foo)
     expect(collection).to receive(:<<).with(foo)
     expect(subject.build('foo' => 'bar')).to eq(foo)
   end
@@ -35,7 +35,7 @@ describe JIRA::HasManyProxy do
     client = double('client')
     allow(parent).to receive(:client).and_return(client)
     allow(parent).to receive(:to_sym).and_return(:parent)
-    expect(Foo).to receive(:all).with(client, parent: parent).and_return(foo)
+    expect(Foo).to receive(:all).with(client, parent:).and_return(foo)
     expect(subject.all).to eq(foo)
   end
 
