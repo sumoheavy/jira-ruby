@@ -141,7 +141,7 @@ module JIRA
     #   JIRA::Resource::Comment.singular_path('456','/issue/123/')
     #     # => /jira/rest/api/2/issue/123/comment/456
     def self.singular_path(client, key, prefix = '/')
-      collection_path(client, prefix) + '/' + key
+      collection_path(client, prefix) + '/' + key.to_s
     end
 
     # Returns the attribute name of the attribute used for find.
@@ -424,7 +424,7 @@ module JIRA
       end
       if @attrs['self']
         the_url = @attrs['self']
-        the_url = the_url.sub(@client.options[:site], '') if @client.options[:site]
+        the_url = the_url.sub(@client.options[:site].chomp('/'), '') if @client.options[:site]
         the_url
       elsif key_value
         self.class.singular_path(client, key_value.to_s, prefix)
