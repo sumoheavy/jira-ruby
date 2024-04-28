@@ -26,7 +26,7 @@ describe JIRA::Resource::Attachment do
                                 })
     end
 
-    it_should_behave_like 'a resource with a singular GET endpoint'
-    it_should_behave_like 'a resource with a DELETE endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource with a DELETE endpoint'
   end
 end

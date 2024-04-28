@@ -34,7 +34,7 @@ describe JIRA::Resource::Transition do
       }
     end
 
-    it_should_behave_like 'a resource'
+    it_behaves_like 'a resource'
 
     describe 'POST endpoint' do
       it 'saves a new resource' do

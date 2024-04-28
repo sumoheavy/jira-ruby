@@ -15,8 +15,8 @@ describe JIRA::Resource::User do
       }
     end
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a singular GET endpoint'
 
     describe '#all' do
       let(:client) do

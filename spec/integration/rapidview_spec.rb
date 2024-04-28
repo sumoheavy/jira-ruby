@@ -18,7 +18,7 @@ describe JIRA::Resource::RapidView do
       }
     end
 
-    it_should_behave_like 'a resource'
+    it_behaves_like 'a resource'
     # TODO@Anton: Add json file
     # it_should_behave_like 'a resource with a singular GET endpoint'
 
@@ -30,7 +30,7 @@ describe JIRA::Resource::RapidView do
         stub_request(:get, "#{site_url}/jira/rest/greenhopper/1.0/rapidview")
           .to_return(status: 200, body: get_mock_response('rapidview.json'))
       end
-      it_should_behave_like 'a resource with a collection GET endpoint'
+      it_behaves_like 'a resource with a collection GET endpoint'
     end
 
     describe 'issues' do

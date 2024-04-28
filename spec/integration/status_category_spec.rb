@@ -13,8 +13,8 @@ describe JIRA::Resource::StatusCategory do
 
     let(:expected_collection_length) { 4 }
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a collection GET endpoint'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a collection GET endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
   end
 end

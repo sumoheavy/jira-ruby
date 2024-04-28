@@ -14,9 +14,9 @@ describe JIRA::Resource::Webhook do
 
     let(:expected_collection_length) { 1 }
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a collection GET endpoint'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a collection GET endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
 
     it 'returns a collection of components' do
       stub_request(:get, site_url + described_class.singular_path(client, key))

@@ -30,8 +30,8 @@ describe JIRA::Resource::Issue do
     end
     let(:expected_collection_length) { 11 }
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a singular GET endpoint'
     describe 'GET all issues' do # JIRA::Resource::Issue.all uses the search endpoint
       let(:client) { client }
       let(:site_url) { site_url }
@@ -50,12 +50,12 @@ describe JIRA::Resource::Issue do
         stub_request(:get, "#{site_url}/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=11")
           .to_return(status: 200, body: get_mock_response('empty_issues.json'))
       end
-      it_should_behave_like 'a resource with a collection GET endpoint'
+      it_behaves_like 'a resource with a collection GET endpoint'
     end
-    it_should_behave_like 'a resource with a DELETE endpoint'
-    it_should_behave_like 'a resource with a POST endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint that rejects invalid fields'
+    it_behaves_like 'a resource with a DELETE endpoint'
+    it_behaves_like 'a resource with a POST endpoint'
+    it_behaves_like 'a resource with a PUT endpoint'
+    it_behaves_like 'a resource with a PUT endpoint that rejects invalid fields'
 
     describe 'errors' do
       before(:each) do
@@ -87,7 +87,7 @@ describe JIRA::Resource::Issue do
           'key' => 'SAMPLEPROJECT-13'
         }
       end
-      it_should_behave_like 'a resource with JQL inputs and a collection GET endpoint'
+      it_behaves_like 'a resource with JQL inputs and a collection GET endpoint'
     end
   end
 end

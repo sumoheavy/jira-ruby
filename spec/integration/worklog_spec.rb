@@ -41,11 +41,11 @@ describe JIRA::Resource::Worklog do
       { 'id' => '10001', 'timeSpent' => '4d' }
     end
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a collection GET endpoint'
-    it_should_behave_like 'a resource with a singular GET endpoint'
-    it_should_behave_like 'a resource with a DELETE endpoint'
-    it_should_behave_like 'a resource with a POST endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a collection GET endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource with a DELETE endpoint'
+    it_behaves_like 'a resource with a POST endpoint'
+    it_behaves_like 'a resource with a PUT endpoint'
   end
 end
