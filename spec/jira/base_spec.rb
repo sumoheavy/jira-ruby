@@ -301,7 +301,7 @@ describe JIRA::Base do
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?) { false }
       expect(client).to receive(:put).with('/foo/bar', '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
-      expect(-> { subject.save!('invalid_field' => 'foobar') }).to raise_error(JIRA::HTTPError)
+      expect{ subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
     end
   end
 
@@ -428,7 +428,7 @@ describe JIRA::Base do
 
     h       = { 'key' => subject }
     h_attrs = { 'key' => subject.attrs }
-    expect(h.to_json).to eq(h_attrs.to_json)
+    expect(h['key'].to_json).to eq(h_attrs['key'].to_json)
   end
 
   describe 'extract attrs from response' do
@@ -579,9 +579,9 @@ describe JIRA::Base do
     end
 
     it 'raises an exception when initialized without a belongs_to instance' do
-      expect(lambda {
+      expect{
         JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' })
-      }).to raise_exception(ArgumentError, 'Required option :deadbeef missing')
+      }.to raise_exception(ArgumentError, 'Required option :deadbeef missing')
     end
 
     it 'returns the right url' do
