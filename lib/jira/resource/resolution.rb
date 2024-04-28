@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class ResolutionFactory < JIRA::BaseFactory # :nodoc:

@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 require 'cgi'
 require 'json'
-
 
 module JIRA
   module Resource
