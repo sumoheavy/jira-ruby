@@ -44,13 +44,13 @@ describe JIRA::Resource::Watcher do
           .to_return(status: 204, body: nil)
       end
 
-      it 'should returns all the watchers' do
+      it 'returnses all the watchers' do
         issue = client.Issue.find('10002')
         watchers = client.Watcher.all(options = { issue: issue })
         expect(watchers.length).to eq(1)
       end
 
-      it 'should add a watcher' do
+      it 'adds a watcher' do
         issue = client.Issue.find('10002')
         watcher = JIRA::Resource::Watcher.new(client, issue: issue)
         user_id = 'tester'

@@ -62,7 +62,7 @@ shared_examples 'a resource' do
 end
 
 shared_examples 'a resource with a collection GET endpoint' do
-  it 'should get the collection' do
+  it 'gets the collection' do
     stub_request(:get, site_url + described_class.collection_path(client))
       .to_return(status: 200, body: get_mock_from_path(:get))
     collection = build_receiver.all
@@ -73,7 +73,7 @@ shared_examples 'a resource with a collection GET endpoint' do
 end
 
 shared_examples 'a resource with JQL inputs and a collection GET endpoint' do
-  it 'should get the collection' do
+  it 'gets the collection' do
     stub_request(
       :get,
       "#{site_url}#{client.options[:rest_base_path]}/search?jql=#{CGI.escape(jql_query_string)}"

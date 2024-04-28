@@ -28,7 +28,7 @@ describe JIRA::Resource::Board do
     JIRA::Resource::Board.find(client, '84')
   end
 
-  it 'should find all boards' do
+  it 'finds all boards' do
     response = double
     api_json = <<eos
     {
@@ -57,12 +57,12 @@ eos
     expect(boards.count).to eq(2)
   end
 
-  it 'should find one board by id' do
+  it 'finds one board by id' do
     expect(board).to be_a(JIRA::Resource::Board)
   end
 
   describe '#issues' do
-    it 'should find all issues' do
+    it 'finds all issues' do
       issues_response = double
 
       api_json_issues = <<eos
@@ -147,7 +147,7 @@ eos
     end
   end
 
-  it 'should get all sprints for a board' do
+  it 'gets all sprints for a board' do
     response = double
 
     api_json = <<-eos
@@ -173,7 +173,7 @@ eos
     expect(board.sprints.size).to be(2)
   end
 
-  it 'should get board configuration for a board' do
+  it 'gets board configuration for a board' do
     response = double
 
     api_json = <<-eos

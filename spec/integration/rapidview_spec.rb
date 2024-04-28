@@ -34,7 +34,7 @@ describe JIRA::Resource::RapidView do
     end
 
     describe 'issues' do
-      it 'should return all the issues' do
+      it 'returns all the issues' do
         stub_request(
           :get,
           "#{site_url}/jira/rest/greenhopper/1.0/xboard/plan/backlog/data?rapidViewId=1"

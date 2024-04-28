@@ -34,7 +34,7 @@ describe JIRA::Resource::Issue do
     end
   end
 
-  it 'should find all issues' do
+  it 'finds all issues' do
     response = double
     empty_response = double
     issue = double
@@ -52,7 +52,7 @@ describe JIRA::Resource::Issue do
     issues = JIRA::Resource::Issue.all(client)
   end
 
-  it 'should find an issue by key or id' do
+  it 'finds an issue by key or id' do
     response = double
 
     allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
@@ -68,7 +68,7 @@ describe JIRA::Resource::Issue do
     expect(issue_from_id.attrs).to eq(issue_from_key.attrs)
   end
 
-  it 'should search an issue with a jql query string' do
+  it 'searches an issue with a jql query string' do
     response = double
     issue = double
 
@@ -81,7 +81,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar')).to eq([''])
   end
 
-  it 'should search an issue with a jql query string and fields' do
+  it 'searches an issue with a jql query string and fields' do
     response = double
     issue = double
 
@@ -95,7 +95,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
   end
 
-  it 'should search an issue with a jql query string, start at, and maxResults' do
+  it 'searches an issue with a jql query string, start at, and maxResults' do
     response = double
     issue = double
 
@@ -109,7 +109,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', start_at: 1, max_results: 3)).to eq([''])
   end
 
-  it 'should search an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
+  it 'searches an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
     response = double
     issue = double
 
@@ -121,7 +121,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', max_results: 0)).to eq(1)
   end
 
-  it 'should search an issue with a jql query string and string expand' do
+  it 'searches an issue with a jql query string and string expand' do
     response = double
     issue = double
 
@@ -135,7 +135,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
   end
 
-  it 'should search an issue with a jql query string and array expand' do
+  it 'searches an issue with a jql query string and array expand' do
     response = double
     issue = double
 
@@ -149,7 +149,7 @@ describe JIRA::Resource::Issue do
     expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
   end
 
-  it 'should return meta data available for editing an issue' do
+  it 'returns meta data available for editing an issue' do
     subject = JIRA::Resource::Issue.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
     response = double
 

@@ -9,7 +9,7 @@ describe JIRA::Resource::Agile do
   let(:response) { double }
 
   describe '#all' do
-    it 'should query url without parameters' do
+    it 'queries url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
@@ -18,7 +18,7 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_backlog_issues' do
-    it 'should query the url without parameters' do
+    it 'queries the url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/backlog?maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
@@ -27,7 +27,7 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_board_issues' do
-    it 'should query correct url without parameters' do
+    it 'queries correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
@@ -44,7 +44,7 @@ describe JIRA::Resource::Agile do
       end
     end
 
-    it 'should query correct url with parameters' do
+    it 'queries correct url with parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?startAt=50').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
@@ -63,28 +63,28 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_sprints' do
-    it 'should query correct url without parameters' do
+    it 'queries correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_sprints(client, 1)
     end
 
-    it 'should query correct url with parameters' do
+    it 'queries correct url with parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?startAt=50&maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_sprints(client, 1, startAt: 50)
     end
 
-    it 'should work with pagination starting at 0' do
+    it 'works with pagination starting at 0' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=1&startAt=0').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_sprints(client, 1, maxResults: 1, startAt: 0)
     end
 
-    it 'should work with pagination not starting at 0' do
+    it 'works with pagination not starting at 0' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/sprint?maxResults=1&startAt=1').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
@@ -93,14 +93,14 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_sprint_issues' do
-    it 'should query correct url without parameters' do
+    it 'queries correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/sprint/1/issue?maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('sprint/1_issues.json'))
 
       JIRA::Resource::Agile.get_sprint_issues(client, 1)
     end
 
-    it 'should query correct url with parameters' do
+    it 'queries correct url with parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/sprint/1/issue?startAt=50&maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('sprint/1_issues.json'))
 
@@ -109,7 +109,7 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_projects_full' do
-    it 'should query correct url without parameters' do
+    it 'queries correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/project/full').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
@@ -118,14 +118,14 @@ describe JIRA::Resource::Agile do
   end
 
   describe '#get_projects' do
-    it 'should query correct url without parameters' do
+    it 'queries correct url without parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/project?maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
       JIRA::Resource::Agile.get_projects(client, 1)
     end
 
-    it 'should query correct url with parameters' do
+    it 'queries correct url with parameters' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/project?startAt=50&maxResults=100').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1.json'))
 
