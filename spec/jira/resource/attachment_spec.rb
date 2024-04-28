@@ -65,7 +65,7 @@ describe JIRA::Resource::Attachment do
     end
     let(:attachment_file_contents) { 'file contents' }
     let(:file_target) { double(read: :attachment_file_contents) }
-    let(:attachment_url) { "https:jirahost/secure/attachment/32323/myfile.txt" }
+    let(:attachment_url) { 'https:jirahost/secure/attachment/32323/myfile.txt' }
     subject(:attachment) do
       JIRA::Resource::Attachment.new(
         client,
@@ -139,13 +139,13 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => "Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2" } }
+        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          { "Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck" }.merge(default_headers_given)
+          { 'Accept'=>'application/json', 'X-Atlassian-Token'=>'nocheck' }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do
@@ -193,13 +193,13 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => "Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2" } }
+        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          { "Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck" }.merge(default_headers_given)
+          { 'Accept'=>'application/json', 'X-Atlassian-Token'=>'nocheck' }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do

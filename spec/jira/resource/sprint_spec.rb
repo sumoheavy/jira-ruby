@@ -91,7 +91,7 @@ describe JIRA::Resource::Sprint do
       let(:issue_id) { 1001 }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
-        "/jira/rest/agile/1.0/sprint//issue"
+        '/jira/rest/agile/1.0/sprint//issue'
       end
       let(:issue) do
         issue = double
@@ -119,7 +119,7 @@ describe JIRA::Resource::Sprint do
       let(:issue_ids) { [ 1001, 1012 ] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
-        "/jira/rest/agile/1.0/sprint//issue"
+        '/jira/rest/agile/1.0/sprint//issue'
       end
       let(:issues) do
         issue_ids.map do |issue_id|

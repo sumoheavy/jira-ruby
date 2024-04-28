@@ -53,7 +53,7 @@ describe JIRA::Resource::Watcher do
       it 'should add a watcher' do
         issue = client.Issue.find('10002')
         watcher = JIRA::Resource::Watcher.new(client, issue: issue)
-        user_id = "tester"
+        user_id = 'tester'
         watcher.save!(user_id)
       end
     end
