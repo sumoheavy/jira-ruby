@@ -73,6 +73,7 @@ module JIRA
     # JIRA::Client::UninitializedAccessTokenError exception if it is not set.
     def access_token
       raise UninitializedAccessTokenError unless @access_token
+
       @access_token
     end
 

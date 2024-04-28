@@ -138,6 +138,7 @@ module JIRA
         @request_client = HttpClient.new(@options)
       when :cookie
         raise ArgumentError, 'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
         @request_client.make_cookie_auth_request

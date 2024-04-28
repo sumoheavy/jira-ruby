@@ -2,10 +2,20 @@ require:
   - rubocop-rspec
 
 AllCops:
-    NewCops: enable
-    TargetRubyVersion: 3.1
+  Exclude:
+    - 'example.rb'
+    - 'http-basic-example.rb'
+  NewCops: enable
+  TargetRubyVersion: 3.1
 
 Documentation:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - 'lib/jira-ruby.rb'
+
+Naming/MethodName:
   Enabled: false
 
 Style/FrozenStringLiteralComment:

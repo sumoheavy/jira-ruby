@@ -59,6 +59,7 @@ module JIRA
       def self.name_to_id(client, field_name)
         field_name = field_name.to_s
         return field_name unless client.cache.field_map && client.cache.field_map[field_name]
+
         client.cache.field_map[field_name]
       end
 

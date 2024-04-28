@@ -199,6 +199,7 @@ module JIRA
       define_method(resource) do
         attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
         return nil unless attribute
+
         child_class.new(client, attrs: attribute)
       end
     end
@@ -333,6 +334,7 @@ module JIRA
     # is not set
     def fetch(reload = false, query_params = {})
       return if expanded? && !reload
+
       response = client.get(url_with_query_params(url, query_params))
       set_attrs_from_response(response)
       @expanded = true
@@ -445,6 +447,7 @@ module JIRA
     def patched_url
       result = url
       return result if result.start_with?('/', 'http')
+
       "/#{result}"
     end
 
@@ -478,12 +481,15 @@ module JIRA
 
     def self.maybe_nested_attribute(attributes, attribute_name, nested_under = nil)
       return attributes[attribute_name] if nested_under.nil?
+
       if nested_under.instance_of? Array
         final = nested_under.inject(attributes) do |parent, key|
           break if parent.nil?
+
           parent[key]
         end
         return nil if final.nil?
+
         final[attribute_name]
       else
         return attributes[nested_under][attribute_name]
