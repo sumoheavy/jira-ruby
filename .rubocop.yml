@@ -3,3 +3,6 @@ require:
 
 AllCops:
     NewCops: enable
+
+Documentation:
+  Enabled: false
