@@ -34,13 +34,13 @@ describe JIRA::Resource::Watcher do
 
     describe 'watchers' do
       before(:each) do
-        stub_request(:get, site_url + '/jira/rest/api/2/issue/10002')
+        stub_request(:get, "#{site_url}/jira/rest/api/2/issue/10002")
           .to_return(status: 200, body: get_mock_response('issue/10002.json'))
 
-        stub_request(:get, site_url + '/jira/rest/api/2/issue/10002/watchers')
+        stub_request(:get, "#{site_url}/jira/rest/api/2/issue/10002/watchers")
           .to_return(status: 200, body: get_mock_response('issue/10002/watchers.json'))
 
-        stub_request(:post, site_url + '/jira/rest/api/2/issue/10002/watchers')
+        stub_request(:post, "#{site_url}/jira/rest/api/2/issue/10002/watchers")
           .to_return(status: 204, body: nil)
       end
 

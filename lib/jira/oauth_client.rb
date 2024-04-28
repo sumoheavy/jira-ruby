@@ -85,7 +85,7 @@ module JIRA
         uri.query = if uri.query.to_s == ''
                       oauth_params_str
                     else
-                      uri.query + '&' + oauth_params_str
+                      "#{uri.query}&#{oauth_params_str}"
                     end
         url = uri.to_s
       end

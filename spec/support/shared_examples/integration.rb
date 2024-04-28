@@ -2,7 +2,7 @@ require 'cgi'
 
 def get_mock_from_path(method, options = {})
   prefix = if defined? belongs_to
-             belongs_to.path_component + '/'
+             "#{belongs_to.path_component}/"
            else
              ''
            end
@@ -15,8 +15,8 @@ def get_mock_from_path(method, options = {})
           described_class.collection_path(client, prefix)
         end
   file_path = url.sub(client.options[:rest_base_path], '')
-  file_path = file_path + '.' + options[:suffix] if options[:suffix]
-  file_path = file_path + '.' + method.to_s unless method == :get
+  file_path = "#{file_path}.#{options[:suffix]}" if options[:suffix]
+  file_path = "#{file_path}.#{method.to_s}" unless method == :get
   value_if_not_found = options.key?(:value_if_not_found) ? options[:value_if_not_found] : false
   get_mock_response("#{file_path}.json", value_if_not_found)
 end
@@ -33,7 +33,7 @@ end
 
 def prefix
   prefix = '/'
-  prefix = belongs_to.path_component + '/' if defined? belongs_to
+  prefix = "#{belongs_to.path_component}/" if defined? belongs_to
   prefix
 end
 
@@ -76,10 +76,7 @@ shared_examples 'a resource with JQL inputs and a collection GET endpoint' do
   it 'should get the collection' do
     stub_request(
       :get,
-      site_url +
-        client.options[:rest_base_path] +
-        '/search?jql=' +
-        CGI.escape(jql_query_string)
+      "#{site_url}#{client.options[:rest_base_path]}/search?jql=#{CGI.escape(jql_query_string)}"
     ).to_return(status: 200, body: get_mock_response('issue.json'))
 
     collection = build_receiver.jql(jql_query_string)
@@ -114,7 +111,7 @@ shared_examples 'a resource with a singular GET endpoint' do
 
   it 'handles a 404' do
     stub_request(:get, site_url + described_class.singular_path(client, '99999', prefix))
-      .to_return(status: 404, body: '{"errorMessages":["' + class_basename + ' Does Not Exist"],"errors": {}}')
+      .to_return(status: 404, body: "{\"errorMessages\":[\"#{class_basename} Does Not Exist\"],\"errors\": {}}")
     expect do
       client.send(class_basename).find('99999', options)
     end.to raise_exception(JIRA::HTTPError)

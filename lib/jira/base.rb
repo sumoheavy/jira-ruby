@@ -143,7 +143,7 @@ module JIRA
     #   JIRA::Resource::Comment.singular_path('456','/issue/123/')
     #     # => /jira/rest/api/2/issue/123/comment/456
     def self.singular_path(client, key, prefix = '/')
-      collection_path(client, prefix) + '/' + key.to_s
+      "#{collection_path(client, prefix)}/#{key.to_s}"
     end
 
     # Returns the attribute name of the attribute used for find.
@@ -195,7 +195,7 @@ module JIRA
     #                       # => Looks for {"foo":{"bar":{"baz":{"child":{}}}}}
     def self.has_one(resource, options = {})
       attribute_key = options[:attribute_key] || resource.to_s
-      child_class = options[:class] || ('JIRA::Resource::' + resource.to_s.classify).constantize
+      child_class = options[:class] || ("JIRA::Resource::#{resource.to_s.classify}").constantize
       define_method(resource) do
         attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
         return nil unless attribute
@@ -247,7 +247,7 @@ module JIRA
     #                       # => Looks for {"foo":{"bar":{"baz":{"children":{}}}}}
     def self.has_many(collection, options = {})
       attribute_key = options[:attribute_key] || collection.to_s
-      child_class = options[:class] || ('JIRA::Resource::' + collection.to_s.classify).constantize
+      child_class = options[:class] || ("JIRA::Resource::#{collection.to_s.classify}").constantize
       self_class_basename = name.split('::').last.downcase.to_sym
       define_method(collection) do
         child_class_options = { self_class_basename => self }
@@ -325,7 +325,7 @@ module JIRA
     # issue it returns '/issue'
     def path_component
       path_component = "/#{self.class.endpoint_name}"
-      path_component += '/' + key_value if key_value
+      path_component += "/#{key_value}" if key_value
       path_component
     end
 
@@ -423,7 +423,7 @@ module JIRA
       prefix = '/'
       unless self.class.belongs_to_relationships.empty?
         prefix = self.class.belongs_to_relationships.inject(prefix) do |prefix_so_far, relationship|
-          prefix_so_far.to_s + relationship.to_s + '/' + send("#{relationship}_id").to_s + '/'
+          "#{prefix_so_far.to_s}#{relationship.to_s}/#{send("#{relationship}_id").to_s}/"
         end
       end
       if @attrs['self']
@@ -514,7 +514,7 @@ module JIRA
 
     def self.hash_to_query_string(query_params)
       query_params.map do |k, v|
-        CGI.escape(k.to_s) + '=' + CGI.escape(v.to_s)
+        "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}"
       end.join('&')
     end
 
