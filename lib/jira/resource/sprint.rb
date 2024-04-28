@@ -53,7 +53,7 @@ module JIRA
 
       def get_sprint_details
         search_url =
-          "#{client.options[:site]}#{client.options[:client_path]}/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=#{rapidview_id}&sprintId=#{id}"
+          "#{client.options[:site]}#{client.options[:client_path]}/rest/agile/1.0/sprint/#{id}"
         begin
           response = client.get(search_url)
         rescue StandardError
@@ -61,22 +61,10 @@ module JIRA
         end
         json = self.class.parse_json(response.body)
 
-        @start_date = Date.parse(json['sprint']['startDate']) unless json['sprint']['startDate'] == 'None'
-        @end_date = Date.parse(json['sprint']['endDate']) unless json['sprint']['endDate'] == 'None'
-        @completed_date = Date.parse(json['sprint']['completeDate']) unless json['sprint']['completeDate'] == 'None'
+        @start_date = json['sprint']['startDate'] && Date.parse(json['sprint']['startDate'])
+        @end_date = json['sprint']['endDate'] && Date.parse(json['sprint']['endDate'])
+        @completed_date = json['sprint']['completeDate'] && Date.parse(json['sprint']['completeDate'])
         @sprint_report = client.SprintReport.build(json['contents'])
-      end
-
-      def rapidview_id
-        return @attrs['rapidview_id'] if @attrs['rapidview_id']
-        search_url = client.options[:site] + '/secure/GHGoToBoard.jspa?sprintId=' + id.to_s
-        begin
-          response = client.get(search_url)
-        rescue JIRA::HTTPError => error
-          return unless error.response.instance_of? Net::HTTPFound
-          rapid_view_match = /rapidView=(\d+)&/.match(error.response['location'])
-          @attrs['rapidview_id'] = rapid_view_match[1] unless rapid_view_match.nil?
-        end
       end
 
       def save(attrs = {}, _path = nil)
