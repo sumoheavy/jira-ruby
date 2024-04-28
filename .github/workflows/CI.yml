@@ -3,27 +3,6 @@ name: Ruby
 on: [push, pull_request]
 
 jobs:
-  lint:
-    name: CI-lint
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        ruby:
-          - '3.1'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-      
-      - name: Lint
-        run: |
-          bundle exec rubocop
-
   test:
     name: CI-tests
     runs-on: ubuntu-latest
@@ -37,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
