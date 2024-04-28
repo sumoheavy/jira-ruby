@@ -139,7 +139,8 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
+        let(:default_headers_given) {
+ { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
@@ -149,7 +150,8 @@ describe JIRA::Resource::Attachment do
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, merged_headers).and_return(response)
+          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, 
+merged_headers).and_return(response)
 
           bearer_attachment.save('file' => path_to_file)
 
@@ -193,7 +195,8 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
+        let(:default_headers_given) {
+ { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
@@ -203,7 +206,8 @@ describe JIRA::Resource::Attachment do
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, merged_headers).and_return(response)
+          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, 
+merged_headers).and_return(response)
 
           bearer_attachment.save!('file' => path_to_file)
 
