@@ -61,7 +61,7 @@ module JIRA
     attr_reader :options
 
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token,
-:access_token, :authenticated?
+                   :access_token, :authenticated?
 
     DEFINED_OPTIONS = [
       :site,
@@ -127,9 +127,9 @@ OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cer
         @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
 
         raise ArgumentError,
-'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
+              'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
         raise ArgumentError,
-'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
+              'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
       end
 
       case options[:auth_type]
@@ -142,7 +142,7 @@ OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cer
         @request_client = HttpClient.new(@options)
       when :cookie
         raise ArgumentError,
-'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+              'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
 
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)

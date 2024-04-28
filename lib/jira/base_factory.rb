@@ -39,7 +39,7 @@ module JIRA
     # non-factory class and automatically prepend the client argument to the argument
     # list.
     delegate_to_target_class :all, :find, :collection_path, :singular_path, :jql, :get_backlog_issues,
-:get_board_issues, :get_sprints, :get_sprint_issues, :get_projects, :get_projects_full
+                             :get_board_issues, :get_sprints, :get_sprint_issues, :get_projects, :get_projects_full
 
     # This method needs special handling as it has a default argument value
     def build(attrs = {})

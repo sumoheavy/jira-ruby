@@ -150,7 +150,7 @@ describe JIRA::HttpClient do
     request = double
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     expect(request).to receive(:basic_auth).with(basic_client.options[:username],
-basic_client.options[:password]).exactly(5).times.and_return(request)
+                                                 basic_client.options[:password]).exactly(5).times.and_return(request)
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(response)
     %i[delete get head].each do |method|
       expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
@@ -170,7 +170,7 @@ basic_client.options[:password]).exactly(5).times.and_return(request)
     request = double
     allow(basic_cookie_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     expect(request).to receive(:basic_auth).with(basic_cookie_client.options[:username],
-basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
+                                                 basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
     expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
     %i[delete get head].each do |method|
@@ -192,7 +192,7 @@ basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
     request = double
     allow(client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     expect(request).to receive(:basic_auth).with(client.options[:username],
-client.options[:password]).exactly(5).times.and_return(request)
+                                                 client.options[:password]).exactly(5).times.and_return(request)
     expect(request).to receive(:add_field).with('Cookie', 'sessionToken=abc123; internal=true').exactly(5).times
     expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
@@ -216,7 +216,7 @@ client.options[:password]).exactly(5).times.and_return(request)
 
     expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
     expect(http_request).to receive(:basic_auth).with(basic_client.options[:username],
-basic_client.options[:password]).and_return(http_request)
+                                                      basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, '/foo', body, headers)
   end
@@ -230,7 +230,7 @@ basic_client.options[:password]).and_return(http_request)
 
     expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
     expect(http_request).to receive(:basic_auth).with(basic_client.options[:username],
-basic_client.options[:password]).and_return(http_request)
+                                                      basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, 'http://mydomain.com/foo', body, headers)
   end
@@ -387,7 +387,7 @@ basic_client.options[:password]).and_return(http_request)
 
     it 'performs a basic http client request' do
       expect(request).to receive(:basic_auth).with(basic_client.options[:username],
-basic_client.options[:password]).and_return(request)
+                                                   basic_client.options[:password]).and_return(request)
 
       subject
     end

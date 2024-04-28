@@ -137,7 +137,7 @@ describe JIRA::OauthClient do
         it 'signs the access_token and performs the request' do
           expect(access_token).to receive(:sign!).with(an_instance_of(Net::HTTP::Post::Multipart))
           expect(oauth_client.consumer).to receive_message_chain(:http,
-:request).with(an_instance_of(Net::HTTP::Post::Multipart))
+                                                                 :request).with(an_instance_of(Net::HTTP::Post::Multipart))
 
           subject
         end
@@ -171,12 +171,12 @@ describe JIRA::OauthClient do
         allow(oauth__2legged_client).to receive(:access_token).and_return(mock_access_token)
         %i[delete get head].each do |method|
           expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=',
-headers).and_return(response)
+                                                            headers).and_return(response)
           oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
         end
         %i[post put].each do |method|
           expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', '',
-headers).and_return(response)
+                                                            headers).and_return(response)
           oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
         end
       end
