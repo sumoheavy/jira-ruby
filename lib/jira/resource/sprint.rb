@@ -12,24 +12,20 @@ module JIRA
 
       # get all issues of sprint
       def issues(options = {})
-        jql = 'sprint = ' + id.to_s
+        jql = "sprint = #{id.to_s}"
         jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
       end
 
       def add_issue(issue)
-        add_issues( [ issue ])
+        add_issues([issue])
       end
 
       def add_issues(issues)
-        issue_ids = issues.map{ |issue| issue.id }
+        issue_ids = issues.map(&:id)
         request_body = { issues: issue_ids }.to_json
         client.post("#{agile_path}/issue", request_body)
         true
-      end
-
-      def sprint_report
-        get_sprint_details_attribute('sprint_report')
       end
 
       def start_date
@@ -47,6 +43,7 @@ module JIRA
       def get_sprint_details_attribute(attribute_name)
         attribute = instance_variable_get("@#{attribute_name}")
         return attribute if attribute
+
         get_sprint_details
         instance_variable_get("@#{attribute_name}")
       end
@@ -61,10 +58,9 @@ module JIRA
         end
         json = self.class.parse_json(response.body)
 
-        @start_date = json['sprint']['startDate'] && Date.parse(json['sprint']['startDate'])
-        @end_date = json['sprint']['endDate'] && Date.parse(json['sprint']['endDate'])
-        @completed_date = json['sprint']['completeDate'] && Date.parse(json['sprint']['completeDate'])
-        @sprint_report = client.SprintReport.build(json['contents'])
+        @start_date = json['startDate'] && Date.parse(json['startDate'])
+        @end_date = json['endDate'] && Date.parse(json['endDate'])
+        @complete_date = json['completeDate'] && Date.parse(json['completeDate'])
       end
 
       def save(attrs = {}, _path = nil)
