@@ -10,7 +10,7 @@ describe JIRA::Resource::Component do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/component/10000',
-        'id'   => key,
+        'id' => key,
         'name' => 'Cheesecake'
       }
     end

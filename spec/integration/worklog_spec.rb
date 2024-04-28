@@ -22,7 +22,7 @@ describe JIRA::Resource::Worklog do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/issue/10002/worklog/10000',
-        'id'   => key,
+        'id' => key,
         'comment' => 'Some epic work.'
       }
     end

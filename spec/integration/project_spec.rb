@@ -9,9 +9,9 @@ describe JIRA::Resource::Project do
 
     let(:expected_attributes) do
       {
-        'self'   => 'http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT',
-        'key'    => key,
-        'name'   => 'Sample Project for Developing RoR RESTful API'
+        'self' => 'http://localhost:2990/jira/rest/api/2/project/SAMPLEPROJECT',
+        'key' => key,
+        'name' => 'Sample Project for Developing RoR RESTful API'
       }
     end
 

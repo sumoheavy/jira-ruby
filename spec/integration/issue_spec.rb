@@ -9,8 +9,8 @@ describe JIRA::Resource::Issue do
 
     let(:expected_attributes) do
       {
-        'self'   => 'http://localhost:2990/jira/rest/api/2/issue/10002',
-        'key'    => 'SAMPLEPROJECT-1',
+        'self' => 'http://localhost:2990/jira/rest/api/2/issue/10002',
+        'key' => 'SAMPLEPROJECT-1',
         'expand' => 'renderedFields,names,schema,transitions,editmeta,changelog'
       }
     end

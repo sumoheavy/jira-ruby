@@ -10,9 +10,9 @@ describe JIRA::Resource::Project do
   describe 'relationships' do
     subject do
       JIRA::Resource::Project.new(client, attrs: {
-                                    'lead'        => { 'foo' => 'bar' },
-                                    'issueTypes'  => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions'    => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
+                                    'lead' => { 'foo' => 'bar' },
+                                    'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                                    'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
                                   })
     end
 
@@ -31,7 +31,7 @@ describe JIRA::Resource::Project do
   describe 'issues' do
     subject do
       JIRA::Resource::Project.new(client, attrs: {
-                                    'key'         => 'test'
+                                    'key' => 'test'
                                   })
     end
 

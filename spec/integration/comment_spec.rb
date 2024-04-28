@@ -23,7 +23,7 @@ describe JIRA::Resource::Comment do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/issue/10002/comment/10000',
-        'id'   => key,
+        'id' => key,
         'body' => 'This is a comment. Creative.'
       }
     end
