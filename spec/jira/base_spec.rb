@@ -258,7 +258,7 @@ describe JIRA::Base do
     it 'returns false when an invalid field is set' do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?) { false }
-      expect(client).to receive(:put).with('/foo/bar', 
+      expect(client).to receive(:put).with('/foo/bar',
 '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('invalid_field' => 'foobar')).to be_falsey
     end
@@ -301,7 +301,7 @@ describe JIRA::Base do
     it 'throws an exception when an invalid field is set' do
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?) { false }
-      expect(client).to receive(:put).with('/foo/bar', 
+      expect(client).to receive(:put).with('/foo/bar',
 '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       expect{ subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
     end
@@ -489,7 +489,7 @@ describe JIRA::Base do
     end
 
     it 'allows the has_many attributes to be nested inside another attribute' do
-      subject = JIRA::Resource::HasManyExample.new(client, 
+      subject = JIRA::Resource::HasManyExample.new(client,
 attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' }, { 'id' => '456' }] } })
       expect(subject.brunchmuffins.length).to eq(2)
       subject.brunchmuffins.each do |brunchmuffin|
@@ -515,7 +515,7 @@ attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' }, { 'id' => '456' }]
     end
 
     it 'allows the attribute key to be specified' do
-      subject = JIRA::Resource::HasManyExample.new(client, 
+      subject = JIRA::Resource::HasManyExample.new(client,
 attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' }, { 'id' => '456' }] })
       expect(subject.irregularly_named_things.length).to eq(2)
       subject.irregularly_named_things.each do |thing|
@@ -549,7 +549,7 @@ attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' }, { 'id' => '456' }] })
     end
 
     it 'allows the has_one attributes to be nested inside another attribute' do
-      subject = JIRA::Resource::HasOneExample.new(client, 
+      subject = JIRA::Resource::HasOneExample.new(client,
 attrs: { 'nested' => { 'brunchmuffin' => { 'id' => '123' } } })
       expect(subject.brunchmuffin.class).to eq(JIRA::Resource::Deadbeef)
       expect(subject.brunchmuffin.id).to eq('123')

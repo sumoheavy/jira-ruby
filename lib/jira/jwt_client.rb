@@ -24,7 +24,7 @@ module JIRA
 
     def build_jwt_header(url)
       jwt = build_jwt(url)
-      
+
       { 'Authorization' => "JWT #{jwt}" }
     end
 

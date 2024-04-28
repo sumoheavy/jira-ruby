@@ -8,7 +8,7 @@ describe JIRA::Resource::Webhook do
     let(:key) { '2' }
 
     let(:expected_attributes) do
-      { 'name' => 'from API', 'url' => 'http://localhost:3000/webhooks/1', 'excludeBody' => false, 
+      { 'name' => 'from API', 'url' => 'http://localhost:3000/webhooks/1', 'excludeBody' => false,
 'filters' => { 'issue-related-events-section' => '' }, 'events' => [], 'enabled' => true, 'self' => 'http://localhost:2990/jira/rest/webhooks/1.0/webhook/2', 'lastUpdatedUser' => 'admin', 'lastUpdatedDisplayName' => 'admin', 'lastUpdated' => 1_453_306_520_188 }
     end
 

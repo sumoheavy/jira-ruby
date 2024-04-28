@@ -49,7 +49,7 @@ module JIRA
     def http_conn(uri)
       http_conn =
         if @options[:proxy_address]
-          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80, 
+          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80,
 @options[:proxy_username], @options[:proxy_password])
         else
           Net::HTTP.new(uri.host, uri.port)

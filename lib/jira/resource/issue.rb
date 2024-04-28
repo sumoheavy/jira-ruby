@@ -48,7 +48,7 @@ module JIRA
         result
       end
 
-      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, 
+      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil,
 validate_query: true })
         url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
 

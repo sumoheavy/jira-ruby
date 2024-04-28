@@ -67,11 +67,11 @@ RSpec.shared_examples 'Client Common Tests' do
 
       it 'raises an ArgumentError' do
         expect {
- subject }.to raise_exception(ArgumentError, 
+ subject }.to raise_exception(ArgumentError,
 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
         options[:ssl_client_cert] = '<cert></cert>'
         expect {
- subject }.to raise_exception(ArgumentError, 
+ subject }.to raise_exception(ArgumentError,
 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
       end
     end
@@ -81,12 +81,12 @@ end
 RSpec.shared_examples 'HttpClient tests' do
   it 'makes a valid request' do
     %i[delete get head].each do |method|
-      expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, 
+      expect(subject.request_client).to receive(:make_request).with(method, '/path', nil,
 headers).and_return(successful_response)
       subject.send(method, '/path', headers)
     end
     %i[post put].each do |method|
-      expect(subject.request_client).to receive(:make_request).with(method, '/path', '', 
+      expect(subject.request_client).to receive(:make_request).with(method, '/path', '',
 merged_headers).and_return(successful_response)
       subject.send(method, '/path', '', headers)
     end
@@ -112,12 +112,12 @@ RSpec.shared_examples 'OAuth Common Tests' do
   describe 'that call a oauth client' do
     specify 'which makes a request' do
       %i[delete get head].each do |method|
-        expect(subject.request_client).to receive(:make_request).with(method, '/path', nil, 
+        expect(subject.request_client).to receive(:make_request).with(method, '/path', nil,
 headers).and_return(successful_response)
         subject.send(method, '/path', {})
       end
       %i[post put].each do |method|
-        expect(subject.request_client).to receive(:make_request).with(method, '/path', '', 
+        expect(subject.request_client).to receive(:make_request).with(method, '/path', '',
 merged_headers).and_return(successful_response)
         subject.send(method, '/path', '', {})
       end

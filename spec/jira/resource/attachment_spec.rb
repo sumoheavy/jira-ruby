@@ -150,7 +150,7 @@ describe JIRA::Resource::Attachment do
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, 
+          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything,
 merged_headers).and_return(response)
 
           bearer_attachment.save('file' => path_to_file)
@@ -206,7 +206,7 @@ merged_headers).and_return(response)
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, 
+          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything,
 merged_headers).and_return(response)
 
           bearer_attachment.save!('file' => path_to_file)
