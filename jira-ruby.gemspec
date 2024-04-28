@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.push File.expand_path('lib', __dir__)
 require 'jira/version'
 
@@ -9,12 +11,13 @@ Gem::Specification.new do |s|
   s.summary     = 'Ruby Gem for use with the Atlassian JIRA REST API'
   s.description = 'API for JIRA'
   s.licenses    = ['MIT']
-  s.metadata    = { 'source_code_uri' => 'https://github.com/sumoheavy/jira-ruby' }
+  s.metadata    = {
+    'source_code_uri' => 'https://github.com/sumoheavy/jira-ruby',
+    'rubygems_mfa_required' => 'true' }
 
   s.required_ruby_version = '>= 3.1.0'
 
   s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
 
