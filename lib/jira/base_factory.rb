@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   # This is the base class for all the JIRA resource factory instances.
   class BaseFactory

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Whenever a collection from a has_many relationship is accessed, an instance
 # of this class is returned.  This instance wraps the Array of instances in
