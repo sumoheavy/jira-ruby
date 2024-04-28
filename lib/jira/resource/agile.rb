@@ -27,7 +27,8 @@ module JIRA
         response = client.get(path_base(client) + "/board/#{board_id}/issue?#{hash_to_query_string(options)}")
         json = parse_json(response.body)
         # To get Issue objects with the same structure as for Issue.all
-        return {} if json['issues'].size.zero?
+        return {} if json['issues'].empty?
+
         issue_ids = json['issues'].map do |issue|
           issue['id']
         end
@@ -70,7 +71,7 @@ module JIRA
       private
 
       def self.path_base(client)
-        client.options[:context_path] + '/rest/agile/1.0'
+        "#{client.options[:context_path]}/rest/agile/1.0"
       end
 
       def path_base(client)

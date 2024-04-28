@@ -18,7 +18,7 @@ module JIRA
       end
 
       def self.meta(client)
-        response = client.get(client.options[:rest_base_path] + '/attachment/meta')
+        response = client.get("#{client.options[:rest_base_path]}/attachment/meta")
         parse_json(response.body)
       end
 

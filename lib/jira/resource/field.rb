@@ -28,6 +28,7 @@ module JIRA
         # as a system field can't take precedence
         fields.each do |f|
           next if f.custom
+
           name = safe_name(f.name)
           field_map_reverse[f.id] = [f.name, name] # capture both the official name, and the mapped name
           field_map[name] = f.id
@@ -35,6 +36,7 @@ module JIRA
 
         fields.each do |f|
           next unless f.custom
+
           name = if field_map.key? f.name
                    renamed = safer_name(f.name, f.id)
                    warn "Duplicate Field name #{f.name} #{f.id} - renaming as #{renamed}"

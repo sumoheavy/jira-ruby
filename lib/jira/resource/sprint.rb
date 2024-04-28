@@ -14,17 +14,17 @@ module JIRA
 
       # get all issues of sprint
       def issues(options = {})
-        jql = 'sprint = ' + id.to_s
+        jql = "sprint = #{id}"
         jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
       end
 
       def add_issue(issue)
-        add_issues( [ issue ])
+        add_issues([issue])
       end
 
       def add_issues(issues)
-        issue_ids = issues.map{ |issue| issue.id }
+        issue_ids = issues.map(&:id)
         request_body = { issues: issue_ids }.to_json
         client.post("#{agile_path}/issue", request_body)
         true
@@ -49,6 +49,7 @@ module JIRA
       def get_sprint_details_attribute(attribute_name)
         attribute = instance_variable_get("@#{attribute_name}")
         return attribute if attribute
+
         get_sprint_details
         instance_variable_get("@#{attribute_name}")
       end

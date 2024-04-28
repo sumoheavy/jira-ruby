@@ -9,7 +9,7 @@ module JIRA
 
     class Board < JIRA::Base
       def self.all(client)
-        path = path_base(client) + '/board'
+        path = "#{path_base(client)}/board"
         response = client.get(path)
         json = parse_json(response.body)
         results = json['values']
@@ -76,13 +76,13 @@ module JIRA
       end
 
       def add_issue_to_backlog(issue)
-        client.post(path_base(client) + '/backlog/issue', { issues: [issue.id] }.to_json)
+        client.post("#{path_base(client)}/backlog/issue", { issues: [issue.id] }.to_json)
       end
 
       private
 
       def self.path_base(client)
-        client.options[:context_path] + '/rest/agile/1.0'
+        "#{client.options[:context_path]}/rest/agile/1.0"
       end
 
       def path_base(client)

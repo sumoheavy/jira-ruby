@@ -38,7 +38,7 @@ module JIRA
 
         json = parse_json(response.body)
         json['projects'].map do |attrs|
-          new(client, attrs: attrs)
+          new(client, attrs:)
         end
       end
     end

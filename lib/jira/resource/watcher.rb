@@ -31,7 +31,6 @@ module JIRA
         response = client.post(path, user_id.to_json)
         true
       end
-
     end
   end
 end

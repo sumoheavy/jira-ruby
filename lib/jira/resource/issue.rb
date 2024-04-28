@@ -9,46 +9,25 @@ module JIRA
     end
 
     class Issue < JIRA::Base
-      has_one :reporter,  class: JIRA::Resource::User,
-                          nested_under: 'fields'
-      has_one :assignee,  class: JIRA::Resource::User,
-                          nested_under: 'fields'
-      has_one :project,   nested_under: 'fields'
-
+      has_one :reporter, class: JIRA::Resource::User, nested_under: 'fields'
+      has_one :assignee, class: JIRA::Resource::User, nested_under: 'fields'
+      has_one :project, nested_under: 'fields'
       has_one :issuetype, nested_under: 'fields'
-
-      has_one :priority,  nested_under: 'fields'
-
-      has_one :status,    nested_under: 'fields'
-
+      has_one :priority, nested_under: 'fields'
+      has_one :status, nested_under: 'fields'
       has_one :resolution, nested_under: 'fields'
-
       has_many :transitions
-
       has_many :components, nested_under: 'fields'
-
       has_many :comments, nested_under: %w[fields comment]
-
-      has_many :attachments, nested_under: 'fields',
-                             attribute_key: 'attachment'
-
-      has_many :versions,    nested_under: 'fields'
-      has_many :fixVersions, class: JIRA::Resource::Version,
-                             nested_under: 'fields'
-
+      has_many :attachments, nested_under: 'fields', attribute_key: 'attachment'
+      has_many :versions, nested_under: 'fields'
+      has_many :fixVersions, class: JIRA::Resource::Version, nested_under: 'fields'
       has_many :worklogs, nested_under: %w[fields worklog]
-      has_one :sprint, class: JIRA::Resource::Sprint,
-                       nested_under: 'fields'
-
-      has_many :closed_sprints, class: JIRA::Resource::Sprint,
-                                nested_under: 'fields', attribute_key: 'closedSprints'
-
+      has_one :sprint, class: JIRA::Resource::Sprint, nested_under: 'fields'
+      has_many :closed_sprints, class: JIRA::Resource::Sprint, nested_under: 'fields', attribute_key: 'closedSprints'
       has_many :issuelinks, nested_under: 'fields'
-
       has_many :remotelink, class: JIRA::Resource::Remotelink
-
-      has_many :watchers,   attribute_key: 'watches',
-                            nested_under: %w[fields watches]
+      has_many :watchers, attribute_key: 'watches', nested_under: %w[fields watches]
 
       def self.all(client)
         start_at = 0
@@ -63,6 +42,7 @@ module JIRA
             result.push(client.Issue.build(issue))
           end
           break if json['issues'].empty?
+
           start_at += json['issues'].size
         end
         result
@@ -83,9 +63,8 @@ module JIRA
 
         response = client.get(url)
         json = parse_json(response.body)
-        if options[:max_results] && (options[:max_results] == 0)
-          return json['total']
-        end
+        return json['total'] if options[:max_results] && (options[:max_results] == 0)
+
         json['issues'].map do |issue|
           client.Issue.build(issue)
         end
@@ -96,6 +75,7 @@ module JIRA
       # is not set
       def fetch(reload = false, query_params = {})
         return if expanded? && !reload
+
         response = client.get(url_with_query_params(url, query_params))
         set_attrs_from_response(response)
         if @attrs && @attrs['fields'] && @attrs['fields']['worklog'] && (@attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults'])

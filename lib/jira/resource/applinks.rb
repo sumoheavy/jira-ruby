@@ -7,7 +7,7 @@ module JIRA
     end
 
     class ApplicationLink < JIRA::Base
-      REST_BASE_PATH = '/rest/applinks/1.0'.freeze
+      REST_BASE_PATH = '/rest/applinks/1.0'
 
       def self.endpoint_name
         'listApplicationlinks'
@@ -31,7 +31,7 @@ module JIRA
       end
 
       def self.manifest(client)
-        url = full_url(client) + '/manifest'
+        url = "#{full_url(client)}/manifest"
         response = client.get(url)
         json = parse_json(response.body)
         JIRA::Base.new(client, attrs: json)
