@@ -2,12 +2,24 @@ require 'spec_helper'
 
 describe JIRA::Resource::Sprint do
   let(:client) do
-    client = double(options: { site: 'https://foo.bar.com', context_path: '/jira' })
+    client = double(options: { rest_base_path: '/jira/rest/api/2', context_path: '/jira' })
     allow(client).to receive(:Sprint).and_return(JIRA::Resource::SprintFactory.new(client))
     client
   end
   let(:sprint) { described_class.new(client) }
-  let(:agile_sprint_path) { "#{sprint.client.options[:context_path]}/rest/agile/1.0/sprint/#{sprint.id}" }
+  let(:agile_sprint_path) { "/jira/rest/agile/1.0/sprint/#{sprint.id}" }
+  let(:response) { double }
+
+  describe 'get_sprint_details' do
+    let(:sprint) { JIRA::Resource::Sprint.find(client, '1') }
+    it 'check each of the date attributes' do
+      allow(client).to receive(:get).and_return(double(body: get_mock_response('sprint/1.json')))
+
+      expect(sprint.start_date).to eq Date.parse('2024-01-01T03:20:00.000Z')
+      expect(sprint.end_date).to eq Date.parse('2024-01-15T03:20:00.000Z')
+      expect(sprint.complete_date).to eq Date.parse('2024-01-16T03:48:00.000Z')
+    end
+  end
 
   describe '::find' do
     let(:response) { double('Response', body: '{"some_detail":"some detail"}') }
@@ -91,7 +103,7 @@ describe JIRA::Resource::Sprint do
       let(:issue_id) { 1001 }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
-        "/jira/rest/agile/1.0/sprint//issue"
+        '/jira/rest/agile/1.0/sprint//issue'
       end
       let(:issue) do
         issue = double
@@ -99,13 +111,11 @@ describe JIRA::Resource::Sprint do
         issue
       end
       let(:post_issue_input) do
-        {"issues":[issue.id]}
+        { "issues": [issue.id] }
       end
-
 
       describe '#add_issu' do
         context 'when an issue is passed' do
-
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 
@@ -119,7 +129,7 @@ describe JIRA::Resource::Sprint do
       let(:issue_ids) { [ 1001, 1012 ] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
-        "/jira/rest/agile/1.0/sprint//issue"
+        '/jira/rest/agile/1.0/sprint//issue'
       end
       let(:issues) do
         issue_ids.map do |issue_id|
@@ -129,12 +139,11 @@ describe JIRA::Resource::Sprint do
         end
       end
       let(:post_issue_input) do
-        {"issues": issue_ids}
+        { "issues": issue_ids }
       end
 
       describe '#add_issues' do
         context 'when an issue is passed' do
-
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 

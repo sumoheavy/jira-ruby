@@ -232,10 +232,6 @@ module JIRA
       JIRA::Resource::SprintFactory.new(self)
     end
 
-    def SprintReport
-      JIRA::Resource::SprintReportFactory.new(self)
-    end
-
     def ServerInfo
       JIRA::Resource::ServerInfoFactory.new(self)
     end
