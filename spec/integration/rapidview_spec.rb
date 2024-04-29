@@ -26,7 +26,7 @@ describe JIRA::Resource::RapidView do
       let(:client) { client }
       let(:site_url) { site_url }
 
-      before(:each) do
+      before do
         stub_request(:get, "#{site_url}/jira/rest/greenhopper/1.0/rapidview")
           .to_return(status: 200, body: get_mock_response('rapidview.json'))
       end

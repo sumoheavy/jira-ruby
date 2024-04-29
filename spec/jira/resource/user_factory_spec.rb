@@ -16,7 +16,7 @@ describe JIRA::Resource::UserFactory do
 
     let(:user) { subject.myself }
 
-    before(:each) do
+    before do
       allow(client).to receive(:get).with(
         '/jira/rest/api/2/myself'
       ).and_return(response)

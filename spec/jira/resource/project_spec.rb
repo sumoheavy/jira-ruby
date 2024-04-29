@@ -74,7 +74,7 @@ describe JIRA::Resource::Project do
     let(:response) { double('response', body: '[{}]') }
 
     context 'pagination' do
-      before(:each) do
+      before do
         user_factory = double('user factory')
         expect(client).to receive(:User).and_return(user_factory)
         expect(user_factory).to receive(:build).with(any_args)

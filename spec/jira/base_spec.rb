@@ -125,7 +125,7 @@ describe JIRA::Base do
   end
 
   describe 'collection_path' do
-    before(:each) do
+    before do
       expect(client).to receive(:options).and_return(rest_base_path: '/deadbeef/bar')
     end
 
@@ -169,7 +169,7 @@ describe JIRA::Base do
     subject { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '98765' }) }
 
     describe 'not cached' do
-      before(:each) do
+      before do
         response = instance_double('Response', body: '{"self":"http://deadbeef/","id":"98765"}')
         expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
         expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
@@ -226,7 +226,7 @@ describe JIRA::Base do
 
     subject { JIRA::Resource::Deadbeef.new(client) }
 
-    before(:each) do
+    before do
       expect(subject).to receive(:url).and_return('/foo/bar')
     end
 
@@ -277,7 +277,7 @@ describe JIRA::Base do
 
     subject { JIRA::Resource::Deadbeef.new(client) }
 
-    before(:each) do
+    before do
       expect(subject).to receive(:url).and_return('/foo/bar')
     end
 
@@ -322,7 +322,7 @@ describe JIRA::Base do
   end
 
   describe 'delete' do
-    before(:each) do
+    before do
       expect(client).to receive(:delete).with('/foo/bar')
       allow(subject).to receive(:url) { '/foo/bar' }
     end
@@ -362,7 +362,7 @@ describe JIRA::Base do
   end
 
   describe 'url' do
-    before(:each) do
+    before do
       allow(client).to receive(:options) { { rest_base_path: '/foo/bar' } }
     end
 

@@ -33,7 +33,7 @@ describe JIRA::Resource::Watcher do
     end
 
     describe 'watchers' do
-      before(:each) do
+      before do
         stub_request(:get, "#{site_url}/jira/rest/api/2/issue/10002")
           .to_return(status: 200, body: get_mock_response('issue/10002.json'))
 

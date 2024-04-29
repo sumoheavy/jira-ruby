@@ -43,7 +43,7 @@ describe JIRA::Resource::Issue do
           'key' => 'SAMPLEPROJECT-13'
         }
       end
-      before(:each) do
+      before do
         stub_request(:get, "#{site_url}/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0")
           .to_return(status: 200, body: get_mock_response('issue.json'))
 
@@ -58,7 +58,7 @@ describe JIRA::Resource::Issue do
     it_behaves_like 'a resource with a PUT endpoint that rejects invalid fields'
 
     describe 'errors' do
-      before(:each) do
+      before do
         stub_request(:get,
                      "#{site_url}/jira/rest/api/2/issue/10002")
           .to_return(status: 200, body: get_mock_response('issue/10002.json'))

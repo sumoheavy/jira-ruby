@@ -13,7 +13,7 @@ describe JIRA::Resource::Issue do
 
   describe '#respond_to?' do
     describe 'when decorated by SimpleDelegator' do
-      before(:each) do
+      before do
         response = double
         allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
         allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')

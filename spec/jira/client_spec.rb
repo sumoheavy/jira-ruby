@@ -147,7 +147,7 @@ describe JIRA::Client do
   context 'with basic http authentication' do
     subject { described_class.new(username: 'foo', password: 'bar', auth_type: :basic) }
 
-    before(:each) do
+    before do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
         .with(headers: { 'Authorization' => "Basic #{Base64.strict_encode64('foo:bar').chomp}" })
         .to_return(status: 200, body: '[]', headers: {})
@@ -193,7 +193,7 @@ describe JIRA::Client do
       }
     end
 
-    before(:each) do
+    before do
       # General case of API call with no authentication, or wrong authentication
       stub_request(:post, 'https://localhost:2990/jira/rest/auth/1/session')
         .to_return(status: 401, headers: {})
@@ -240,7 +240,7 @@ describe JIRA::Client do
       )
     end
 
-    before(:each) do
+    before do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
           .with(headers: { 'Authorization' => /JWT .+/ })
           .to_return(status: 200, body: '[]', headers: {})
