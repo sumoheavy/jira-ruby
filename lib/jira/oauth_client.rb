@@ -47,8 +47,8 @@ module JIRA
 
     # Returns the current request token if it is set, else it creates
     # and sets a new token.
-    def request_token(options = {}, *arguments, &)
-      @request_token ||= get_request_token(options, *arguments, &)
+    def request_token(options = {}, ...)
+      @request_token ||= get_request_token(options, ...)
     end
 
     # Sets the request token from a given token and secret.
