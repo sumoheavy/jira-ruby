@@ -520,15 +520,15 @@ module JIRA
     end
 
     def self.query_params_for_single_fetch(options)
-      Hash[options.select do |k, _v|
+      options.select do |k, _v|
         QUERY_PARAMS_FOR_SINGLE_FETCH.include? k
-      end]
+      end.to_h
     end
 
     def self.query_params_for_search(options)
-      Hash[options.select do |k, _v|
+      options.select do |k, _v|
         QUERY_PARAMS_FOR_SEARCH.include? k
-      end]
+      end.to_h
     end
   end
 end
