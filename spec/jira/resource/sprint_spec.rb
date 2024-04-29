@@ -102,7 +102,6 @@ describe JIRA::Resource::Sprint do
         { issues:[issue.id] }
       end
 
-
       describe '#add_issu' do
         context 'when an issue is passed' do
 

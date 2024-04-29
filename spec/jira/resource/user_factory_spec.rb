@@ -7,7 +7,6 @@ describe JIRA::Resource::UserFactory do
     instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
   end
 
-
   describe '#myself' do
     let(:response) do
       instance_double(

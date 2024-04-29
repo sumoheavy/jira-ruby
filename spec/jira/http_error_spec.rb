@@ -10,7 +10,6 @@ describe JIRA::HTTPError do
     response
   end
 
-
   it 'takes the response object as an argument' do
     expect(subject.response).to eq(response)
   end

@@ -124,7 +124,6 @@ describe JIRA::OauthClient do
       it 'performs a request' do
         expect(access_token).to receive(:send).with(:get, '/foo', headers).and_return(response)
 
-
         oauth_client.request(:get, '/foo', body, headers)
       end
 

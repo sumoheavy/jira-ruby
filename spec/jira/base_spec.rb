@@ -37,7 +37,6 @@ describe JIRA::Base do
   let(:client)  { double('client') }
   let(:attrs)   { {} }
 
-
   let(:decorated) { JIRADelegation.new(subject) }
 
   describe '#respond_to?' do
@@ -228,7 +227,6 @@ describe JIRA::Base do
 
     let(:response) { double }
 
-
     before do
       expect(subject).to receive(:url).and_return('/foo/bar')
     end
@@ -279,7 +277,6 @@ describe JIRA::Base do
     subject { JIRA::Resource::Deadbeef.new(client) }
 
     let(:response) { double }
-
 
     before do
       expect(subject).to receive(:url).and_return('/foo/bar')
@@ -584,7 +581,6 @@ describe JIRA::Base do
     subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
 
     let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
-
 
     it 'sets up an accessor for the belongs to relationship' do
       expect(subject.deadbeef).to eq(deadbeef)
