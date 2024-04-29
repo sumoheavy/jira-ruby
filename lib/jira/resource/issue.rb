@@ -107,7 +107,7 @@ validate_query: true })
         end
       end
 
-      def method_missing(method_name, *args, &block)
+      def method_missing(method_name, *args, &)
         if attrs.key?('fields')
           if attrs['fields'].key?(method_name.to_s)
             attrs['fields'][method_name.to_s]
@@ -116,11 +116,11 @@ validate_query: true })
             if attrs['fields'].key?(official_name)
               attrs['fields'][official_name]
             else
-              super(method_name, *args, &block)
+              super(method_name, *args, &)
             end
           end
         else
-          super(method_name, *args, &block)
+          super(method_name, *args, &)
         end
       end
     end

@@ -71,7 +71,7 @@ module JIRA
         end
       end
 
-      def method_missing(method_name, *args, &block)
+      def method_missing(method_name, *args, &)
         if attrs.key?(method_name.to_s)
           attrs[method_name.to_s]
         else
@@ -79,7 +79,7 @@ module JIRA
           if attrs.key?(official_name)
             attrs[official_name]
           else
-            super(method_name, *args, &block)
+            super(method_name, *args, &)
           end
         end
       end

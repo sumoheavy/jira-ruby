@@ -38,7 +38,7 @@ class JIRA::HasManyProxy
   end
 
   # Delegate any missing methods to the collection that this proxy wraps
-  def method_missing(method_name, *args, &block)
-    collection.send(method_name, *args, &block)
+  def method_missing(method_name, *args, &)
+    collection.send(method_name, *args, &)
   end
 end

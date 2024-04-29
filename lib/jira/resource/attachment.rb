@@ -42,9 +42,9 @@ module JIRA
       # @param [Hash] headers Any additional headers to call Jira.
       # @yield |file|
       # @yieldparam [IO] file The IO object streaming the download.
-      def download_file(headers = {}, &block)
+      def download_file(headers = {}, &)
         default_headers = client.options[:default_headers]
-        URI.open(content, default_headers.merge(headers), &block)
+        URI.open(content, default_headers.merge(headers), &)
       end
 
       # Downloads the file contents as a string object.
