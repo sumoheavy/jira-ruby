@@ -11,7 +11,7 @@ describe JIRA::Resource::Sprint do
   let(:response) { double }
 
   describe 'get_sprint_details' do
-    let(:sprint) { JIRA::Resource::Sprint.find(client, '1') }
+    let(:sprint) { described_class.find(client, '1') }
 
     it 'check each of the date attributes' do
       allow(client).to receive(:get).and_return(double(body: get_mock_response('sprint/1.json')))
