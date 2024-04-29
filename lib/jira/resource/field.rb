@@ -34,7 +34,7 @@ module JIRA
           field_map[name] = f.id
         end
 
-        fields.each do |f|
+        fields.each do |f| # rubocop:disable Style/CombinableLoops
           next unless f.custom
 
           name = if field_map.key? f.name
