@@ -83,8 +83,8 @@ module JIRA
         if options[relation]
           instance_variable_set("@#{relation}", options[relation])
           instance_variable_set("@#{relation}_id", options[relation].key_value)
-        elsif options["#{relation}_id".to_sym]
-          instance_variable_set("@#{relation}_id", options["#{relation}_id".to_sym])
+        elsif options[:"#{relation}_id"]
+          instance_variable_set("@#{relation}_id", options[:"#{relation}_id"])
         else
           raise ArgumentError, "Required option #{relation.inspect} missing" unless options[relation]
         end

@@ -105,12 +105,12 @@ describe JIRA::Resource::Attachment do
       double(
         body: [
           {
-            "id": 10_001,
-            "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
-            "filename": file_name,
-            "created": '2017-07-19T12:23:06.572+0000',
-            "size": file_size,
-            "mimeType": file_mime_type
+            id: 10_001,
+            self: 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+            filename: file_name,
+            created: '2017-07-19T12:23:06.572+0000',
+            size: file_size,
+            mimeType: file_mime_type
           }
         ].to_json
       )

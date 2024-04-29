@@ -186,8 +186,8 @@ describe JIRA::Client do
     let(:session_cookie) { '6E3487971234567896704A9EB4AE501F' }
     let(:session_body) do
       {
-        'session': { 'name' => 'JSESSIONID', 'value' => session_cookie },
-        'loginInfo': { 'failedLoginCount' => 1, 'loginCount' => 2,
+        session: { 'name' => 'JSESSIONID', 'value' => session_cookie },
+        loginInfo: { 'failedLoginCount' => 1, 'loginCount' => 2,
                        'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
                        'previousLoginTime' => (DateTime.now - 5).iso8601 }
       }

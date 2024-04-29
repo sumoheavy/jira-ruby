@@ -19,14 +19,14 @@ describe JIRA::Resource::Watcher do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/issue/10002/watchers',
-        "isWatching": false,
-        "watchCount": 1,
-        "watchers": [
+        isWatching: false,
+        watchCount: 1,
+        watchers: [
           {
-            "self": 'http://www.example.com/jira/rest/api/2/user?username=admin',
-            "name": 'admin',
-            "displayName": 'admin',
-            "active": false
+            self: 'http://www.example.com/jira/rest/api/2/user?username=admin',
+            name: 'admin',
+            displayName: 'admin',
+            active: false
           }
         ]
       }

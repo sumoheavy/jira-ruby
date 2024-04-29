@@ -99,7 +99,7 @@ describe JIRA::Resource::Sprint do
         issue
       end
       let(:post_issue_input) do
-        { "issues":[issue.id] }
+        { issues:[issue.id] }
       end
 
 
@@ -129,7 +129,7 @@ describe JIRA::Resource::Sprint do
         end
       end
       let(:post_issue_input) do
-        { "issues": issue_ids }
+        { issues: issue_ids }
       end
 
       describe '#add_issues' do
