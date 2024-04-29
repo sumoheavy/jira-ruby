@@ -172,4 +172,53 @@ eos
     expect(client).to receive(:Sprint).twice.and_return(JIRA::Resource::SprintFactory.new(client))
     expect(board.sprints.size).to be(2)
   end
+
+  it 'should get board configuration for a board' do
+    response = double
+
+    api_json = <<-eos
+      {
+        "id":1,
+        "name":"My Board",
+        "type":"kanban",
+        "self":"https://mycompany.atlassian.net/rest/agile/1.0/board/1/configuration",
+        "location":{
+          "type":"project",
+          "key":"MYPROJ",
+          "id":"10000",
+          "self":"https://mycompany.atlassian.net/rest/api/2/project/10000",
+          "name":"My Project"
+        },
+        "filter":{
+          "id":"10000",
+          "self":"https://mycompany.atlassian.net/rest/api/2/filter/10000"
+        },
+        "subQuery":{
+          "query":"resolution = EMPTY OR resolution != EMPTY AND resolutiondate >= -5d"
+        },
+        "columnConfig":{
+          "columns":[
+            {
+              "name":"Backlog",
+              "statuses":[
+                {
+                  "id":"10000",
+                  "self":"https://mycompany.atlassian.net/rest/api/2/status/10000"
+                }
+              ]
+            }
+          ],
+          "constraintType":"issueCount"
+        },
+        "ranking":{
+          "rankCustomFieldId":10011
+        }
+      }
+    eos
+    allow(response).to receive(:body).and_return(api_json)
+    allow(board).to receive(:id).and_return(84)
+    expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
+    expect(client).to receive(:BoardConfiguration).and_return(JIRA::Resource::BoardConfigurationFactory.new(client))
+    expect(board.configuration).not_to be(nil)
+  end
 end

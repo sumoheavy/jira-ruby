@@ -38,13 +38,15 @@ module JIRA
       @options[:request_token_path] = @options[:context_path] + @options[:request_token_path]
       @options[:authorize_path] = @options[:context_path] + @options[:authorize_path]
       @options[:access_token_path] = @options[:context_path] + @options[:access_token_path]
+      # proxy_address does not exist in oauth's gem context but proxy does
+      @options[:proxy] = @options[:proxy_address] if @options[:proxy_address]
       OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], @options)
     end
 
     # Returns the current request token if it is set, else it creates
     # and sets a new token.
     def request_token(options = {}, *arguments, &block)
-      @request_token ||= get_request_token(options, *arguments, block)
+      @request_token ||= get_request_token(options, *arguments, &block)
     end
 
     # Sets the request token from a given token and secret.
@@ -72,25 +74,35 @@ module JIRA
       @access_token
     end
 
-    def make_request(http_method, path, body = '', headers = {})
+    def make_request(http_method, url, body = '', headers = {})
       # When using oauth_2legged we need to add an empty oauth_token parameter to every request.
       if @options[:auth_type] == :oauth_2legged
         oauth_params_str = 'oauth_token='
-        uri = URI.parse(path)
+        uri = URI.parse(url)
         uri.query = if uri.query.to_s == ''
                       oauth_params_str
                     else
                       uri.query + '&' + oauth_params_str
                     end
-        path = uri.to_s
+        url = uri.to_s
       end
 
       case http_method
       when :delete, :get, :head
-        response = access_token.send http_method, path, headers
+        response = access_token.send http_method, url, headers
       when :post, :put
-        response = access_token.send http_method, path, body, headers
+        response = access_token.send http_method, url, body, headers
       end
+      @authenticated = true
+      response
+    end
+
+    def make_multipart_request(url, data, headers = {})
+      request = Net::HTTP::Post::Multipart.new url, data, headers
+
+      access_token.sign! request
+
+      response = consumer.http.request(request)
       @authenticated = true
       response
     end

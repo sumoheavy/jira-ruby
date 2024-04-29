@@ -59,6 +59,19 @@ RSpec.shared_examples 'Client Common Tests' do
       expect(subject.Project.find('123')).to eq(find_result)
     end
   end
+
+  describe 'SSL client options' do
+    context 'without certificate and key' do
+      let(:options) { { use_client_cert: true } }
+      subject { JIRA::Client.new(options) }
+
+      it 'raises an ArgumentError' do
+        expect { subject }.to raise_exception(ArgumentError, 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
+        options[:ssl_client_cert] = '<cert></cert>'
+        expect { subject }.to raise_exception(ArgumentError, 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'HttpClient tests' do
@@ -127,10 +140,12 @@ describe JIRA::Client do
     subject { JIRA::Client.new(username: 'foo', password: 'bar', auth_type: :basic) }
 
     before(:each) do
-      stub_request(:get, 'https://foo:bar@localhost:2990/jira/rest/api/2/project')
+      stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
+        .with(headers: { 'Authorization' => "Basic #{Base64.strict_encode64('foo:bar').chomp}" })
         .to_return(status: 200, body: '[]', headers: {})
 
-      stub_request(:get, 'https://foo:badpassword@localhost:2990/jira/rest/api/2/project')
+      stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
+      .with(headers: { 'Authorization' => "Basic #{Base64.strict_encode64('foo:badpassword').chomp}" })
         .to_return(status: 401, headers: {})
     end
 
@@ -144,16 +159,16 @@ describe JIRA::Client do
       expect(subject.options[:password]).to eq('bar')
     end
 
+    it 'only returns a true for #authenticated? once we have requested some data' do
+      expect(subject.authenticated?).to be_nil
+      expect(subject.Project.all).to be_empty
+      expect(subject.authenticated?).to be_truthy
+    end
+
     it 'fails with wrong user name and password' do
       bad_login = JIRA::Client.new(username: 'foo', password: 'badpassword', auth_type: :basic)
       expect(bad_login.authenticated?).to be_falsey
       expect { bad_login.Project.all }.to raise_error JIRA::HTTPError
-    end
-
-    it 'only returns a true for #authenticated? once we have requested some data' do
-      expect(subject.authenticated?).to be_falsey
-      expect(subject.Project.all).to be_empty
-      expect(subject.authenticated?).to be_truthy
     end
   end
 
@@ -219,7 +234,7 @@ describe JIRA::Client do
 
     before(:each) do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-          .with(query: hash_including(:jwt))
+          .with(headers: {"Authorization" => /JWT .+/})
           .to_return(status: 200, body: '[]', headers: {})
     end
 
@@ -235,7 +250,7 @@ describe JIRA::Client do
     context 'with a incorrect jwt key' do
       before do
         stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-            .with(query: hash_including(:jwt))
+            .with(headers: {"Authorization" => /JWT .+/})
             .to_return(status: 401, body: '[]', headers: {})
       end
 
@@ -265,5 +280,14 @@ describe JIRA::Client do
     subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged) }
 
     include_examples 'OAuth Common Tests'
+  end
+
+  context 'with unknown options' do
+    let(:options) { { 'username' => 'foo', 'password' => 'bar', auth_type: :basic } }
+    subject { JIRA::Client.new(options) }
+
+    it 'raises an ArgumentError' do
+      expect { subject }.to raise_exception(ArgumentError, 'Unknown option(s) given: ["username", "password"]')
+    end
   end
 end

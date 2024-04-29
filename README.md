@@ -1,36 +1,113 @@
 # JIRA API Gem
 
 [![Code Climate](https://codeclimate.com/github/sumoheavy/jira-ruby.svg)](https://codeclimate.com/github/sumoheavy/jira-ruby)
-[![Build Status](https://travis-ci.org/sumoheavy/jira-ruby.svg?branch=master)](https://travis-ci.org/sumoheavy/jira-ruby)
+[![Build Status](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml/badge.svg)](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml)
 
 This gem provides access to the Atlassian JIRA REST API.
 
-## Slack
-
-Join our Slack channel! You can find us [here](https://jira-ruby-slackin.herokuapp.com/)
-
 ## Example usage
 
-```ruby
-require 'rubygems'
-require 'jira-ruby'
+# Jira Ruby API - Sample Usage
 
+This sample usage demonstrates how you can interact with JIRA's API using the [jira-ruby gem](https://github.com/sumoheavy/jira-ruby).
+
+### Dependencies
+
+Before running, install the `jira-ruby` gem:
+
+```shell
+gem install jira-ruby
+```
+
+### Sample Usage
+Connect to JIRA
+Firstly, establish a connection with your JIRA instance by providing a few configuration parameters:
+There are other ways to connect to JIRA listed below |  [Personal Access Token](#configuring-jira-to-use-personal-access-tokens-auth)
+- ﻿private_key_file: The path to your RSA private key file.
+- ﻿consumer_key: Your consumer key.
+- site: The URL of your JIRA instance.
+
+```ruby
 options = {
-  :username     => 'username',
-  :password     => 'pass1234',
-  :site         => 'http://mydomain.atlassian.net:443/',
-  :context_path => '',
-  :auth_type    => :basic
+  :private_key_file => "rsakey.pem",
+  :context_path     => '',
+  :consumer_key     => 'your_consumer_key',
+  :site             => 'your_jira_instance_url'
 }
 
 client = JIRA::Client.new(options)
+```
 
-project = client.Project.find('SAMPLEPROJECT')
+### Retrieve and Display Projects
 
-project.issues.each do |issue|
-  puts "#{issue.id} - #{issue.summary}"
+After establishing the connection, you can fetch all projects and display their key and name:
+```ruby
+projects = client.Project.all
+
+projects.each do |project|
+  puts "Project -> key: #{project.key}, name: #{project.name}"
 end
 ```
+
+### Handling Fields by Name
+The ﻿jira-ruby gem allows you to refer to fields by their custom names rather than identifiers. Make sure to map fields before using them:
+
+```ruby
+client.Field.map_fields
+
+old_way = issue.customfield_12345
+
+# Note: The methods mapped here adopt a unique style combining PascalCase and snake_case conventions.
+new_way = issue.Special_Field
+```
+
+### JQL Queries
+To find issues based on specific criteria, you can use JIRA Query Language (JQL):
+
+```ruby
+client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :Special_field, :created])
+```
+
+### Several actions can be performed on the ﻿Issue object such as create, update, transition, delete, etc:
+### Creating an Issue
+```ruby
+issue = client.Issue.build
+labels = ['label1', 'label2']
+issue.save({
+  "fields" => {
+    "summary" => "blarg from in example.rb",
+    "project" => {"key" => "SAMPLEPROJECT"},
+    "issuetype" => {"id" => "3"},
+    "labels" => labels,
+    "priority" => {"id" => "1"}
+  }
+})
+```
+
+### Updating/Transitioning an Issue
+```ruby
+issue = client.Issue.find("10002")
+issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
+
+issue_transition = issue.transitions.build
+issue_transition.save!('transition' => {'id' => transition_id})
+```
+
+### Deleting an Issue
+```ruby
+issue = client.Issue.find('SAMPLEPROJECT-2')
+issue.delete
+```
+
+### Other Capabilities
+Apart from the operations listed above, this API wrapper supports several other capabilities like:
+	•	Searching for a user
+	•	Retrieving an issue's watchers
+	•	Changing the assignee of an issue
+	•	Adding attachments and comments to issues
+	•	Managing issue links and much more.
+
+Not all examples are shown in this README; refer to the complete script example for a full overview of the capabilities supported by this API wrapper.
 
 ## Links to JIRA REST API documentation
 
@@ -87,7 +164,7 @@ key.
 > After you have entered all the information click OK and ensure OAuth authentication is
 > enabled.
 
-For 2 legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
+For two legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
 
 ## Configuring JIRA to use HTTP Basic Auth
 
@@ -99,7 +176,7 @@ defaults to HTTP Basic Auth.
 
 Jira supports cookie based authentication whereby user credentials are passed
 to JIRA via a JIRA REST API call.  This call returns a session cookie which must
-then be sent to all following JIRA REST API calls. 
+then be sent to all following JIRA REST API calls.
 
 To enable cookie based authentication, set `:auth_type` to `:cookie`,
 set `:use_cookies` to `true` and set `:username` and `:password` accordingly.
@@ -114,7 +191,7 @@ options = {
   :context_path       => '',
   :auth_type          => :cookie,  # Set cookie based authentication
   :use_cookies        => true,     # Send cookies with each request
-  :additional_cookies => ['AUTH=vV7uzixt0SScJKg7'] # Optional cookies to send 
+  :additional_cookies => ['AUTH=vV7uzixt0SScJKg7'] # Optional cookies to send
                                                    # with each request
 }
 
@@ -134,15 +211,40 @@ cookie to add to the request.
 
 Some authentication schemes that require additional cookies ignore the username
 and password sent in the JIRA REST API call.  For those use cases, `:username`
-and `:password` may be omitted from `options`. 
+and `:password` may be omitted from `options`.
 
+## Configuring JIRA to use Personal Access Tokens Auth
+If your JIRA system is configured to support Personal Access Token authorization, minor modifications are needed in how credentials are communicated to the server.  Specifically, the paremeters `:username` and `:password` are not needed.  Also, the parameter `:default_headers` is needed to contain the api_token, which can be obtained following the official documentation from [Atlassian](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html).  Please note that the Personal Access Token can only be used as it is. If it is encoded (with base64 or any other encoding method) then the token will not work correctly and authentication will fail.
+
+```ruby
+require 'jira-ruby'
+
+# NOTE: the token should not be encoded
+api_token = API_TOKEN_OBTAINED_FROM_JIRA_UI
+
+options = {
+  :site               => 'http://mydomain.atlassian.net:443/',
+  :context_path       => '',
+  :username           => '<the email you sign-in to Jira>',
+  :password           => api_token,
+  :auth_type          => :basic
+}
+
+client = JIRA::Client.new(options)
+
+project = client.Project.find('SAMPLEPROJECT')
+
+project.issues.each do |issue|
+  puts "#{issue.id} - #{issue.summary}"
+end
+```
 ## Using the API Gem in a command line application
 
 Using HTTP Basic Authentication, configure and connect a client to your instance
 of JIRA.
 
 Note: If your Jira install is hosted on [atlassian.net](atlassian.net), it will have no context
-path by default. If you're having issues connecting, try setting context_path 
+path by default. If you're having issues connecting, try setting context_path
 to an empty string in the options hash.
 
 ```ruby
@@ -163,7 +265,7 @@ api_token = "myApiToken"
 options = {
             :username => username,
             :password => api_token,
-            :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net'
+            :site     => 'http://localhost:8080/', # or 'https://<your_subdomain>.atlassian.net/'
             :context_path => '/myjira', # often blank
             :auth_type => :basic,
             :read_timeout => 120
@@ -307,7 +409,7 @@ class App < Sinatra::Base
   # site uri, and the request token, access token, and authorize paths
   before do
     options = {
-      :site               => 'http://localhost:2990',
+      :site               => 'http://localhost:2990/',
       :context_path       => '/jira',
       :signature_method   => 'RSA-SHA1',
       :request_token_path => "/plugins/servlet/oauth/request-token",
@@ -405,7 +507,7 @@ require 'pp'
 require 'jira-ruby'
 
 options = {
-            :site               => 'http://localhost:2990',
+            :site               => 'http://localhost:2990/',
             :context_path       => '/jira',
             :signature_method   => 'RSA-SHA1',
             :private_key_file   => "rsakey.pem",
