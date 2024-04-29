@@ -49,8 +49,8 @@ shared_examples 'a resource' do
   it 'gracefully handles non-json responses' do
     subject = if defined? target
                 target
-    else
-      client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
+              else
+                client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
               end
     stub_request(:put, site_url + subject.url)
       .to_return(status: 405, body: '<html><body>Some HTML</body></html>')
