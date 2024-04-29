@@ -10,10 +10,10 @@ describe JIRA::Resource::Project do
   describe 'relationships' do
     subject do
       described_class.new(client, attrs: {
-                                    'lead' => { 'foo' => 'bar' },
+                            'lead' => { 'foo' => 'bar' },
                                     'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                                     'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
-                                  })
+                          })
     end
 
     it 'has the correct relationships' do
@@ -31,8 +31,8 @@ describe JIRA::Resource::Project do
   describe 'issues' do
     subject do
       described_class.new(client, attrs: {
-                                    'key' => 'test'
-                                  })
+                            'key' => 'test'
+                          })
     end
 
     it 'returns issues' do

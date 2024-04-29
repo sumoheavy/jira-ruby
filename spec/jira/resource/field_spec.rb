@@ -45,13 +45,13 @@ describe JIRA::Resource::Field do
     shared_context 'mapped or not' do
       subject do
         described_class.new(client, attrs: {
-                                    'priority' => 1,
+                              'priority' => 1,
                                     'customfield_10111' => 'data_in_custom_field',
                                     'customfield_10222' => 'multi word custom name',
                                     'customfield_10333' => 'complex custom name',
                                     'customfield_10444' => 'duplicated custom name',
                                     'customfield_10666' => 'duplicate of a system name'
-                                  })
+                            })
       end
 
       it 'can find a standard field by id' do

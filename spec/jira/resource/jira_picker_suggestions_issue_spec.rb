@@ -6,8 +6,8 @@ describe JIRA::Resource::IssuePickerSuggestionsIssue do
   describe 'relationships' do
     subject do
       described_class.new(client, attrs: {
-        'issues' => [{ 'id' => '1' }, { 'id' => '2' }]
-      })
+                            'issues' => [{ 'id' => '1' }, { 'id' => '2' }]
+                          })
     end
 
     it 'has the correct relationships' do

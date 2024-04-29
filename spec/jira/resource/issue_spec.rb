@@ -172,7 +172,7 @@ describe JIRA::Resource::Issue do
   describe 'relationships' do
     subject do
       described_class.new(client, attrs: {
-                                  'id' => '123',
+                            'id' => '123',
                                   'fields' => {
                                     'reporter' => { 'foo' => 'bar' },
                                     'assignee' => { 'foo' => 'bar' },
@@ -187,7 +187,7 @@ describe JIRA::Resource::Issue do
                                     'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                                     'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
                                   }
-                                })
+                          })
     end
 
     it 'has the correct relationships' do

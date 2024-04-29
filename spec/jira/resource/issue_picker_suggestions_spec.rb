@@ -3,15 +3,15 @@ require 'spec_helper'
 describe JIRA::Resource::IssuePickerSuggestions do
   let(:client) do
     double('client', options: {
-      rest_base_path: '/jira/rest/api/2'
-    })
+             rest_base_path: '/jira/rest/api/2'
+           })
   end
 
   describe 'relationships' do
     subject do
       described_class.new(client, attrs: {
-        'sections' => [{ 'id' => 'hs' }, { 'id' => 'cs' }]
-      })
+                            'sections' => [{ 'id' => 'hs' }, { 'id' => 'cs' }]
+                          })
     end
 
     it 'has the correct relationships' do
