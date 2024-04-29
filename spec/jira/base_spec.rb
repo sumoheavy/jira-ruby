@@ -587,9 +587,9 @@ describe JIRA::Base do
     end
 
     it 'raises an exception when initialized without a belongs_to instance' do
-      expect{
+      expect do
         JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' })
-      }.to raise_exception(ArgumentError, 'Required option :deadbeef missing')
+      end.to raise_exception(ArgumentError, 'Required option :deadbeef missing')
     end
 
     it 'returns the right url' do
