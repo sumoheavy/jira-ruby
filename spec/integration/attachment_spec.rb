@@ -7,7 +7,7 @@ describe JIRA::Resource::Attachment do
 
     let(:key) { '10000' }
 
-    let(:target) { JIRA::Resource::Attachment.new(client, attrs: { 'id' => '99999' }, issue_id: '10002') }
+    let(:target) { described_class.new(client, attrs: { 'id' => '99999' }, issue_id: '10002') }
 
     let(:expected_attributes) do
       {

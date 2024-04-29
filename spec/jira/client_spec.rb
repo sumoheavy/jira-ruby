@@ -138,14 +138,14 @@ describe JIRA::Client do
 
   context 'behaviour that applies to all client classes irrespective of authentication method' do
     it 'allows the overriding of some options' do
-      client = JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar', site: 'http://foo.com/')
+      client = described_class.new(consumer_key: 'foo', consumer_secret: 'bar', site: 'http://foo.com/')
       expect(client.options[:site]).to eq('http://foo.com/')
       expect(JIRA::Client::DEFAULT_OPTIONS[:site]).not_to eq('http://foo.com/')
     end
   end
 
   context 'with basic http authentication' do
-    subject { JIRA::Client.new(username: 'foo', password: 'bar', auth_type: :basic) }
+    subject { described_class.new(username: 'foo', password: 'bar', auth_type: :basic) }
 
     before(:each) do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
@@ -174,14 +174,14 @@ describe JIRA::Client do
     end
 
     it 'fails with wrong user name and password' do
-      bad_login = JIRA::Client.new(username: 'foo', password: 'badpassword', auth_type: :basic)
+      bad_login = described_class.new(username: 'foo', password: 'badpassword', auth_type: :basic)
       expect(bad_login.authenticated?).to be_falsey
       expect { bad_login.Project.all }.to raise_error JIRA::HTTPError
     end
   end
 
   context 'with cookie authentication' do
-    subject { JIRA::Client.new(username: 'foo', password: 'bar', auth_type: :cookie) }
+    subject { described_class.new(username: 'foo', password: 'bar', auth_type: :cookie) }
 
     let(:session_cookie) { '6E3487971234567896704A9EB4AE501F' }
     let(:session_body) do
@@ -220,7 +220,7 @@ describe JIRA::Client do
     end
 
     it 'does not authenticate with an incorrect username and password' do
-      bad_client = JIRA::Client.new(username: 'foo', password: 'bad_password', auth_type: :cookie)
+      bad_client = described_class.new(username: 'foo', password: 'bad_password', auth_type: :cookie)
       expect(bad_client).not_to be_authenticated
     end
 
@@ -232,7 +232,7 @@ describe JIRA::Client do
 
   context 'with jwt authentication' do
     subject do
-      JIRA::Client.new(
+      described_class.new(
         issuer: 'foo',
         base_url: 'https://host.tld',
         shared_secret: 'shared_secret_key',
@@ -279,20 +279,20 @@ describe JIRA::Client do
   end
 
   context 'oauth authentication' do
-    subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar') }
+    subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
     include_examples 'OAuth Common Tests'
   end
 
   context 'with oauth_2legged' do
-    subject { JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged) }
+    subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged) }
 
     include_examples 'OAuth Common Tests'
   end
 
   context 'with unknown options' do
     let(:options) { { 'username' => 'foo', 'password' => 'bar', auth_type: :basic } }
-    subject { JIRA::Client.new(options) }
+    subject { described_class.new(options) }
 
     it 'raises an ArgumentError' do
       expect { subject }.to raise_exception(ArgumentError, 'Unknown option(s) given: ["username", "password"]')

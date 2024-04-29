@@ -14,7 +14,7 @@ describe JIRA::Resource::Sprint do
 
     it 'fetches the sprint from JIRA' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/sprint/111').and_return(response)
-      expect(JIRA::Resource::Sprint.find(client, '111')).to be_a(JIRA::Resource::Sprint)
+      expect(described_class.find(client, '111')).to be_a(described_class)
     end
   end
 

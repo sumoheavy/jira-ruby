@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JIRA::RequestClient do
-  let(:request_client) { JIRA::RequestClient.new }
+  let(:request_client) { described_class.new }
 
   describe '#request' do
     subject(:request) { request_client.request(:get, '/foo', '', {}) }

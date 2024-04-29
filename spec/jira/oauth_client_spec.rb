@@ -4,7 +4,7 @@ describe JIRA::OauthClient do
   let(:oauth_client) do
     options = { consumer_key: 'foo', consumer_secret: 'bar' }
     options = JIRA::Client::DEFAULT_OPTIONS.merge(options)
-    JIRA::OauthClient.new(options)
+    described_class.new(options)
   end
 
   let(:response) do
@@ -148,7 +148,7 @@ describe JIRA::OauthClient do
       let(:oauth__2legged_client) do
         options = { consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged }
         options = JIRA::Client::DEFAULT_OPTIONS.merge(options)
-        JIRA::OauthClient.new(options)
+        described_class.new(options)
       end
 
       it 'responds to the http methods adding oauth_token parameter' do

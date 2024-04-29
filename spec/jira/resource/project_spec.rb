@@ -9,7 +9,7 @@ describe JIRA::Resource::Project do
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::Project.new(client, attrs: {
+      described_class.new(client, attrs: {
                                     'lead' => { 'foo' => 'bar' },
                                     'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                                     'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
@@ -30,7 +30,7 @@ describe JIRA::Resource::Project do
 
   describe 'issues' do
     subject do
-      JIRA::Resource::Project.new(client, attrs: {
+      described_class.new(client, attrs: {
                                     'key' => 'test'
                                   })
     end
@@ -69,7 +69,7 @@ describe JIRA::Resource::Project do
   end
 
   describe 'users' do
-    let(:project) { JIRA::Resource::Project.new(client, attrs: { 'key' => project_key }) }
+    let(:project) { described_class.new(client, attrs: { 'key' => project_key }) }
     let(:project_key) { SecureRandom.hex }
     let(:response) { double('response', body: '[{}]') }
 

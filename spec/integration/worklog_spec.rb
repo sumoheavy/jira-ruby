@@ -7,7 +7,7 @@ describe JIRA::Resource::Worklog do
 
     let(:key) { '10000' }
 
-    let(:target) { JIRA::Resource::Worklog.new(client, attrs: { 'id' => '99999' }, issue_id: '54321') }
+    let(:target) { described_class.new(client, attrs: { 'id' => '99999' }, issue_id: '54321') }
 
     let(:expected_collection_length) { 3 }
 

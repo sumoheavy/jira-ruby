@@ -34,7 +34,7 @@ describe JIRA::Resource::User do
       it 'gets users with maxResults of 1000' do
         expect(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000')
         expect(client).to receive_message_chain(:User, :build).with('User1')
-        JIRA::Resource::User.all(client)
+        described_class.all(client)
       end
     end
   end

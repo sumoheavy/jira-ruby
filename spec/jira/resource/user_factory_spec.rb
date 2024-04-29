@@ -5,7 +5,7 @@ describe JIRA::Resource::UserFactory do
     instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
   end
 
-  subject { JIRA::Resource::UserFactory.new(client) }
+  subject { described_class.new(client) }
 
   describe '#myself' do
     let(:response) do

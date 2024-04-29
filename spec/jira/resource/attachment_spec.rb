@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
   subject(:attachment) do
-    JIRA::Resource::Attachment.new(
+    described_class.new(
         client,
         issue: JIRA::Resource::Issue.new(client),
         attrs: { 'author' => { 'foo' => 'bar' } }
@@ -35,7 +35,7 @@ describe JIRA::Resource::Attachment do
   end
 
   describe '.meta' do
-    subject { JIRA::Resource::Attachment.meta(client) }
+    subject { described_class.meta(client) }
 
     let(:response) do
       double(
@@ -67,7 +67,7 @@ describe JIRA::Resource::Attachment do
     let(:file_target) { double(read: :attachment_file_contents) }
     let(:attachment_url) { 'https:jirahost/secure/attachment/32323/myfile.txt' }
     subject(:attachment) do
-      JIRA::Resource::Attachment.new(
+      described_class.new(
         client,
         issue: JIRA::Resource::Issue.new(client),
         attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
@@ -133,7 +133,7 @@ describe JIRA::Resource::Attachment do
       end
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
-          JIRA::Resource::Attachment.new(
+          described_class.new(
             bearer_client,
             issue: JIRA::Resource::Issue.new(bearer_client),
             attrs: { 'author' => { 'foo' => 'bar' } }
@@ -189,7 +189,7 @@ describe JIRA::Resource::Attachment do
 
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
-          JIRA::Resource::Attachment.new(
+          described_class.new(
             bearer_client,
             issue: JIRA::Resource::Issue.new(bearer_client),
             attrs: { 'author' => { 'foo' => 'bar' } }

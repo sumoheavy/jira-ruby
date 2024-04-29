@@ -5,7 +5,7 @@ describe JIRA::HttpClient do
     options = JIRA::Client::DEFAULT_OPTIONS
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client) do
@@ -13,12 +13,12 @@ describe JIRA::HttpClient do
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
               .merge(use_cookies: true)
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:custom_ssl_version_client) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(ssl_version: :TLSv1_2)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client_with_context_path) do
@@ -26,7 +26,7 @@ describe JIRA::HttpClient do
       use_cookies: true,
       context_path: '/context'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client_with_additional_cookies) do
@@ -37,7 +37,7 @@ describe JIRA::HttpClient do
                 additional_cookies: ['sessionToken=abc123', 'internal=true']
               )
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_cert_client) do
@@ -46,13 +46,13 @@ describe JIRA::HttpClient do
       cert: 'public certificate contents',
       key: 'private key contents'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_with_no_auth_credentials) do
     options = JIRA::Client::DEFAULT_OPTIONS
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_auth_credentials) do
@@ -66,14 +66,14 @@ describe JIRA::HttpClient do
       proxy_username: 'proxyUsername',
       proxy_password: 'proxyPassword'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_with_max_retries) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
       max_retries: 2
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:response) do
@@ -96,7 +96,7 @@ describe JIRA::HttpClient do
         proxy_username: 'proxyUsername',
         proxy_password: 'proxyPassword'
       )
-      JIRA::HttpClient.new(options_local)
+      described_class.new(options_local)
     end
 
     describe 'HttpClient#basic_auth_http_conn' do
@@ -305,7 +305,7 @@ describe JIRA::HttpClient do
         proxy_username: 'proxyUsername',
         proxy_password: 'proxyPassword'
       )
-      JIRA::HttpClient.new(options_local)
+      described_class.new(options_local)
     end
     subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
 
@@ -339,7 +339,7 @@ describe JIRA::HttpClient do
   end
 
   it 'can use a certificate authority file' do
-    client = JIRA::HttpClient.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
+    client = described_class.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
     expect(client.http_conn(client.uri).ca_file).to eql('/opt/custom.ca.pem')
   end
 

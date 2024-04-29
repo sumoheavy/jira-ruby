@@ -7,7 +7,7 @@ describe JIRA::Resource::Transition do
 
     let(:key) { '10000' }
 
-    let(:target) { JIRA::Resource::Transition.new(client, attrs: { 'id' => '99999' }, issue_id: '10014') }
+    let(:target) { described_class.new(client, attrs: { 'id' => '99999' }, issue_id: '10014') }
 
     let(:belongs_to) do
       JIRA::Resource::Issue.new(client, attrs: {

@@ -9,7 +9,7 @@ describe JIRA::Resource::IssuePickerSuggestions do
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::IssuePickerSuggestions.new(client, attrs: {
+      described_class.new(client, attrs: {
         'sections' => [{ 'id' => 'hs' }, { 'id' => 'cs' }]
       })
     end
@@ -38,42 +38,42 @@ describe JIRA::Resource::IssuePickerSuggestions do
       expect(client).to receive(:IssuePickerSuggestions).and_return(issue_picker_suggestions)
       expect(issue_picker_suggestions).to receive(:build).with({ 'sections' => [{ 'id' => 'cs' }] })
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query')
+      described_class.all(client, 'query')
     end
 
     it 'autocompletes issues with current jql' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/picker?query=query&currentJQL=project+%3D+PR')
                                      .and_return(response)
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query', current_jql: 'project = PR')
+      described_class.all(client, 'query', current_jql: 'project = PR')
     end
 
     it 'autocompletes issues with current issue jey' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/picker?query=query&currentIssueKey=PR-42')
                                      .and_return(response)
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query', current_issue_key: 'PR-42')
+      described_class.all(client, 'query', current_issue_key: 'PR-42')
     end
 
     it 'autocompletes issues with current project id' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/picker?query=query&currentProjectId=PR')
                                      .and_return(response)
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query', current_project_id: 'PR')
+      described_class.all(client, 'query', current_project_id: 'PR')
     end
 
     it 'autocompletes issues with show sub tasks' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/picker?query=query&showSubTasks=true')
                                      .and_return(response)
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query', show_sub_tasks: true)
+      described_class.all(client, 'query', show_sub_tasks: true)
     end
 
     it 'autocompletes issues with show sub tasks parent' do
       expect(client).to receive(:get).with('/jira/rest/api/2/issue/picker?query=query&showSubTaskParent=true')
                                      .and_return(response)
 
-      JIRA::Resource::IssuePickerSuggestions.all(client, 'query', show_sub_task_parent: true)
+      described_class.all(client, 'query', show_sub_task_parent: true)
     end
   end
 end

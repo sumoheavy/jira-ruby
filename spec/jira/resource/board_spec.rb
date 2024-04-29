@@ -25,7 +25,7 @@ describe JIRA::Resource::Board do
                                    .and_return(response)
 
     expect(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
-    JIRA::Resource::Board.find(client, '84')
+    described_class.find(client, '84')
   end
 
   it 'finds all boards' do
@@ -53,12 +53,12 @@ eos
     expect(client).to receive(:get).with('/rest/agile/1.0/board')
                                    .and_return(response)
     expect(client).to receive(:Board).twice.and_return(JIRA::Resource::BoardFactory.new(client))
-    boards = JIRA::Resource::Board.all(client)
+    boards = described_class.all(client)
     expect(boards.count).to eq(2)
   end
 
   it 'finds one board by id' do
-    expect(board).to be_a(JIRA::Resource::Board)
+    expect(board).to be_a(described_class)
   end
 
   describe '#issues' do

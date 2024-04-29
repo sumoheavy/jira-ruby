@@ -5,7 +5,7 @@ describe JIRA::Resource::Watcher do
     let(:client) { client }
     let(:site_url) { site_url }
 
-    let(:target) { JIRA::Resource::Watcher.new(client, attrs: { 'id' => '99999' }, issue_id: '10002') }
+    let(:target) { described_class.new(client, attrs: { 'id' => '99999' }, issue_id: '10002') }
 
     let(:belongs_to) do
       JIRA::Resource::Issue.new(client, attrs: {
@@ -52,7 +52,7 @@ describe JIRA::Resource::Watcher do
 
       it 'adds a watcher' do
         issue = client.Issue.find('10002')
-        watcher = JIRA::Resource::Watcher.new(client, issue:)
+        watcher = described_class.new(client, issue:)
         user_id = 'tester'
         watcher.save!(user_id)
       end

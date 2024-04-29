@@ -3,7 +3,7 @@ require 'spec_helper'
 describe JIRA::HasManyProxy do
   class Foo; end
 
-  subject { JIRA::HasManyProxy.new(parent, Foo, collection) }
+  subject { described_class.new(parent, Foo, collection) }
 
   let(:parent)      { double('parent') }
   let(:collection)  { double('collection') }

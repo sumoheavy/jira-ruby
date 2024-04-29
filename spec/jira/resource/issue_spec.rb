@@ -16,11 +16,11 @@ describe JIRA::Resource::Issue do
       before(:each) do
         response = double
         allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
-        allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
+        allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
         allow(client).to receive(:get).with('/jira/rest/api/2/issue/101')
                                       .and_return(response)
 
-        issue = JIRA::Resource::Issue.find(client, 101)
+        issue = described_class.find(client, 101)
         @decorated = JIRAResourceDelegation.new(issue)
       end
       it 'responds to key' do
@@ -49,21 +49,21 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
 
-    issues = JIRA::Resource::Issue.all(client)
+    issues = described_class.all(client)
   end
 
   it 'finds an issue by key or id' do
     response = double
 
     allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
-    allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
+    allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
     expect(client).to receive(:get).with('/jira/rest/api/2/issue/foo')
                                    .and_return(response)
     expect(client).to receive(:get).with('/jira/rest/api/2/issue/101')
                                    .and_return(response)
 
-    issue_from_id = JIRA::Resource::Issue.find(client, 101)
-    issue_from_key = JIRA::Resource::Issue.find(client, 'foo')
+    issue_from_id = described_class.find(client, 101)
+    issue_from_key = described_class.find(client, 'foo')
 
     expect(issue_from_id.attrs).to eq(issue_from_key.attrs)
   end
@@ -78,7 +78,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar')).to eq([''])
+    expect(described_class.jql(client, 'foo bar')).to eq([''])
   end
 
   it 'searches an issue with a jql query string and fields' do
@@ -92,7 +92,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
+    expect(described_class.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
   end
 
   it 'searches an issue with a jql query string, start at, and maxResults' do
@@ -106,7 +106,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', start_at: 1, max_results: 3)).to eq([''])
+    expect(described_class.jql(client, 'foo bar', start_at: 1, max_results: 3)).to eq([''])
   end
 
   it 'searches an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
@@ -118,7 +118,7 @@ describe JIRA::Resource::Issue do
       .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=0')
       .and_return(response)
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', max_results: 0)).to eq(1)
+    expect(described_class.jql(client, 'foo bar', max_results: 0)).to eq(1)
   end
 
   it 'searches an issue with a jql query string and string expand' do
@@ -132,7 +132,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
+    expect(described_class.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
   end
 
   it 'searches an issue with a jql query string and array expand' do
@@ -146,11 +146,11 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
+    expect(described_class.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
   end
 
   it 'returns meta data available for editing an issue' do
-    subject = JIRA::Resource::Issue.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
+    subject = described_class.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
     response = double
 
     allow(response).to receive(:body).and_return(
@@ -164,14 +164,14 @@ describe JIRA::Resource::Issue do
   end
 
   it 'provides direct accessors to the fields' do
-    subject = JIRA::Resource::Issue.new(client, attrs: { 'fields' => { 'foo' => 'bar' } })
+    subject = described_class.new(client, attrs: { 'fields' => { 'foo' => 'bar' } })
     expect(subject).to respond_to(:foo)
     expect(subject.foo).to eq('bar')
   end
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::Issue.new(client, attrs: {
+      described_class.new(client, attrs: {
                                   'id' => '123',
                                   'fields' => {
                                     'reporter' => { 'foo' => 'bar' },
