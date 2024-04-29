@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe JIRA::HTTPError do
+  subject { described_class.new(response) }
+
   let(:response) do
     response = double('response')
     allow(response).to receive(:code).and_return(401)
@@ -8,7 +10,6 @@ describe JIRA::HTTPError do
     response
   end
 
-  subject { described_class.new(response) }
 
   it 'takes the response object as an argument' do
     expect(subject.response).to eq(response)

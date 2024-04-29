@@ -32,10 +32,11 @@ describe JIRA::Base do
              attribute_key: 'irregularlyNamedThings'
   end
 
+  subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
+
   let(:client)  { double('client') }
   let(:attrs)   { {} }
 
-  subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
 
   let(:decorated) { JIRADelegation.new(subject) }
 
@@ -147,8 +148,9 @@ describe JIRA::Base do
   end
 
   describe 'dynamic instance methods' do
-    let(:attrs) { { 'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy' } }
     subject     { JIRA::Resource::Deadbeef.new(client, attrs:) }
+
+    let(:attrs) { { 'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy' } }
 
     it 'responds to each of the top level attribute names' do
       expect(subject).to respond_to(:foo)
@@ -222,9 +224,10 @@ describe JIRA::Base do
   end
 
   describe 'save' do
+    subject { JIRA::Resource::Deadbeef.new(client) }
+
     let(:response) { double }
 
-    subject { JIRA::Resource::Deadbeef.new(client) }
 
     before do
       expect(subject).to receive(:url).and_return('/foo/bar')
@@ -273,9 +276,10 @@ describe JIRA::Base do
   end
 
   describe 'save!' do
+    subject { JIRA::Resource::Deadbeef.new(client) }
+
     let(:response) { double }
 
-    subject { JIRA::Resource::Deadbeef.new(client) }
 
     before do
       expect(subject).to receive(:url).and_return('/foo/bar')
@@ -577,9 +581,10 @@ describe JIRA::Base do
       belongs_to :deadbeef
     end
 
+    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
+
     let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
 
-    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
 
     it 'sets up an accessor for the belongs to relationship' do
       expect(subject.deadbeef).to eq(deadbeef)

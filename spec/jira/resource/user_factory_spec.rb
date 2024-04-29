@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe JIRA::Resource::UserFactory do
+  subject { described_class.new(client) }
+
   let(:client) do
     instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
   end
 
-  subject { described_class.new(client) }
 
   describe '#myself' do
     let(:response) do

@@ -62,8 +62,9 @@ RSpec.shared_examples 'Client Common Tests' do
 
   describe 'SSL client options' do
     context 'without certificate and key' do
-      let(:options) { { use_client_cert: true } }
       subject { JIRA::Client.new(options) }
+
+      let(:options) { { use_client_cert: true } }
 
       it 'raises an ArgumentError' do
         expect {
@@ -291,8 +292,9 @@ describe JIRA::Client do
   end
 
   context 'with unknown options' do
-    let(:options) { { 'username' => 'foo', 'password' => 'bar', auth_type: :basic } }
     subject { described_class.new(options) }
+
+    let(:options) { { 'username' => 'foo', 'password' => 'bar', auth_type: :basic } }
 
     it 'raises an ArgumentError' do
       expect { subject }.to raise_exception(ArgumentError, 'Unknown option(s) given: ["username", "password"]')

@@ -98,6 +98,7 @@ eos
 
     describe 'pagination' do
       subject { described_class.new(client) }
+
       let(:client) { JIRA::Client.new }
 
       before do

@@ -298,6 +298,8 @@ describe JIRA::HttpClient do
   end
 
   context 'client has proxy settings' do
+    subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
+
     let(:proxy_client) do
       options_local = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
         proxy_address: 'proxyAddress',
@@ -307,7 +309,6 @@ describe JIRA::HttpClient do
       )
       described_class.new(options_local)
     end
-    subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
 
     describe 'HttpClient#basic_auth_http_conn' do
       it 'creates a Net:HTTP instance for a basic auth client setting up a proxied http connection' do

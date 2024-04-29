@@ -60,12 +60,6 @@ describe JIRA::Resource::Attachment do
   end
 
   context 'there is an attachment on an issue' do
-    let(:client) do
-      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false )
-    end
-    let(:attachment_file_contents) { 'file contents' }
-    let(:file_target) { double(read: :attachment_file_contents) }
-    let(:attachment_url) { 'https:jirahost/secure/attachment/32323/myfile.txt' }
     subject(:attachment) do
       described_class.new(
         client,
@@ -73,6 +67,13 @@ describe JIRA::Resource::Attachment do
         attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
       )
     end
+
+    let(:client) do
+      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false )
+    end
+    let(:attachment_file_contents) { 'file contents' }
+    let(:file_target) { double(read: :attachment_file_contents) }
+    let(:attachment_url) { 'https:jirahost/secure/attachment/32323/myfile.txt' }
 
     describe '.download_file' do
       it 'passes file object to block' do
@@ -139,6 +140,7 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
+
         let(:default_headers_given) {
  { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
@@ -195,6 +197,7 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
+
         let(:default_headers_given) {
  { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
