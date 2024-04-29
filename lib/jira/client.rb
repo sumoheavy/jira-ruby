@@ -6,7 +6,7 @@ module JIRA
   # This class is the main access point for all JIRA::Resource instances.
   #
   # The client must be initialized with an options hash containing
-  # configuration options.  The available options are:
+  # configuration options. The available options are:
   #
   #   :site               => 'http://localhost:2990',
   #   :context_path       => '/jira',
@@ -29,16 +29,19 @@ module JIRA
   #   :proxy_port         => nil,
   #   :proxy_username     => nil,
   #   :proxy_password     => nil,
+  #   :use_cookies        => nil,
   #   :additional_cookies => nil,
   #   :default_headers    => {},
   #   :use_client_cert    => false,
   #   :read_timeout       => nil,
+  #   :max_retries        => nil,
   #   :http_debug         => false,
   #   :shared_secret      => nil,
   #   :cert_path          => nil,
   #   :key_path           => nil,
   #   :ssl_client_cert    => nil,
   #   :ssl_client_key     => nil
+  #   :ca_file            => nil
   #
   # See the JIRA::Base class methods for all of the available methods on these accessor
   # objects.
@@ -79,10 +82,12 @@ module JIRA
       :proxy_port,
       :proxy_username,
       :proxy_password,
+      :use_cookies,
       :additional_cookies,
       :default_headers,
       :use_client_cert,
       :read_timeout,
+      :max_retries,
       :http_debug,
       :issuer,
       :base_url,
@@ -179,6 +184,10 @@ module JIRA
       JIRA::Resource::StatusFactory.new(self)
     end
 
+    def StatusCategory # :nodoc:
+      JIRA::Resource::StatusCategoryFactory.new(self)
+    end
+
     def Resolution # :nodoc:
       JIRA::Resource::ResolutionFactory.new(self)
     end
@@ -223,10 +232,6 @@ module JIRA
       JIRA::Resource::SprintFactory.new(self)
     end
 
-    def SprintReport
-      JIRA::Resource::SprintReportFactory.new(self)
-    end
-
     def ServerInfo
       JIRA::Resource::ServerInfoFactory.new(self)
     end
@@ -253,6 +258,10 @@ module JIRA
 
     def Issuelinktype
       JIRA::Resource::IssuelinktypeFactory.new(self)
+    end
+
+    def IssuePickerSuggestions
+      JIRA::Resource::IssuePickerSuggestionsFactory.new(self)
     end
 
     def Remotelink
@@ -284,7 +293,7 @@ module JIRA
 
     def post_multipart(path, file, headers = {})
       puts "post multipart: #{path} - [#{file}]" if @http_debug
-      @request_client.request_multipart(path, file, headers)
+      @request_client.request_multipart(path, file, merge_default_headers(headers))
     end
 
     def put(path, body = '', headers = {})
@@ -297,6 +306,11 @@ module JIRA
     def request(http_method, path, body = '', headers = {})
       puts "#{http_method}: #{path} - [#{body}]" if @http_debug
       @request_client.request(http_method, path, body, headers)
+    end
+
+    # Stops sensitive client information from being displayed in logs
+    def inspect
+      "#<JIRA::Client:#{object_id}>"
     end
 
     protected
