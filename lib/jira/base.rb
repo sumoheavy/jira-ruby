@@ -195,7 +195,7 @@ module JIRA
     #                       # => Looks for {"foo":{"bar":{"baz":{"child":{}}}}}
     def self.has_one(resource, options = {})
       attribute_key = options[:attribute_key] || resource.to_s
-      child_class = options[:class] || ("JIRA::Resource::#{resource.to_s.classify}").constantize
+      child_class = options[:class] || "JIRA::Resource::#{resource.to_s.classify}".constantize
       define_method(resource) do
         attribute = maybe_nested_attribute(attribute_key, options[:nested_under])
         return nil unless attribute
@@ -247,7 +247,7 @@ module JIRA
     #                       # => Looks for {"foo":{"bar":{"baz":{"children":{}}}}}
     def self.has_many(collection, options = {})
       attribute_key = options[:attribute_key] || collection.to_s
-      child_class = options[:class] || ("JIRA::Resource::#{collection.to_s.classify}").constantize
+      child_class = options[:class] || "JIRA::Resource::#{collection.to_s.classify}".constantize
       self_class_basename = name.split('::').last.downcase.to_sym
       define_method(collection) do
         child_class_options = { self_class_basename => self }
@@ -382,10 +382,10 @@ module JIRA
     # Sets the attributes hash from a HTTPResponse object from JIRA if it is
     # not nil or is not a json response.
     def set_attrs_from_response(response)
-      unless response.body.nil? || (response.body.length < 2)
+      return if response.body.nil? || (response.body.length < 2)
         json = self.class.parse_json(response.body)
         set_attrs(json)
-      end
+      
     end
 
     # Set the current attributes from a hash.  If clobber is true, any existing
@@ -501,10 +501,10 @@ module JIRA
     end
 
     def self.url_with_query_params(url, query_params)
-      if !query_params.empty?
-        "#{url}?#{hash_to_query_string query_params}"
-      else
+      if query_params.empty?
         url
+      else
+        "#{url}?#{hash_to_query_string query_params}"
       end
     end
 
