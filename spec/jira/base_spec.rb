@@ -226,8 +226,10 @@ describe JIRA::Base do
 
     subject { JIRA::Resource::Deadbeef.new(client) }
 
-    before(:each) do
-      expect(subject).to receive(:url).and_return('/foo/bar')
+    before(:each) do |example|
+      unless example.metadata[:skip_before]
+        expect(subject).to receive(:url).and_return('/foo/bar')
+      end
     end
 
     it 'POSTs a new record' do
@@ -268,6 +270,14 @@ describe JIRA::Base do
       expect(subject.save('foo' => 'bar')).to be_falsey
       expect(subject.attrs['exception']['code']).to eq(401)
       expect(subject.attrs['exception']['message']).to eq('Unauthorized')
+    end
+
+    it 'creates request with patched path', :skip_before do
+      expect(subject).to receive(:url).and_return('foo/bar')
+      response = instance_double('Response', body: nil)
+      allow(subject).to receive(:new_record?) { false }
+      expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
+      expect(subject.save('foo' => 'bar')).to be_truthy
     end
   end
 
