@@ -156,7 +156,7 @@ describe JIRA::Client do
         .to_return(status: 200, body: '[]', headers: {})
 
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-      .with(headers: { 'Authorization' => "Basic #{Base64.strict_encode64('foo:badpassword').chomp}" })
+        .with(headers: { 'Authorization' => "Basic #{Base64.strict_encode64('foo:badpassword').chomp}" })
         .to_return(status: 401, headers: {})
     end
 
@@ -245,8 +245,8 @@ describe JIRA::Client do
 
     before do
       stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-          .with(headers: { 'Authorization' => /JWT .+/ })
-          .to_return(status: 200, body: '[]', headers: {})
+        .with(headers: { 'Authorization' => /JWT .+/ })
+        .to_return(status: 200, body: '[]', headers: {})
     end
 
     include_examples 'Client Common Tests'
@@ -261,8 +261,8 @@ describe JIRA::Client do
     context 'with a incorrect jwt key' do
       before do
         stub_request(:get, 'https://localhost:2990/jira/rest/api/2/project')
-            .with(headers: { 'Authorization' => /JWT .+/ })
-            .to_return(status: 401, body: '[]', headers: {})
+          .with(headers: { 'Authorization' => /JWT .+/ })
+          .to_return(status: 401, body: '[]', headers: {})
       end
 
       it 'is not authenticated' do
