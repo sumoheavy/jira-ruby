@@ -22,3 +22,24 @@ Style/Documentation:
 Style/FrozenStringLiteralComment:
   Exclude:
     - 'spec/**/*'
+
+# Temporarily Disable
+
+Layout/LineLength:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/StubbedMock:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+

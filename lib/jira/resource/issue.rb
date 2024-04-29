@@ -88,9 +88,7 @@ validate_query: true })
            (@attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults'])
           worklog_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{id}/worklog"
           response = client.get(worklog_url)
-          unless response.body.nil? || (response.body.length < 2)
-            set_attrs({ 'fields' => { 'worklog' => self.class.parse_json(response.body) } }, false)
-          end
+          set_attrs({ 'fields' => { 'worklog' => self.class.parse_json(response.body) } }, false) unless response.body.nil? || (response.body.length < 2)
         end
         @expanded = true
       end
