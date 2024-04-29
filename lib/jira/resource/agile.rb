@@ -70,6 +70,8 @@ module JIRA
       def path_base(client)
         self.class.path_base(client)
       end
+
+      private_class_method :path_base
     end
   end
 end
