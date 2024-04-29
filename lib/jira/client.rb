@@ -122,14 +122,20 @@ module JIRA
       raise ArgumentError, "Unknown option(s) given: #{unknown_options}" unless unknown_options.empty?
 
       if options[:use_client_cert]
-        @options[:ssl_client_cert] =
-OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cert_path]
+        if @options[:cert_path]
+          @options[:ssl_client_cert] =
+OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
+        end
         @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
 
-        raise ArgumentError,
-              'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
-        raise ArgumentError,
-              'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
+        unless @options[:ssl_client_cert]
+          raise ArgumentError,
+                'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true'
+        end
+        unless @options[:ssl_client_key]
+          raise ArgumentError,
+                'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true'
+        end
       end
 
       case options[:auth_type]
@@ -141,8 +147,10 @@ OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cer
       when :basic
         @request_client = HttpClient.new(@options)
       when :cookie
-        raise ArgumentError,
-              'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+        if @options.key?(:use_cookies) && !@options[:use_cookies]
+          raise ArgumentError,
+                'Options: :use_cookies must be true for :cookie authorization type'
+        end
 
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
