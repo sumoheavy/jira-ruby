@@ -63,42 +63,42 @@ module JIRA
     def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token,
                    :access_token, :authenticated?
 
-    DEFINED_OPTIONS = [
-      :site,
-      :context_path,
-      :signature_method,
-      :request_token_path,
-      :authorize_path,
-      :access_token_path,
-      :private_key,
-      :private_key_file,
-      :rest_base_path,
-      :consumer_key,
-      :consumer_secret,
-      :ssl_verify_mode,
-      :ssl_version,
-      :use_ssl,
-      :username,
-      :password,
-      :auth_type,
-      :proxy_address,
-      :proxy_port,
-      :proxy_username,
-      :proxy_password,
-      :use_cookies,
-      :additional_cookies,
-      :default_headers,
-      :use_client_cert,
-      :read_timeout,
-      :max_retries,
-      :http_debug,
-      :issuer,
-      :base_url,
-      :shared_secret,
-      :cert_path,
-      :key_path,
-      :ssl_client_cert,
-      :ssl_client_key
+    DEFINED_OPTIONS = %i[
+      site
+      context_path
+      signature_method
+      request_token_path
+      authorize_path
+      access_token_path
+      private_key
+      private_key_file
+      rest_base_path
+      consumer_key
+      consumer_secret
+      ssl_verify_mode
+      ssl_version
+      use_ssl
+      username
+      password
+      auth_type
+      proxy_address
+      proxy_port
+      proxy_username
+      proxy_password
+      use_cookies
+      additional_cookies
+      default_headers
+      use_client_cert
+      read_timeout
+      max_retries
+      http_debug
+      issuer
+      base_url
+      shared_secret
+      cert_path
+      key_path
+      ssl_client_cert
+      ssl_client_key
     ].freeze
 
     DEFAULT_OPTIONS = {
