@@ -36,7 +36,7 @@ describe JIRA::Resource::Agile do
 
       issues = described_class.get_board_issues(client, 1)
       expect(issues).to be_an(Array)
-      expect(issues.size).to eql(9)
+      expect(issues.size).to be(9)
 
       issues.each do |issue|
         expect(issue.class).to eq(JIRA::Resource::Issue)
@@ -53,7 +53,7 @@ describe JIRA::Resource::Agile do
 
       issues = described_class.get_board_issues(client, 1, startAt: 50)
       expect(issues).to be_an(Array)
-      expect(issues.size).to eql(9)
+      expect(issues.size).to be(9)
 
       issues.each do |issue|
         expect(issue.class).to eq(JIRA::Resource::Issue)

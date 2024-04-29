@@ -90,7 +90,7 @@ describe JIRA::Resource::Filter do
       .and_return(issue_jql_response)
     issues = filter.issues
     expect(issues).to be_an(Array)
-    expect(issues.size).to eql(1)
+    expect(issues.size).to be(1)
     expected_issue = client.Issue.build(JSON.parse(jql_issue.to_json))
     expect(issues.first.attrs).to eql(expected_issue.attrs)
   end
