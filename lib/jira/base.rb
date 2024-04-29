@@ -492,7 +492,7 @@ module JIRA
 
         final[attribute_name]
       else
-        return attributes[nested_under][attribute_name]
+        attributes[nested_under][attribute_name]
       end
     end
 
