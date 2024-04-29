@@ -475,17 +475,7 @@ module JIRA
     end
 
     def self.maybe_nested_attribute(attributes, attribute_name, nested_under = nil)
-      return attributes[attribute_name] if nested_under.nil?
-      if nested_under.instance_of? Array
-        final = nested_under.inject(attributes) do |parent, key|
-          break if parent.nil?
-          parent[key]
-        end
-        return nil if final.nil?
-        final[attribute_name]
-      else
-        return attributes[nested_under][attribute_name]
-      end
+      return attributes.dig(*[*nested_under, attribute_name])
     end
 
     def url_with_query_params(url, query_params)
