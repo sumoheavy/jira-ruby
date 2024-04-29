@@ -233,7 +233,7 @@ describe JIRA::Base do
 
     it 'POSTs a new record' do
       response = instance_double('Response', body: '{"id":"123"}')
-      allow(subject).to receive(:new_record?) { true }
+      allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
       expect(subject.id).to eq('123')
@@ -242,7 +242,7 @@ describe JIRA::Base do
 
     it 'PUTs an existing record' do
       response = instance_double('Response', body: nil)
-      allow(subject).to receive(:new_record?) { false }
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
       expect(subject.expanded).to be_falsey
@@ -258,7 +258,7 @@ describe JIRA::Base do
 
     it 'returns false when an invalid field is set' do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
-      allow(subject).to receive(:new_record?) { false }
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
                                            '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('invalid_field' => 'foobar')).to be_falsey
@@ -284,7 +284,7 @@ describe JIRA::Base do
 
     it 'POSTs a new record' do
       response = instance_double('Response', body: '{"id":"123"}')
-      allow(subject).to receive(:new_record?) { true }
+      allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
       expect(subject.id).to eq('123')
@@ -293,7 +293,7 @@ describe JIRA::Base do
 
     it 'PUTs an existing record' do
       response = instance_double('Response', body: nil)
-      allow(subject).to receive(:new_record?) { false }
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
       expect(subject.expanded).to be_falsey
@@ -301,7 +301,7 @@ describe JIRA::Base do
 
     it 'throws an exception when an invalid field is set' do
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
-      allow(subject).to receive(:new_record?) { false }
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
                                            '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       expect{ subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
@@ -325,7 +325,7 @@ describe JIRA::Base do
   describe 'delete' do
     before do
       expect(client).to receive(:delete).with('/foo/bar')
-      allow(subject).to receive(:url) { '/foo/bar' }
+      allow(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'flags itself as deleted' do
@@ -364,7 +364,7 @@ describe JIRA::Base do
 
   describe 'url' do
     before do
-      allow(client).to receive(:options) { { rest_base_path: '/foo/bar' } }
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo/bar' })
     end
 
     it 'returns self as the URL if set' do
@@ -373,13 +373,13 @@ describe JIRA::Base do
     end
 
     it 'returns path as the URL if set and site options is specified' do
-      allow(client).to receive(:options) { { site: 'http://foo' } }
+      allow(client).to receive(:options).and_return({ site: 'http://foo' })
       attrs['self'] = 'http://foo/bar'
       expect(subject.url).to eq('/bar')
     end
 
     it 'returns path as the URL if set and site options is specified and ends with a slash' do
-      allow(client).to receive(:options) { { site: 'http://foo/' } }
+      allow(client).to receive(:options).and_return({ site: 'http://foo/' })
       attrs['self'] = 'http://foo/bar'
       expect(subject.url).to eq('/bar')
     end
@@ -593,12 +593,12 @@ describe JIRA::Base do
     end
 
     it 'returns the right url' do
-      allow(client).to receive(:options) { { rest_base_path: '/foo' } }
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo' })
       expect(subject.url).to eq('/foo/deadbeef/999/belongstoexample/123')
     end
 
     it 'can be initialized with an instance or a key value' do
-      allow(client).to receive(:options) { { rest_base_path: '/foo' } }
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo' })
       subject = JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef_id: '987')
       expect(subject.url).to eq('/foo/deadbeef/987/belongstoexample/123')
     end
