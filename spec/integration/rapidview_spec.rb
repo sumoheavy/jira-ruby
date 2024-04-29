@@ -30,6 +30,7 @@ describe JIRA::Resource::RapidView do
         stub_request(:get, "#{site_url}/jira/rest/greenhopper/1.0/rapidview")
           .to_return(status: 200, body: get_mock_response('rapidview.json'))
       end
+
       it_behaves_like 'a resource with a collection GET endpoint'
     end
 

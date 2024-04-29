@@ -220,6 +220,6 @@ EOS
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
     expect(client).to receive(:BoardConfiguration).and_return(JIRA::Resource::BoardConfigurationFactory.new(client))
-    expect(board.configuration).not_to be(nil)
+    expect(board.configuration).not_to be_nil
   end
 end

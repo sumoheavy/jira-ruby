@@ -50,8 +50,10 @@ describe JIRA::Resource::Issue do
         stub_request(:get, "#{site_url}/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=11")
           .to_return(status: 200, body: get_mock_response('empty_issues.json'))
       end
+
       it_behaves_like 'a resource with a collection GET endpoint'
     end
+
     it_behaves_like 'a resource with a DELETE endpoint'
     it_behaves_like 'a resource with a POST endpoint'
     it_behaves_like 'a resource with a PUT endpoint'

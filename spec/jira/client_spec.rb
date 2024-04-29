@@ -28,7 +28,7 @@ RSpec.shared_examples 'Client Common Tests' do
       expect(subject).to receive(:merge_default_headers).exactly(3).times.with({})
 
       # response for merging headers for http methods with body
-      expect(subject).to receive(:merge_default_headers).exactly(2).times.with(content_type_header)
+      expect(subject).to receive(:merge_default_headers).twice.with(content_type_header)
 
       %i[delete get head].each { |method| subject.send(method, '/path', {}) }
       %i[post put].each { |method| subject.send(method, '/path', '', content_type_header) }

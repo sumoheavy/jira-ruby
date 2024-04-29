@@ -44,6 +44,7 @@ describe JIRA::Base do
       it 'responds to client' do
         expect(decorated.respond_to?(:client)).to eq(true)
       end
+
       it 'does not raise an error' do
         expect do
           decorated.respond_to?(:client)

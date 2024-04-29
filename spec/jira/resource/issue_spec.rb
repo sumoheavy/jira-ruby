@@ -23,9 +23,11 @@ describe JIRA::Resource::Issue do
         issue = described_class.find(client, 101)
         @decorated = JIRAResourceDelegation.new(issue)
       end
+
       it 'responds to key' do
         expect(@decorated.respond_to?(:key)).to eq(true)
       end
+
       it 'does not raise an error' do
         expect do
           @issue.respond_to?(:project)

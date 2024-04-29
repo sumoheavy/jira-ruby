@@ -131,6 +131,7 @@ describe JIRA::Resource::Attachment do
         expect(attachment.mimeType).to eq file_mime_type
         expect(attachment.size).to eq file_size
       end
+
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
           described_class.new(
