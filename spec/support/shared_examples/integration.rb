@@ -16,7 +16,7 @@ def get_mock_from_path(method, options = {})
         end
   file_path = url.sub(client.options[:rest_base_path], '')
   file_path = "#{file_path}.#{options[:suffix]}" if options[:suffix]
-  file_path = "#{file_path}.#{method.to_s}" unless method == :get
+  file_path = "#{file_path}.#{method}" unless method == :get
   value_if_not_found = options.key?(:value_if_not_found) ? options[:value_if_not_found] : false
   get_mock_response("#{file_path}.json", value_if_not_found)
 end

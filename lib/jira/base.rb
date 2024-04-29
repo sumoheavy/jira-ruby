@@ -143,7 +143,7 @@ module JIRA
     #   JIRA::Resource::Comment.singular_path('456','/issue/123/')
     #     # => /jira/rest/api/2/issue/123/comment/456
     def self.singular_path(client, key, prefix = '/')
-      "#{collection_path(client, prefix)}/#{key.to_s}"
+      "#{collection_path(client, prefix)}/#{key}"
     end
 
     # Returns the attribute name of the attribute used for find.
@@ -423,7 +423,7 @@ module JIRA
       prefix = '/'
       unless self.class.belongs_to_relationships.empty?
         prefix = self.class.belongs_to_relationships.inject(prefix) do |prefix_so_far, relationship|
-          "#{prefix_so_far.to_s}#{relationship.to_s}/#{send("#{relationship}_id").to_s}/"
+          "#{prefix_so_far}#{relationship}/#{send("#{relationship}_id")}/"
         end
       end
       if @attrs['self']
