@@ -2,12 +2,24 @@ require 'spec_helper'
 
 describe JIRA::Resource::Sprint do
   let(:client) do
-    client = double(options: { site: 'https://foo.bar.com', context_path: '/jira' })
+    client = double(options: { rest_base_path: '/jira/rest/api/2', context_path: '/jira' })
     allow(client).to receive(:Sprint).and_return(JIRA::Resource::SprintFactory.new(client))
     client
   end
   let(:sprint) { described_class.new(client) }
-  let(:agile_sprint_path) { "#{sprint.client.options[:context_path]}/rest/agile/1.0/sprint/#{sprint.id}" }
+  let(:agile_sprint_path) { "/jira/rest/agile/1.0/sprint/#{sprint.id}" }
+  let(:response) { double }
+
+  describe 'get_sprint_details' do
+    let(:sprint) { JIRA::Resource::Sprint.find(client, '1') }
+    it 'check each of the date attributes' do
+      allow(client).to receive(:get).and_return(double(body: get_mock_response('sprint/1.json')))
+
+      expect(sprint.start_date).to eq Date.parse('2024-01-01T03:20:00.000Z')
+      expect(sprint.end_date).to eq Date.parse('2024-01-15T03:20:00.000Z')
+      expect(sprint.complete_date).to eq Date.parse('2024-01-16T03:48:00.000Z')
+    end
+  end
 
   describe '::find' do
     let(:response) { double('Response', body: '{"some_detail":"some detail"}') }

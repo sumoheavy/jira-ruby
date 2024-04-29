@@ -1,0 +1,13 @@
+{
+    "id": 1,
+    "self": "https://localhost:2990/jira/rest/agile/1.0/sprint/1",
+    "state": "closed",
+    "name": "SP Sprint 1",
+    "startDate": "2024-01-01T03:20:00.000Z",
+    "endDate": "2024-01-15T03:20:00.000Z",
+    "completeDate": "2024-01-16T03:48:00.000Z",
+    "createdDate": "2024-01-01T00:00:00.000Z",
+    "originBoardId": 1,
+    "goal": "",
+    "rapidview_id": 1
+}

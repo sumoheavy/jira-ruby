@@ -30,10 +30,6 @@ module JIRA
         true
       end
 
-      def sprint_report
-        get_sprint_details_attribute('sprint_report')
-      end
-
       def start_date
         get_sprint_details_attribute('start_date')
       end
@@ -64,10 +60,9 @@ module JIRA
         end
         json = self.class.parse_json(response.body)
 
-        @start_date = json['sprint']['startDate'] && Date.parse(json['sprint']['startDate'])
-        @end_date = json['sprint']['endDate'] && Date.parse(json['sprint']['endDate'])
-        @completed_date = json['sprint']['completeDate'] && Date.parse(json['sprint']['completeDate'])
-        @sprint_report = client.SprintReport.build(json['contents'])
+        @start_date = json['startDate'] && Date.parse(json['startDate'])
+        @end_date = json['endDate'] && Date.parse(json['endDate'])
+        @complete_date = json['completeDate'] && Date.parse(json['completeDate'])
       end
 
       def save(attrs = {}, _path = nil)
