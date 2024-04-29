@@ -54,8 +54,8 @@ validate_query: true })
 
         if options[:fields]
           url << "&fields=#{options[:fields].map do |value|
- CGI.escape(client.Field.name_to_id(value))
-end.join(',')}"
+                              CGI.escape(client.Field.name_to_id(value))
+                            end.join(',')}"
         end
         url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
         url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
@@ -103,8 +103,8 @@ end.join(',')}"
 
       def respond_to?(method_name, _include_all = false)
         if attrs.key?('fields') && [method_name.to_s, client.Field.name_to_id(method_name)].any? do |k|
- attrs['fields'].key?(k)
-end
+             attrs['fields'].key?(k)
+           end
           true
         else
           super(method_name)

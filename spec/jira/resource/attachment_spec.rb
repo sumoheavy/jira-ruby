@@ -3,9 +3,9 @@ require 'spec_helper'
 describe JIRA::Resource::Attachment do
   subject(:attachment) do
     described_class.new(
-        client,
-        issue: JIRA::Resource::Issue.new(client),
-        attrs: { 'author' => { 'foo' => 'bar' } }
+      client,
+      issue: JIRA::Resource::Issue.new(client),
+      attrs: { 'author' => { 'foo' => 'bar' } }
     )
   end
 
@@ -39,8 +39,8 @@ describe JIRA::Resource::Attachment do
 
     let(:response) do
       double(
-          'response',
-          body: '{"enabled":true,"uploadLimit":10485760}'
+        'response',
+        body: '{"enabled":true,"uploadLimit":10485760}'
       )
     end
 
@@ -69,7 +69,7 @@ describe JIRA::Resource::Attachment do
     end
 
     let(:client) do
-      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false )
+      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
     end
     let(:attachment_file_contents) { 'file contents' }
     let(:file_target) { double(read: :attachment_file_contents) }
@@ -142,11 +142,11 @@ describe JIRA::Resource::Attachment do
         end
 
         let(:default_headers_given) do
- { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' }
-end
+          { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' }
+        end
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
-                           default_headers: default_headers_given )
+                           default_headers: default_headers_given)
         end
         let(:merged_headers) do
           { 'Accept' => 'application/json', 'X-Atlassian-Token' => 'nocheck' }.merge(default_headers_given)
@@ -162,7 +162,7 @@ end
     end
 
     describe '#save!' do
-    subject { attachment.save!('file' => path_to_file) }
+      subject { attachment.save!('file' => path_to_file) }
 
       before do
         allow(client).to receive(:post_multipart).and_return(response)
@@ -198,11 +198,11 @@ end
         end
 
         let(:default_headers_given) do
- { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' }
-end
+          { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' }
+        end
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
-                           default_headers: default_headers_given )
+                           default_headers: default_headers_given)
         end
         let(:merged_headers) do
           { 'Accept' => 'application/json', 'X-Atlassian-Token' => 'nocheck' }.merge(default_headers_given)

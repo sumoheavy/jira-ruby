@@ -99,12 +99,12 @@ module JIRA
     def store_cookies(response)
       cookies = response.get_fields('set-cookie')
       return unless cookies
-        cookies.each do |cookie|
-          data = CGI::Cookie.parse(cookie)
-          data.delete('Path')
-          @cookies.merge!(data)
-        end
-      
+      cookies.each do |cookie|
+        data = CGI::Cookie.parse(cookie)
+        data.delete('Path')
+        @cookies.merge!(data)
+      end
+
     end
 
     def add_cookies(request)

@@ -111,7 +111,7 @@ describe JIRA::Resource::Sprint do
         issue
       end
       let(:post_issue_input) do
-        { issues:[issue.id] }
+        { issues: [issue.id] }
       end
 
       describe '#add_issu' do
@@ -126,7 +126,7 @@ describe JIRA::Resource::Sprint do
     end
 
     context 'multiple issues exists' do
-      let(:issue_ids) { [ 1001, 1012 ] }
+      let(:issue_ids) { [1001, 1012] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
         '/jira/rest/agile/1.0/sprint//issue'

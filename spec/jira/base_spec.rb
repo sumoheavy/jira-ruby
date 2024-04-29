@@ -305,7 +305,7 @@ describe JIRA::Base do
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
                                            '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
-      expect{ subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
+      expect { subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
     end
   end
 
@@ -492,8 +492,8 @@ describe JIRA::Base do
 
     it 'allows the has_many attributes to be nested inside another attribute' do
       subject = JIRA::Resource::HasManyExample.new(client,
-                                                   attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' }, 
-{ 'id' => '456' }] } })
+                                                   attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' },
+                                                                                              { 'id' => '456' }] } })
       expect(subject.brunchmuffins.length).to eq(2)
       subject.brunchmuffins.each do |brunchmuffin|
         expect(brunchmuffin.class).to eq(JIRA::Resource::Deadbeef)
@@ -519,8 +519,8 @@ describe JIRA::Base do
 
     it 'allows the attribute key to be specified' do
       subject = JIRA::Resource::HasManyExample.new(client,
-                                                   attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' }, 
-{ 'id' => '456' }] })
+                                                   attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' },
+                                                                                         { 'id' => '456' }] })
       expect(subject.irregularly_named_things.length).to eq(2)
       subject.irregularly_named_things.each do |thing|
         expect(thing.class).to eq(JIRA::Resource::Deadbeef)

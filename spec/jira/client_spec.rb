@@ -68,14 +68,14 @@ RSpec.shared_examples 'Client Common Tests' do
 
       it 'raises an ArgumentError' do
         expect do
- subject
-end.to raise_exception(ArgumentError,
-                              'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
+          subject
+        end.to raise_exception(ArgumentError,
+                               'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
         options[:ssl_client_cert] = '<cert></cert>'
         expect do
- subject
-end.to raise_exception(ArgumentError,
-                              'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
+          subject
+        end.to raise_exception(ArgumentError,
+                               'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
       end
     end
   end

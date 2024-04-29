@@ -68,7 +68,7 @@ module JIRA
         headers = { 'X-Atlassian-Token' => 'nocheck' }
         data = { 'file' => Multipart::Post::UploadIO.new(file, mime_type, file) }
 
-        response = client.post_multipart(path, data , headers)
+        response = client.post_multipart(path, data, headers)
 
         set_attributes(attrs, response)
 

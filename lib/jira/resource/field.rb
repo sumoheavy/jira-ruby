@@ -43,7 +43,7 @@ module JIRA
                    renamed
                  else
                    safe_name(f.name)
-          end
+                 end
           field_map_reverse[f.id] = [f.name, name] # capture both the official name, and the mapped name
           field_map[name] = f.id
         end

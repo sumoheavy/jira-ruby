@@ -15,7 +15,7 @@ describe JIRA::RequestClient do
       end
 
       it 'raises an exception' do
-        expect{ subject }.to raise_exception(JIRA::HTTPError)
+        expect { subject }.to raise_exception(JIRA::HTTPError)
       end
     end
   end
@@ -34,7 +34,7 @@ describe JIRA::RequestClient do
       end
 
       it 'raises an exception' do
-        expect{ subject }.to raise_exception(JIRA::HTTPError)
+        expect { subject }.to raise_exception(JIRA::HTTPError)
       end
     end
   end

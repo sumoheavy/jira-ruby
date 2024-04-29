@@ -124,7 +124,7 @@ module JIRA
       if options[:use_client_cert]
         if @options[:cert_path]
           @options[:ssl_client_cert] =
-OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
+            OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
         end
         @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
 
