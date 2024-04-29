@@ -104,7 +104,6 @@ describe JIRA::Resource::Sprint do
 
       describe '#add_issu' do
         context 'when an issue is passed' do
-
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 
@@ -133,7 +132,6 @@ describe JIRA::Resource::Sprint do
 
       describe '#add_issues' do
         context 'when an issue is passed' do
-
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 

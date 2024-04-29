@@ -82,7 +82,6 @@ describe JIRA::Resource::Attachment do
         attachment.download_file do |file|
           expect(file).to eq(file_target)
         end
-
       end
     end
 
@@ -156,10 +155,8 @@ describe JIRA::Resource::Attachment do
                                                                                    merged_headers).and_return(response)
 
           bearer_attachment.save('file' => path_to_file)
-
         end
       end
-
     end
 
     describe '#save!' do
@@ -213,7 +210,6 @@ describe JIRA::Resource::Attachment do
                                                                                    merged_headers).and_return(response)
 
           bearer_attachment.save!('file' => path_to_file)
-
         end
       end
     end

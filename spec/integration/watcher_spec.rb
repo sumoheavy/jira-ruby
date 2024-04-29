@@ -57,6 +57,5 @@ describe JIRA::Resource::Watcher do
         watcher.save!(user_id)
       end
     end
-
   end
 end

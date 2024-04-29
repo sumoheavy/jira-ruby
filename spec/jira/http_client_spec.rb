@@ -103,12 +103,10 @@ describe JIRA::HttpClient do
       subject(:http_conn) { basic_client.basic_auth_http_conn }
 
       it 'creates an instance of Net:HTTP for a basic auth client' do
-
         expect(http_conn.class).to eq(Net::HTTP)
       end
 
       it 'the connection created has no proxy' do
-
         http_conn
 
         expect(http_conn.proxy_address).to be_nil
@@ -312,7 +310,6 @@ describe JIRA::HttpClient do
 
     describe 'HttpClient#basic_auth_http_conn' do
       it 'creates a Net:HTTP instance for a basic auth client setting up a proxied http connection' do
-
         expect(proxy_conn.class).to eq(Net::HTTP)
 
         expect(proxy_conn.proxy_address).to eq(proxy_client.options[:proxy_address])

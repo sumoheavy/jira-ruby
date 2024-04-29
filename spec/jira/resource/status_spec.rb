@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Status do
-
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })
     allow(client).to receive(:Field).and_return(JIRA::Resource::FieldFactory.new(client))
