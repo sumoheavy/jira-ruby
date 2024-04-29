@@ -21,7 +21,8 @@ describe JIRA::Resource::User do
     describe '#all' do
       let(:client) do
         client = double(options: { rest_base_path: '/jira/rest/api/2' })
-        allow(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000').and_return(JIRA::Resource::UserFactory.new(client))
+        allow(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000')
+                                      .and_return(JIRA::Resource::UserFactory.new(client))
         client
       end
 

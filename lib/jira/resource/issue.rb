@@ -68,7 +68,7 @@ validate_query: true })
 
         response = client.get(url)
         json = parse_json(response.body)
-        return json['total'] if options[:max_results] && (options[:max_results] == 0)
+        return json['total'] if options[:max_results] && (options[:max_results]).zero?
 
         json['issues'].map do |issue|
           client.Issue.build(issue)
@@ -83,7 +83,9 @@ validate_query: true })
 
         response = client.get(url_with_query_params(url, query_params))
         set_attrs_from_response(response)
-        if @attrs && @attrs['fields'] && @attrs['fields']['worklog'] && (@attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults'])
+        if @attrs && @attrs['fields'] &&
+           @attrs['fields']['worklog'] &&
+           (@attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults'])
           worklog_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{id}/worklog"
           response = client.get(worklog_url)
           unless response.body.nil? || (response.body.length < 2)

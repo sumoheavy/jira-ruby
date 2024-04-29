@@ -257,7 +257,8 @@ describe JIRA::Base do
       expect(subject.foo).to eq('bar' => 'baz', 'fum' => 'dum')
     end
 
-    it 'returns false when an invalid field is set' do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
+    it 'returns false when an invalid field is set' do
+      # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
       response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
@@ -265,7 +266,8 @@ describe JIRA::Base do
       expect(subject.save('invalid_field' => 'foobar')).to be_falsey
     end
 
-    it 'returns false with exception details when non json response body (unauthorized)' do # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
+    it 'returns false with exception details when non json response body (unauthorized)' do
+      # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
       response = double('Response', body: 'totally invalid json', code: 401, message: 'Unauthorized')
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('foo' => 'bar')).to be_falsey
@@ -501,9 +503,12 @@ describe JIRA::Base do
     end
 
     it 'allows it to be deeply nested' do
-      subject = JIRA::Resource::HasManyExample.new(client, attrs: { 'nested' => {
-                                                     'breakfastscone' => { 'breakfastscones' => [{ 'id' => '123' }, { 'id' => '456' }] }
-                                                   } })
+      subject = JIRA::Resource::HasManyExample.new(
+        client,
+        attrs: {
+          'nested' => { 'breakfastscone' => { 'breakfastscones' => [{ 'id' => '123' }, { 'id' => '456' }] } }
+        }
+      )
       expect(subject.breakfastscones.length).to eq(2)
       subject.breakfastscones.each do |breakfastscone|
         expect(breakfastscone.class).to eq(JIRA::Resource::Deadbeef)

@@ -43,6 +43,7 @@ describe JIRA::Resource::Issue do
           'key' => 'SAMPLEPROJECT-13'
         }
       end
+
       before do
         stub_request(:get, "#{site_url}/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0")
           .to_return(status: 200, body: get_mock_response('issue.json'))
@@ -89,6 +90,7 @@ describe JIRA::Resource::Issue do
           'key' => 'SAMPLEPROJECT-13'
         }
       end
+
       it_behaves_like 'a resource with JQL inputs and a collection GET endpoint'
     end
   end
