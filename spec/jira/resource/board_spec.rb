@@ -30,7 +30,7 @@ describe JIRA::Resource::Board do
 
   it 'finds all boards' do
     response = double
-    api_json = <<eos
+    api_json = <<EOS
     {
          "maxResults": 50,
          "startAt": 0,
@@ -48,7 +48,7 @@ describe JIRA::Resource::Board do
             }
         ]
     }
-eos
+EOS
     allow(response).to receive(:body).and_return(api_json)
     expect(client).to receive(:get).with('/rest/agile/1.0/board')
                                    .and_return(response)
@@ -65,7 +65,7 @@ eos
     it 'finds all issues' do
       issues_response = double
 
-      api_json_issues = <<eos
+      api_json_issues = <<EOS
     {
         "expand": "names,schema",
         "startAt": 0,
@@ -85,7 +85,7 @@ eos
             }
         ]
     }
-eos
+EOS
 
       allow(issues_response).to receive(:body).and_return(api_json_issues)
       allow(board).to receive(:id).and_return(84)
@@ -151,7 +151,7 @@ eos
   it 'gets all sprints for a board' do
     response = double
 
-    api_json = <<-eos
+    api_json = <<-EOS
     {
         "values": [
             {
@@ -166,7 +166,7 @@ eos
             }
         ]
     }
-    eos
+EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
@@ -177,7 +177,7 @@ eos
   it 'gets board configuration for a board' do
     response = double
 
-    api_json = <<-eos
+    api_json = <<-EOS
       {
         "id":1,
         "name":"My Board",
@@ -215,7 +215,7 @@ eos
           "rankCustomFieldId":10011
         }
       }
-    eos
+EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
