@@ -34,6 +34,7 @@ module JIRA
   #   :default_headers    => {},
   #   :use_client_cert    => false,
   #   :read_timeout       => nil,
+  #   :max_retries        => nil,
   #   :http_debug         => false,
   #   :shared_secret      => nil,
   #   :cert_path          => nil,
@@ -86,6 +87,7 @@ module JIRA
       :default_headers,
       :use_client_cert,
       :read_timeout,
+      :max_retries,
       :http_debug,
       :issuer,
       :base_url,
@@ -228,10 +230,6 @@ module JIRA
 
     def Sprint
       JIRA::Resource::SprintFactory.new(self)
-    end
-
-    def SprintReport
-      JIRA::Resource::SprintReportFactory.new(self)
     end
 
     def ServerInfo

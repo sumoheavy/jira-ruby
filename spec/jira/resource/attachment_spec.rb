@@ -3,9 +3,9 @@ require 'spec_helper'
 describe JIRA::Resource::Attachment do
   subject(:attachment) do
     JIRA::Resource::Attachment.new(
-        client,
-        issue: JIRA::Resource::Issue.new(client),
-        attrs: { 'author' => { 'foo' => 'bar' } }
+      client,
+      issue: JIRA::Resource::Issue.new(client),
+      attrs: { 'author' => { 'foo' => 'bar' } }
     )
   end
 
@@ -39,8 +39,8 @@ describe JIRA::Resource::Attachment do
 
     let(:response) do
       double(
-          'response',
-          body: '{"enabled":true,"uploadLimit":10485760}'
+        'response',
+        body: '{"enabled":true,"uploadLimit":10485760}'
       )
     end
 
@@ -61,11 +61,10 @@ describe JIRA::Resource::Attachment do
 
   context 'there is an attachment on an issue' do
     let(:client) do
-      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false )
+      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
     end
     let(:attachment_file_contents) { 'file contents' }
-    let(:file_target) { double(read: :attachment_file_contents) }
-    let(:attachment_url) { "https:jirahost/secure/attachment/32323/myfile.txt" }
+    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     subject(:attachment) do
       JIRA::Resource::Attachment.new(
         client,
@@ -74,24 +73,24 @@ describe JIRA::Resource::Attachment do
       )
     end
 
+    before(:each) do
+      stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
+    end
+
     describe '.download_file' do
       it 'passes file object to block' do
-        expect(URI).to receive(:open).with(attachment_url, anything).and_yield(file_target)
+        expect(URI).to receive(:parse).with(attachment_url).and_call_original
 
         attachment.download_file do |file|
-          expect(file).to eq(file_target)
+          expect(file.read).to eq(attachment_file_contents)
         end
-
       end
     end
 
     describe '.download_contents' do
       it 'downloads the file contents as a string' do
-        expect(URI).to receive(:open).with(attachment_url, anything).and_return(attachment_file_contents)
-
-        result_str = attachment.download_contents
-
-        expect(result_str).to eq(attachment_file_contents)
+        expect(URI).to receive(:parse).with(attachment_url).and_call_original
+        expect(attachment.download_contents).to eq(attachment_file_contents)
       end
     end
   end
@@ -139,27 +138,34 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => "Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2" } }
+        let(:default_headers_given) {
+          {
+            'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2'
+          }
+        }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          {"Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck"}.merge(default_headers_given)
+          {
+            'Accept' => 'application/json',
+            'X-Atlassian-Token' => 'nocheck'
+          }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, merged_headers).and_return(response)
+          expect(bearer_client.request_client).to receive(:request_multipart)
+            .with(anything, anything, merged_headers)
+            .and_return(response)
 
           bearer_attachment.save('file' => path_to_file)
-
         end
       end
-
     end
 
     describe '#save!' do
-    subject { attachment.save!('file' => path_to_file) }
+      subject { attachment.save!('file' => path_to_file) }
 
       before do
         allow(client).to receive(:post_multipart).and_return(response)
@@ -193,20 +199,24 @@ describe JIRA::Resource::Attachment do
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) { { 'authorization' => "Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2" } }
+        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given )
         end
         let(:merged_headers) do
-          {"Accept"=>"application/json", "X-Atlassian-Token"=>"nocheck"}.merge(default_headers_given)
+          {
+            'Accept' => 'application/json',
+            'X-Atlassian-Token' => 'nocheck'
+          }.merge(default_headers_given)
         end
 
         it 'passes the custom headers' do
-          expect(bearer_client.request_client).to receive(:request_multipart).with(anything, anything, merged_headers).and_return(response)
+          expect(bearer_client.request_client).to receive(:request_multipart)
+            .with(anything, anything, merged_headers)
+            .and_return(response)
 
           bearer_attachment.save!('file' => path_to_file)
-
         end
       end
     end
