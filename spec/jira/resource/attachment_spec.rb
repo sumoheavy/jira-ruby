@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
   subject(:attachment) do
-    JIRA::Resource::Attachment.new(
+    described_class.new(
       client,
       issue: JIRA::Resource::Issue.new(client),
       attrs: { 'author' => { 'foo' => 'bar' } }
@@ -35,7 +35,7 @@ describe JIRA::Resource::Attachment do
   end
 
   describe '.meta' do
-    subject { JIRA::Resource::Attachment.meta(client) }
+    subject { described_class.meta(client) }
 
     let(:response) do
       double(
@@ -60,20 +60,21 @@ describe JIRA::Resource::Attachment do
   end
 
   context 'there is an attachment on an issue' do
-    let(:client) do
-      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
-    end
-    let(:attachment_file_contents) { 'file contents' }
-    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     subject(:attachment) do
-      JIRA::Resource::Attachment.new(
+      described_class.new(
         client,
         issue: JIRA::Resource::Issue.new(client),
         attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
       )
     end
 
-    before(:each) do
+    let(:client) do
+      JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
+    end
+    let(:attachment_file_contents) { 'file contents' }
+    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
+
+    before do
       stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
     end
 
@@ -104,12 +105,12 @@ describe JIRA::Resource::Attachment do
       double(
         body: [
           {
-            "id": 10_001,
-            "self": 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
-            "filename": file_name,
-            "created": '2017-07-19T12:23:06.572+0000',
-            "size": file_size,
-            "mimeType": file_mime_type
+            id: 10_001,
+            self: 'http://www.example.com/jira/rest/api/2.0/attachments/10000',
+            filename: file_name,
+            created: '2017-07-19T12:23:06.572+0000',
+            size: file_size,
+            mimeType: file_mime_type
           }
         ].to_json
       )
@@ -130,22 +131,24 @@ describe JIRA::Resource::Attachment do
         expect(attachment.mimeType).to eq file_mime_type
         expect(attachment.size).to eq file_size
       end
+
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
-          JIRA::Resource::Attachment.new(
+          described_class.new(
             bearer_client,
             issue: JIRA::Resource::Issue.new(bearer_client),
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
-        let(:default_headers_given) {
+
+        let(:default_headers_given) do
           {
             'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2'
           }
-        }
+        end
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
-                           default_headers: default_headers_given )
+                           default_headers: default_headers_given)
         end
         let(:merged_headers) do
           {
@@ -193,16 +196,17 @@ describe JIRA::Resource::Attachment do
 
       context 'when using custom client headers' do
         subject(:bearer_attachment) do
-          JIRA::Resource::Attachment.new(
+          described_class.new(
             bearer_client,
             issue: JIRA::Resource::Issue.new(bearer_client),
             attrs: { 'author' => { 'foo' => 'bar' } }
           )
         end
+
         let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
-                           default_headers: default_headers_given )
+                           default_headers: default_headers_given)
         end
         let(:merged_headers) do
           {
