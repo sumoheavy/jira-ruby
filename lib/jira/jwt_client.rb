@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'atlassian/jwt'
 
 module JIRA
@@ -22,8 +24,8 @@ module JIRA
 
     def build_jwt_header(url)
       jwt = build_jwt(url)
-      
-      {'Authorization' => "JWT #{jwt}"}
+
+      { 'Authorization' => "JWT #{jwt}" }
     end
 
     def build_jwt(url)

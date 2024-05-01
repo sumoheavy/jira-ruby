@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JIRA::RequestClient do
-  let(:request_client) { JIRA::RequestClient.new }
+  let(:request_client) { described_class.new }
 
   describe '#request' do
     subject(:request) { request_client.request(:get, '/foo', '', {}) }
@@ -15,7 +15,7 @@ describe JIRA::RequestClient do
       end
 
       it 'raises an exception' do
-        expect{ subject }.to raise_exception(JIRA::HTTPError)
+        expect { subject }.to raise_exception(JIRA::HTTPError)
       end
     end
   end
@@ -34,7 +34,7 @@ describe JIRA::RequestClient do
       end
 
       it 'raises an exception' do
-        expect{ subject }.to raise_exception(JIRA::HTTPError)
+        expect { subject }.to raise_exception(JIRA::HTTPError)
       end
     end
   end

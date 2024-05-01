@@ -5,10 +5,10 @@ describe JIRA::Resource::Worklog do
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::Worklog.new(client, issue_id: '99999', attrs: {
-                                    'author' => { 'foo' => 'bar' },
+      described_class.new(client, issue_id: '99999', attrs: {
+                            'author' => { 'foo' => 'bar' },
                                     'updateAuthor' => { 'foo' => 'bar' }
-                                  })
+                          })
     end
 
     it 'has the correct relationships' do

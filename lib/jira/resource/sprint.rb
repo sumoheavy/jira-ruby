@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class SprintFactory < JIRA::BaseFactory # :nodoc:
@@ -12,7 +14,7 @@ module JIRA
 
       # get all issues of sprint
       def issues(options = {})
-        jql = "sprint = #{id.to_s}"
+        jql = "sprint = #{id}"
         jql += " and updated >= '#{options[:updated]}'" if options[:updated]
         Issue.jql(client, jql)
       end

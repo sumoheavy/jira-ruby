@@ -17,5 +17,6 @@ def get_mock_response(file, value_if_file_not_found = false)
   File.read(File.join(File.dirname(__FILE__), 'mock_responses/', file))
 rescue Errno::ENOENT => e
   raise e if value_if_file_not_found == false
+
   value_if_file_not_found
 end

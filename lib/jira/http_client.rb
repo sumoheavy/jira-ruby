@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'net/https'
 require 'cgi/cookie'
@@ -21,7 +23,7 @@ module JIRA
       body = { username: @options[:username].to_s, password: @options[:password].to_s }.to_json
       @options.delete(:username)
       @options.delete(:password)
-      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
+      make_request(:post, "#{@options[:context_path]}/rest/auth/1/session", body, 'Content-Type' => 'application/json')
     end
 
     def make_request(http_method, url, body = '', headers = {})
@@ -47,7 +49,8 @@ module JIRA
     def http_conn(uri)
       http_conn =
         if @options[:proxy_address]
-          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
+          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80,
+                        @options[:proxy_username], @options[:proxy_password])
         else
           Net::HTTP.new(uri.host, uri.port)
         end
@@ -95,13 +98,13 @@ module JIRA
 
     def store_cookies(response)
       cookies = response.get_fields('set-cookie')
-      if cookies
-        cookies.each do |cookie|
-          data = CGI::Cookie.parse(cookie)
-          data.delete('Path')
-          @cookies.merge!(data)
-        end
+      return unless cookies
+      cookies.each do |cookie|
+        data = CGI::Cookie.parse(cookie)
+        data.delete('Path')
+        @cookies.merge!(data)
       end
+
     end
 
     def add_cookies(request)

@@ -4,8 +4,9 @@ describe JIRA::BaseFactory do
   class JIRA::Resource::FooFactory < JIRA::BaseFactory; end
   class JIRA::Resource::Foo; end
 
-  let(:client)  { double }
   subject       { JIRA::Resource::FooFactory.new(client) }
+
+  let(:client)  { double }
 
   it 'initializes correctly' do
     expect(subject.class).to        eq(JIRA::Resource::FooFactory)

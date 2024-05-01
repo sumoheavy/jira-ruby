@@ -15,13 +15,14 @@ describe JIRA::Resource::User do
       }
     end
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a singular GET endpoint'
 
     describe '#all' do
       let(:client) do
         client = double(options: { rest_base_path: '/jira/rest/api/2' })
-        allow(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000').and_return(JIRA::Resource::UserFactory.new(client))
+        allow(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000')
+                                      .and_return(JIRA::Resource::UserFactory.new(client))
         client
       end
 
@@ -34,7 +35,7 @@ describe JIRA::Resource::User do
       it 'gets users with maxResults of 1000' do
         expect(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000')
         expect(client).to receive_message_chain(:User, :build).with('User1')
-        JIRA::Resource::User.all(client)
+        described_class.all(client)
       end
     end
   end

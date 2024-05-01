@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe JIRA::Resource::UserFactory do
+  subject { described_class.new(client) }
+
   let(:client) do
     instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
   end
-
-  subject { JIRA::Resource::UserFactory.new(client) }
 
   describe '#myself' do
     let(:response) do
@@ -16,7 +16,7 @@ describe JIRA::Resource::UserFactory do
 
     let(:user) { subject.myself }
 
-    before(:each) do
+    before do
       allow(client).to receive(:get).with(
         '/jira/rest/api/2/myself'
       ).and_return(response)

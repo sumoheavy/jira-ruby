@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cgi'
 
 module JIRA
@@ -25,7 +27,8 @@ module JIRA
         response = client.get(path_base(client) + "/board/#{board_id}/issue?#{hash_to_query_string(options)}")
         json = parse_json(response.body)
         # To get Issue objects with the same structure as for Issue.all
-        return {} if json['issues'].size.zero?
+        return {} if json['issues'].empty?
+
         issue_ids = json['issues'].map do |issue|
           issue['id']
         end
@@ -58,22 +61,17 @@ module JIRA
         parse_json(response.body)
       end
 
-      # def self.find(client, key, options = {})
-      #   options[:maxResults] ||= 100
-      #   fields = options[:fields].join(',') unless options[:fields].nil?
-      #   response = client.get("/rest/api/latest/search?jql=sprint=#{key}&fields=#{fields}&maxResults=#{options[:maxResults]}")
-      #   parse_json(response.body)
-      # end
-
       private
 
       def self.path_base(client)
-        client.options[:context_path] + '/rest/agile/1.0'
+        "#{client.options[:context_path]}/rest/agile/1.0"
       end
 
       def path_base(client)
         self.class.path_base(client)
       end
+
+      private_class_method :path_base
     end
   end
 end
