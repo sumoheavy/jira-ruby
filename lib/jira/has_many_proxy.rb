@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Whenever a collection from a has_many relationship is accessed, an instance
 # of this class is returned.  This instance wraps the Array of instances in
@@ -36,7 +38,7 @@ class JIRA::HasManyProxy
   end
 
   # Delegate any missing methods to the collection that this proxy wraps
-  def method_missing(method_name, *args, &block)
-    collection.send(method_name, *args, &block)
+  def method_missing(method_name, ...)
+    collection.send(method_name, ...)
   end
 end

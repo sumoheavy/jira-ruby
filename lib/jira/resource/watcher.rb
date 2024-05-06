@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class WatcherFactory < JIRA::BaseFactory # :nodoc:
@@ -29,7 +31,6 @@ module JIRA
         response = client.post(path, user_id.to_json)
         true
       end
-
     end
   end
 end

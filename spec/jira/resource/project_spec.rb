@@ -9,11 +9,11 @@ describe JIRA::Resource::Project do
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::Project.new(client, attrs: {
-                                    'lead'        => { 'foo' => 'bar' },
-                                    'issueTypes'  => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions'    => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
-                                  })
+      described_class.new(client, attrs: {
+                            'lead' => { 'foo' => 'bar' },
+                                    'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                                    'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
+                          })
     end
 
     it 'has the correct relationships' do
@@ -30,13 +30,13 @@ describe JIRA::Resource::Project do
 
   describe 'issues' do
     subject do
-      JIRA::Resource::Project.new(client, attrs: {
-                                    'key'         => 'test'
-                                  })
+      described_class.new(client, attrs: {
+                            'key' => 'test'
+                          })
     end
 
     it 'returns issues' do
-      response_body = '{"expand":"schema,names","startAt":0,"maxResults":1,"total":1,"issues":[{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"53062","self":"/rest/api/2/issue/53062","key":"test key","fields":{"summary":"test summary"}}]}'
+      response_body = '{"expand":"schema,names","startAt":0,"maxResults":1,"total":1,"issues":[{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"53062","self":"/rest/api/2/issue/53062","key":"test key","fields":{"summary":"test summary"}}]}' # rubocop:disable Layout/LineLength
       response = double('response',
                         body: response_body)
       issue_factory = double('issue factory')
@@ -52,7 +52,7 @@ describe JIRA::Resource::Project do
 
     context 'with changelog' do
       it 'returns issues' do
-        response_body = '{"expand":"schema,names","startAt":0,"maxResults":1,"total":1,"issues":[{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"53062","self":"/rest/api/2/issue/53062","key":"test key","fields":{"summary":"test summary"},"changelog":{}}]}'
+        response_body = '{"expand":"schema,names","startAt":0,"maxResults":1,"total":1,"issues":[{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"53062","self":"/rest/api/2/issue/53062","key":"test key","fields":{"summary":"test summary"},"changelog":{}}]}' # rubocop:disable Layout/LineLength
         response = double('response',
                           body: response_body)
         issue_factory = double('issue factory')
@@ -69,12 +69,12 @@ describe JIRA::Resource::Project do
   end
 
   describe 'users' do
-    let(:project) { JIRA::Resource::Project.new(client, attrs: { 'key' => project_key }) }
+    let(:project) { described_class.new(client, attrs: { 'key' => project_key }) }
     let(:project_key) { SecureRandom.hex }
     let(:response) { double('response', body: '[{}]') }
 
     context 'pagination' do
-      before(:each) do
+      before do
         user_factory = double('user factory')
         expect(client).to receive(:User).and_return(user_factory)
         expect(user_factory).to receive(:build).with(any_args)
@@ -95,7 +95,7 @@ describe JIRA::Resource::Project do
           .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&startAt=#{start_at}")
           .and_return(response)
 
-        project.users(start_at: start_at)
+        project.users(start_at:)
       end
 
       it 'accepts max_results option' do
@@ -105,7 +105,7 @@ describe JIRA::Resource::Project do
           .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&maxResults=#{max_results}")
           .and_return(response)
 
-        project.users(max_results: max_results)
+        project.users(max_results:)
       end
 
       it 'accepts start_at and max_results options' do
@@ -113,10 +113,10 @@ describe JIRA::Resource::Project do
         max_results = rand(1000)
 
         expect(client).to receive(:get)
-          .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&startAt=#{start_at}&maxResults=#{max_results}")
+          .with("/jira/rest/api/2/user/assignable/search?project=#{project_key}&startAt=#{start_at}&maxResults=#{max_results}") # rubocop:disable Layout/LineLength
           .and_return(response)
 
-        project.users(start_at: start_at, max_results: max_results)
+        project.users(start_at:, max_results:)
       end
     end
   end

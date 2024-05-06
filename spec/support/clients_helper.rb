@@ -1,5 +1,5 @@
 module ClientsHelper
-  def with_each_client
+  def with_each_client(&block)
     clients = {}
 
     oauth_client = JIRA::Client.new(consumer_key: 'foo', consumer_secret: 'bar')
@@ -9,8 +9,6 @@ module ClientsHelper
     basic_client = JIRA::Client.new(username: 'foo', password: 'bar', auth_type: :basic, use_ssl: false)
     clients['http://localhost:2990'] = basic_client
 
-    clients.each do |site_url, client|
-      yield site_url, client
-    end
+    clients.each(&block)
   end
 end

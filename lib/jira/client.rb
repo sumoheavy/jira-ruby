@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'forwardable'
 require 'ostruct'
@@ -58,44 +60,45 @@ module JIRA
     # The configuration options for this client instance
     attr_reader :options
 
-    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token, :access_token, :authenticated?
+    def_delegators :@request_client, :init_access_token, :set_access_token, :set_request_token, :request_token,
+                   :access_token, :authenticated?
 
-    DEFINED_OPTIONS = [
-      :site,
-      :context_path,
-      :signature_method,
-      :request_token_path,
-      :authorize_path,
-      :access_token_path,
-      :private_key,
-      :private_key_file,
-      :rest_base_path,
-      :consumer_key,
-      :consumer_secret,
-      :ssl_verify_mode,
-      :ssl_version,
-      :use_ssl,
-      :username,
-      :password,
-      :auth_type,
-      :proxy_address,
-      :proxy_port,
-      :proxy_username,
-      :proxy_password,
-      :use_cookies,
-      :additional_cookies,
-      :default_headers,
-      :use_client_cert,
-      :read_timeout,
-      :max_retries,
-      :http_debug,
-      :issuer,
-      :base_url,
-      :shared_secret,
-      :cert_path,
-      :key_path,
-      :ssl_client_cert,
-      :ssl_client_key
+    DEFINED_OPTIONS = %i[
+      site
+      context_path
+      signature_method
+      request_token_path
+      authorize_path
+      access_token_path
+      private_key
+      private_key_file
+      rest_base_path
+      consumer_key
+      consumer_secret
+      ssl_verify_mode
+      ssl_version
+      use_ssl
+      username
+      password
+      auth_type
+      proxy_address
+      proxy_port
+      proxy_username
+      proxy_password
+      use_cookies
+      additional_cookies
+      default_headers
+      use_client_cert
+      read_timeout
+      max_retries
+      http_debug
+      issuer
+      base_url
+      shared_secret
+      cert_path
+      key_path
+      ssl_client_cert
+      ssl_client_key
     ].freeze
 
     DEFAULT_OPTIONS = {
@@ -119,11 +122,20 @@ module JIRA
       raise ArgumentError, "Unknown option(s) given: #{unknown_options}" unless unknown_options.empty?
 
       if options[:use_client_cert]
-        @options[:ssl_client_cert] = OpenSSL::X509::Certificate.new(File.read(@options[:cert_path])) if @options[:cert_path]
+        if @options[:cert_path]
+          @options[:ssl_client_cert] =
+            OpenSSL::X509::Certificate.new(File.read(@options[:cert_path]))
+        end
         @options[:ssl_client_key] = OpenSSL::PKey::RSA.new(File.read(@options[:key_path])) if @options[:key_path]
 
-        raise ArgumentError, 'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true' unless @options[:ssl_client_cert]
-        raise ArgumentError, 'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true' unless @options[:ssl_client_key]
+        unless @options[:ssl_client_cert]
+          raise ArgumentError,
+                'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true'
+        end
+        unless @options[:ssl_client_key]
+          raise ArgumentError,
+                'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true'
+        end
       end
 
       case options[:auth_type]
@@ -135,7 +147,11 @@ module JIRA
       when :basic
         @request_client = HttpClient.new(@options)
       when :cookie
-        raise ArgumentError, 'Options: :use_cookies must be true for :cookie authorization type' if @options.key?(:use_cookies) && !@options[:use_cookies]
+        if @options.key?(:use_cookies) && !@options[:use_cookies]
+          raise ArgumentError,
+                'Options: :use_cookies must be true for :cookie authorization type'
+        end
+
         @options[:use_cookies] = true
         @request_client = HttpClient.new(@options)
         @request_client.make_cookie_auth_request

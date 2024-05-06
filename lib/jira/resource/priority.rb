@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class PriorityFactory < JIRA::BaseFactory # :nodoc:

@@ -11,7 +11,8 @@ describe JIRA::Resource::Sprint do
   let(:response) { double }
 
   describe 'get_sprint_details' do
-    let(:sprint) { JIRA::Resource::Sprint.find(client, '1') }
+    let(:sprint) { described_class.find(client, '1') }
+
     it 'check each of the date attributes' do
       allow(client).to receive(:get).and_return(double(body: get_mock_response('sprint/1.json')))
 
@@ -26,7 +27,7 @@ describe JIRA::Resource::Sprint do
 
     it 'fetches the sprint from JIRA' do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/sprint/111').and_return(response)
-      expect(JIRA::Resource::Sprint.find(client, '111')).to be_a(JIRA::Resource::Sprint)
+      expect(described_class.find(client, '111')).to be_a(described_class)
     end
   end
 
@@ -111,7 +112,7 @@ describe JIRA::Resource::Sprint do
         issue
       end
       let(:post_issue_input) do
-        { "issues": [issue.id] }
+        { issues: [issue.id] }
       end
 
       describe '#add_issu' do
@@ -126,7 +127,7 @@ describe JIRA::Resource::Sprint do
     end
 
     context 'multiple issues exists' do
-      let(:issue_ids) { [ 1001, 1012 ] }
+      let(:issue_ids) { [1001, 1012] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
         '/jira/rest/agile/1.0/sprint//issue'
@@ -139,7 +140,7 @@ describe JIRA::Resource::Sprint do
         end
       end
       let(:post_issue_input) do
-        { "issues": issue_ids }
+        { issues: issue_ids }
       end
 
       describe '#add_issues' do

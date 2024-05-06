@@ -5,7 +5,7 @@ describe JIRA::HttpClient do
     options = JIRA::Client::DEFAULT_OPTIONS
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client) do
@@ -13,12 +13,12 @@ describe JIRA::HttpClient do
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
               .merge(use_cookies: true)
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:custom_ssl_version_client) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(ssl_version: :TLSv1_2)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client_with_context_path) do
@@ -26,7 +26,7 @@ describe JIRA::HttpClient do
       use_cookies: true,
       context_path: '/context'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_cookie_client_with_additional_cookies) do
@@ -37,7 +37,7 @@ describe JIRA::HttpClient do
                 additional_cookies: ['sessionToken=abc123', 'internal=true']
               )
               .merge(basic_auth_credentials)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_cert_client) do
@@ -46,13 +46,13 @@ describe JIRA::HttpClient do
       cert: 'public certificate contents',
       key: 'private key contents'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_with_no_auth_credentials) do
     options = JIRA::Client::DEFAULT_OPTIONS
               .merge(JIRA::HttpClient::DEFAULT_OPTIONS)
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_auth_credentials) do
@@ -66,14 +66,14 @@ describe JIRA::HttpClient do
       proxy_username: 'proxyUsername',
       proxy_password: 'proxyPassword'
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:basic_client_with_max_retries) do
     options = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
       max_retries: 2
     )
-    JIRA::HttpClient.new(options)
+    described_class.new(options)
   end
 
   let(:response) do
@@ -96,19 +96,17 @@ describe JIRA::HttpClient do
         proxy_username: 'proxyUsername',
         proxy_password: 'proxyPassword'
       )
-      JIRA::HttpClient.new(options_local)
+      described_class.new(options_local)
     end
 
     describe 'HttpClient#basic_auth_http_conn' do
       subject(:http_conn) { basic_client.basic_auth_http_conn }
 
       it 'creates an instance of Net:HTTP for a basic auth client' do
-
         expect(http_conn.class).to eq(Net::HTTP)
       end
 
       it 'the connection created has no proxy' do
-
         http_conn
 
         expect(http_conn.proxy_address).to be_nil
@@ -149,7 +147,8 @@ describe JIRA::HttpClient do
     basic_auth_http_conn = double
     request = double
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-    expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).exactly(5).times.and_return(request)
+    expect(request).to receive(:basic_auth).with(basic_client.options[:username],
+                                                 basic_client.options[:password]).exactly(5).times.and_return(request)
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(response)
     %i[delete get head].each do |method|
       expect(Net::HTTP.const_get(method.to_s.capitalize)).to receive(:new).with('/path', headers).and_return(request)
@@ -168,7 +167,8 @@ describe JIRA::HttpClient do
     basic_auth_http_conn = double
     request = double
     allow(basic_cookie_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-    expect(request).to receive(:basic_auth).with(basic_cookie_client.options[:username], basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
+    expect(request).to receive(:basic_auth).with(basic_cookie_client.options[:username],
+                                                 basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
     expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
     %i[delete get head].each do |method|
@@ -189,7 +189,8 @@ describe JIRA::HttpClient do
     basic_auth_http_conn = double
     request = double
     allow(client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-    expect(request).to receive(:basic_auth).with(client.options[:username], client.options[:password]).exactly(5).times.and_return(request)
+    expect(request).to receive(:basic_auth).with(client.options[:username],
+                                                 client.options[:password]).exactly(5).times.and_return(request)
     expect(request).to receive(:add_field).with('Cookie', 'sessionToken=abc123; internal=true').exactly(5).times
     expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
@@ -212,7 +213,8 @@ describe JIRA::HttpClient do
     expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
 
     expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
-    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
+    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username],
+                                                      basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, '/foo', body, headers)
   end
@@ -225,7 +227,8 @@ describe JIRA::HttpClient do
     expect(Net::HTTP::Get).to receive(:new).with('/foo', headers).and_return(http_request)
 
     expect(basic_auth_http_conn).to receive(:request).with(http_request).and_return(response)
-    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(http_request)
+    expect(http_request).to receive(:basic_auth).with(basic_client.options[:username],
+                                                      basic_client.options[:password]).and_return(http_request)
     allow(basic_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
     basic_client.make_request(:get, 'http://mydomain.com/foo', body, headers)
   end
@@ -293,6 +296,8 @@ describe JIRA::HttpClient do
   end
 
   context 'client has proxy settings' do
+    subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
+
     let(:proxy_client) do
       options_local = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
         proxy_address: 'proxyAddress',
@@ -300,13 +305,11 @@ describe JIRA::HttpClient do
         proxy_username: 'proxyUsername',
         proxy_password: 'proxyPassword'
       )
-      JIRA::HttpClient.new(options_local)
+      described_class.new(options_local)
     end
-    subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
 
     describe 'HttpClient#basic_auth_http_conn' do
       it 'creates a Net:HTTP instance for a basic auth client setting up a proxied http connection' do
-
         expect(proxy_conn.class).to eq(Net::HTTP)
 
         expect(proxy_conn.proxy_address).to eq(proxy_client.options[:proxy_address])
@@ -334,7 +337,7 @@ describe JIRA::HttpClient do
   end
 
   it 'can use a certificate authority file' do
-    client = JIRA::HttpClient.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
+    client = described_class.new(JIRA::Client::DEFAULT_OPTIONS.merge(ca_file: '/opt/custom.ca.pem'))
     expect(client.http_conn(client.uri).ca_file).to eql('/opt/custom.ca.pem')
   end
 
@@ -370,7 +373,7 @@ describe JIRA::HttpClient do
     let(:data) { {} }
     let(:headers) { { 'X-Atlassian-Token' => 'no-check' } }
     let(:basic_auth_http_conn) { double }
-    let(:request) { double('Http Request', path: path) }
+    let(:request) { double('Http Request', path:) }
     let(:response) { double('response') }
 
     before do
@@ -381,7 +384,8 @@ describe JIRA::HttpClient do
     end
 
     it 'performs a basic http client request' do
-      expect(request).to receive(:basic_auth).with(basic_client.options[:username], basic_client.options[:password]).and_return(request)
+      expect(request).to receive(:basic_auth).with(basic_client.options[:username],
+                                                   basic_client.options[:password]).and_return(request)
 
       subject
     end

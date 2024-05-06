@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oauth'
 require 'json'
 require 'net/https'
@@ -11,12 +13,14 @@ module JIRA
     def request(*args)
       response = make_request(*args)
       raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+
       response
     end
 
     def request_multipart(*args)
       response = make_multipart_request(*args)
       raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+
       response
     end
 

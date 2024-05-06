@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oauth'
 require 'json'
 require 'forwardable'
@@ -45,8 +47,8 @@ module JIRA
 
     # Returns the current request token if it is set, else it creates
     # and sets a new token.
-    def request_token(options = {}, *arguments, &block)
-      @request_token ||= get_request_token(options, *arguments, &block)
+    def request_token(options = {}, ...)
+      @request_token ||= get_request_token(options, ...)
     end
 
     # Sets the request token from a given token and secret.
@@ -71,6 +73,7 @@ module JIRA
     # JIRA::Client::UninitializedAccessTokenError exception if it is not set.
     def access_token
       raise UninitializedAccessTokenError unless @access_token
+
       @access_token
     end
 
@@ -82,7 +85,7 @@ module JIRA
         uri.query = if uri.query.to_s == ''
                       oauth_params_str
                     else
-                      uri.query + '&' + oauth_params_str
+                      "#{uri.query}&#{oauth_params_str}"
                     end
         url = uri.to_s
       end

@@ -49,8 +49,8 @@ describe JIRA::Resource::Filter do
   end
   let(:filter) do
     expect(client).to receive(:get).with("#{collection_path}/42").and_return(filter_response)
-    allow(JIRA::Resource::Filter).to receive(:collection_path).and_return(collection_path)
-    JIRA::Resource::Filter.find(client, 42)
+    allow(described_class).to receive(:collection_path).and_return(collection_path)
+    described_class.find(client, 42)
   end
   let(:jql_issue) do
     {
@@ -90,7 +90,7 @@ describe JIRA::Resource::Filter do
       .and_return(issue_jql_response)
     issues = filter.issues
     expect(issues).to be_an(Array)
-    expect(issues.size).to eql(1)
+    expect(issues.size).to be(1)
     expected_issue = client.Issue.build(JSON.parse(jql_issue.to_json))
     expect(issues.first.attrs).to eql(expected_issue.attrs)
   end
