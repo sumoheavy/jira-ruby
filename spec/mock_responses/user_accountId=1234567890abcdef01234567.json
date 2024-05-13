@@ -1,5 +1,6 @@
 {
-  "self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+  "id": "1234567890abcdef01234567",
+  "self": "http://localhost:2990/jira/rest/api/2/user?accountId=1234567890abcdef01234567",
   "name": "admin",
   "emailAddress": "admin@example.com",
   "avatarUrls": {

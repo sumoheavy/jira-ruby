@@ -10,7 +10,7 @@ describe JIRA::Resource::UserFactory do
   describe '#myself' do
     let(:response) do
       instance_double(
-        'Response', body: get_mock_response('user_username=admin.json')
+        'Response', body: get_mock_response('user_accountId=1234567890abcdef01234567.json')
       )
     end
 
