@@ -120,11 +120,11 @@ validate_query: true })
             if attrs['fields'].key?(official_name)
               attrs['fields'][official_name]
             else
-              super(method_name, *args, &)
+              super
             end
           end
         else
-          super(method_name, *args, &)
+          super
         end
       end
     end

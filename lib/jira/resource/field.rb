@@ -79,7 +79,7 @@ module JIRA
           if attrs.key?(official_name)
             attrs[official_name]
           else
-            super(method_name, *args, &)
+            super
           end
         end
       end
