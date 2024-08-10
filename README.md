@@ -225,8 +225,7 @@ api_token = API_TOKEN_OBTAINED_FROM_JIRA_UI
 options = {
   :site               => 'http://mydomain.atlassian.net:443/',
   :context_path       => '',
-  :username           => '<the email you sign-in to Jira>',
-  :password           => api_token,
+  :default_headers    => { 'Authorization' => "Bearer #{api_token}" },
   :auth_type          => :basic
 }
 
