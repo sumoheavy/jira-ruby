@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'activesupport'
-  s.add_runtime_dependency 'atlassian-jwt'
-  s.add_runtime_dependency 'multipart-post'
-  s.add_runtime_dependency 'oauth', '~> 1.0'
+  s.add_dependency 'activesupport'
+  s.add_dependency 'atlassian-jwt'
+  s.add_dependency 'multipart-post'
+  s.add_dependency 'oauth', '~> 1.0'
 end
