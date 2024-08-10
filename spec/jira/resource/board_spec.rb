@@ -21,10 +21,10 @@ describe JIRA::Resource::Board do
       \"type\": \"scrum\"
     }"
     allow(response).to receive(:body).and_return(api_json_board)
-    expect(client).to receive(:get).with('/rest/agile/1.0/board/84')
-                                   .and_return(response)
+    allow(client).to receive(:get).with('/rest/agile/1.0/board/84')
+                                  .and_return(response)
 
-    expect(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
+    allow(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
     described_class.find(client, '84')
   end
 
