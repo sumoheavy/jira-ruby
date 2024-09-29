@@ -41,7 +41,7 @@ describe JIRA::Resource::User do
 
       before do
         allow(client).to receive(:get)
-          .with('/rest/api/2/users/search?username=_&maxResults=1000') { OpenStruct.new(body: '["User1"]') }
+          .with('/rest/api/2/users/search?username=_&maxResults=1000') { double(body: '["User1"]') }
         allow(client).to receive_message_chain(:User, :build).with('users') { [] }
       end
 

@@ -178,9 +178,6 @@ Style/ClassAndModuleChildren:
 Style/MissingRespondToMissing:
   Enabled: false
 
-Style/OpenStructUse:
-  Enabled: false
-
 Style/OptionalBooleanParameter:
   Enabled: false
 

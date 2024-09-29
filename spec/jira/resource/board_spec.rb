@@ -107,7 +107,7 @@ EOS
 
       context 'when there are multiple pages of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 1,
             'total' => 2,
@@ -115,7 +115,7 @@ EOS
           }.to_json)
         end
         let(:result_2) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 1,
             'maxResults' => 1,
             'total' => 2,
@@ -132,7 +132,7 @@ EOS
 
       context 'when there is only one page of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 2,
             'total' => 2,

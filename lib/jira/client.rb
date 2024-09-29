@@ -2,7 +2,6 @@
 
 require 'json'
 require 'forwardable'
-require 'ostruct'
 
 module JIRA
   # This class is the main access point for all JIRA::Resource instances.
@@ -55,7 +54,7 @@ module JIRA
     #
     # The authenticated client instance returned by the respective client type
     # (Oauth, Basic)
-    attr_accessor :consumer, :request_client, :http_debug, :cache
+    attr_accessor :consumer, :request_client, :http_debug, :field_map_cache
 
     # The configuration options for this client instance
     attr_reader :options
@@ -164,8 +163,6 @@ module JIRA
       @http_debug = @options[:http_debug]
 
       @options.freeze
-
-      @cache = OpenStruct.new
     end
 
     def Project # :nodoc:
