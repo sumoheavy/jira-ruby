@@ -31,9 +31,6 @@ Style/FrozenStringLiteralComment:
 Layout/ClosingHeredocIndentation:
   Enabled: false
 
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
 Layout/EmptyLinesAroundMethodBody:
   Enabled: false
 
