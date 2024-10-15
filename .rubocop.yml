@@ -28,9 +28,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Layout/ClosingHeredocIndentation:
-  Enabled: false
-
 Layout/EmptyLinesAroundMethodBody:
   Enabled: false
 
