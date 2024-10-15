@@ -139,9 +139,6 @@ RSpec/RepeatedSubjectCall:
 RSpec/SpecFilePathFormat:
   Enabled: false
 
-RSpec/SpecFilePathSuffix:
-  Enabled: false
-
 RSpec/StubbedMock:
   Enabled: false
 

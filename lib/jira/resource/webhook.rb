@@ -16,8 +16,12 @@ module JIRA
         client.options[:context_path] + REST_BASE_PATH
       end
 
+      def self.singular_path(client, key, prefix = '/')
+        "#{full_url(client)}#{prefix}/#{endpoint_name}/#{key}"
+      end
+
       def self.collection_path(client, prefix = '/')
-        full_url(client) + prefix + endpoint_name
+        "#{full_url(client)}#{prefix}/#{endpoint_name}"
       end
 
       def self.all(client, options = {})
