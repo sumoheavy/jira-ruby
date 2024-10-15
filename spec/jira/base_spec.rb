@@ -73,7 +73,7 @@ describe JIRA::Base do
   end
 
   it 'finds a deadbeef by id' do
-    response = instance_double('Response', body: '{"self":"http://deadbeef/","id":"98765"}')
+    response = instance_double(Response, body: '{"self":"http://deadbeef/","id":"98765"}')
     expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
     expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeef = JIRA::Resource::Deadbeef.find(client, '98765')
@@ -85,7 +85,7 @@ describe JIRA::Base do
 
   it 'finds a deadbeef containing changelog by id' do
     response = instance_double(
-      'Response',
+      Response,
       body: '{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}'
     )
     expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
@@ -172,7 +172,7 @@ describe JIRA::Base do
 
     describe 'not cached' do
       before do
-        response = instance_double('Response', body: '{"self":"http://deadbeef/","id":"98765"}')
+        response = instance_double(Response, body: '{"self":"http://deadbeef/","id":"98765"}')
         expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
         expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
       end
@@ -207,7 +207,7 @@ describe JIRA::Base do
     context "with expand parameter 'changelog'" do
       it "fetchs changelogs '" do
         response = instance_double(
-          'Response',
+          Response,
           body: '{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}'
         )
         expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
@@ -233,7 +233,7 @@ describe JIRA::Base do
     end
 
     it 'POSTs a new record' do
-      response = instance_double('Response', body: '{"id":"123"}')
+      response = instance_double(Response, body: '{"id":"123"}')
       allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
@@ -242,7 +242,7 @@ describe JIRA::Base do
     end
 
     it 'PUTs an existing record' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
@@ -250,7 +250,7 @@ describe JIRA::Base do
     end
 
     it 'merges attrs on save' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":{"fum":"dum"}}').and_return(response)
       subject.attrs = { 'foo' => { 'bar' => 'baz' } }
       subject.save('foo' => { 'fum' => 'dum' })
@@ -259,7 +259,7 @@ describe JIRA::Base do
 
     it 'returns false when an invalid field is set' do
       # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
-      response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
+      response = instance_double(Response, body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
                                            '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
@@ -268,7 +268,7 @@ describe JIRA::Base do
 
     it 'returns false with exception details when non json response body (unauthorized)' do
       # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
-      response = double('Response', body: 'totally invalid json', code: 401, message: 'Unauthorized')
+      response = double(Response, body: 'totally invalid json', code: 401, message: 'Unauthorized')
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('foo' => 'bar')).to be_falsey
       expect(subject.attrs['exception']['code']).to eq(401)
@@ -286,7 +286,7 @@ describe JIRA::Base do
     end
 
     it 'POSTs a new record' do
-      response = instance_double('Response', body: '{"id":"123"}')
+      response = instance_double(Response, body: '{"id":"123"}')
       allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
@@ -295,7 +295,7 @@ describe JIRA::Base do
     end
 
     it 'PUTs an existing record' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
@@ -303,7 +303,7 @@ describe JIRA::Base do
     end
 
     it 'throws an exception when an invalid field is set' do
-      response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
+      response = instance_double(Response, body: '{"errorMessages":["blah"]}', status: 400)
       allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar',
                                            '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
@@ -441,14 +441,14 @@ describe JIRA::Base do
     subject { JIRA::Resource::Deadbeef.new(client, attrs: {}) }
 
     it 'sets the attrs from a response' do
-      response = instance_double('Response', body: '{"foo":"bar"}')
+      response = instance_double(Response, body: '{"foo":"bar"}')
 
       expect(subject.set_attrs_from_response(response)).to eq('foo' => 'bar')
       expect(subject.foo).to eq('bar')
     end
 
     it "doesn't clobber existing attrs not in response" do
-      response = instance_double('Response', body: '{"foo":"bar"}')
+      response = instance_double(Response, body: '{"foo":"bar"}')
 
       subject.attrs = { 'flum' => 'flar' }
       expect(subject.set_attrs_from_response(response)).to eq('foo' => 'bar')
@@ -457,7 +457,7 @@ describe JIRA::Base do
     end
 
     it 'handles nil response body' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
 
       subject.attrs = { 'flum' => 'flar' }
       expect(subject.set_attrs_from_response(response)).to be_nil
