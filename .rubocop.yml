@@ -154,9 +154,6 @@ RSpec/VerifiedDoubleReference:
 RSpec/VerifiedDoubles:
   Enabled: false
 
-Security/Open:
-  Enabled: false
-
 Style/ArgumentsForwarding:
   Enabled: false
 
