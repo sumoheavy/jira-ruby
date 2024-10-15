@@ -171,6 +171,3 @@ Style/MissingRespondToMissing:
 
 Style/OptionalBooleanParameter:
   Enabled: false
-
-Style/SymbolProc:
-  Enabled: false
