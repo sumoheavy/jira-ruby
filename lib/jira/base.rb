@@ -386,7 +386,6 @@ module JIRA
 
       json = self.class.parse_json(response.body)
       set_attrs(json)
-
     end
 
     # Set the current attributes from a hash.  If clobber is true, any existing

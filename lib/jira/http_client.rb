@@ -105,7 +105,6 @@ module JIRA
         data.delete('Path')
         @cookies.merge!(data)
       end
-
     end
 
     def add_cookies(request)
