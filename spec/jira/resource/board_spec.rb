@@ -166,7 +166,7 @@ EOS
             }
         ]
     }
-EOS
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
@@ -215,7 +215,7 @@ EOS
           "rankCustomFieldId":10011
         }
       }
-EOS
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
