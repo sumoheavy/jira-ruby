@@ -28,15 +28,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Layout/ClosingHeredocIndentation:
-  Enabled: false
-
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
-Layout/EmptyLinesAroundMethodBody:
-  Enabled: false
-
 Layout/HashAlignment:
   Enabled: false
 
@@ -148,9 +139,6 @@ RSpec/RepeatedSubjectCall:
 RSpec/SpecFilePathFormat:
   Enabled: false
 
-RSpec/SpecFilePathSuffix:
-  Enabled: false
-
 RSpec/StubbedMock:
   Enabled: false
 
@@ -161,9 +149,6 @@ RSpec/VerifiedDoubleReference:
   Enabled: false
 
 RSpec/VerifiedDoubles:
-  Enabled: false
-
-Security/Open:
   Enabled: false
 
 Style/ArgumentsForwarding:
@@ -178,11 +163,5 @@ Style/ClassAndModuleChildren:
 Style/MissingRespondToMissing:
   Enabled: false
 
-Style/OpenStructUse:
-  Enabled: false
-
 Style/OptionalBooleanParameter:
-  Enabled: false
-
-Style/SymbolProc:
   Enabled: false

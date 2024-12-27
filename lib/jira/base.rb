@@ -383,9 +383,9 @@ module JIRA
     # not nil or is not a json response.
     def set_attrs_from_response(response)
       return if response.body.nil? || (response.body.length < 2)
+
       json = self.class.parse_json(response.body)
       set_attrs(json)
-
     end
 
     # Set the current attributes from a hash.  If clobber is true, any existing

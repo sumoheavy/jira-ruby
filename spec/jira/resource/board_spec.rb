@@ -107,7 +107,7 @@ EOS
 
       context 'when there are multiple pages of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 1,
             'total' => 2,
@@ -115,7 +115,7 @@ EOS
           }.to_json)
         end
         let(:result_2) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 1,
             'maxResults' => 1,
             'total' => 2,
@@ -132,7 +132,7 @@ EOS
 
       context 'when there is only one page of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 2,
             'total' => 2,
@@ -166,7 +166,7 @@ EOS
             }
         ]
     }
-EOS
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
@@ -215,7 +215,7 @@ EOS
           "rankCustomFieldId":10011
         }
       }
-EOS
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)

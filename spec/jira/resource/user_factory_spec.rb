@@ -4,13 +4,13 @@ describe JIRA::Resource::UserFactory do
   subject { described_class.new(client) }
 
   let(:client) do
-    instance_double('Client', options: { rest_base_path: '/jira/rest/api/2' })
+    instance_double(Client, options: { rest_base_path: '/jira/rest/api/2' })
   end
 
   describe '#myself' do
     let(:response) do
       instance_double(
-        'Response', body: get_mock_response('user_accountId=1234567890abcdef01234567.json')
+        Response, body: get_mock_response('user_accountId=1234567890abcdef01234567.json')
       )
     end
 
