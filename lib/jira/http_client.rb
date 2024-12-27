@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'net/https'
 require 'cgi/cookie'
@@ -21,7 +23,7 @@ module JIRA
       body = { username: @options[:username].to_s, password: @options[:password].to_s }.to_json
       @options.delete(:username)
       @options.delete(:password)
-      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
+      make_request(:post, "#{@options[:context_path]}/rest/auth/1/session", body, 'Content-Type' => 'application/json')
     end
 
     def make_request(http_method, url, body = '', headers = {})
@@ -45,12 +47,13 @@ module JIRA
     end
 
     def http_conn(uri)
-      if @options[:proxy_address]
-        http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
-      else
-        http_class = Net::HTTP
-      end
-      http_conn = http_class.new(uri.host, uri.port)
+      http_conn =
+        if @options[:proxy_address]
+          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80,
+                        @options[:proxy_username], @options[:proxy_password])
+        else
+          Net::HTTP.new(uri.host, uri.port)
+        end
       http_conn.use_ssl = @options[:use_ssl]
       if @options[:use_client_cert]
         http_conn.cert = @options[:ssl_client_cert]
@@ -59,6 +62,7 @@ module JIRA
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
       http_conn.read_timeout = @options[:read_timeout]
+      http_conn.max_retries = @options[:max_retries] if @options[:max_retries]
       http_conn.ca_file = @options[:ca_file] if @options[:ca_file]
       http_conn
     end
@@ -94,13 +98,13 @@ module JIRA
 
     def store_cookies(response)
       cookies = response.get_fields('set-cookie')
-      if cookies
-        cookies.each do |cookie|
-          data = CGI::Cookie.parse(cookie)
-          data.delete('Path')
-          @cookies.merge!(data)
-        end
+      return unless cookies
+      cookies.each do |cookie|
+        data = CGI::Cookie.parse(cookie)
+        data.delete('Path')
+        @cookies.merge!(data)
       end
+
     end
 
     def add_cookies(request)

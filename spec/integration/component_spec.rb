@@ -10,7 +10,7 @@ describe JIRA::Resource::Component do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/component/10000',
-        'id'   => key,
+        'id' => key,
         'name' => 'Cheesecake'
       }
     end
@@ -29,11 +29,11 @@ describe JIRA::Resource::Component do
       { 'id' => '10000', 'name' => 'Jammy' }
     end
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a singular GET endpoint'
-    it_should_behave_like 'a resource with a DELETE endpoint'
-    it_should_behave_like 'a resource with a POST endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint that rejects invalid fields'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource with a DELETE endpoint'
+    it_behaves_like 'a resource with a POST endpoint'
+    it_behaves_like 'a resource with a PUT endpoint'
+    it_behaves_like 'a resource with a PUT endpoint that rejects invalid fields'
   end
 end

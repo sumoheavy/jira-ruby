@@ -2,7 +2,7 @@ require 'cgi'
 
 def get_mock_from_path(method, options = {})
   prefix = if defined? belongs_to
-             belongs_to.path_component + '/'
+             "#{belongs_to.path_component}/"
            else
              ''
            end
@@ -15,8 +15,8 @@ def get_mock_from_path(method, options = {})
           described_class.collection_path(client, prefix)
         end
   file_path = url.sub(client.options[:rest_base_path], '')
-  file_path = file_path + '.' + options[:suffix] if options[:suffix]
-  file_path = file_path + '.' + method.to_s unless method == :get
+  file_path = "#{file_path}.#{options[:suffix]}" if options[:suffix]
+  file_path = "#{file_path}.#{method}" unless method == :get
   value_if_not_found = options.key?(:value_if_not_found) ? options[:value_if_not_found] : false
   get_mock_response("#{file_path}.json", value_if_not_found)
 end
@@ -33,7 +33,7 @@ end
 
 def prefix
   prefix = '/'
-  prefix = belongs_to.path_component + '/' if defined? belongs_to
+  prefix = "#{belongs_to.path_component}/" if defined? belongs_to
   prefix
 end
 
@@ -47,22 +47,22 @@ end
 
 shared_examples 'a resource' do
   it 'gracefully handles non-json responses' do
-    if defined? target
-      subject = target
-    else
-      subject = client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
-    end
+    subject = if defined? target
+                target
+              else
+                client.send(class_basename).build(described_class.key_attribute.to_s => '99999')
+              end
     stub_request(:put, site_url + subject.url)
       .to_return(status: 405, body: '<html><body>Some HTML</body></html>')
     expect(subject.save('foo' => 'bar')).to be_falsey
-    expect(lambda do
+    expect do
       expect(subject.save!('foo' => 'bar')).to be_falsey
-    end).to raise_error(JIRA::HTTPError)
+    end.to raise_error(JIRA::HTTPError)
   end
 end
 
 shared_examples 'a resource with a collection GET endpoint' do
-  it 'should get the collection' do
+  it 'gets the collection' do
     stub_request(:get, site_url + described_class.collection_path(client))
       .to_return(status: 200, body: get_mock_from_path(:get))
     collection = build_receiver.all
@@ -73,13 +73,10 @@ shared_examples 'a resource with a collection GET endpoint' do
 end
 
 shared_examples 'a resource with JQL inputs and a collection GET endpoint' do
-  it 'should get the collection' do
+  it 'gets the collection' do
     stub_request(
       :get,
-      site_url +
-        client.options[:rest_base_path] +
-        '/search?jql=' +
-        CGI.escape(jql_query_string)
+      "#{site_url}#{client.options[:rest_base_path]}/search?jql=#{CGI.escape(jql_query_string)}"
     ).to_return(status: 200, body: get_mock_response('issue.json'))
 
     collection = build_receiver.jql(jql_query_string)
@@ -94,7 +91,7 @@ shared_examples 'a resource with a singular GET endpoint' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.find()
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     subject = client.send(class_basename).find(key, options)
 
     expect(subject).to have_attributes(expected_attributes)
@@ -104,7 +101,7 @@ shared_examples 'a resource with a singular GET endpoint' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.build('key' => 'ABC123')
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -114,10 +111,10 @@ shared_examples 'a resource with a singular GET endpoint' do
 
   it 'handles a 404' do
     stub_request(:get, site_url + described_class.singular_path(client, '99999', prefix))
-      .to_return(status: 404, body: '{"errorMessages":["' + class_basename + ' Does Not Exist"],"errors": {}}')
-    expect(lambda do
+      .to_return(status: 404, body: "{\"errorMessages\":[\"#{class_basename} Does Not Exist\"],\"errors\": {}}")
+    expect do
       client.send(class_basename).find('99999', options)
-    end).to raise_exception(JIRA::HTTPError)
+    end.to raise_exception(JIRA::HTTPError)
   end
 end
 
@@ -148,9 +145,9 @@ end
 shared_examples 'a resource with a PUT endpoint' do
   it 'saves an existing component' do
     stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     stub_request(:put, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:put, key: key, value_if_not_found: nil))
+      .to_return(status: 200, body: get_mock_from_path(:put, key:, value_if_not_found: nil))
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
     expect(subject.save(attributes_for_put)).to be_truthy
@@ -163,15 +160,15 @@ end
 shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
   it 'fails to save with an invalid field' do
     stub_request(:get, site_url + described_class.singular_path(client, key))
-      .to_return(status: 200, body: get_mock_from_path(:get, key: key))
+      .to_return(status: 200, body: get_mock_from_path(:get, key:))
     stub_request(:put, site_url + described_class.singular_path(client, key))
-      .to_return(status: 400, body: get_mock_from_path(:put, key: key, suffix: 'invalid'))
+      .to_return(status: 400, body: get_mock_from_path(:put, key:, suffix: 'invalid'))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
 
     expect(subject.save('fields' => { 'invalid' => 'field' })).to be_falsey
-    expect(lambda do
+    expect do
       subject.save!('fields' => { 'invalid' => 'field' })
-    end).to raise_error(JIRA::HTTPError)
+    end.to raise_error(JIRA::HTTPError)
   end
 end

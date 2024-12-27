@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class CreatemetaFactory < JIRA::BaseFactory # :nodoc:
@@ -36,7 +38,7 @@ module JIRA
 
         json = parse_json(response.body)
         json['projects'].map do |attrs|
-          new(client, attrs: attrs)
+          new(client, attrs:)
         end
       end
     end

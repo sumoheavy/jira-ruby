@@ -1,36 +1,113 @@
 # JIRA API Gem
 
 [![Code Climate](https://codeclimate.com/github/sumoheavy/jira-ruby.svg)](https://codeclimate.com/github/sumoheavy/jira-ruby)
-[![Build Status](https://travis-ci.org/sumoheavy/jira-ruby.svg?branch=master)](https://travis-ci.org/sumoheavy/jira-ruby)
+[![Build Status](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml/badge.svg)](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml)
 
 This gem provides access to the Atlassian JIRA REST API.
 
-## Slack
-
-Join our Slack channel! You can find us [here](https://jira-ruby-slackin.herokuapp.com/)
-
 ## Example usage
 
-```ruby
-require 'rubygems'
-require 'jira-ruby'
+# Jira Ruby API - Sample Usage
 
+This sample usage demonstrates how you can interact with JIRA's API using the [jira-ruby gem](https://github.com/sumoheavy/jira-ruby).
+
+### Dependencies
+
+Before running, install the `jira-ruby` gem:
+
+```shell
+gem install jira-ruby
+```
+
+### Sample Usage
+Connect to JIRA
+Firstly, establish a connection with your JIRA instance by providing a few configuration parameters:
+There are other ways to connect to JIRA listed below |  [Personal Access Token](#configuring-jira-to-use-personal-access-tokens-auth)
+- ﻿private_key_file: The path to your RSA private key file.
+- ﻿consumer_key: Your consumer key.
+- site: The URL of your JIRA instance.
+
+```ruby
 options = {
-  :username     => 'username',
-  :password     => 'pass1234',
-  :site         => 'http://mydomain.atlassian.net:443/',
-  :context_path => '',
-  :auth_type    => :basic
+  :private_key_file => "rsakey.pem",
+  :context_path     => '',
+  :consumer_key     => 'your_consumer_key',
+  :site             => 'your_jira_instance_url'
 }
 
 client = JIRA::Client.new(options)
+```
 
-project = client.Project.find('SAMPLEPROJECT')
+### Retrieve and Display Projects
 
-project.issues.each do |issue|
-  puts "#{issue.id} - #{issue.summary}"
+After establishing the connection, you can fetch all projects and display their key and name:
+```ruby
+projects = client.Project.all
+
+projects.each do |project|
+  puts "Project -> key: #{project.key}, name: #{project.name}"
 end
 ```
+
+### Handling Fields by Name
+The ﻿jira-ruby gem allows you to refer to fields by their custom names rather than identifiers. Make sure to map fields before using them:
+
+```ruby
+client.Field.map_fields
+
+old_way = issue.customfield_12345
+
+# Note: The methods mapped here adopt a unique style combining PascalCase and snake_case conventions.
+new_way = issue.Special_Field
+```
+
+### JQL Queries
+To find issues based on specific criteria, you can use JIRA Query Language (JQL):
+
+```ruby
+client.Issue.jql(a_normal_jql_search, fields:[:description, :summary, :Special_field, :created])
+```
+
+### Several actions can be performed on the ﻿Issue object such as create, update, transition, delete, etc:
+### Creating an Issue
+```ruby
+issue = client.Issue.build
+labels = ['label1', 'label2']
+issue.save({
+  "fields" => {
+    "summary" => "blarg from in example.rb",
+    "project" => {"key" => "SAMPLEPROJECT"},
+    "issuetype" => {"id" => "3"},
+    "labels" => labels,
+    "priority" => {"id" => "1"}
+  }
+})
+```
+
+### Updating/Transitioning an Issue
+```ruby
+issue = client.Issue.find("10002")
+issue.save({"fields"=>{"summary"=>"EVEN MOOOOOOARRR NINJAAAA!"}})
+
+issue_transition = issue.transitions.build
+issue_transition.save!('transition' => {'id' => transition_id})
+```
+
+### Deleting an Issue
+```ruby
+issue = client.Issue.find('SAMPLEPROJECT-2')
+issue.delete
+```
+
+### Other Capabilities
+Apart from the operations listed above, this API wrapper supports several other capabilities like:
+	•	Searching for a user
+	•	Retrieving an issue's watchers
+	•	Changing the assignee of an issue
+	•	Adding attachments and comments to issues
+	•	Managing issue links and much more.
+
+Not all examples are shown in this README; refer to the complete script example for a full overview of the capabilities supported by this API wrapper.
 
 ## Links to JIRA REST API documentation
 
@@ -87,7 +164,7 @@ key.
 > After you have entered all the information click OK and ensure OAuth authentication is
 > enabled.
 
-For 2 legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
+For two legged oauth in server mode only, not in cloud based JIRA, make sure to `Allow 2-Legged OAuth`
 
 ## Configuring JIRA to use HTTP Basic Auth
 
@@ -148,8 +225,7 @@ api_token = API_TOKEN_OBTAINED_FROM_JIRA_UI
 options = {
   :site               => 'http://mydomain.atlassian.net:443/',
   :context_path       => '',
-  :username           => '<the email you sign-in to Jira>',
-  :password           => api_token,
+  :default_headers    => { 'Authorization' => "Bearer #{api_token}" },
   :auth_type          => :basic
 }
 

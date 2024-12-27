@@ -4,7 +4,7 @@ describe JIRA::OauthClient do
   let(:oauth_client) do
     options = { consumer_key: 'foo', consumer_secret: 'bar' }
     options = JIRA::Client::DEFAULT_OPTIONS.merge(options)
-    JIRA::OauthClient.new(options)
+    described_class.new(options)
   end
 
   let(:response) do
@@ -125,7 +125,6 @@ describe JIRA::OauthClient do
       it 'performs a request' do
         expect(access_token).to receive(:send).with(:get, '/foo', headers).and_return(response)
 
-
         oauth_client.request(:get, '/foo', body, headers)
       end
 
@@ -137,7 +136,8 @@ describe JIRA::OauthClient do
 
         it 'signs the access_token and performs the request' do
           expect(access_token).to receive(:sign!).with(an_instance_of(Net::HTTP::Post::Multipart))
-          expect(oauth_client.consumer).to receive_message_chain(:http, :request).with(an_instance_of(Net::HTTP::Post::Multipart))
+          expect(oauth_client.consumer).to receive_message_chain(:http,
+                                                                 :request).with(an_instance_of(Net::HTTP::Post::Multipart))
 
           subject
         end
@@ -148,7 +148,7 @@ describe JIRA::OauthClient do
       let(:oauth__2legged_client) do
         options = { consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged }
         options = JIRA::Client::DEFAULT_OPTIONS.merge(options)
-        JIRA::OauthClient.new(options)
+        described_class.new(options)
       end
 
       it 'responds to the http methods adding oauth_token parameter' do
@@ -170,11 +170,13 @@ describe JIRA::OauthClient do
         mock_access_token = double
         allow(oauth__2legged_client).to receive(:access_token).and_return(mock_access_token)
         %i[delete get head].each do |method|
-          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', headers).and_return(response)
+          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=',
+                                                            headers).and_return(response)
           oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
         end
         %i[post put].each do |method|
-          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', '', headers).and_return(response)
+          expect(mock_access_token).to receive(method).with('/path?any_param=toto&oauth_token=', '',
+                                                            headers).and_return(response)
           oauth__2legged_client.make_request(method, '/path?any_param=toto', '', headers)
         end
       end

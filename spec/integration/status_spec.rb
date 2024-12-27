@@ -8,17 +8,13 @@ describe JIRA::Resource::Status do
     let(:key) { '1' }
 
     let(:expected_attributes) do
-      {
-        'self' => 'http://localhost:2990/jira/rest/api/2/status/1',
-        'id' => key,
-        'name' => 'Open'
-      }
+      JSON.parse(File.read('spec/mock_responses/status/1.json'))
     end
 
     let(:expected_collection_length) { 5 }
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a collection GET endpoint'
-    it_should_behave_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a collection GET endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
   end
 end

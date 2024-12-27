@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class BoardConfigurationFactory < JIRA::BaseFactory # :nodoc:
