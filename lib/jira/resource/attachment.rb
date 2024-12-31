@@ -29,6 +29,8 @@ module JIRA
     # === Retrieving file contents of attachment
     #
     #     content = URI.open(attachment.content).read
+    #     content = attachment.download_contents
+    #     content = attachment.download_file { |file| file.read }
     #
     # === Adding an attachment to an issue
     #
@@ -41,10 +43,9 @@ module JIRA
     #       attachment.save!( { file: path, mimeType: content_type } )
     #     end
     #
-    # === Deleting a resource
+    # === Deleting an attachment
     #
-    #   resource = client.Resource.find(id)
-    #   resource.delete
+    #   attachment.delete
     #
     # @!method save(attrs, path = url)
     #   Uploads a file as an attachment to its issue.
@@ -69,7 +70,7 @@ module JIRA
     # @!attribute [r] mimeType
     #   @return [String] MIME of the content type
     # @!attribute [r] content
-    #   @return [String] URL to download the contents of the attachment
+    #   @return [String] URL (not the contents) to download the contents of the attachment
     # @!attribute [r] thumbnail
     #   @return [String] URL to download the thumbnail of the attachment
     #
@@ -82,13 +83,11 @@ module JIRA
         'attachments'
       end
 
-      # Gets meta data about attachments on the server.
+      # Gets metadata about attachments on the server.
       # @example Return metadata
-      #     {
-      #       "enabled" => true,
-      #       "uploadLimit" => 1000000
-      #     }
-      # @return [Hash] The meta data for attachments.  (See example.)
+      #   Attachment.meta(client)
+      #   =>  { "enabled" => true, "uploadLimit" => 1000000 }
+      # @return [Hash] The metadata for attachments.  (See example.)
       def self.meta(client)
         response = client.get("#{client.options[:rest_base_path]}/attachment/meta")
         parse_json(response.body)
@@ -122,9 +121,11 @@ module JIRA
       # Downloads the file contents as a string object.
       #
       # Note that this reads the contents into a ruby string in memory.
-      # A file might be very large so it is recommend to avoid this unless you are certain about doing so.
+      # A file might be very large so it is recommended to avoid this unless you are certain about doing so.
       # Use the download_file method instead and avoid calling the read method without a limit.
       #
+      # @example Save file contents to a string.
+      #   content = download_contents
       # @param [Hash] headers Any additional headers to call Jira.
       # @return [String,NilClass] The file contents.
       def download_contents(headers = {})
@@ -135,6 +136,10 @@ module JIRA
       #
       # Filename used will be the basename of the given file.
       #
+      # @example Save a file as an attachment
+      #   issue =  JIRA::Resource::Issue.find(client, 'SUP-3000', { fields: 'attachment' } )
+      #   attachment = issue.attachments.build
+      #   attachment.save!( { file: path, mimeType: 'text/plain' } )
       # @param [Hash] attrs the options to create a message with.
       # @option attrs [IO,String] :file The file to upload, either a file object or a file path to find the file.
       # @option attrs [String] :mimeType The MIME type of the file.
