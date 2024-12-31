@@ -286,29 +286,63 @@ module JIRA
     end
 
     # HTTP methods without a body
+
+    # Make an HTTP DELETE request
+    # @param [String] path The path to request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def delete(path, headers = {})
       request(:delete, path, nil, merge_default_headers(headers))
     end
 
+    # Make an HTTP GET request
+    # @param [String] path The path to request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def get(path, headers = {})
       request(:get, path, nil, merge_default_headers(headers))
     end
 
+    # Make an HTTP HEAD request
+    # @param [String] path The path to request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def head(path, headers = {})
       request(:head, path, nil, merge_default_headers(headers))
     end
 
     # HTTP methods with a body
+
+    # Make an HTTP POST request
+    # @param [String] path The path to request
+    # @param [String] body The body of the request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
     def post(path, body = '', headers = {})
       headers = { 'Content-Type' => 'application/json' }.merge(headers)
       request(:post, path, body, merge_default_headers(headers))
     end
 
+    # Make an HTTP POST request with a file upload
+    # @param [String] path The path to request
+    # @param [String] file The file to upload
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def post_multipart(path, file, headers = {})
       puts "post multipart: #{path} - [#{file}]" if @http_debug
       @request_client.request_multipart(path, file, merge_default_headers(headers))
     end
 
+    # Make an HTTP PUT request
+    # @param [String] path The path to request
+    # @param [String] body The body of the request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def put(path, body = '', headers = {})
       headers = { 'Content-Type' => 'application/json' }.merge(headers)
       request(:put, path, body, merge_default_headers(headers))
@@ -316,11 +350,18 @@ module JIRA
 
     # Sends the specified HTTP request to the REST API through the
     # appropriate method (oauth, basic).
+    # @param [Symbol] http_method The HTTP method to use
+    # @param [String] path The path to request
+    # @param [String] body The body of the request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def request(http_method, path, body = '', headers = {})
       puts "#{http_method}: #{path} - [#{body}]" if @http_debug
       @request_client.request(http_method, path, body, headers)
     end
 
+    # @private
     # Stops sensitive client information from being displayed in logs
     def inspect
       "#<JIRA::Client:#{object_id}>"
