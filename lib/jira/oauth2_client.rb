@@ -106,23 +106,21 @@ module JIRA
   #   @return [OAuth2::AccessToken] An object for the Access Token.
   #
   class Oauth2Client < RequestClient
+    attr_reader :prior_grant_type, :access_token
+    attr_reader :oauth2_client_options, :client_id, :client_secret, :csrf_state
 
     # @private
     OAUTH2_CLIENT_OPTIONS_KEYS =
       %i[auth_scheme authorize_url redirect_uri token_url max_redirects site
-         use_ssl ssl_verify_mode ssl_version]
+         use_ssl ssl_verify_mode ssl_version].freeze
 
     # @private
     DEFAULT_OAUTH2_CLIENT_OPTIONS = {
       use_ssl: true,
       auth_scheme: 'request_body',
       authorize_url: '/rest/oauth2/latest/authorize',
-      token_url: '/rest/oauth2/latest/token',
+      token_url: '/rest/oauth2/latest/token'
     }.freeze
-
-    attr_reader :prior_grant_type, :access_token
-    attr_reader :oauth2_client_options, :client_id, :client_secret, :csrf_state
-    # attr_reader :options
 
     # @param [Hash] options Options as passed from JIRA::Client constructor.
     # @option options [String] :site The URL of the Jira in the role as Resource Server
@@ -149,7 +147,6 @@ module JIRA
       unless options.slice(:access_token, :refresh_token).empty?
         @access_token = access_token_from_options(options)
       end
-      nil
     end
 
     # @private
