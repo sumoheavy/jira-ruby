@@ -74,15 +74,15 @@ module JIRA
       rest_base_path
       consumer_key
       consumer_secret
-      client_id,
-      client_secret,
-      authorize_url,
-      token_url,
-      auth_scheme,
-      redirect_uri,
-      oauth2_client_options,
-      access_token,
-      refresh_token,
+      client_id
+      client_secret
+      authorize_url
+      token_url
+      auth_scheme
+      redirect_uri
+      oauth2_client_options
+      access_token
+      refresh_token
       ssl_verify_mode
       ssl_version
       use_ssl
@@ -91,8 +91,8 @@ module JIRA
       auth_type
       proxy_address
       proxy_port
-      proxy_port,
-      proxy_uri,
+      proxy_port
+      proxy_uri
       proxy_username
       proxy_password
       use_cookies
