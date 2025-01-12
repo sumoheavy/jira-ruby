@@ -146,7 +146,7 @@ module JIRA
     # @option options [String] :proxy_password Proxy Password
     def initialize(options)
       init_oauth2_options(options)
-      if 0 < options.slice(:access_token, :refresh_token).size
+      unless options.slice(:access_token, :refresh_token).empty?
         @access_token = access_token_from_options(options)
       end
       nil

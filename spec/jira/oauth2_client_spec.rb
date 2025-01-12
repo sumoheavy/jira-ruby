@@ -160,10 +160,10 @@ describe JIRA::Oauth2Client do
       end
 
       context 'passing options to oauth2 client' do
-        let(:oauth2_client) { instance_double(OAuth2::Client) }
         subject(:request_client) do
           described_class.new(full_options)
         end
+        let(:oauth2_client) { instance_double(OAuth2::Client) }
 
         it 'passes oauth2 client options to creating oauth2 client' do
           expect(OAuth2::Client).to receive(:new).with(client_id, client_secret, request_client.oauth2_client_options).and_return(oauth2_client)
@@ -177,12 +177,12 @@ describe JIRA::Oauth2Client do
   end
 
   context 'prior to Authentication Request' do
-    let(:redirect_uri) { 'http://localhost/auth_response' }
     subject(:request_client) do
       described_class.new(site: auth_site,
                              client_id: client_id,
                              client_secret: client_secret)
     end
+    let(:redirect_uri) { 'http://localhost/auth_response' }
 
     describe '.authorize_url' do
       let(:state_given) { 'abc-123_unme' }
@@ -273,14 +273,14 @@ describe JIRA::Oauth2Client do
   end
 
   context 'with Authentication Code' do
-    let(:code) { 'Authentication Code String Value' }
-    let(:token) { 'Access Token String Value' }
-    let(:refresh_token) { 'Refresh Token String Value' }
     subject(:request_client) do
       described_class.new(site: site,
                              client_id: client_id,
                              client_secret: client_secret)
     end
+    let(:code) { 'Authentication Code String Value' }
+    let(:token) { 'Access Token String Value' }
+    let(:refresh_token) { 'Refresh Token String Value' }
     let(:access_token) do
       OAuth2::AccessToken.new(request_client.oauth2_client,
                               token,
@@ -426,14 +426,14 @@ describe JIRA::Oauth2Client do
     end
 
     describe 'JIRA::Resource::Issue#save!' do
-      let(:custom_key) { :custom_99000 }
-      let(:custom_value_new) { 'New Custom Text String' }
       let(:issue_id) { 37208 }
       subject(:issue) do
         _issue = JIRA::Resource::Issue.new(client)
         allow(_issue).to receive(:key_value).and_return(issue_id)
         _issue
       end
+      let(:custom_key) { :custom_99000 }
+      let(:custom_value_new) { 'New Custom Text String' }
 
       it 'makes an HTTP PUT request' do
         allow(issue).to receive(:new_record?).and_return(false)
