@@ -1,4 +1,3 @@
-require 'oauth2'
 
 module JIRA
   # Client using OAuth 2.0
@@ -106,8 +105,7 @@ module JIRA
   #   @return [OAuth2::AccessToken] An object for the Access Token.
   #
   class Oauth2Client < RequestClient
-    attr_reader :prior_grant_type, :access_token
-    attr_reader :oauth2_client_options, :client_id, :client_secret, :csrf_state
+    attr_reader :prior_grant_type, :access_token, :oauth2_client_options, :client_id, :client_secret, :csrf_state
 
     # @private
     OAUTH2_CLIENT_OPTIONS_KEYS =
@@ -156,9 +154,7 @@ module JIRA
 
       @oauth2_client_options = DEFAULT_OAUTH2_CLIENT_OPTIONS.merge(options).slice(*OAUTH2_CLIENT_OPTIONS_KEYS)
 
-
       @oauth2_client_options[:connection_opts] ||= {}
-
       @oauth2_client_options[:connection_opts][:headers] ||= options[:default_headers] if options[:default_headers]
 
       if options[:use_ssl]
@@ -189,12 +185,11 @@ module JIRA
         OAuth2::Client.new(client_id,
                            client_secret,
                            oauth2_client_options)
-
     end
 
-    def access_token_from_options(_options)
+    def access_token_from_options(options_local)
       @prior_grant_type = 'access_token'
-      hash = { token: _options[:access_token], refresh_token: _options[:refresh_token] }
+      hash = { token: options_local[:access_token], refresh_token: options_local[:refresh_token] }
       OAuth2::AccessToken.from_hash(oauth2_client, hash)
     end
 
