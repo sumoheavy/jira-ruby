@@ -112,6 +112,23 @@ module JIRA
       default_headers: {}
     }.freeze
 
+    # Creates a new JIRA::Client instance
+    # @param [Hash] options The configuration options for the client
+    # @option options [Symbol] :auth_type The authentication type to use, :basic, :oauth, :oauth_2legged, or :cookie.
+    # @option options [String] :site The base URL for the JIRA instance
+    # @option options [Boolean] :use_ssl Whether to use HTTPS for requests
+    # @option options [Integer] :ssl_verify_mode The SSL verification mode OpenSSL::SSL::VERIFY_PEER or OpenSSL::SSL::VERIFY_NONE
+    # @option options [Hash] :default_headers Additional headers to send with each request
+    # @option options [String] :cert_path The path to the SSL certificate file to verify the server with
+    # @option options [String] :use_client_cert Whether to use a client certificate for authentication
+    # @option options [String] :ssl_client_cert The client certificate to use
+    # @option options [String] :ssl_client_key The client certificate key to use
+    # @option options [String] :proxy_address The address of the proxy server to use
+    # @option options [Integer] :proxy_port The port of the proxy server to use
+    # @option options [String] :proxy_username The username for the proxy server
+    # @option options [String] :proxy_password The password for the proxy server
+    # @return [JIRA::Client] The client instance
+    # @raise [ArgumentError] If an unknown option is given
     def initialize(options = {})
       options = DEFAULT_OPTIONS.merge(options)
       @options = options

@@ -40,6 +40,7 @@ module JIRA
 
     def_instance_delegators :@consumer, :key, :secret, :get_request_token
 
+    # Generally not used directly, but through JIRA::Client.
     # @param [Hash] options Options as passed from JIRA::Client constructor.
     # @option options [String] :signature_method The signature method to use (defaults to 'RSA-SHA1')
     # @option options [String] :request_token_path The path to request a token (defaults to '/plugins/servlet/oauth/request-token')

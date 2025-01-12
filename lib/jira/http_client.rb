@@ -7,6 +7,27 @@ require 'uri'
 
 module JIRA
   # Client using HTTP Basic Authentication
+  # @example Basic authentication
+  #   options = {
+  #     auth_type:        :basic,
+  #     site:             "https://jira.example.com",
+  #     use_ssl:          true,
+  #     ssl_verify_mode:  OpenSSL::SSL::VERIFY_PEER,
+  #     cert_path:        '/usr/local/etc/trusted-certificates.pem',
+  #     username:         'jamie',
+  #     password:         'password'
+  #   }
+  #   client = JIRA::Client.new(options)
+  # @example Bearer token authentication
+  #   options = {
+  #     auth_type:        :basic,
+  #     site:             "https://jira.example.com",
+  #     default_headers:  { 'authorization' => "Bearer #{bearer_token_str}" },
+  #     use_ssl:          true,
+  #     ssl_verify_mode:  OpenSSL::SSL::VERIFY_PEER
+  #     cert_path:        '/usr/local/etc/trusted-certificates.pem',
+  #   }
+  #   client = JIRA::Client.new(options)
   class HttpClient < RequestClient
     # @private
     DEFAULT_OPTIONS = {
@@ -18,6 +39,8 @@ module JIRA
     #   @return [Hash] The client options
     attr_reader :options
 
+    # Generally not used directly, but through JIRA::Client.
+    # See JIRA::Client for documentation.
     # @param [Hash] options Options as passed from JIRA::Client constructor.
     # @option options [String] :username The username to authenticate with
     # @option options [String] :password The password to authenticate with
