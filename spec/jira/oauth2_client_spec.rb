@@ -55,6 +55,9 @@ describe JIRA::Oauth2Client do
       }
     )
   end
+  let(:proxy_site) { 'https://proxy_server' }
+  let(:proxy_user) { 'ironman' }
+  let(:proxy_password) { 'iamironman' }
   let(:proxy_options) do
     full_options.merge(
       {
@@ -69,7 +72,7 @@ describe JIRA::Oauth2Client do
     describe '.new' do
       context 'setting options' do
         subject(:request_client) do
-          JIRA::Oauth2Client.new(full_options)
+          described_class.new(full_options)
         end
 
         it 'sets oauth2 client options' do
@@ -98,7 +101,7 @@ describe JIRA::Oauth2Client do
 
       context 'using default options' do
         subject(:request_client) do
-          JIRA::Oauth2Client.new(minimum_options)
+          described_class.new(minimum_options)
         end
 
         it 'uses default oauth2 client options' do
@@ -125,11 +128,8 @@ describe JIRA::Oauth2Client do
       end
 
       context 'using a proxy' do
-        let(:proxy_site) { 'https://proxy_server' }
-        let(:proxy_user) { 'ironman' }
-        let(:proxy_password) { 'iamironman' }
         subject(:request_client) do
-          JIRA::Oauth2Client.new(proxy_options)
+          described_class.new(proxy_options)
         end
 
         it 'creates a proxy configured Oauth2::Client on initialize' do
@@ -162,7 +162,7 @@ describe JIRA::Oauth2Client do
       context 'passing options to oauth2 client' do
         let(:oauth2_client) { instance_double(OAuth2::Client) }
         subject(:request_client) do
-          JIRA::Oauth2Client.new(full_options)
+          described_class.new(full_options)
         end
 
         it 'passes oauth2 client options to creating oauth2 client' do
@@ -179,7 +179,7 @@ describe JIRA::Oauth2Client do
   context 'prior to Authentication Request' do
     let(:redirect_uri) { 'http://localhost/auth_response' }
     subject(:request_client) do
-      JIRA::Oauth2Client.new(site: auth_site,
+      described_class.new(site: auth_site,
                              client_id: client_id,
                              client_secret: client_secret)
     end
@@ -192,7 +192,7 @@ describe JIRA::Oauth2Client do
 
           authorize_url = request_client.authorize_url( redirect_uri: redirect_uri )
 
-          expect(authorize_url).to_not be_nil
+          expect(authorize_url).not_to be_nil
           uri = URI.parse(authorize_url)
           expect(uri.hostname).to eq(URI.parse(auth_site).hostname)
           expect(uri.path).to eq(request_client.oauth2_client_options[:authorize_url])
@@ -200,7 +200,7 @@ describe JIRA::Oauth2Client do
           expect(query_params['response_type']).to eq('code')
           expect(query_params['scope']).to eq('WRITE')
           expect(query_params['redirect_uri']).to eq( CGI.escape(redirect_uri))
-          expect(query_params['state']).to_not be_nil
+          expect(query_params['state']).not_to be_nil
         end
       end
 
@@ -209,7 +209,7 @@ describe JIRA::Oauth2Client do
 
           authorize_url = request_client.authorize_url(state: false, redirect_uri: redirect_uri )
 
-          expect(authorize_url).to_not be_nil
+          expect(authorize_url).not_to be_nil
           uri = URI.parse(authorize_url)
           expect(uri.hostname).to eq(URI.parse(auth_site).hostname)
           expect(uri.path).to eq(request_client.oauth2_client_options[:authorize_url])
@@ -226,7 +226,7 @@ describe JIRA::Oauth2Client do
 
           authorize_url = request_client.authorize_url(state: state_given, redirect_uri: redirect_uri )
 
-          expect(authorize_url).to_not be_nil
+          expect(authorize_url).not_to be_nil
           uri = URI.parse(authorize_url)
           expect(uri.hostname).to eq(URI.parse(auth_site).hostname)
           expect(uri.path).to eq(request_client.oauth2_client_options[:authorize_url])
@@ -244,7 +244,7 @@ describe JIRA::Oauth2Client do
         let(:proxy_password) { 'iambrassman' }
         subject(:proxy_request_client) do
           params = { site: auth_site, redirect_uri: redirect_uri, proxy_uri: proxy_site, proxy_user: proxy_user, proxy_password: proxy_password }
-          JIRA::Oauth2Client.new(client_id: client_id,
+          described_class.new(client_id: client_id,
                                  client_secret: client_secret,
                                  site: auth_site,
                                  oauth2_client_options: params)
@@ -255,7 +255,7 @@ describe JIRA::Oauth2Client do
           params = { redirect_uri: redirect_uri, proxy_uri: proxy_site, proxy_user: proxy_user, proxy_password: proxy_password }
           authorize_url = proxy_request_client.authorize_url( params )
 
-          expect(authorize_url).to_not be_nil
+          expect(authorize_url).not_to be_nil
           uri = URI.parse(authorize_url)
           expect(uri.hostname).to eq(URI.parse(auth_site).hostname)
           expect(uri.path).to eq(request_client.oauth2_client_options[:authorize_url])
@@ -263,7 +263,7 @@ describe JIRA::Oauth2Client do
           expect(query_params['response_type']).to eq('code')
           expect(query_params['scope']).to eq('WRITE')
           expect(query_params['redirect_uri']).to eq( CGI.escape(redirect_uri))
-          expect(query_params['state']).to_not be_nil
+          expect(query_params['state']).not_to be_nil
           expect(query_params['proxy_uri']).to eq( CGI.escape(proxy_site) )
           expect(query_params['proxy_user']).to eq(proxy_user)
           expect(query_params['proxy_password']).to eq(proxy_password)
@@ -277,7 +277,7 @@ describe JIRA::Oauth2Client do
     let(:token) { 'Access Token String Value' }
     let(:refresh_token) { 'Refresh Token String Value' }
     subject(:request_client) do
-      JIRA::Oauth2Client.new(site: site,
+      described_class.new(site: site,
                              client_id: client_id,
                              client_secret: client_secret)
     end
@@ -310,7 +310,7 @@ describe JIRA::Oauth2Client do
 
       it 'sets oauth2 client from token' do
 
-        request_client = JIRA::Oauth2Client.new(client_id: client_id,
+        request_client = described_class.new(client_id: client_id,
                                                 client_secret: client_secret,
                                                 site: auth_site,
                                                 access_token: token)
@@ -327,7 +327,7 @@ describe JIRA::Oauth2Client do
     let(:token_updated) { 'Updated Access Token String Value' }
     let(:refresh_token_updated) { 'Updated Refresh Token String Value' }
     subject(:request_client) do
-      JIRA::Oauth2Client.new(client_id: client_id,
+      described_class.new(client_id: client_id,
                              client_secret: client_secret,
                              site: auth_site,
                              refresh_token: refresh_token)
@@ -392,7 +392,7 @@ describe JIRA::Oauth2Client do
 
         access_token_result = client.request_client.access_token
 
-        expect(access_token_result).to_not be_nil
+        expect(access_token_result).not_to be_nil
         expect(access_token_result.token).to eq(token)
         expect(access_token_result.refresh_token).to eq(refresh_token)
       end

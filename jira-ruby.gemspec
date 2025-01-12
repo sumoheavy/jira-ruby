@@ -23,19 +23,9 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   # Runtime Dependencies
-  s.add_runtime_dependency 'activesupport'
-  s.add_runtime_dependency 'atlassian-jwt'
-  s.add_runtime_dependency 'multipart-post'
-  s.add_runtime_dependency 'oauth', '~> 0.5', '>= 0.5.0'
-  s.add_runtime_dependency 'oauth2', '~> 2.0', '>= 2.0.9'
-
-  # Development Dependencies
-  s.add_development_dependency 'guard', '~> 2.13', '>= 2.13.0'
-  s.add_development_dependency 'guard-rspec', '~> 4.6', '>= 4.6.5'
-  s.add_development_dependency 'pry', '~> 0.10', '>= 0.10.3'
-  s.add_development_dependency 'byebug'
-  s.add_development_dependency 'railties'
-  s.add_development_dependency 'rake', '~> 10.3', '>= 10.3.2'
-  s.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
-  s.add_development_dependency 'webmock', '~> 1.18', '>= 1.18.0'
+  s.add_dependency 'activesupport'
+  s.add_dependency 'atlassian-jwt'
+  s.add_dependency 'multipart-post'
+  s.add_dependency 'oauth', '~> 0.5', '>= 0.5.0'
+  s.add_dependency 'oauth2', '~> 2.0', '>= 2.0.9'
 end
