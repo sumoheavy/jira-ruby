@@ -9,7 +9,6 @@ module JIRA
       delegate_to_target_class :meta
     end
 
-
     # This class provides the Attachment object <-> REST mapping for JIRA::Resource::Attachment derived class,
     # i.e. the Create, Retrieve, Update, Delete lifecycle methods.
     #
@@ -38,6 +37,10 @@ module JIRA
     #       attachment.save!( { file: path, mimeType: content_type } )
     #     end
     #
+    # === Deleting a resource
+    #
+    #   resource = client.Resource.find(id)
+    #   resource.delete
     #
     #
     # @!attribute [r] self
@@ -135,6 +138,7 @@ module JIRA
         @expanded = false
         true
       end
+
 
       private
 
