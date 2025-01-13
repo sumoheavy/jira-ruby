@@ -1,16 +1,15 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Attachment do
-  let(:issue_id) { 27676 }
-  let(:attachment_id) { 30076 }
   subject(:attachment) do
-    JIRA::Resource::Attachment.new(
-        client,
-        issue: JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}),
-        attrs: { 'author' => { 'foo' => 'bar' }, 'id' => attachment_id }
+    described_class.new(
+      client,
+      issue: JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}),
+      attrs: { 'author' => { 'foo' => 'bar' }, 'id' => attachment_id }
     )
   end
-
+  let(:issue_id) { 27_676 }
+  let(:attachment_id) { 30_076 }
   let(:client) do
     double(
       'client',
@@ -69,21 +68,13 @@ describe JIRA::Resource::Attachment do
         attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
       )
     end
-
+    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     let(:client) do
       JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
     end
     let(:attachment_file_contents) { 'file contents' }
-    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     let(:issue_id) { 3232 }
     let(:issue) { JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}) }
-    subject(:attachment) do
-      JIRA::Resource::Attachment.new(
-        client,
-        issue: issue,
-        attrs: { 'author' => { 'foo' => 'bar' } }
-      )
-    end
 
     before do
       stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
@@ -126,7 +117,7 @@ describe JIRA::Resource::Attachment do
         ].to_json
       )
     end
-    let(:issue) { JIRA::Resource::Issue.new(client) }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}) }
 
     describe '#save' do
       subject { attachment.save('file' => path_to_file) }
@@ -136,7 +127,7 @@ describe JIRA::Resource::Attachment do
       end
 
       it 'successfully update the attachment' do
-        expect(client).to receive(:post_multipart).and_return(response).with("/jira/rest/api/2/issue/#{issue.id}/attachments", anything, anything)
+        expect(client).to receive(:post_multipart).and_return(response).with("/jira/rest/api/2/issue/#{issue.id}/attachments/#{attachment.id}", anything, anything)
 
         subject
 
