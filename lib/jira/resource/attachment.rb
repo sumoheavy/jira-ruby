@@ -159,7 +159,6 @@ module JIRA
         true
       end
 
-
       private
 
       def set_attributes(attributes, response)
