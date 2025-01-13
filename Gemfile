@@ -13,6 +13,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'byebug'
   gem 'pry' # this was in the original Gemfile - but only needed in development & test
   gem 'rubocop'
   gem 'rubocop-rspec', require: false

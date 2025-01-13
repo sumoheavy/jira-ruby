@@ -9,6 +9,7 @@ describe JIRA::OauthClient do
 
   let(:response) do
     response = double('response')
+    allow(response).to receive(:is_a?).with(Net::HTTPResponse).and_return(true)
     allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
     response
   end
