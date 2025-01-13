@@ -4,11 +4,13 @@ describe JIRA::Resource::Attachment do
   subject(:attachment) do
     described_class.new(
       client,
-      issue: JIRA::Resource::Issue.new(client),
-      attrs: { 'author' => { 'foo' => 'bar' } }
+      issue: JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }),
+      attrs: { 'author' => { 'foo' => 'bar' }, 'id' => attachment_id }
     )
   end
 
+  let(:issue_id) { 27_676 }
+  let(:attachment_id) { 30_076 }
   let(:client) do
     double(
       'client',
@@ -68,11 +70,13 @@ describe JIRA::Resource::Attachment do
       )
     end
 
+    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     let(:client) do
       JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
     end
     let(:attachment_file_contents) { 'file contents' }
-    let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
+    let(:issue_id) { 3232 }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }) }
 
     before do
       stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
@@ -115,7 +119,7 @@ describe JIRA::Resource::Attachment do
         ].to_json
       )
     end
-    let(:issue) { JIRA::Resource::Issue.new(client) }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }) }
 
     describe '#save' do
       subject { attachment.save('file' => path_to_file) }
@@ -125,6 +129,8 @@ describe JIRA::Resource::Attachment do
       end
 
       it 'successfully update the attachment' do
+        expect(client).to receive(:post_multipart).and_return(response).with("/jira/rest/api/2/issue/#{issue.id}/attachments/#{attachment.id}", anything, anything)
+
         subject
 
         expect(attachment.filename).to eq file_name
@@ -222,6 +228,16 @@ describe JIRA::Resource::Attachment do
 
           bearer_attachment.save!('file' => path_to_file)
         end
+      end
+    end
+  end
+
+  context 'an attachment is on an issue' do
+    describe '#delete' do
+      it 'removes the attachment' do
+        expect(client).to receive(:delete).with("/jira/rest/api/2/issue/#{issue_id}/attachments/#{attachment_id}")
+
+        attachment.delete
       end
     end
   end
