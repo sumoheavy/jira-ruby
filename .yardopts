@@ -1,0 +1,4 @@
+--title "Jira Ruby"
+--no-private
+lib/**/*.rb
+

@@ -8,6 +8,35 @@ module JIRA
     class IssueFactory < JIRA::BaseFactory # :nodoc:
     end
 
+    # This class provides the Issue object <-> REST mapping for JIRA::Resource::Issue derived class,
+    # i.e. the Create, Retrieve, Update, Delete lifecycle methods.
+    #
+    # == Lifecycle methods
+    #
+    # === Retrieving all issues
+    #
+    #   client.Issue.all
+    #
+    # === Retrieving a single issue
+    #
+    #   options = { expand: 'editmeta' }
+    #   issue = client.Issue.find("SUP-3000", options)
+    #
+    # === Creating a new issue
+    #
+    #   issue = client.Issue.build(fields: { summary: 'New issue', project: { key: 'SUP' }, issuetype: { name: 'Bug' } })
+    #   issue.save
+    #
+    # === Updating an issue
+    #
+    #   issue = client.Issue.find("SUP-3000")
+    #   issue.save(fields: { summary: 'Updated issue' })
+    #
+    # === Deleting an issue
+    #
+    #   issue = client.Issue.find("SUP-3000")
+    #   issue.delete
+    #
     class Issue < JIRA::Base
       has_one :reporter, class: JIRA::Resource::User, nested_under: 'fields'
       has_one :assignee, class: JIRA::Resource::User, nested_under: 'fields'
@@ -29,6 +58,9 @@ module JIRA
       has_many :remotelink, class: JIRA::Resource::Remotelink
       has_many :watchers, attribute_key: 'watches', nested_under: %w[fields watches]
 
+      # Get collection of issues.
+      # @param client [JIRA::Client]
+      # @return [Array<JIRA::Resource::Issue>]
       def self.all(client)
         start_at = 0
         max_results = 1000
@@ -48,8 +80,7 @@ module JIRA
         result
       end
 
-      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil,
-validate_query: true })
+      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true })
         url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
 
         if options[:fields]
@@ -78,6 +109,13 @@ validate_query: true })
       # Fetches the attributes for the specified resource from JIRA unless
       # the resource is already expanded and the optional force reload flag
       # is not set
+      # @param [Boolean] reload
+      # @param [Hash] query_params
+      # @option query_params [String] :fields
+      # @option query_params [String] :expand
+      # @option query_params [Integer] :startAt
+      # @option query_params [Integer] :maxResults
+      # @return [void]
       def fetch(reload = false, query_params = {})
         return if expanded? && !reload
 
@@ -101,6 +139,7 @@ validate_query: true })
         json['fields']
       end
 
+      # @private
       def respond_to?(method_name, _include_all = false)
         if attrs.key?('fields') && [method_name.to_s, client.Field.name_to_id(method_name)].any? do |k|
              attrs['fields'].key?(k)
@@ -111,6 +150,7 @@ validate_query: true })
         end
       end
 
+      # @private
       def method_missing(method_name, *args, &)
         if attrs.key?('fields')
           if attrs['fields'].key?(method_name.to_s)
@@ -127,6 +167,26 @@ validate_query: true })
           super
         end
       end
+
+      # @!method self.find(client, key, options = {})
+      #   Gets/fetches an issue from JIRA.
+      #
+      #   Note: attachments are not fetched by default.
+      #
+      #   @param [JIRA::Client] client
+      #   @param [String] key the key of the issue to find
+      #   @param [Hash] options the options to find the issue with
+      #   @option options [String] :fields the fields to include in the response
+      #   @return [JIRA::Resource::Issue] the found issue
+      #   @example Find an issue
+      #   JIRA::Resource::Issue.find(client, "SUP-3000", { fields: %w[summary description attachment created ] } )
+      #
+      # @!method self.build(attrs = {})
+      #   Constructs a new issue object.
+      #   @param [Hash] attrs the attributes to initialize the issue with
+      #   @return [JIRA::Resource::Issue] the new issue
+      #
+      # .
     end
   end
 end
