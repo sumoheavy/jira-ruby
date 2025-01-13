@@ -69,7 +69,7 @@ describe JIRA::Resource::Attachment do
         attrs: { 'author' => { 'foo' => 'bar' }, 'content' => attachment_url }
       )
     end
-    
+
     let(:attachment_url) { 'https://localhost:2990/secure/attachment/32323/myfile.txt' }
     let(:client) do
       JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false)
