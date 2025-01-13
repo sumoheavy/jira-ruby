@@ -4,7 +4,7 @@ describe JIRA::Resource::Attachment do
   subject(:attachment) do
     described_class.new(
       client,
-      issue: JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}),
+      issue: JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }),
       attrs: { 'author' => { 'foo' => 'bar' }, 'id' => attachment_id }
     )
   end
@@ -74,7 +74,7 @@ describe JIRA::Resource::Attachment do
     end
     let(:attachment_file_contents) { 'file contents' }
     let(:issue_id) { 3232 }
-    let(:issue) { JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}) }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }) }
 
     before do
       stub_request(:get, attachment_url).to_return(body: attachment_file_contents)
@@ -117,7 +117,7 @@ describe JIRA::Resource::Attachment do
         ].to_json
       )
     end
-    let(:issue) { JIRA::Resource::Issue.new(client, attrs: {'id' => issue_id}) }
+    let(:issue) { JIRA::Resource::Issue.new(client, attrs: { 'id' => issue_id }) }
 
     describe '#save' do
       subject { attachment.save('file' => path_to_file) }
@@ -232,7 +232,6 @@ describe JIRA::Resource::Attachment do
 
   context 'an attachment is on an issue' do
     describe '#delete' do
-
       it 'removes the attachment' do
         expect(client).to receive(:delete).with("/jira/rest/api/2/issue/#{issue_id}/attachments/#{attachment_id}")
 
