@@ -87,7 +87,7 @@ module JIRA
   #   code code code
   #   code code code
   #
-  # @since 0.2.4
+  # @since 3.1.0
   #
   # @!attribute [r] client_id
   #   @return [String] The CLIENT ID registered with the Authentication Server
