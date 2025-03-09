@@ -175,20 +175,20 @@ describe JIRA::Resource::Issue do
     subject do
       described_class.new(client, attrs: {
                             'id' => '123',
-                                  'fields' => {
-                                    'reporter' => { 'foo' => 'bar' },
-                                    'assignee' => { 'foo' => 'bar' },
-                                    'project' => { 'foo' => 'bar' },
-                                    'priority' => { 'foo' => 'bar' },
-                                    'issuetype' => { 'foo' => 'bar' },
-                                    'status' => { 'foo' => 'bar' },
-                                    'resolution' => { 'foo' => 'bar' },
-                                    'components' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
-                                    'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
-                                  }
+                            'fields' => {
+                              'reporter' => { 'foo' => 'bar' },
+                              'assignee' => { 'foo' => 'bar' },
+                              'project' => { 'foo' => 'bar' },
+                              'priority' => { 'foo' => 'bar' },
+                              'issuetype' => { 'foo' => 'bar' },
+                              'status' => { 'foo' => 'bar' },
+                              'resolution' => { 'foo' => 'bar' },
+                              'components' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
+                              'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
+                            }
                           })
     end
 

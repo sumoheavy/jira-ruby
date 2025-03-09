@@ -26,9 +26,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Layout/HashAlignment:
-  Enabled: false
-
 Layout/LineLength:
   Enabled: false
 

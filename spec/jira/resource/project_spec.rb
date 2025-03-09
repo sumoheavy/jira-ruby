@@ -11,8 +11,8 @@ describe JIRA::Resource::Project do
     subject do
       described_class.new(client, attrs: {
                             'lead' => { 'foo' => 'bar' },
-                                    'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
+                            'issueTypes' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                            'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
                           })
     end
 

@@ -191,8 +191,8 @@ describe JIRA::Client do
       {
         session: { 'name' => 'JSESSIONID', 'value' => session_cookie },
         loginInfo: { 'failedLoginCount' => 1, 'loginCount' => 2,
-                       'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
-                       'previousLoginTime' => (DateTime.now - 5).iso8601 }
+                     'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
+                     'previousLoginTime' => (DateTime.now - 5).iso8601 }
       }
     end
 

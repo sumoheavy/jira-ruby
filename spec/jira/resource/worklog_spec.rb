@@ -7,7 +7,7 @@ describe JIRA::Resource::Worklog do
     subject do
       described_class.new(client, issue_id: '99999', attrs: {
                             'author' => { 'foo' => 'bar' },
-                                    'updateAuthor' => { 'foo' => 'bar' }
+                            'updateAuthor' => { 'foo' => 'bar' }
                           })
     end
 
