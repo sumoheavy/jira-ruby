@@ -21,6 +21,13 @@ describe JIRA::Resource::Webhook do
     it 'returns a collection of components' do
       stub_request(:get, site_url + described_class.singular_path(client, key))
         .to_return(status: 200, body: get_mock_response('webhook/webhook.json'))
+
+      webhook = client.Webhook.find(key)
+
+      expect(webhook).to be_a described_class
+      expect(webhook.name).to eq 'from API'
+      expect(webhook.url).to eq '/jira/rest/webhooks/1.0/webhook/2'
+      expect(webhook.enabled).to be true
     end
   end
 end

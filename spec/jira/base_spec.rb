@@ -205,6 +205,10 @@ describe JIRA::Base do
       it 'performs a fetch if already fetched and force flag is true' do
         subject.expanded = true
         subject.fetch(true)
+
+        expect(subject.self).to eq('http://deadbeef/')
+        expect(subject.id).to eq('98765')
+        expect(subject.expanded?).to be_truthy
       end
     end
 
@@ -351,6 +355,9 @@ describe JIRA::Base do
 
     it 'sends a DELETE request' do
       subject.delete
+
+      expect(subject).to have_received(:url)
+      expect(subject.deleted?).to be_truthy
     end
   end
 

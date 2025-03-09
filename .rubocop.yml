@@ -101,9 +101,6 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/NoExpectationExample:
-  Enabled: false
-
 RSpec/PredicateMatcher:
   Enabled: false
 

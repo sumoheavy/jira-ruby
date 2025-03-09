@@ -52,9 +52,13 @@ describe JIRA::Resource::Watcher do
 
       it 'adds a watcher' do
         issue = client.Issue.find('10002')
-        watcher = described_class.new(client, issue:)
+        watcher = described_class.new(client, issue: issue)
         user_id = 'tester'
+
         watcher.save!(user_id)
+
+        expect(WebMock).to have_requested(:post, "#{site_url}/jira/rest/api/2/issue/10002/watchers")
+          .with(body: '"tester"')
       end
     end
   end
