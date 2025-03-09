@@ -30,7 +30,7 @@ describe JIRA::Resource::Project do
         expect(issues.length).to eq(11)
         issues.each do |issue|
           expect(issue.class).to eq(JIRA::Resource::Issue)
-          expect(issue.expanded?).to be_falsey
+          expect(issue).not_to be_expanded
         end
       end
     end

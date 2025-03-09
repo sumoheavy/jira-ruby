@@ -40,7 +40,7 @@ describe JIRA::Resource::Agile do
 
       issues.each do |issue|
         expect(issue.class).to eq(JIRA::Resource::Issue)
-        expect(issue.expanded?).to be_falsey
+        expect(issue).not_to be_expanded
       end
     end
 
@@ -57,7 +57,7 @@ describe JIRA::Resource::Agile do
 
       issues.each do |issue|
         expect(issue.class).to eq(JIRA::Resource::Issue)
-        expect(issue.expanded?).to be_falsey
+        expect(issue).not_to be_expanded
       end
     end
   end

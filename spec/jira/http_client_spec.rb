@@ -88,7 +88,7 @@ describe JIRA::HttpClient do
     response
   end
 
-  context 'simple client' do
+  context 'with a simple client' do
     let(:client) do
       options_local = JIRA::Client::DEFAULT_OPTIONS.merge(JIRA::HttpClient::DEFAULT_OPTIONS).merge(
         proxy_address: 'proxyAddress',
@@ -295,7 +295,7 @@ describe JIRA::HttpClient do
     expect(proxy_configuration.proxy_pass).to be_nil
   end
 
-  context 'client has proxy settings' do
+  context 'when the client has proxy settings' do
     subject(:proxy_conn) { proxy_client.basic_auth_http_conn }
 
     let(:proxy_client) do

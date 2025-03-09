@@ -16,14 +16,10 @@ on:
     branches: [ "master" ]
     paths-ignore:
       - '**/*.md'
-      - 'http-basic-example.rb'
-      - 'example.rb'
   pull_request:
     branches: [ "master" ]
     paths-ignore:
       - '**/*.md'
-      - 'http-basic-example.rb'
-      - 'example.rb'
   schedule:
     - cron: '0 13 * * *'
 

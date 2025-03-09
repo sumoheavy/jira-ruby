@@ -43,7 +43,9 @@ describe JIRA::Resource::Sprint do
         let(:given_attrs) { { start_date: '2016-06-10' } }
 
         it 'calls save on the super class with the given attributes & agile url' do
-          expect_any_instance_of(JIRA::Base).to receive(:save).with(given_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
 
           sprint.save(given_attrs)
         end
@@ -51,7 +53,9 @@ describe JIRA::Resource::Sprint do
 
       context 'when attributes are not specified' do
         it 'calls save on the super class with the instance attributes & agile url' do
-          expect_any_instance_of(JIRA::Base).to receive(:save).with(instance_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
 
           sprint.save
         end
@@ -59,7 +63,9 @@ describe JIRA::Resource::Sprint do
 
       context 'when providing the path argument' do
         it 'ignores it' do
-          expect_any_instance_of(JIRA::Base).to receive(:save).with(instance_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
 
           sprint.save({}, 'mavenlink.com')
         end
@@ -77,7 +83,9 @@ describe JIRA::Resource::Sprint do
         let(:given_attrs) { { start_date: '2016-06-10' } }
 
         it 'calls save! on the super class with the given attributes & agile url' do
-          expect_any_instance_of(JIRA::Base).to receive(:save!).with(given_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
 
           sprint.save!(given_attrs)
         end
@@ -85,7 +93,9 @@ describe JIRA::Resource::Sprint do
 
       context 'when attributes are not specified' do
         it 'calls save! on the super class with the instance attributes & agile url' do
-          expect_any_instance_of(JIRA::Base).to receive(:save!).with(instance_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
 
           sprint.save!
         end
@@ -93,14 +103,16 @@ describe JIRA::Resource::Sprint do
 
       context 'when providing the path argument' do
         it 'ignores it' do
-          expect_any_instance_of(JIRA::Base).to receive(:save!).with(instance_attrs, agile_sprint_path)
+          mock_response = double('response', body: '{"id":"123"}')
+
+          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
 
           sprint.save!({}, 'mavenlink.com')
         end
       end
     end
 
-    context 'an issue exists' do
+    context 'when an issue exists' do
       let(:issue_id) { 1001 }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
@@ -126,7 +138,7 @@ describe JIRA::Resource::Sprint do
       end
     end
 
-    context 'multiple issues exists' do
+    context 'when multiple issues exist' do
       let(:issue_ids) { [1001, 1012] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)

@@ -4,32 +4,44 @@ describe JIRA::Base do
   class JIRADelegation < SimpleDelegator # :nodoc:
   end
 
-  class JIRA::Resource::Deadbeef < JIRA::Base # :nodoc:
+  module JIRA
+    module Resource
+      class Deadbeef < JIRA::Base # :nodoc:
+      end
+    end
   end
 
-  class JIRA::Resource::HasOneExample < JIRA::Base # :nodoc:
-    has_one :deadbeef
-    has_one :muffin, class: JIRA::Resource::Deadbeef
-    has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
-                           nested_under: 'nested'
-    has_one :breakfastscone,
-            class: JIRA::Resource::Deadbeef,
-            nested_under: %w[nested breakfastscone]
-    has_one :irregularly_named_thing,
-            class: JIRA::Resource::Deadbeef,
-            attribute_key: 'irregularlyNamedThing'
+  module JIRA
+    module Resource
+      class HasOneExample < JIRA::Base # :nodoc:
+        has_one :deadbeef
+        has_one :muffin, class: JIRA::Resource::Deadbeef
+        has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
+                               nested_under: 'nested'
+        has_one :breakfastscone,
+                class: JIRA::Resource::Deadbeef,
+                nested_under: %w[nested breakfastscone]
+        has_one :irregularly_named_thing,
+                class: JIRA::Resource::Deadbeef,
+                attribute_key: 'irregularlyNamedThing'
+      end
+    end
   end
 
-  class JIRA::Resource::HasManyExample < JIRA::Base # :nodoc:
-    has_many :deadbeefs
-    has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
-                             nested_under: 'nested'
-    has_many :breakfastscones,
-             class: JIRA::Resource::Deadbeef,
-             nested_under: %w[nested breakfastscone]
-    has_many :irregularly_named_things,
-             class: JIRA::Resource::Deadbeef,
-             attribute_key: 'irregularlyNamedThings'
+  module JIRA
+    module Resource
+      class HasManyExample < JIRA::Base # :nodoc:
+        has_many :deadbeefs
+        has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
+                                 nested_under: 'nested'
+        has_many :breakfastscones,
+                 class: JIRA::Resource::Deadbeef,
+                 nested_under: %w[nested breakfastscone]
+        has_many :irregularly_named_things,
+                 class: JIRA::Resource::Deadbeef,
+                 attribute_key: 'irregularlyNamedThings'
+      end
+    end
   end
 
   subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
@@ -42,7 +54,7 @@ describe JIRA::Base do
   describe '#respond_to?' do
     describe 'when decorated using SimpleDelegator' do
       it 'responds to client' do
-        expect(decorated.respond_to?(:client)).to eq(true)
+        expect(decorated.respond_to?(:client)).to be(true)
       end
 
       it 'does not raise an error' do
@@ -69,7 +81,7 @@ describe JIRA::Base do
     expect(first.class).to eq(JIRA::Resource::Deadbeef)
     expect(first.attrs['self']).to eq('http://deadbeef/')
     expect(first.attrs['id']).to eq('98765')
-    expect(first.expanded?).to be_falsey
+    expect(first).not_to be_expanded
   end
 
   it 'finds a deadbeef by id' do
@@ -80,7 +92,7 @@ describe JIRA::Base do
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['self']).to eq('http://deadbeef/')
     expect(deadbeef.attrs['id']).to eq('98765')
-    expect(deadbeef.expanded?).to be_truthy
+    expect(deadbeef).to be_expanded
   end
 
   it 'finds a deadbeef containing changelog by id' do
@@ -96,13 +108,13 @@ describe JIRA::Base do
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['self']).to eq('http://deadbeef/')
     expect(deadbeef.attrs['id']).to eq('98765')
-    expect(deadbeef.expanded?).to be_truthy
+    expect(deadbeef).to be_expanded
     expect(deadbeef.attrs['changelog']['histories']).to eq([])
   end
 
   it 'builds a deadbeef' do
     deadbeef = JIRA::Resource::Deadbeef.build(client, 'id' => '98765')
-    expect(deadbeef.expanded?).to be_falsey
+    expect(deadbeef).not_to be_expanded
 
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['id']).to eq('98765')
@@ -178,13 +190,13 @@ describe JIRA::Base do
       end
 
       it 'sets expanded to true after fetch' do
-        expect(subject.expanded?).to be_falsey
+        expect(subject).not_to be_expanded
         subject.fetch
-        expect(subject.expanded?).to be_truthy
+        expect(subject).to be_expanded
       end
 
       it 'performs a fetch' do
-        expect(subject.expanded?).to be_falsey
+        expect(subject).not_to be_expanded
         subject.fetch
         expect(subject.self).to eq('http://deadbeef/')
         expect(subject.id).to eq('98765')
@@ -193,6 +205,10 @@ describe JIRA::Base do
       it 'performs a fetch if already fetched and force flag is true' do
         subject.expanded = true
         subject.fetch(true)
+
+        expect(subject.self).to eq('http://deadbeef/')
+        expect(subject.id).to eq('98765')
+        expect(subject).to be_expanded
       end
     end
 
@@ -332,36 +348,39 @@ describe JIRA::Base do
     end
 
     it 'flags itself as deleted' do
-      expect(subject.deleted?).to be_falsey
+      expect(subject).not_to be_deleted
       subject.delete
-      expect(subject.deleted?).to be_truthy
+      expect(subject).to be_deleted
     end
 
     it 'sends a DELETE request' do
       subject.delete
+
+      expect(subject).to have_received(:url)
+      expect(subject).to be_deleted
     end
   end
 
   describe 'new_record?' do
     it 'returns true for new_record? when new object' do
       subject.attrs['id'] = nil
-      expect(subject.new_record?).to be_truthy
+      expect(subject).to be_new_record
     end
 
     it 'returns false for new_record? when id is set' do
       subject.attrs['id'] = '123'
-      expect(subject.new_record?).to be_falsey
+      expect(subject).not_to be_new_record
     end
   end
 
   describe 'has_errors?' do
     it 'returns true when the response contains errors' do
       attrs['errors'] = { 'invalid' => 'Field invalid' }
-      expect(subject.has_errors?).to be_truthy
+      expect(subject).to have_errors
     end
 
     it 'returns false when the response does not contain any errors' do
-      expect(subject.has_errors?).to be_falsey
+      expect(subject).not_to have_errors
     end
   end
 
@@ -580,8 +599,12 @@ describe JIRA::Base do
   end
 
   describe 'belongs_to' do
-    class JIRA::Resource::BelongsToExample < JIRA::Base
-      belongs_to :deadbeef
+    module JIRA
+      module Resource
+        class BelongsToExample < JIRA::Base
+          belongs_to :deadbeef
+        end
+      end
     end
 
     subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
