@@ -51,7 +51,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
 
-    issues = described_class.all(client)
+    described_class.all(client)
   end
 
   it 'finds an issue by key or id' do
@@ -113,7 +113,7 @@ describe JIRA::Resource::Issue do
 
   it 'searches an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
     response = double
-    issue = double
+    double
 
     allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
     expect(client).to receive(:get)

@@ -46,7 +46,7 @@ describe JIRA::Resource::Watcher do
 
       it 'returnses all the watchers' do
         issue = client.Issue.find('10002')
-        watchers = client.Watcher.all(options = { issue: })
+        watchers = client.Watcher.all({ issue: })
         expect(watchers.length).to eq(1)
       end
 

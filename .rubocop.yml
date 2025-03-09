@@ -41,9 +41,6 @@ Lint/IneffectiveAccessModifier:
 Lint/MissingSuper:
   Enabled: false
 
-Lint/UselessAssignment:
-  Enabled: false
-
 Metrics/AbcSize:
   Enabled: false
 
