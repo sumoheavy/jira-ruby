@@ -40,14 +40,23 @@ describe JIRA::Resource::User do
       end
 
       before do
+        user_factory = double('UserFactory')
+
         allow(client).to receive(:get)
-          .with('/rest/api/2/users/search?username=_&maxResults=1000') { double(body: '["User1"]') }
-        allow(client).to receive_message_chain(:User, :build).with('users') { [] }
+          .with('/rest/api/2/users/search?username=_&maxResults=1000')
+          .and_return(double(body: '["User1"]'))
+        allow(client).to receive(:User).and_return(user_factory)
+        allow(user_factory).to receive(:build).with('users').and_return([])
       end
 
       it 'gets users with maxResults of 1000' do
+        user_factory = double('UserFactory')
+
         expect(client).to receive(:get).with('/rest/api/2/users/search?username=_&maxResults=1000')
-        expect(client).to receive_message_chain(:User, :build).with('User1')
+                                       .and_return(double(body: '["User1"]'))
+        expect(client).to receive(:User).and_return(user_factory)
+        expect(user_factory).to receive(:build).with('User1')
+
         described_class.all(client)
       end
     end

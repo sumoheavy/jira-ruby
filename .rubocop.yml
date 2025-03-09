@@ -86,9 +86,6 @@ RSpec/InstanceVariable:
 RSpec/LeakyConstantDeclaration:
   Enabled: false
 
-RSpec/MessageChain:
-  Enabled: false
-
 RSpec/MessageSpies:
   Enabled: false
 

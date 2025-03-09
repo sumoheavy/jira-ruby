@@ -134,9 +134,13 @@ describe JIRA::OauthClient do
         let(:headers) { {} }
 
         it 'signs the access_token and performs the request' do
+          http_mock = double('HTTP')
+
+          consumer_mock = oauth_client.consumer
+
           expect(access_token).to receive(:sign!).with(an_instance_of(Net::HTTP::Post::Multipart))
-          expect(oauth_client.consumer).to receive_message_chain(:http,
-                                                                 :request).with(an_instance_of(Net::HTTP::Post::Multipart))
+          expect(consumer_mock).to receive(:http).and_return(http_mock)
+          expect(http_mock).to receive(:request).with(an_instance_of(Net::HTTP::Post::Multipart))
 
           subject
         end
