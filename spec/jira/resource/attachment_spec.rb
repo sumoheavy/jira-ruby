@@ -50,7 +50,7 @@ describe JIRA::Resource::Attachment do
       subject
     end
 
-    context 'the factory delegates correctly' do
+    context 'when the factory delegates correctly' do
       subject { JIRA::Resource::AttachmentFactory.new(client) }
 
       it 'delegates #meta to to target class' do
@@ -59,7 +59,7 @@ describe JIRA::Resource::Attachment do
     end
   end
 
-  context 'there is an attachment on an issue' do
+  context 'when there is an attachment on an issue' do
     subject(:attachment) do
       described_class.new(
         client,

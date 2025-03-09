@@ -73,7 +73,7 @@ describe JIRA::Resource::Project do
     let(:project_key) { SecureRandom.hex }
     let(:response) { double('response', body: '[{}]') }
 
-    context 'pagination' do
+    context 'with pagination' do
       before do
         user_factory = double('user factory')
         expect(client).to receive(:User).and_return(user_factory)

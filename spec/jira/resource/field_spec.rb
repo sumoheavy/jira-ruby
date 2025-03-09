@@ -41,7 +41,7 @@ describe JIRA::Resource::Field do
   end
 
   describe 'field_mappings' do
-    shared_context 'mapped or not' do
+    shared_context 'with or without mapping' do
       subject do
         described_class.new(client, attrs: {
                               'priority' => 1,
@@ -68,8 +68,8 @@ describe JIRA::Resource::Field do
       end
     end
 
-    context 'before fields are mapped' do
-      include_context 'mapped or not'
+    context 'when fields are not yet mapped' do
+      include_context 'with or without mapping'
 
       it 'can find a standard field by id' do
         expect(subject.priority).to eq(1)
@@ -90,8 +90,8 @@ describe JIRA::Resource::Field do
       end
     end
 
-    context 'after fields are mapped' do
-      include_context 'mapped or not'
+    context 'when fields have been mapped' do
+      include_context 'with or without mapping'
 
       it 'warns of duplicate fields' do
         expect { client.Field.map_fields }.to output(/renaming as Priority_10666/).to_stderr

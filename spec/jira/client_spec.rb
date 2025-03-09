@@ -139,7 +139,7 @@ describe JIRA::Client do
   let(:headers) { { 'Accept' => 'application/json' } }
   let(:merged_headers) { headers.merge(content_type_header) }
 
-  context 'behaviour that applies to all client classes irrespective of authentication method' do
+  context 'without regard to the authentication method, this behaviour applies to all client classes' do
     it 'allows the overriding of some options' do
       client = described_class.new(consumer_key: 'foo', consumer_secret: 'bar', site: 'http://foo.com/')
       expect(client.options[:site]).to eq('http://foo.com/')
@@ -281,7 +281,7 @@ describe JIRA::Client do
     end
   end
 
-  context 'oauth authentication' do
+  context 'with oauth' do
     subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
     include_examples 'OAuth Common Tests'

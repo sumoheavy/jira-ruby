@@ -127,7 +127,7 @@ describe JIRA::OauthClient do
         oauth_client.request(:get, '/foo', body, headers)
       end
 
-      context 'for a multipart request' do
+      context 'when a multipart request' do
         subject { oauth_client.make_multipart_request('/path', data, headers) }
 
         let(:data) { {} }

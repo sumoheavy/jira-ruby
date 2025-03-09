@@ -100,7 +100,7 @@ describe JIRA::Resource::Sprint do
       end
     end
 
-    context 'an issue exists' do
+    context 'when an issue exists' do
       let(:issue_id) { 1001 }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)
@@ -126,7 +126,7 @@ describe JIRA::Resource::Sprint do
       end
     end
 
-    context 'multiple issues exists' do
+    context 'when multiple issues exist' do
       let(:issue_ids) { [1001, 1012] }
       let(:post_issue_path) do
         described_class.agile_path(client, sprint.id)

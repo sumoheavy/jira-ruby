@@ -71,9 +71,6 @@ Naming/VariableNumber:
 RSpec/AnyInstance:
   Enabled: false
 
-RSpec/ContextWording:
-  Enabled: false
-
 RSpec/ExampleLength:
   Enabled: false
 
