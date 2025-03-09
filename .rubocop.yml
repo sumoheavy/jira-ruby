@@ -125,9 +125,6 @@ RSpec/SpecFilePathFormat:
 RSpec/StubbedMock:
   Enabled: false
 
-RSpec/SubjectStub:
-  Enabled: false
-
 RSpec/VerifiedDoubles:
   Enabled: false
 
