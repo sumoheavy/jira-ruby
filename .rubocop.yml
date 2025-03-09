@@ -3,8 +3,6 @@ require:
 
 AllCops:
   Exclude:
-    - 'example.rb'
-    - 'http-basic-example.rb'
     - 'vendor/**/*'
   NewCops: enable
   TargetRubyVersion: 3.1
