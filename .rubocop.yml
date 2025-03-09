@@ -140,9 +140,6 @@ Style/ArgumentsForwarding:
 Style/CaseEquality:
   Enabled: false
 
-Style/ClassAndModuleChildren:
-  Enabled: false
-
 Style/MissingRespondToMissing:
   Enabled: false
 
