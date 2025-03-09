@@ -42,7 +42,7 @@ describe JIRA::Base do
   describe '#respond_to?' do
     describe 'when decorated using SimpleDelegator' do
       it 'responds to client' do
-        expect(decorated.respond_to?(:client)).to eq(true)
+        expect(decorated.respond_to?(:client)).to be(true)
       end
 
       it 'does not raise an error' do

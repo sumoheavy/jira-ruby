@@ -25,7 +25,7 @@ describe JIRA::Resource::Issue do
       end
 
       it 'responds to key' do
-        expect(@decorated.respond_to?(:key)).to eq(true)
+        expect(@decorated.respond_to?(:key)).to be(true)
       end
 
       it 'does not raise an error' do

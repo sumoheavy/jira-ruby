@@ -64,7 +64,7 @@ describe JIRA::Resource::Field do
       it 'is not confused by common attribute keys' do
         expect { subject.name }.to raise_error(NoMethodError)
         expect { subject.custom }.to raise_error(NoMethodError)
-        expect(subject.id).to eq(nil)   # picks up ID from the parent -
+        expect(subject.id).to be_nil   # picks up ID from the parent -
       end
     end
 
@@ -86,7 +86,7 @@ describe JIRA::Resource::Field do
       it 'is not confused by common attribute keys and raises error' do
         expect { subject.name }.to raise_error(NoMethodError)
         expect { subject.custom }.to raise_error(NoMethodError)
-        expect(subject.id).to eq(nil)   # picks up ID from the parent -
+        expect(subject.id).to be_nil   # picks up ID from the parent -
       end
     end
 
