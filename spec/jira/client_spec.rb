@@ -62,18 +62,20 @@ RSpec.shared_examples 'Client Common Tests' do
 
   describe 'SSL client options' do
     context 'without certificate and key' do
-      subject { JIRA::Client.new(options) }
+      let(:basic_options) { { use_client_cert: true } }
 
-      let(:options) { { use_client_cert: true } }
-
-      it 'raises an ArgumentError' do
+      it 'raises an ArgumentError when cert is missing' do
         expect do
-          subject
+          JIRA::Client.new(basic_options)
         end.to raise_exception(ArgumentError,
                                'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
-        options[:ssl_client_cert] = '<cert></cert>'
+      end
+
+      it 'raises an ArgumentError when key is missing' do
+        options_with_cert = basic_options.merge(ssl_client_cert: '<cert></cert>')
+
         expect do
-          subject
+          JIRA::Client.new(options_with_cert)
         end.to raise_exception(ArgumentError,
                                'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
       end

@@ -113,9 +113,6 @@ RSpec/PredicateMatcher:
 RSpec/ReceiveMessages:
   Enabled: false
 
-RSpec/RepeatedSubjectCall:
-  Enabled: false
-
 RSpec/SpecFilePathFormat:
   Enabled: false
 
