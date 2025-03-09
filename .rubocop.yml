@@ -68,9 +68,6 @@ Naming/PredicateName:
 Naming/VariableNumber:
   Enabled: false
 
-RSpec/AnyInstance:
-  Enabled: false
-
 RSpec/ExampleLength:
   Enabled: false
 

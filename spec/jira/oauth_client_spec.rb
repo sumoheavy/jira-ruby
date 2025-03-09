@@ -37,7 +37,7 @@ describe JIRA::OauthClient do
 
     it 'could pre-process the response body in a block' do
       response = Net::HTTPSuccess.new(1.0, '200', 'OK')
-      allow_any_instance_of(OAuth::Consumer).to receive(:request).and_return(response)
+      allow(oauth_client.consumer).to receive(:request).and_return(response)
       allow(response).to receive(:body).and_return('&oauth_token=token&oauth_token_secret=secret&password=top_secret')
 
       result = oauth_client.request_token do |response_body|
