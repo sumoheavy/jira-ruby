@@ -59,9 +59,6 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Enabled: false
 
-Naming/BlockForwarding:
-  Enabled: false
-
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
