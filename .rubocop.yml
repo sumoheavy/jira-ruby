@@ -128,9 +128,6 @@ RSpec/StubbedMock:
 RSpec/SubjectStub:
   Enabled: false
 
-RSpec/VerifiedDoubleReference:
-  Enabled: false
-
 RSpec/VerifiedDoubles:
   Enabled: false
 
