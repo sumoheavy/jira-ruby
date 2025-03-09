@@ -119,9 +119,6 @@ RSpec/SubjectStub:
 RSpec/VerifiedDoubles:
   Enabled: false
 
-Style/CaseEquality:
-  Enabled: false
-
 Style/MissingRespondToMissing:
   Enabled: false
 
