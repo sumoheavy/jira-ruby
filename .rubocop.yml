@@ -98,9 +98,6 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/PredicateMatcher:
-  Enabled: false
-
 RSpec/ReceiveMessages:
   Enabled: false
 
