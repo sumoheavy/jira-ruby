@@ -46,10 +46,14 @@ describe JIRA::Resource::Attachment do
       )
     end
 
-    it 'returns meta information about attachment upload' do
-      expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
+    context 'when returning meta information' do
+      it 'returns meta information about attachment upload' do
+        expect(client).to receive(:get).with('/jira/rest/api/2/attachment/meta').and_return(response)
 
-      subject
+        result = subject
+
+        expect(result).to be_kind_of(Hash)
+      end
     end
 
     context 'the factory delegates correctly' do
@@ -83,11 +87,13 @@ describe JIRA::Resource::Attachment do
     end
 
     describe '.download_file' do
-      it 'passes file object to block' do
-        expect(URI).to receive(:parse).with(attachment_url).and_call_original
+      context 'when passing file object to block' do
+        it 'passes file object to block' do
+          expect(URI).to receive(:parse).with(attachment_url).and_call_original
 
-        attachment.download_file do |file|
-          expect(file.read).to eq(attachment_file_contents)
+          attachment.download_file do |file|
+            expect(file.read).to eq(attachment_file_contents)
+          end
         end
       end
     end
@@ -95,6 +101,7 @@ describe JIRA::Resource::Attachment do
     describe '.download_contents' do
       it 'downloads the file contents as a string' do
         expect(URI).to receive(:parse).with(attachment_url).and_call_original
+
         expect(attachment.download_contents).to eq(attachment_file_contents)
       end
     end
