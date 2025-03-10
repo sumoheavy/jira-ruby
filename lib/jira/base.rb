@@ -291,11 +291,7 @@ module JIRA
     # and returns true when found, otherwise proxies the
     # call to the superclass.
     def respond_to?(method_name, _include_all = false)
-      if attrs.key?(method_name.to_s)
-        true
-      else
-        super(method_name)
-      end
+      attrs.key?(method_name.to_s) || super(method_name)
     end
 
     # Overrides method_missing to check the attribute hash

@@ -52,7 +52,7 @@ describe JIRA::Resource::Attachment do
 
         result = subject
 
-        expect(result).to be_kind_of(Hash)
+        expect(result).to be_a(Hash)
       end
     end
 
