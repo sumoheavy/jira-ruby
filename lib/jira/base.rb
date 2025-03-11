@@ -516,11 +516,11 @@ module JIRA
     end
 
     def self.query_params_for_single_fetch(options)
-      options.slice(*QUERY_PARAMS_FOR_SINGLE_FETCH).to_h
+      options.slice(*QUERY_PARAMS_FOR_SINGLE_FETCH)
     end
 
     def self.query_params_for_search(options)
-      options.slice(*QUERY_PARAMS_FOR_SEARCH).to_h
+      options.slice(*QUERY_PARAMS_FOR_SEARCH)
     end
   end
 end
