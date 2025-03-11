@@ -1,10 +1,8 @@
-require:
+plugins:
   - rubocop-rspec
 
 AllCops:
   Exclude:
-    - 'example.rb'
-    - 'http-basic-example.rb'
     - 'vendor/**/*'
   NewCops: enable
   TargetRubyVersion: 3.1
@@ -28,9 +26,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Layout/HashAlignment:
-  Enabled: false
-
 Layout/LineLength:
   Enabled: false
 
@@ -44,12 +39,6 @@ Lint/IneffectiveAccessModifier:
   Enabled: false
 
 Lint/MissingSuper:
-  Enabled: false
-
-Lint/RedundantCopDisableDirective:
-  Enabled: false
-
-Lint/UselessAssignment:
   Enabled: false
 
 Metrics/AbcSize:
@@ -70,9 +59,6 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Enabled: false
 
-Naming/BlockForwarding:
-  Enabled: false
-
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
@@ -80,15 +66,6 @@ Naming/PredicateName:
   Enabled: false
 
 Naming/VariableNumber:
-  Enabled: false
-
-RSpec/AnyInstance:
-  Enabled: false
-
-RSpec/BeEq:
-  Enabled: false
-
-RSpec/ContextWording:
   Enabled: false
 
 RSpec/ExampleLength:
@@ -106,9 +83,6 @@ RSpec/InstanceVariable:
 RSpec/LeakyConstantDeclaration:
   Enabled: false
 
-RSpec/MessageChain:
-  Enabled: false
-
 RSpec/MessageSpies:
   Enabled: false
 
@@ -124,16 +98,7 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/NoExpectationExample:
-  Enabled: false
-
-RSpec/PredicateMatcher:
-  Enabled: false
-
 RSpec/ReceiveMessages:
-  Enabled: false
-
-RSpec/RepeatedSubjectCall:
   Enabled: false
 
 RSpec/SpecFilePathFormat:
@@ -145,19 +110,7 @@ RSpec/StubbedMock:
 RSpec/SubjectStub:
   Enabled: false
 
-RSpec/VerifiedDoubleReference:
-  Enabled: false
-
 RSpec/VerifiedDoubles:
-  Enabled: false
-
-Style/ArgumentsForwarding:
-  Enabled: false
-
-Style/CaseEquality:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/MissingRespondToMissing:

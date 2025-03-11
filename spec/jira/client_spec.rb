@@ -62,18 +62,20 @@ RSpec.shared_examples 'Client Common Tests' do
 
   describe 'SSL client options' do
     context 'without certificate and key' do
-      subject { JIRA::Client.new(options) }
+      let(:basic_options) { { use_client_cert: true } }
 
-      let(:options) { { use_client_cert: true } }
-
-      it 'raises an ArgumentError' do
+      it 'raises an ArgumentError when cert is missing' do
         expect do
-          subject
+          JIRA::Client.new(basic_options)
         end.to raise_exception(ArgumentError,
                                'Options: :cert_path or :ssl_client_cert must be set when :use_client_cert is true')
-        options[:ssl_client_cert] = '<cert></cert>'
+      end
+
+      it 'raises an ArgumentError when key is missing' do
+        options_with_cert = basic_options.merge(ssl_client_cert: '<cert></cert>')
+
         expect do
-          subject
+          JIRA::Client.new(options_with_cert)
         end.to raise_exception(ArgumentError,
                                'Options: :key_path or :ssl_client_key must be set when :use_client_cert is true')
       end
@@ -105,11 +107,11 @@ RSpec.shared_examples 'OAuth Common Tests' do
     token = double
     expect(OAuth::AccessToken).to receive(:new).with(subject.consumer, '', '').and_return(token)
 
-    expect(subject.authenticated?).to be_falsey
+    expect(subject).not_to be_authenticated
     access_token = subject.set_access_token('', '')
     expect(access_token).to eq(token)
     expect(subject.access_token).to eq(token)
-    expect(subject.authenticated?).to be_truthy
+    expect(subject).to be_authenticated
   end
 
   describe 'that call a oauth client' do
@@ -139,7 +141,7 @@ describe JIRA::Client do
   let(:headers) { { 'Accept' => 'application/json' } }
   let(:merged_headers) { headers.merge(content_type_header) }
 
-  context 'behaviour that applies to all client classes irrespective of authentication method' do
+  context 'without regard to the authentication method, this behaviour applies to all client classes' do
     it 'allows the overriding of some options' do
       client = described_class.new(consumer_key: 'foo', consumer_secret: 'bar', site: 'http://foo.com/')
       expect(client.options[:site]).to eq('http://foo.com/')
@@ -173,12 +175,12 @@ describe JIRA::Client do
     it 'only returns a true for #authenticated? once we have requested some data' do
       expect(subject.authenticated?).to be_nil
       expect(subject.Project.all).to be_empty
-      expect(subject.authenticated?).to be_truthy
+      expect(subject).to be_authenticated
     end
 
     it 'fails with wrong user name and password' do
       bad_login = described_class.new(username: 'foo', password: 'badpassword', auth_type: :basic)
-      expect(bad_login.authenticated?).to be_falsey
+      expect(bad_login).not_to be_authenticated
       expect { bad_login.Project.all }.to raise_error JIRA::HTTPError
     end
   end
@@ -191,8 +193,8 @@ describe JIRA::Client do
       {
         session: { 'name' => 'JSESSIONID', 'value' => session_cookie },
         loginInfo: { 'failedLoginCount' => 1, 'loginCount' => 2,
-                       'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
-                       'previousLoginTime' => (DateTime.now - 5).iso8601 }
+                     'lastFailedLoginTime' => (DateTime.now - 2).iso8601,
+                     'previousLoginTime' => (DateTime.now - 5).iso8601 }
       }
     end
 
@@ -266,7 +268,7 @@ describe JIRA::Client do
       end
 
       it 'is not authenticated' do
-        expect(subject.authenticated?).to be_falsey
+        expect(subject).not_to be_authenticated
       end
 
       it 'raises a JIRA::HTTPError when trying to fetch projects' do
@@ -275,13 +277,13 @@ describe JIRA::Client do
     end
 
     it 'only returns a true for #authenticated? once we have requested some data' do
-      expect(subject.authenticated?).to be_falsey
+      expect(subject).not_to be_authenticated
       expect(subject.Project.all).to be_empty
-      expect(subject.authenticated?).to be_truthy
+      expect(subject).to be_authenticated
     end
   end
 
-  context 'oauth authentication' do
+  context 'with oauth' do
     subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
     include_examples 'OAuth Common Tests'

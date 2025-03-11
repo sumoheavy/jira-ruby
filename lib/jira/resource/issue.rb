@@ -90,7 +90,7 @@ module JIRA
         end
         url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
         url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
-        url << '&validateQuery=false' if options[:validate_query] === false
+        url << '&validateQuery=false' if options[:validate_query] === false # rubocop:disable Style/CaseEquality
 
         if options[:expand]
           options[:expand] = [options[:expand]] if options[:expand].is_a?(String)

@@ -37,7 +37,7 @@ describe JIRA::OauthClient do
 
     it 'could pre-process the response body in a block' do
       response = Net::HTTPSuccess.new(1.0, '200', 'OK')
-      allow_any_instance_of(OAuth::Consumer).to receive(:request).and_return(response)
+      allow(oauth_client.consumer).to receive(:request).and_return(response)
       allow(response).to receive(:body).and_return('&oauth_token=token&oauth_token_secret=secret&password=top_secret')
 
       result = oauth_client.request_token do |response_body|
@@ -127,16 +127,20 @@ describe JIRA::OauthClient do
         oauth_client.request(:get, '/foo', body, headers)
       end
 
-      context 'for a multipart request' do
+      context 'when a multipart request' do
         subject { oauth_client.make_multipart_request('/path', data, headers) }
 
         let(:data) { {} }
         let(:headers) { {} }
 
         it 'signs the access_token and performs the request' do
+          http_mock = double('HTTP')
+
+          consumer_mock = oauth_client.consumer
+
           expect(access_token).to receive(:sign!).with(an_instance_of(Net::HTTP::Post::Multipart))
-          expect(oauth_client.consumer).to receive_message_chain(:http,
-                                                                 :request).with(an_instance_of(Net::HTTP::Post::Multipart))
+          expect(consumer_mock).to receive(:http).and_return(http_mock)
+          expect(http_mock).to receive(:request).with(an_instance_of(Net::HTTP::Post::Multipart))
 
           subject
         end

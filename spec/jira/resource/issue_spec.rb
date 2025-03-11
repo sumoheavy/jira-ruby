@@ -25,7 +25,7 @@ describe JIRA::Resource::Issue do
       end
 
       it 'responds to key' do
-        expect(@decorated.respond_to?(:key)).to eq(true)
+        expect(@decorated.respond_to?(:key)).to be(true)
       end
 
       it 'does not raise an error' do
@@ -51,7 +51,7 @@ describe JIRA::Resource::Issue do
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
 
-    issues = described_class.all(client)
+    described_class.all(client)
   end
 
   it 'finds an issue by key or id' do
@@ -113,7 +113,7 @@ describe JIRA::Resource::Issue do
 
   it 'searches an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
     response = double
-    issue = double
+    double
 
     allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
     expect(client).to receive(:get)
@@ -175,20 +175,20 @@ describe JIRA::Resource::Issue do
     subject do
       described_class.new(client, attrs: {
                             'id' => '123',
-                                  'fields' => {
-                                    'reporter' => { 'foo' => 'bar' },
-                                    'assignee' => { 'foo' => 'bar' },
-                                    'project' => { 'foo' => 'bar' },
-                                    'priority' => { 'foo' => 'bar' },
-                                    'issuetype' => { 'foo' => 'bar' },
-                                    'status' => { 'foo' => 'bar' },
-                                    'resolution' => { 'foo' => 'bar' },
-                                    'components' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
-                                    'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
-                                  }
+                            'fields' => {
+                              'reporter' => { 'foo' => 'bar' },
+                              'assignee' => { 'foo' => 'bar' },
+                              'project' => { 'foo' => 'bar' },
+                              'priority' => { 'foo' => 'bar' },
+                              'issuetype' => { 'foo' => 'bar' },
+                              'status' => { 'foo' => 'bar' },
+                              'resolution' => { 'foo' => 'bar' },
+                              'components' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
+                              'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
+                            }
                           })
     end
 

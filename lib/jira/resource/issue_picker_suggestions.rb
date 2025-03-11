@@ -9,7 +9,7 @@ module JIRA
       has_many :sections, class: JIRA::Resource::IssuePickerSuggestionsIssue
 
       def self.all(client, query = '', options = { current_jql: nil, current_issue_key: nil, current_project_id: nil,
-show_sub_tasks: nil, show_sub_tasks_parent: nil })
+                                                   show_sub_tasks: nil, show_sub_tasks_parent: nil })
         url = client.options[:rest_base_path] + "/issue/picker?query=#{CGI.escape(query)}"
 
         url << "&currentJQL=#{CGI.escape(options[:current_jql])}" if options[:current_jql]
