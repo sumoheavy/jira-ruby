@@ -239,7 +239,7 @@ describe JIRA::Resource::Attachment do
     end
   end
 
-  context 'an attachment is on an issue' do
+  context 'when an attachment is on an issue' do
     describe '#delete' do
       it 'removes the attachment' do
         expect(client).to receive(:delete).with("/jira/rest/api/2/issue/#{issue_id}/attachments/#{attachment_id}")
