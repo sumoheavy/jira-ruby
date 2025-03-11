@@ -291,11 +291,7 @@ module JIRA
     # and returns true when found, otherwise proxies the
     # call to the superclass.
     def respond_to?(method_name, _include_all = false)
-      if attrs.key?(method_name.to_s)
-        true
-      else
-        super(method_name)
-      end
+      attrs.key?(method_name.to_s) || super(method_name)
     end
 
     # Overrides method_missing to check the attribute hash
@@ -520,15 +516,11 @@ module JIRA
     end
 
     def self.query_params_for_single_fetch(options)
-      options.select do |k, _v|
-        QUERY_PARAMS_FOR_SINGLE_FETCH.include? k
-      end.to_h
+      options.slice(*QUERY_PARAMS_FOR_SINGLE_FETCH)
     end
 
     def self.query_params_for_search(options)
-      options.select do |k, _v|
-        QUERY_PARAMS_FOR_SEARCH.include? k
-      end.to_h
+      options.slice(*QUERY_PARAMS_FOR_SEARCH)
     end
   end
 end
