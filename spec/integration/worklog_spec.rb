@@ -2,6 +2,16 @@ require 'spec_helper'
 
 describe JIRA::Resource::Worklog do
 
+  before(:each) do
+    stub_request(:get, "http://foo:bar@localhost:2990/jira/rest/api/2/worklog")
+      .with(headers: {
+        'Accept'=>'application/json',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'User-Agent'=>'Ruby'
+      })
+      .to_return(:status => 200, :body => '{"worklogs":[{"self":"http://localhost:2990/jira/rest/api/2/issue/10002/worklog/10000","id":"10000","comment":"Some epic work."},{"self":"http://localhost:2990/jira/rest/api/2/issue/10002/worklog/10001","id":"10001","comment":"Another worklog."},{"self":"http://localhost:2990/jira/rest/api/2/issue/10002/worklog/10002","id":"10002","comment":"More work."}]}', :headers => {})
+  end
+
 
   with_each_client do |site_url, client|
     let(:client) { client }

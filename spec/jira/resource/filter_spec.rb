@@ -28,7 +28,7 @@ describe JIRA::Resource::Filter do
       :owner => jira_user,
       :jql => '"Git Repository" ~ jira-ruby AND status = Resolved',
       :viewUrl => 'https://localhost/secure/IssueNavigator.jspa?mode=hide&requestId=42',
-      :searchUrl => 'https://localhost/rest/api/2/search?jql=%22Git+Repository%22+~+jira-ruby+AND+status+%3D+Resolved',
+      :searchUrl => 'https://localhost/rest/api/3/search/jql?jql=%22Git+Repository%22+~+jira-ruby+AND+status+%3D+Resolved',
       :favourite => false,
       :sharePermissions => [
         {
@@ -66,7 +66,7 @@ describe JIRA::Resource::Filter do
   end
   let(:jql_attrs) do
     {
-      :startAt => 0,
+      :nextPageToken => 0,
       :maxResults => 50,
       :total => 2,
       :issues => [jql_issue]
@@ -84,14 +84,14 @@ describe JIRA::Resource::Filter do
 
   it "returns issues" do
     expect(filter).to be_present
-    allow(client).to receive(:options).and_return({ :rest_base_path => 'localhost' })
+    allow(client).to receive(:options).and_return({ :rest_base_path => 'localhost', :rest_base_path_v3 => 'localhost' })
     expect(client).to receive(:get).
-      with("localhost/search?jql=#{CGI.escape(filter.jql)}").
+      with("localhost/search/jql?jql=#{CGI.escape(filter.jql)}").
       and_return(issue_jql_response)
     issues = filter.issues
-    expect(issues).to be_an(Array)
-    expect(issues.size).to eql(1)
+    expect(issues).to be_an(Hash)
+    expect(issues["issues"].size).to eql(1)
     expected_issue = client.Issue.build(JSON.parse(jql_issue.to_json))
-    expect(issues.first.attrs).to eql(expected_issue.attrs)
+    expect(issues["issues"].first.attrs).to eql(expected_issue.attrs)
   end
 end

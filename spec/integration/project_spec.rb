@@ -26,7 +26,7 @@ describe JIRA::Resource::Project do
     describe "issues" do
 
       it "returns all the issues" do
-        stub_request(:get, site_url + "/jira/rest/api/2/search?jql=project=\"SAMPLEPROJECT\"").
+        stub_request(:get, site_url + "/rest/api/3/search?jql=project=\"SAMPLEPROJECT\"").
           to_return(:status => 200, :body => get_mock_response('project/SAMPLEPROJECT.issues.json'))
         subject = client.Project.build('key' => key)
         issues = subject.issues
@@ -51,6 +51,16 @@ describe JIRA::Resource::Project do
         expect(component.class).to eq(JIRA::Resource::Component)
       end
 
+    end
+
+    before(:each) do
+      stub_request(:get, "http://foo:bar@localhost:2990/jira/rest/api/2/project")
+        .with(headers: {
+          'Accept'=>'application/json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        })
+        .to_return(:status => 200, :body => get_mock_from_path(:get), :headers => {})
     end
   end
 end

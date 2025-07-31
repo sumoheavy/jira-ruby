@@ -3,7 +3,8 @@ require 'spec_helper'
 describe JIRA::Resource::Project do
 
   let(:client) { double("client", :options => {
-                          :rest_base_path => '/jira/rest/api/2'
+                          :rest_base_path => '/jira/rest/api/2',
+                          :rest_base_path_v3 => '/jira/rest/api/3'
                         })
   }
 
@@ -42,7 +43,7 @@ describe JIRA::Resource::Project do
       issue_factory = double("issue factory")
 
       expect(client).to receive(:get)
-        .with('/jira/rest/api/2/search?jql=project%3D%22test%22')
+        .with('/jira/rest/api/3/search/jql?jql=project%3D%22test%22')
         .and_return(response)
       expect(client).to receive(:Issue).and_return(issue_factory)
       expect(issue_factory).to receive(:build)
@@ -58,7 +59,7 @@ describe JIRA::Resource::Project do
         issue_factory = double("issue factory")
 
         expect(client).to receive(:get)
-          .with('/jira/rest/api/2/search?jql=project%3D%22test%22&expand=changelog&startAt=1&maxResults=100')
+          .with('/jira/rest/api/3/search/jql?jql=project%3D%22test%22&expand=changelog&startAt=1&maxResults=100')
           .and_return(response)
         expect(client).to receive(:Issue).and_return(issue_factory)
         expect(issue_factory).to receive(:build)
@@ -66,5 +67,15 @@ describe JIRA::Resource::Project do
         subject.issues({expand:'changelog', startAt:1, maxResults:100})
       end
     end
+  end
+
+  before(:each) do
+    stub_request(:get, "http://foo:bar@localhost:2990/rest/api/3/search/jql?jql=PROJECT%20=%20'SAMPLEPROJECT'")
+      .with(headers: {
+        'Accept'=>'application/json',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'User-Agent'=>'Ruby'
+      })
+      .to_return(status: 200, body: get_mock_response('issue.json'), headers: {})
   end
 end

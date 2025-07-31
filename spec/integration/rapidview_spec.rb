@@ -30,6 +30,7 @@ describe JIRA::Resource::RapidView do
       before(:each) do
         stub_request(:get, site_url + '/jira/rest/greenhopper/1.0/rapidview').
         to_return(:status => 200, :body => get_mock_response('rapidview.json'))
+
       end
       it_should_behave_like 'a resource with a collection GET endpoint'
     end
@@ -44,10 +45,27 @@ describe JIRA::Resource::RapidView do
           :status => 200,
           :body => get_mock_response('rapidview/SAMPLEPROJECT.issues.json')
         )
-
+        stub_request(:get, "http://localhost:2990/jira/rest/api/3/search/jql?jql=id%20IN(10000,%2010001)%20AND%20sprint%20IS%20NOT%20EMPTY")
+        .with(headers: {
+        'Accept'=>'application/json',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'Authorization'=>/OAuth .*/,
+        'User-Agent'=>'OAuth gem v0.5.14'
+        })
+      .to_return(status: 200, body: get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json'), headers: {})
         stub_request(
           :get,
-          site_url + '/jira/rest/api/2/search?jql=id IN(10000, 10001)%20AND%20sprint%20IS%20NOT%20EMPTY'
+          "http://localhost:2990/jira/rest/api/3/search/jql?jql=id%20IN(10001,%2010000)"
+        ).with(headers: {
+          'Accept'=>'application/json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization'=>/OAuth .*/,
+          'User-Agent'=>'OAuth gem v0.5.14'
+        })
+        .to_return(status: 200, body: get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json'), headers: {})
+        stub_request(
+          :get,
+          'http://foo:bar@localhost:2990' + '/jira/rest/api/3/search/jql?jql=id IN(10000, 10001)%20AND%20sprint%20IS%20NOT%20EMPTY'
         ).to_return(
           :status => 200,
           :body => get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json')
@@ -55,7 +73,7 @@ describe JIRA::Resource::RapidView do
 
         stub_request(
           :get,
-          site_url + '/jira/rest/api/2/search?jql=id IN(10001, 10000)'
+          'http://foo:bar@localhost:2990' + '/jira/rest/api/3/search/jql?jql=id IN(10001, 10000)'
         ).to_return(
           :status => 200,
           :body => get_mock_response('rapidview/SAMPLEPROJECT.issues.full.json')
@@ -63,9 +81,8 @@ describe JIRA::Resource::RapidView do
 
         subject = client.RapidView.build('id' => 1)
         issues = subject.issues
-        expect(issues.length).to eq(2)
-
-        issues.each do |issue|
+        expect(issues["issues"].length).to eq(2)
+        issues["issues"].each do |issue|
           expect(issue.class).to eq(JIRA::Resource::Issue)
           expect(issue.expanded?).to be_falsey
         end

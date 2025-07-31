@@ -1,3 +1,23 @@
+RSpec.configure do |config|
+  config.before(:each) do
+    stub_request(:get, "http://foo:bar@localhost:2990/jira/rest/api/3/search/jql?jql=project=%22SAMPLEPROJECT%22")
+      .with(headers: {
+        'Accept'=>'application/json',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'User-Agent'=>'Ruby'
+      })
+      .to_return(:status => 200, :body => '{ "issues": [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ] }', :headers => {})
+
+    stub_request(:get, "http://localhost:2990/jira/rest/api/3/search/jql?jql=project=%22SAMPLEPROJECT%22")
+      .with(headers: {
+        'Accept'=>'application/json',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'Authorization'=>/OAuth .*/,
+        'User-Agent'=>/OAuth gem.*/
+      })
+      .to_return(:status => 200, :body => '{ "issues": [ {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ] }', :headers => {})
+  end
+end
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'active_support/core_ext/hash'
 require 'rubygems'

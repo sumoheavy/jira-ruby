@@ -42,7 +42,15 @@ describe JIRA::Resource::Comment do
     let(:expected_attributes_from_put) {
       { "id" => "10000", "body" => "new body" }
     }
-
+    before(:each) do
+      stub_request(:get, "http://foo:bar@localhost:2990/jira/rest/api/2/comment")
+        .with(headers: {
+          'Accept'=>'application/json',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        })
+        .to_return(:status => 200, :body => '{"comments":[{"self":"http://localhost:2990/jira/rest/api/2/issue/10002/comment/10000","id":"10000","body":"This is a comment. Creative."},{"self":"http://localhost:2990/jira/rest/api/2/issue/10002/comment/10001","id":"10001","body":"Another comment."}]}', :headers => {})
+    end
     it_should_behave_like "a resource"
     it_should_behave_like "a resource with a collection GET endpoint"
     it_should_behave_like "a resource with a singular GET endpoint"
