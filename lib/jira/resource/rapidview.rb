@@ -32,9 +32,9 @@ module JIRA
         jql = "id IN(#{issue_ids.join(', ')})"
 
         # Filtering options
-        jql << " AND sprint IS NOT EMPTY" unless options[:include_backlog_items] 
+        jql << " AND sprint IS NOT EMPTY" unless options[:include_backlog_items]
 
-        parent_issues = client.Issue.jql(jql)["issues"]
+        parent_issues = client.Issue.jql(jql)
         subtask_ids = parent_issues.map { |t| t.subtasks.map { |sub| sub['id'] } }.flatten
 
         parent_and_sub_ids = parent_issues.map(&:id) + subtask_ids

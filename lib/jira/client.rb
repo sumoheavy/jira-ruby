@@ -50,7 +50,6 @@ module JIRA
       :site               => 'http://localhost:2990',
       :context_path       => '/jira',
       :rest_base_path     => "/rest/api/2",
-      :rest_base_path_v3 => "/rest/api/3",
       :ssl_verify_mode    => OpenSSL::SSL::VERIFY_PEER,
       :use_ssl            => true,
       :auth_type          => :oauth,
@@ -61,7 +60,6 @@ module JIRA
       options = DEFAULT_OPTIONS.merge(options)
       @options = options
       @options[:rest_base_path] = @options[:context_path] + @options[:rest_base_path]
-      @options[:rest_base_path_v3] = @options[:context_path] + @options[:rest_base_path_v3]
 
       case options[:auth_type]
       when :oauth

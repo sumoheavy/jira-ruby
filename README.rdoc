@@ -235,7 +235,6 @@ Here's the same example as a Sinatra application:
         :access_token_path  => "/plugins/servlet/oauth/access-token",
         :private_key_file   => "rsakey.pem",
         :rest_base_path     => "/rest/api/2",
-        :rest_base_path_v3  => "/rest/api/3",
         :consumer_key       => "jira-ruby-example"
       }
 

@@ -6,7 +6,7 @@ describe JIRA::Resource::Issue do
   end
 
   let(:client) do
-    client = double(options: {rest_base_path: '/jira/rest/api/2', rest_base_path_v3: '/jira/rest/api/3'})
+    client = double(options: {rest_base_path: '/jira/rest/api/2'}  )
     allow(client).to receive(:Field).and_return(JIRA::Resource::FieldFactory.new(client))
     allow(client).to receive(:cache).and_return(OpenStruct.new)
     client
@@ -40,7 +40,7 @@ describe JIRA::Resource::Issue do
     issue = double()
 
     allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
-    expect(client).to receive(:get).with('/jira/rest/api/3/search/jql?expand=transitions.fields').
+    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields').
       and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({"id"=>"1","summary"=>"Bugs Everywhere"})
@@ -69,12 +69,12 @@ describe JIRA::Resource::Issue do
     issue = double()
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get).with('/jira/rest/api/3/search/jql?jql=foo+bar').
+    expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=foo+bar').
       and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client,'foo bar')).to eq({"issues" => [""]})
+    expect(JIRA::Resource::Issue.jql(client,'foo bar')).to eq([''])
   end
 
   it "should search an issue with a jql query string and fields" do
@@ -83,12 +83,12 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/3/search/jql?jql=foo+bar&fields=foo,bar')
+      .with('/jira/rest/api/2/search?jql=foo+bar&fields=foo,bar')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: ['foo','bar'])).to eq({"issues" => [""]})
+    expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: ['foo','bar'])).to eq([''])
   end
 
   it "should search an issue with a jql query string, start at, and maxResults" do
@@ -97,12 +97,12 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/3/search/jql?jql=foo+bar&maxResults=3')
+      .with('/jira/rest/api/2/search?jql=foo+bar&startAt=1&maxResults=3')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3)).to eq({"issues" => [""]})
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', start_at: 1, max_results: 3)).to eq([''])
   end
 
   it "should search an issue with a jql query string and string expand" do
@@ -111,12 +111,12 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/3/search/jql?jql=foo+bar&expand=transitions')
+      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client,'foo bar', expand: 'transitions')).to eq("issues" =>[""])
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', expand: 'transitions')).to eq([''])
   end
 
   it "should search an issue with a jql query string and array expand" do
@@ -125,12 +125,12 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/3/search/jql?jql=foo+bar&expand=transitions')
+      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(["key", "foo"]).and_return('')
 
-    expect(JIRA::Resource::Issue.jql(client,'foo bar', expand: %w(transitions))).to eq("issues" =>[""])
+    expect(JIRA::Resource::Issue.jql(client,'foo bar', expand: %w(transitions))).to eq([''])
   end
 
   it 'should return meta data available for editing an issue' do
@@ -207,18 +207,6 @@ describe JIRA::Resource::Issue do
 
       expect(subject).to have_many(:worklogs, JIRA::Resource::Worklog)
       expect(subject.worklogs.length).to eq(2)
-    end
-  end
-
-  describe "GET /rest/api/3/search/jql" do
-    before(:each) do
-      stub_request(:get, "http://foo:bar@localhost:2990/rest/api/3/search/jql?jql=PROJECT%20=%20'SAMPLEPROJECT'")
-        .with(headers: {
-          'Accept'=>'application/json',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'User-Agent'=>'Ruby'
-        })
-        .to_return(status: 200, body: get_mock_response('issue.json'), headers: {})
     end
   end
 end
