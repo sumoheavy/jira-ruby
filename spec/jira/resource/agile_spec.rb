@@ -31,7 +31,7 @@ describe JIRA::Resource::Agile do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
-      expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
+      expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
       issues = described_class.get_board_issues(client, 1)
@@ -48,7 +48,7 @@ describe JIRA::Resource::Agile do
       expect(client).to receive(:get).with('/jira/rest/agile/1.0/board/1/issue?startAt=50').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
-      expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
+      expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=id+IN%2810546%2C+10547%2C+10556%2C+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29').and_return(response)
       expect(response).to receive(:body).and_return(get_mock_response('board/1_issues.json'))
 
       issues = described_class.get_board_issues(client, 1, startAt: 50)

@@ -42,10 +42,10 @@ describe JIRA::Resource::Issue do
     issue = double
 
     allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=0')
                                    .and_return(response)
     allow(empty_response).to receive(:body).and_return('{"issues":[]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=1')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=1')
                                    .and_return(empty_response)
 
     expect(client).to receive(:Issue).and_return(issue)
@@ -75,7 +75,7 @@ describe JIRA::Resource::Issue do
     issue = double
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=foo+bar')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar')
                                    .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
@@ -89,7 +89,7 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&fields=foo,bar')
+      .with('/jira/rest/api/2/search/jql?jql=foo+bar&fields=foo,bar')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
@@ -103,7 +103,7 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&startAt=1&maxResults=3')
+      .with('/jira/rest/api/2/search/jql?jql=foo+bar&startAt=1&maxResults=3')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
@@ -117,7 +117,7 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=0')
+      .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=0')
       .and_return(response)
 
     expect(described_class.jql(client, 'foo bar', max_results: 0)).to eq(1)
@@ -129,7 +129,7 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
+      .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')
@@ -143,7 +143,7 @@ describe JIRA::Resource::Issue do
 
     allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
     expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
+      .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
       .and_return(response)
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with(%w[key foo]).and_return('')

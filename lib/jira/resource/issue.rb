@@ -67,7 +67,7 @@ module JIRA
         result = []
         loop do
           url = client.options[:rest_base_path] +
-                "/search?expand=transitions.fields&maxResults=#{max_results}&startAt=#{start_at}"
+                "/search/jql?expand=transitions.fields&maxResults=#{max_results}&startAt=#{start_at}"
           response = client.get(url)
           json = parse_json(response.body)
           json['issues'].map do |issue|
@@ -81,7 +81,7 @@ module JIRA
       end
 
       def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true })
-        url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
+        url = client.options[:rest_base_path] + "/search/jql?jql=#{CGI.escape(jql)}"
 
         if options[:fields]
           url << "&fields=#{options[:fields].map do |value|
