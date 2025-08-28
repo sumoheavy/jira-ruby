@@ -2,6 +2,7 @@
     "expand": "schema,names",
     "startAt": 0,
     "maxResults": 50,
+    "isLast": true,
     "total": 2,
     "issues": [
         {

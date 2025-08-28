@@ -3,6 +3,7 @@
   "startAt": 0,
   "maxResults": 1000,
   "total": 9,
+  "isLast": true,
   "issues": [
     {
       "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
