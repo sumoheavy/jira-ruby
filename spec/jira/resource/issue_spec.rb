@@ -71,83 +71,72 @@ describe JIRA::Resource::Issue do
   end
 
   describe '#jql' do
-    it 'searches an issue with a jql query string' do
-      response = double
-      issue = double
+    let(:args) { {} }
+    subject { described_class.jql(client, 'foo bar', args) }
 
-      allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}, "isLast": true}')
+    let(:response_string) { '{"issues": {"key":"foo"}, "isLast": true}' }
+    let(:response) { double }
+    let(:issue) { double }
+
+    before do
+      allow(response).to receive(:body).and_return(response_string)
+      allow(client).to receive(:Issue).and_return(issue)
+      allow(issue).to receive(:build).with(%w[key foo]).and_return('')
+    end
+
+    it 'searches an issue with a jql query string' do
       expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar')
                                      .and_return(response)
-      expect(client).to receive(:Issue).and_return(issue)
-      expect(issue).to receive(:build).with(%w[key foo]).and_return('')
-
       expect(described_class.jql(client, 'foo bar')).to eq([''])
     end
 
     it 'searches an issue with a jql query string and fields' do
-      response = double
-      issue = double
-
-      allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}, "isLast": true}')
       expect(client).to receive(:get)
         .with('/jira/rest/api/2/search/jql?jql=foo+bar&fields=foo,bar')
         .and_return(response)
-      expect(client).to receive(:Issue).and_return(issue)
-      expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
       expect(described_class.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
     end
 
-    it 'searches an issue with a jql query string and maxResults' do
-      response = double
-      issue = double
+    context 'when maxResults is provided' do
+      let(:args) { { max_results: } }
 
-      allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}, "isLast": true}')
-      expect(client).to receive(:get)
-        .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=3')
-        .and_return(response)
-      expect(client).to receive(:Issue).and_return(issue)
-      expect(issue).to receive(:build).with(%w[key foo]).and_return('')
+      context 'and is non-zero' do
+        let(:max_results) { 3 }
+        it 'searches an issue with a jql query string and maxResults' do
+          expect(client).to receive(:get)
+            .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=3')
+            .and_return(response)
 
-      expect(described_class.jql(client, 'foo bar', start_at: 1, max_results: 3)).to eq([''])
-    end
+          expect(subject).to eq([''])
+        end
+      end
 
-    it 'searches an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
-      response = double
-      double
+      context'and is zero' do
+        let(:response_string) { '{"total": 1, "issues": []}' }
+        let(:max_results) { 0 }
+        it 'searches an issue with a jql query string and should return the count of tickets' do
+          expect(client).to receive(:get)
+            .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=0')
+            .and_return(response)
 
-      allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
-      expect(client).to receive(:get)
-        .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=0')
-        .and_return(response)
-
-      expect(described_class.jql(client, 'foo bar', max_results: 0)).to eq(1)
+          expect(subject).to eq(1)
+        end
+      end
     end
 
     it 'searches an issue with a jql query string and string expand' do
-      response = double
-      issue = double
-
-      allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}, "isLast": true}')
       expect(client).to receive(:get)
         .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
         .and_return(response)
-      expect(client).to receive(:Issue).and_return(issue)
-      expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
       expect(described_class.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
     end
 
     it 'searches an issue with a jql query string and array expand' do
-      response = double
-      issue = double
-
-      allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}, "isLast": true}')
       expect(client).to receive(:get)
         .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
         .and_return(response)
-      expect(client).to receive(:Issue).and_return(issue)
-      expect(issue).to receive(:build).with(%w[key foo]).and_return('')
 
       expect(described_class.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
     end
