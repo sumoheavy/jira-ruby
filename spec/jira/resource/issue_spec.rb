@@ -70,7 +70,7 @@ describe JIRA::Resource::Issue do
     expect(issue_from_id.attrs).to eq(issue_from_key.attrs)
   end
 
-  describe '#jql' do
+  describe '.jql' do
     let(:args) { {} }
     subject { described_class.jql(client, 'foo bar', args) }
 
@@ -147,6 +147,27 @@ describe JIRA::Resource::Issue do
         .and_return(response)
 
       expect(described_class.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
+    end
+
+    context 'when pagination is required' do
+      let(:response_string) { '{"issues": [{"key":"foo"}], "isLast": false, "nextPageToken": "abc"}' }
+      let(:second_response_string) { '{"issues": [{"key":"bar"}], "isLast": true}' }
+
+      before do
+        allow(issue).to receive(:build).with({ 'key' => 'foo' }).and_return('1')
+        allow(issue).to receive(:build).with({ 'key' => 'bar' }).and_return('2')
+      end
+
+      it 'makes multiple requests' do
+        expect(client).to receive(:get)
+          .with('/jira/rest/api/2/search/jql?jql=foo+bar')
+          .and_return(response)
+        expect(client).to receive(:get)
+          .with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc')
+          .and_return(double(body: second_response_string))
+
+        expect(subject).to eq(%w[1 2])
+      end
     end
   end
 

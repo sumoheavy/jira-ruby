@@ -96,13 +96,22 @@ module JIRA
           url << "&expand=#{options[:expand].to_a.map { |value| CGI.escape(value.to_s) }.join(',')}"
         end
 
-        response = client.get(url)
-        json = parse_json(response.body)
-        return json['total'] if options[:max_results]&.zero?
+        issues = []
+        next_page_token = nil
+        json = {}
+        while json['isLast'] != true
+          page_url = url.dup
+          page_url << "&nextPageToken=#{next_page_token}" if next_page_token
 
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
+          response = client.get(page_url)
+          json = parse_json(response.body)
+          return json['total'] if options[:max_results]&.zero?
+          next_page_token = json['nextPageToken']
+          json['issues'].map do |issue|
+            issues << client.Issue.build(issue)
+          end
         end
+        issues
       end
 
       # Fetches the attributes for the specified resource from JIRA unless
