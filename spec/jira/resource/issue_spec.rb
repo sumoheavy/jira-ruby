@@ -90,6 +90,14 @@ describe JIRA::Resource::Issue do
       expect(described_class.jql(client, 'foo bar')).to eq([''])
     end
 
+    it 'passes thorugh the reconcileIssues parameter' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search/jql?jql=foo+bar&reconcileIssues=true')
+        .and_return(response)
+
+      expect(described_class.jql(client, 'foo bar', reconcile_issues: true)).to eq([''])
+    end
+
     it 'searches an issue with a jql query string and fields' do
       expect(client).to receive(:get)
         .with('/jira/rest/api/2/search/jql?jql=foo+bar&fields=foo,bar')

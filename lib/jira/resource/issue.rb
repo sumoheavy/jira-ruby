@@ -80,7 +80,7 @@ module JIRA
         result
       end
 
-      def self.jql(client, jql, options = { fields: nil, max_results: nil, expand: nil, validate_query: true })
+      def self.jql(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil })
         url = client.options[:rest_base_path] + "/search/jql?jql=#{CGI.escape(jql)}"
 
         if options[:fields]
@@ -89,7 +89,7 @@ module JIRA
                             end.join(',')}"
         end
         url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
-        url << '&validateQuery=false' if options[:validate_query] === false # rubocop:disable Style/CaseEquality
+        url << "&reconcileIssues=#{CGI.escape(options[:reconcile_issues].to_s)}" if options[:reconcile_issues]
 
         if options[:expand]
           options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
