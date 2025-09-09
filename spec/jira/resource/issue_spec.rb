@@ -71,12 +71,12 @@ describe JIRA::Resource::Issue do
   end
 
   describe '.jql' do
-    let(:args) { {} }
     subject { described_class.jql(client, 'foo bar', args) }
 
-    let(:response_string) { '{"issues": {"key":"foo"}, "isLast": true}' }
-    let(:response) { double }
+    let(:args) { {} }
     let(:issue) { double }
+    let(:response) { double }
+    let(:response_string) { '{"issues": {"key":"foo"}, "isLast": true}' }
 
     before do
       allow(response).to receive(:body).and_return(response_string)
@@ -109,8 +109,9 @@ describe JIRA::Resource::Issue do
     context 'when maxResults is provided' do
       let(:args) { { max_results: } }
 
-      context 'and is non-zero' do
+      context 'with non-zero' do
         let(:max_results) { 3 }
+
         it 'searches an issue with a jql query string and maxResults' do
           expect(client).to receive(:get)
             .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=3')
@@ -120,9 +121,10 @@ describe JIRA::Resource::Issue do
         end
       end
 
-      context'and is zero' do
+      context 'with zero' do
         let(:response_string) { '{"total": 1, "issues": []}' }
         let(:max_results) { 0 }
+
         it 'searches an issue with a jql query string and should return the count of tickets' do
           expect(client).to receive(:get)
             .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=0')

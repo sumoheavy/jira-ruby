@@ -69,7 +69,7 @@ describe JIRA::Resource::Filter do
       startAt: 0,
       maxResults: 50,
       total: 2,
-      isLast: true, 
+      isLast: true,
       issues: [jql_issue]
     }
   end

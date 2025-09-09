@@ -106,6 +106,7 @@ module JIRA
           response = client.get(page_url)
           json = parse_json(response.body)
           return json['total'] if options[:max_results]&.zero?
+
           next_page_token = json['nextPageToken']
           json['issues'].map do |issue|
             issues << client.Issue.build(issue)
