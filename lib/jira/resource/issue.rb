@@ -80,6 +80,11 @@ module JIRA
         result
       end
 
+      # Get issues using JQL query.
+      # @param client [JIRA::Client]
+      # @param jql [String] the JQL query string to search with
+      # @param options [Hash] Jira API options for the search
+      # @return [Array<JIRA::Resource::Issue>] or [Integer] total count if max_results is 0
       def self.jql(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil })
         issues = []
         total = nil
@@ -97,6 +102,10 @@ module JIRA
         options[:max_results]&.zero? ? total : issues
       end
 
+      # Get paged issues using JQL query.
+      # @param jql [String] the JQL query string to search with
+      # @param options [Hash] Jira API options for the search, including next_page_token
+      # @return [Hash] with format { issues: [JIRA::Resource::Issue], next_page_token: [String], total: [Integer] }
       def self.jql_paged(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil, next_page_token: nil })
         url = jql_url(client, jql, options)
         next_page_token = options[:next_page_token]
