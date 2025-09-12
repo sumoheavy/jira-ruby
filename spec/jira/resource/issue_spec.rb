@@ -173,6 +173,40 @@ describe JIRA::Resource::Issue do
     end
   end
 
+  describe '.jql_paged' do
+    let(:issue) { double }
+    let(:response) { double }
+
+    before do
+      allow(response).to receive(:body).and_return(response_string)
+      allow(client).to receive(:Issue).and_return(issue)
+      allow(issue).to receive(:build).with({ 'key' => 'foo' }).and_return('1')
+      allow(issue).to receive(:build).with({ 'key' => 'bar' }).and_return('2')
+      allow(issue).to receive(:build).with({ 'key' => 'baz' }).and_return('3')
+    end
+
+    context 'without next_page_token (first page)' do
+      subject { described_class.jql_paged(client, 'foo bar', page_size: 2) }
+
+      before { expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar').and_return(response) }
+
+      let(:response) { double }
+      let(:response_string) { '{"issues": [{"key":"foo"},{"key":"bar"}], "isLast": false, "nextPageToken": "abc"}' }
+
+      it { is_expected.to eq(issues: %w[1 2], next_page_token: 'abc', total: nil) }
+    end
+
+    context 'with next_page_token' do
+      subject { described_class.jql_paged(client, 'foo bar', page_size: 2, next_page_token: 'abc') }
+
+      let(:response_string) { '{"issues": [{"key":"baz"}], "isLast": true}' }
+
+      before { expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc').and_return(double(body: response_string)) }
+
+      it { is_expected.to eq(issues: %w[3], next_page_token: nil, total: nil) }
+    end
+  end
+
   it 'returns meta data available for editing an issue' do
     subject = described_class.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
     response = double
