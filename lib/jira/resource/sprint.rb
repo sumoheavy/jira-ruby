@@ -20,14 +20,14 @@ module JIRA
       end
 
       def add_issue(issue)
-        add_issues([issue])
+        add_issues([issue]).first
       end
 
       def add_issues(issues)
         issue_ids = issues.map(&:id)
         request_body = { issues: issue_ids }.to_json
         client.post("#{agile_path}/issue", request_body)
-        true
+        issues
       end
 
       def start_date
