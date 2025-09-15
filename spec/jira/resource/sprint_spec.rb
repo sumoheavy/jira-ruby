@@ -127,12 +127,12 @@ describe JIRA::Resource::Sprint do
         { issues: [issue.id] }
       end
 
-      describe '#add_issu' do
+      describe '#add_issue' do
         context 'when an issue is passed' do
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 
-            sprint.add_issue(issue)
+            expect(sprint.add_issue(issue)).to eq(issue)
           end
         end
       end
@@ -160,7 +160,7 @@ describe JIRA::Resource::Sprint do
           it 'posts with the issue id' do
             expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 
-            sprint.add_issues(issues)
+            expect(sprint.add_issues(issues)).to eq(issues)
           end
         end
       end

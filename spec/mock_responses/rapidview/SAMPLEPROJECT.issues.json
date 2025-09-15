@@ -101,6 +101,7 @@
   },
   "canManageSprints": true,
   "maxIssuesExceeded": false,
+  "isLast": true,
   "queryResultLimit": 2147483647,
   "versionData": {
     "versionsPerProject": {

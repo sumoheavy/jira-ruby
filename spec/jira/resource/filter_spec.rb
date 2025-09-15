@@ -28,7 +28,7 @@ describe JIRA::Resource::Filter do
       owner: jira_user,
       jql: '"Git Repository" ~ jira-ruby AND status = Resolved',
       viewUrl: 'https://localhost/secure/IssueNavigator.jspa?mode=hide&requestId=42',
-      searchUrl: 'https://localhost/rest/api/2/search?jql=%22Git+Repository%22+~+jira-ruby+AND+status+%3D+Resolved',
+      searchUrl: 'https://localhost/rest/api/2/search/jql?jql=%22Git+Repository%22+~+jira-ruby+AND+status+%3D+Resolved',
       favourite: false,
       sharePermissions: [
         {
@@ -69,6 +69,7 @@ describe JIRA::Resource::Filter do
       startAt: 0,
       maxResults: 50,
       total: 2,
+      isLast: true,
       issues: [jql_issue]
     }
   end
@@ -86,7 +87,7 @@ describe JIRA::Resource::Filter do
     expect(filter).to be_present
     allow(client).to receive(:options).and_return(rest_base_path: 'localhost')
     expect(client).to receive(:get)
-      .with("localhost/search?jql=#{CGI.escape(filter.jql)}")
+      .with("localhost/search/jql?jql=#{CGI.escape(filter.jql)}")
       .and_return(issue_jql_response)
     issues = filter.issues
     expect(issues).to be_an(Array)

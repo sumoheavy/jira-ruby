@@ -76,7 +76,7 @@ shared_examples 'a resource with JQL inputs and a collection GET endpoint' do
   it 'gets the collection' do
     stub_request(
       :get,
-      "#{site_url}#{client.options[:rest_base_path]}/search?jql=#{CGI.escape(jql_query_string)}"
+      "#{site_url}#{client.options[:rest_base_path]}/search/jql?jql=#{CGI.escape(jql_query_string)}"
     ).to_return(status: 200, body: get_mock_response('issue.json'))
 
     collection = build_receiver.jql(jql_query_string)

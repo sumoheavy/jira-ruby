@@ -62,8 +62,11 @@ Naming/AccessorMethodName:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Enabled: false
+
+Naming/PredicateMethod:
+  AllowBangMethods: true
 
 Naming/VariableNumber:
   Enabled: false

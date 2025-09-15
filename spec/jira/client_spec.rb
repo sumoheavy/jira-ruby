@@ -99,7 +99,7 @@ RSpec.shared_examples 'HttpClient tests' do
 end
 
 RSpec.shared_examples 'OAuth Common Tests' do
-  include_examples 'Client Common Tests'
+  it_behaves_like 'Client Common Tests'
 
   specify { expect(subject.request_client).to be_a JIRA::OauthClient }
 
@@ -162,8 +162,8 @@ describe JIRA::Client do
         .to_return(status: 401, headers: {})
     end
 
-    include_examples 'Client Common Tests'
-    include_examples 'HttpClient tests'
+    it_behaves_like 'Client Common Tests'
+    it_behaves_like 'HttpClient tests'
 
     specify { expect(subject.request_client).to be_a JIRA::HttpClient }
 
@@ -214,8 +214,8 @@ describe JIRA::Client do
         .to_return(status: 200, body: '[]', headers: {})
     end
 
-    include_examples 'Client Common Tests'
-    include_examples 'HttpClient tests'
+    it_behaves_like 'Client Common Tests'
+    it_behaves_like 'HttpClient tests'
 
     specify { expect(subject.request_client).to be_a JIRA::HttpClient }
 
@@ -251,8 +251,8 @@ describe JIRA::Client do
         .to_return(status: 200, body: '[]', headers: {})
     end
 
-    include_examples 'Client Common Tests'
-    include_examples 'HttpClient tests'
+    it_behaves_like 'Client Common Tests'
+    it_behaves_like 'HttpClient tests'
 
     specify { expect(subject.request_client).to be_a JIRA::JwtClient }
 
@@ -286,13 +286,13 @@ describe JIRA::Client do
   context 'with oauth' do
     subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar') }
 
-    include_examples 'OAuth Common Tests'
+    it_behaves_like 'OAuth Common Tests'
   end
 
   context 'with oauth_2legged' do
     subject { described_class.new(consumer_key: 'foo', consumer_secret: 'bar', auth_type: :oauth_2legged) }
 
-    include_examples 'OAuth Common Tests'
+    it_behaves_like 'OAuth Common Tests'
   end
 
   context 'with unknown options' do

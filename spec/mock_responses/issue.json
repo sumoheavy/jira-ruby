@@ -3,6 +3,7 @@
   "startAt": 0,
   "maxResults": 1000,
   "total": 11,
+  "isLast": true,
   "issues": [
     {
       "expand": "editmeta,renderedFields,transitions,changelog",

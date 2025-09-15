@@ -67,7 +67,7 @@ module JIRA
         result = []
         loop do
           url = client.options[:rest_base_path] +
-                "/search?expand=transitions.fields&maxResults=#{max_results}&startAt=#{start_at}"
+                "/search/jql?expand=transitions.fields&maxResults=#{max_results}&startAt=#{start_at}"
           response = client.get(url)
           json = parse_json(response.body)
           json['issues'].map do |issue|
@@ -80,30 +80,39 @@ module JIRA
         result
       end
 
-      def self.jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true })
-        url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
+      def self.jql(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil })
+        url = client.options[:rest_base_path] + "/search/jql?jql=#{CGI.escape(jql)}"
 
         if options[:fields]
           url << "&fields=#{options[:fields].map do |value|
                               CGI.escape(client.Field.name_to_id(value))
                             end.join(',')}"
         end
-        url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
         url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
-        url << '&validateQuery=false' if options[:validate_query] === false # rubocop:disable Style/CaseEquality
+        url << "&reconcileIssues=#{CGI.escape(options[:reconcile_issues].to_s)}" if options[:reconcile_issues]
 
         if options[:expand]
           options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
           url << "&expand=#{options[:expand].to_a.map { |value| CGI.escape(value.to_s) }.join(',')}"
         end
 
-        response = client.get(url)
-        json = parse_json(response.body)
-        return json['total'] if options[:max_results]&.zero?
+        issues = []
+        next_page_token = nil
+        json = {}
+        while json['isLast'] != true
+          page_url = url.dup
+          page_url << "&nextPageToken=#{next_page_token}" if next_page_token
 
-        json['issues'].map do |issue|
-          client.Issue.build(issue)
+          response = client.get(page_url)
+          json = parse_json(response.body)
+          return json['total'] if options[:max_results]&.zero?
+
+          next_page_token = json['nextPageToken']
+          json['issues'].map do |issue|
+            issues << client.Issue.build(issue)
+          end
         end
+        issues
       end
 
       # Fetches the attributes for the specified resource from JIRA unless

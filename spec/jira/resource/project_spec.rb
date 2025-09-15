@@ -42,7 +42,7 @@ describe JIRA::Resource::Project do
       issue_factory = double('issue factory')
 
       expect(client).to receive(:get)
-        .with('/jira/rest/api/2/search?jql=project%3D%22test%22')
+        .with('/jira/rest/api/2/search/jql?jql=project%3D%22test%22')
         .and_return(response)
       expect(client).to receive(:Issue).and_return(issue_factory)
       expect(issue_factory).to receive(:build)
@@ -58,7 +58,7 @@ describe JIRA::Resource::Project do
         issue_factory = double('issue factory')
 
         expect(client).to receive(:get)
-          .with('/jira/rest/api/2/search?jql=project%3D%22test%22&expand=changelog&startAt=1&maxResults=100')
+          .with('/jira/rest/api/2/search/jql?jql=project%3D%22test%22&expand=changelog&startAt=1&maxResults=100')
           .and_return(response)
         expect(client).to receive(:Issue).and_return(issue_factory)
         expect(issue_factory).to receive(:build)
