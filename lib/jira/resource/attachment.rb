@@ -93,16 +93,6 @@ module JIRA
         parse_json(response.body)
       end
 
-      def self.all(client, options = {})
-        issue = options[:issue]
-        raise ArgumentError, 'parent issue is required' unless issue
-        attachments = issue.attachments
-        response = client.get(client.options[:rest_base_path] + '/attachment/')
-      end
-
-      def self.find(client, key, options = {})
-      end
-
       # Opens a file streaming the download of the attachment.
       # @example Write file contents to a file.
       #   File.open('some-filename', 'wb') do |output|
