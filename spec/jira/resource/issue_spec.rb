@@ -7,25 +7,27 @@ describe JIRA::Resource::Issue do
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })
     allow(client).to receive(:Field).and_return(JIRA::Resource::FieldFactory.new(client))
-    allow(client).to receive(:cache).and_return(OpenStruct.new)
+    allow(client).to receive(:field_map_cache).and_return(nil)
     client
   end
 
   describe '#respond_to?' do
     describe 'when decorated by SimpleDelegator' do
-      before(:each) do
+      before do
         response = double
         allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
-        allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
+        allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
         allow(client).to receive(:get).with('/jira/rest/api/2/issue/101')
                                       .and_return(response)
 
-        issue = JIRA::Resource::Issue.find(client, 101)
+        issue = described_class.find(client, 101)
         @decorated = JIRAResourceDelegation.new(issue)
       end
+
       it 'responds to key' do
-        expect(@decorated.respond_to?(:key)).to eq(true)
+        expect(@decorated.respond_to?(:key)).to be(true)
       end
+
       it 'does not raise an error' do
         expect do
           @issue.respond_to?(:project)
@@ -34,123 +36,145 @@ describe JIRA::Resource::Issue do
     end
   end
 
-  it 'should find all issues' do
+  it 'finds all issues' do
     response = double
     empty_response = double
     issue = double
 
     allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=0')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=0')
                                    .and_return(response)
     allow(empty_response).to receive(:body).and_return('{"issues":[]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?expand=transitions.fields&maxResults=1000&startAt=1')
+    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=1')
                                    .and_return(empty_response)
 
     expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with('id' => '1', 'summary' => 'Bugs Everywhere')
+    expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
 
-    issues = JIRA::Resource::Issue.all(client)
+    described_class.all(client)
   end
 
-  it 'should find an issue by key or id' do
+  it 'finds an issue by key or id' do
     response = double
 
     allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
-    allow(JIRA::Resource::Issue).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
+    allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
     expect(client).to receive(:get).with('/jira/rest/api/2/issue/foo')
                                    .and_return(response)
     expect(client).to receive(:get).with('/jira/rest/api/2/issue/101')
                                    .and_return(response)
 
-    issue_from_id = JIRA::Resource::Issue.find(client, 101)
-    issue_from_key = JIRA::Resource::Issue.find(client, 'foo')
+    issue_from_id = described_class.find(client, 101)
+    issue_from_key = described_class.find(client, 'foo')
 
     expect(issue_from_id.attrs).to eq(issue_from_key.attrs)
   end
 
-  it 'should search an issue with a jql query string' do
-    response = double
-    issue = double
+  describe '.jql' do
+    subject { described_class.jql(client, 'foo bar', args) }
 
-    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search?jql=foo+bar')
-                                   .and_return(response)
-    expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with(%w[key foo]).and_return('')
+    let(:args) { {} }
+    let(:issue) { double }
+    let(:response) { double }
+    let(:response_string) { '{"issues": {"key":"foo"}, "isLast": true}' }
 
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar')).to eq([''])
+    before do
+      allow(response).to receive(:body).and_return(response_string)
+      allow(client).to receive(:Issue).and_return(issue)
+      allow(issue).to receive(:build).with(%w[key foo]).and_return('')
+    end
+
+    it 'searches an issue with a jql query string' do
+      expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar')
+                                     .and_return(response)
+      expect(described_class.jql(client, 'foo bar')).to eq([''])
+    end
+
+    it 'passes thorugh the reconcileIssues parameter' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search/jql?jql=foo+bar&reconcileIssues=true')
+        .and_return(response)
+
+      expect(described_class.jql(client, 'foo bar', reconcile_issues: true)).to eq([''])
+    end
+
+    it 'searches an issue with a jql query string and fields' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search/jql?jql=foo+bar&fields=foo,bar')
+        .and_return(response)
+
+      expect(described_class.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
+    end
+
+    context 'when maxResults is provided' do
+      let(:args) { { max_results: } }
+
+      context 'with non-zero' do
+        let(:max_results) { 3 }
+
+        it 'searches an issue with a jql query string and maxResults' do
+          expect(client).to receive(:get)
+            .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=3')
+            .and_return(response)
+
+          expect(subject).to eq([''])
+        end
+      end
+
+      context 'with zero' do
+        let(:response_string) { '{"total": 1, "issues": []}' }
+        let(:max_results) { 0 }
+
+        it 'searches an issue with a jql query string and should return the count of tickets' do
+          expect(client).to receive(:get)
+            .with('/jira/rest/api/2/search/jql?jql=foo+bar&maxResults=0')
+            .and_return(response)
+
+          expect(subject).to eq(1)
+        end
+      end
+    end
+
+    it 'searches an issue with a jql query string and string expand' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
+        .and_return(response)
+
+      expect(described_class.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
+    end
+
+    it 'searches an issue with a jql query string and array expand' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search/jql?jql=foo+bar&expand=transitions')
+        .and_return(response)
+
+      expect(described_class.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
+    end
+
+    context 'when pagination is required' do
+      let(:response_string) { '{"issues": [{"key":"foo"}], "isLast": false, "nextPageToken": "abc"}' }
+      let(:second_response_string) { '{"issues": [{"key":"bar"}], "isLast": true}' }
+
+      before do
+        allow(issue).to receive(:build).with({ 'key' => 'foo' }).and_return('1')
+        allow(issue).to receive(:build).with({ 'key' => 'bar' }).and_return('2')
+      end
+
+      it 'makes multiple requests' do
+        expect(client).to receive(:get)
+          .with('/jira/rest/api/2/search/jql?jql=foo+bar')
+          .and_return(response)
+        expect(client).to receive(:get)
+          .with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc')
+          .and_return(double(body: second_response_string))
+
+        expect(subject).to eq(%w[1 2])
+      end
+    end
   end
 
-  it 'should search an issue with a jql query string and fields' do
-    response = double
-    issue = double
-
-    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&fields=foo,bar')
-      .and_return(response)
-    expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with(%w[key foo]).and_return('')
-
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
-  end
-
-  it 'should search an issue with a jql query string, start at, and maxResults' do
-    response = double
-    issue = double
-
-    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&startAt=1&maxResults=3')
-      .and_return(response)
-    expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with(%w[key foo]).and_return('')
-
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', start_at: 1, max_results: 3)).to eq([''])
-  end
-
-  it 'should search an issue with a jql query string and maxResults equals zero and should return the count of tickets' do
-    response = double
-    issue = double
-
-    allow(response).to receive(:body).and_return('{"total": 1, "issues": []}')
-    expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=0')
-      .and_return(response)
-
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', max_results: 0)).to eq(1)
-  end
-
-  it 'should search an issue with a jql query string and string expand' do
-    response = double
-    issue = double
-
-    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
-      .and_return(response)
-    expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with(%w[key foo]).and_return('')
-
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: 'transitions')).to eq([''])
-  end
-
-  it 'should search an issue with a jql query string and array expand' do
-    response = double
-    issue = double
-
-    allow(response).to receive(:body).and_return('{"issues": {"key":"foo"}}')
-    expect(client).to receive(:get)
-      .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
-      .and_return(response)
-    expect(client).to receive(:Issue).and_return(issue)
-    expect(issue).to receive(:build).with(%w[key foo]).and_return('')
-
-    expect(JIRA::Resource::Issue.jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
-  end
-
-  it 'should return meta data available for editing an issue' do
-    subject = JIRA::Resource::Issue.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
+  it 'returns meta data available for editing an issue' do
+    subject = described_class.new(client, attrs: { 'fields' => { 'key' => 'TST=123' } })
     response = double
 
     allow(response).to receive(:body).and_return(
@@ -164,29 +188,30 @@ describe JIRA::Resource::Issue do
   end
 
   it 'provides direct accessors to the fields' do
-    subject = JIRA::Resource::Issue.new(client, attrs: { 'fields' => { 'foo' => 'bar' } })
+    subject = described_class.new(client, attrs: { 'fields' => { 'foo' => 'bar' } })
     expect(subject).to respond_to(:foo)
     expect(subject.foo).to eq('bar')
   end
 
   describe 'relationships' do
     subject do
-      JIRA::Resource::Issue.new(client, attrs: {
-                                  'id' => '123',
-                                  'fields' => {
-                                    'reporter' => { 'foo' => 'bar' },
-                                    'assignee'    => { 'foo' => 'bar' },
-                                    'project'     => { 'foo' => 'bar' },
-                                    'priority'    => { 'foo' => 'bar' },
-                                    'issuetype'   => { 'foo' => 'bar' },
-                                    'status'      => { 'foo' => 'bar' },
-                                    'components'  => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'versions'    => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'comment'     => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
-                                    'attachment'  => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                                    'worklog'     => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
-                                  }
-                                })
+      described_class.new(client, attrs: {
+                            'id' => '123',
+                            'fields' => {
+                              'reporter' => { 'foo' => 'bar' },
+                              'assignee' => { 'foo' => 'bar' },
+                              'project' => { 'foo' => 'bar' },
+                              'priority' => { 'foo' => 'bar' },
+                              'issuetype' => { 'foo' => 'bar' },
+                              'status' => { 'foo' => 'bar' },
+                              'resolution' => { 'foo' => 'bar' },
+                              'components' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'versions' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
+                              'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
+                              'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
+                            }
+                          })
     end
 
     it 'has the correct relationships' do
@@ -207,6 +232,9 @@ describe JIRA::Resource::Issue do
 
       expect(subject).to have_one(:status, JIRA::Resource::Status)
       expect(subject.status.foo).to eq('bar')
+
+      expect(subject).to have_one(:resolution, JIRA::Resource::Resolution)
+      expect(subject.resolution.foo).to eq('bar')
 
       expect(subject).to have_many(:components, JIRA::Resource::Component)
       expect(subject.components.length).to eq(2)

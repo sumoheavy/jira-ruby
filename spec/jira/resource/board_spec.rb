@@ -21,16 +21,16 @@ describe JIRA::Resource::Board do
       \"type\": \"scrum\"
     }"
     allow(response).to receive(:body).and_return(api_json_board)
-    expect(client).to receive(:get).with('/rest/agile/1.0/board/84')
-                                   .and_return(response)
+    allow(client).to receive(:get).with('/rest/agile/1.0/board/84')
+                                  .and_return(response)
 
-    expect(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
-    JIRA::Resource::Board.find(client, '84')
+    allow(client).to receive(:Board).and_return(JIRA::Resource::BoardFactory.new(client))
+    described_class.find(client, '84')
   end
 
-  it 'should find all boards' do
+  it 'finds all boards' do
     response = double
-    api_json = <<eos
+    api_json = <<EOS
     {
          "maxResults": 50,
          "startAt": 0,
@@ -48,24 +48,24 @@ describe JIRA::Resource::Board do
             }
         ]
     }
-eos
+EOS
     allow(response).to receive(:body).and_return(api_json)
     expect(client).to receive(:get).with('/rest/agile/1.0/board')
                                    .and_return(response)
     expect(client).to receive(:Board).twice.and_return(JIRA::Resource::BoardFactory.new(client))
-    boards = JIRA::Resource::Board.all(client)
+    boards = described_class.all(client)
     expect(boards.count).to eq(2)
   end
 
-  it 'should find one board by id' do
-    expect(board).to be_a(JIRA::Resource::Board)
+  it 'finds one board by id' do
+    expect(board).to be_a(described_class)
   end
 
   describe '#issues' do
-    it 'should find all issues' do
+    it 'finds all issues' do
       issues_response = double
 
-      api_json_issues = <<eos
+      api_json_issues = <<EOS
     {
         "expand": "names,schema",
         "startAt": 0,
@@ -85,7 +85,7 @@ eos
             }
         ]
     }
-eos
+EOS
 
       allow(issues_response).to receive(:body).and_return(api_json_issues)
       allow(board).to receive(:id).and_return(84)
@@ -98,6 +98,7 @@ eos
 
     describe 'pagination' do
       subject { described_class.new(client) }
+
       let(:client) { JIRA::Client.new }
 
       before do
@@ -106,7 +107,7 @@ eos
 
       context 'when there are multiple pages of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 1,
             'total' => 2,
@@ -114,7 +115,7 @@ eos
           }.to_json)
         end
         let(:result_2) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 1,
             'maxResults' => 1,
             'total' => 2,
@@ -131,7 +132,7 @@ eos
 
       context 'when there is only one page of results' do
         let(:result_1) do
-          OpenStruct.new(body: {
+          double(body: {
             'startAt' => 0,
             'maxResults' => 2,
             'total' => 2,
@@ -147,10 +148,10 @@ eos
     end
   end
 
-  it 'should get all sprints for a board' do
+  it 'gets all sprints for a board' do
     response = double
 
-    api_json = <<-eos
+    api_json = <<-EOS
     {
         "values": [
             {
@@ -165,7 +166,7 @@ eos
             }
         ]
     }
-    eos
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
@@ -173,10 +174,10 @@ eos
     expect(board.sprints.size).to be(2)
   end
 
-  it 'should get board configuration for a board' do
+  it 'gets board configuration for a board' do
     response = double
 
-    api_json = <<-eos
+    api_json = <<-EOS
       {
         "id":1,
         "name":"My Board",
@@ -214,11 +215,11 @@ eos
           "rankCustomFieldId":10011
         }
       }
-    eos
+    EOS
     allow(response).to receive(:body).and_return(api_json)
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
     expect(client).to receive(:BoardConfiguration).and_return(JIRA::Resource::BoardConfigurationFactory.new(client))
-    expect(board.configuration).not_to be(nil)
+    expect(board.configuration).not_to be_nil
   end
 end

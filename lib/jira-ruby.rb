@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 $LOAD_PATH << __dir__
 
 require 'active_support'
 require 'active_support/inflector'
 ActiveSupport::Inflector.inflections do |inflector|
-  inflector.singular /status$/, 'status'
+  inflector.singular(/status$/, 'status')
 end
 
 require 'jira/base'
@@ -18,6 +20,7 @@ require 'jira/resource/component'
 require 'jira/resource/issuetype'
 require 'jira/resource/version'
 require 'jira/resource/status'
+require 'jira/resource/status_category'
 require 'jira/resource/transition'
 require 'jira/resource/project'
 require 'jira/resource/properties'
@@ -32,12 +35,11 @@ require 'jira/resource/issue_picker_suggestions_issue'
 require 'jira/resource/issue_picker_suggestions'
 require 'jira/resource/remotelink'
 require 'jira/resource/sprint'
-require 'jira/resource/sprint_report'
+require 'jira/resource/resolution'
 require 'jira/resource/issue'
 require 'jira/resource/filter'
 require 'jira/resource/field'
 require 'jira/resource/rapidview'
-require 'jira/resource/resolution'
 require 'jira/resource/serverinfo'
 require 'jira/resource/createmeta'
 require 'jira/resource/webhook'

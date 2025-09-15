@@ -4,46 +4,59 @@ describe JIRA::Base do
   class JIRADelegation < SimpleDelegator # :nodoc:
   end
 
-  class JIRA::Resource::Deadbeef < JIRA::Base # :nodoc:
+  module JIRA
+    module Resource
+      class Deadbeef < JIRA::Base # :nodoc:
+      end
+    end
   end
 
-  class JIRA::Resource::HasOneExample < JIRA::Base # :nodoc:
-    has_one :deadbeef
-    has_one :muffin, class: JIRA::Resource::Deadbeef
-    has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
-                           nested_under: 'nested'
-    has_one :breakfastscone,
-            class: JIRA::Resource::Deadbeef,
-            nested_under: %w[nested breakfastscone]
-    has_one :irregularly_named_thing,
-            class: JIRA::Resource::Deadbeef,
-            attribute_key: 'irregularlyNamedThing'
+  module JIRA
+    module Resource
+      class HasOneExample < JIRA::Base # :nodoc:
+        has_one :deadbeef
+        has_one :muffin, class: JIRA::Resource::Deadbeef
+        has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
+                               nested_under: 'nested'
+        has_one :breakfastscone,
+                class: JIRA::Resource::Deadbeef,
+                nested_under: %w[nested breakfastscone]
+        has_one :irregularly_named_thing,
+                class: JIRA::Resource::Deadbeef,
+                attribute_key: 'irregularlyNamedThing'
+      end
+    end
   end
 
-  class JIRA::Resource::HasManyExample < JIRA::Base # :nodoc:
-    has_many :deadbeefs
-    has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
-                             nested_under: 'nested'
-    has_many :breakfastscones,
-             class: JIRA::Resource::Deadbeef,
-             nested_under: %w[nested breakfastscone]
-    has_many :irregularly_named_things,
-             class: JIRA::Resource::Deadbeef,
-             attribute_key: 'irregularlyNamedThings'
+  module JIRA
+    module Resource
+      class HasManyExample < JIRA::Base # :nodoc:
+        has_many :deadbeefs
+        has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
+                                 nested_under: 'nested'
+        has_many :breakfastscones,
+                 class: JIRA::Resource::Deadbeef,
+                 nested_under: %w[nested breakfastscone]
+        has_many :irregularly_named_things,
+                 class: JIRA::Resource::Deadbeef,
+                 attribute_key: 'irregularlyNamedThings'
+      end
+    end
   end
+
+  subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
 
   let(:client)  { double('client') }
   let(:attrs)   { {} }
-
-  subject { JIRA::Resource::Deadbeef.new(client, attrs: attrs) }
 
   let(:decorated) { JIRADelegation.new(subject) }
 
   describe '#respond_to?' do
     describe 'when decorated using SimpleDelegator' do
       it 'responds to client' do
-        expect(decorated.respond_to?(:client)).to eq(true)
+        expect(decorated.respond_to?(:client)).to be(true)
       end
+
       it 'does not raise an error' do
         expect do
           decorated.respond_to?(:client)
@@ -68,23 +81,23 @@ describe JIRA::Base do
     expect(first.class).to eq(JIRA::Resource::Deadbeef)
     expect(first.attrs['self']).to eq('http://deadbeef/')
     expect(first.attrs['id']).to eq('98765')
-    expect(first.expanded?).to be_falsey
+    expect(first).not_to be_expanded
   end
 
   it 'finds a deadbeef by id' do
-    response = instance_double('Response', body: '{"self":"http://deadbeef/","id":"98765"}')
+    response = instance_double(Response, body: '{"self":"http://deadbeef/","id":"98765"}')
     expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
     expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
     deadbeef = JIRA::Resource::Deadbeef.find(client, '98765')
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['self']).to eq('http://deadbeef/')
     expect(deadbeef.attrs['id']).to eq('98765')
-    expect(deadbeef.expanded?).to be_truthy
+    expect(deadbeef).to be_expanded
   end
 
   it 'finds a deadbeef containing changelog by id' do
     response = instance_double(
-      'Response',
+      Response,
       body: '{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}'
     )
     expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
@@ -95,13 +108,13 @@ describe JIRA::Base do
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['self']).to eq('http://deadbeef/')
     expect(deadbeef.attrs['id']).to eq('98765')
-    expect(deadbeef.expanded?).to be_truthy
+    expect(deadbeef).to be_expanded
     expect(deadbeef.attrs['changelog']['histories']).to eq([])
   end
 
   it 'builds a deadbeef' do
     deadbeef = JIRA::Resource::Deadbeef.build(client, 'id' => '98765')
-    expect(deadbeef.expanded?).to be_falsey
+    expect(deadbeef).not_to be_expanded
 
     expect(deadbeef.client).to eq(client)
     expect(deadbeef.attrs['id']).to eq('98765')
@@ -125,7 +138,7 @@ describe JIRA::Base do
   end
 
   describe 'collection_path' do
-    before(:each) do
+    before do
       expect(client).to receive(:options).and_return(rest_base_path: '/deadbeef/bar')
     end
 
@@ -147,8 +160,9 @@ describe JIRA::Base do
   end
 
   describe 'dynamic instance methods' do
+    subject     { JIRA::Resource::Deadbeef.new(client, attrs:) }
+
     let(:attrs) { { 'foo' => 'bar', 'flum' => 'goo', 'object_id' => 'dummy' } }
-    subject     { JIRA::Resource::Deadbeef.new(client, attrs: attrs) }
 
     it 'responds to each of the top level attribute names' do
       expect(subject).to respond_to(:foo)
@@ -169,20 +183,20 @@ describe JIRA::Base do
     subject { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '98765' }) }
 
     describe 'not cached' do
-      before(:each) do
-        response = instance_double('Response', body: '{"self":"http://deadbeef/","id":"98765"}')
+      before do
+        response = instance_double(Response, body: '{"self":"http://deadbeef/","id":"98765"}')
         expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
         expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
       it 'sets expanded to true after fetch' do
-        expect(subject.expanded?).to be_falsey
+        expect(subject).not_to be_expanded
         subject.fetch
-        expect(subject.expanded?).to be_truthy
+        expect(subject).to be_expanded
       end
 
       it 'performs a fetch' do
-        expect(subject.expanded?).to be_falsey
+        expect(subject).not_to be_expanded
         subject.fetch
         expect(subject.self).to eq('http://deadbeef/')
         expect(subject.id).to eq('98765')
@@ -191,6 +205,10 @@ describe JIRA::Base do
       it 'performs a fetch if already fetched and force flag is true' do
         subject.expanded = true
         subject.fetch(true)
+
+        expect(subject.self).to eq('http://deadbeef/')
+        expect(subject.id).to eq('98765')
+        expect(subject).to be_expanded
       end
     end
 
@@ -205,7 +223,7 @@ describe JIRA::Base do
     context "with expand parameter 'changelog'" do
       it "fetchs changelogs '" do
         response = instance_double(
-          'Response',
+          Response,
           body: '{"self":"http://deadbeef/","id":"98765","changelog":{"histories":[]}}'
         )
         expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765?expand=changelog').and_return(response)
@@ -222,17 +240,17 @@ describe JIRA::Base do
   end
 
   describe 'save' do
-    let(:response) { double }
-
     subject { JIRA::Resource::Deadbeef.new(client) }
 
-    before(:each) do
+    let(:response) { double }
+
+    before do
       expect(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'POSTs a new record' do
-      response = instance_double('Response', body: '{"id":"123"}')
-      allow(subject).to receive(:new_record?) { true }
+      response = instance_double(Response, body: '{"id":"123"}')
+      allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
       expect(subject.id).to eq('123')
@@ -240,30 +258,33 @@ describe JIRA::Base do
     end
 
     it 'PUTs an existing record' do
-      response = instance_double('Response', body: nil)
-      allow(subject).to receive(:new_record?) { false }
+      response = instance_double(Response, body: nil)
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save('foo' => 'bar')).to be_truthy
       expect(subject.expanded).to be_falsey
     end
 
     it 'merges attrs on save' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":{"fum":"dum"}}').and_return(response)
       subject.attrs = { 'foo' => { 'bar' => 'baz' } }
       subject.save('foo' => { 'fum' => 'dum' })
       expect(subject.foo).to eq('bar' => 'baz', 'fum' => 'dum')
     end
 
-    it 'returns false when an invalid field is set' do # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
-      response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
-      allow(subject).to receive(:new_record?) { false }
-      expect(client).to receive(:put).with('/foo/bar', '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
+    it 'returns false when an invalid field is set' do
+      # The JIRA REST API apparently ignores fields that you aren't allowed to set manually
+      response = instance_double(Response, body: '{"errorMessages":["blah"]}', status: 400)
+      allow(subject).to receive(:new_record?).and_return(false)
+      expect(client).to receive(:put).with('/foo/bar',
+                                           '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('invalid_field' => 'foobar')).to be_falsey
     end
 
-    it 'returns false with exception details when non json response body (unauthorized)' do # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
-      response = double('Response', body: 'totally invalid json', code: 401, message: 'Unauthorized')
+    it 'returns false with exception details when non json response body (unauthorized)' do
+      # Unauthorized requests return a non-json body. This makes sure we can handle non-json bodies on HTTPError
+      response = double(Response, body: 'totally invalid json', code: 401, message: 'Unauthorized')
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_raise(JIRA::HTTPError.new(response))
       expect(subject.save('foo' => 'bar')).to be_falsey
       expect(subject.attrs['exception']['code']).to eq(401)
@@ -272,17 +293,17 @@ describe JIRA::Base do
   end
 
   describe 'save!' do
-    let(:response) { double }
-
     subject { JIRA::Resource::Deadbeef.new(client) }
 
-    before(:each) do
+    let(:response) { double }
+
+    before do
       expect(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'POSTs a new record' do
-      response = instance_double('Response', body: '{"id":"123"}')
-      allow(subject).to receive(:new_record?) { true }
+      response = instance_double(Response, body: '{"id":"123"}')
+      allow(subject).to receive(:new_record?).and_return(true)
       expect(client).to receive(:post).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
       expect(subject.id).to eq('123')
@@ -290,18 +311,19 @@ describe JIRA::Base do
     end
 
     it 'PUTs an existing record' do
-      response = instance_double('Response', body: nil)
-      allow(subject).to receive(:new_record?) { false }
+      response = instance_double(Response, body: nil)
+      allow(subject).to receive(:new_record?).and_return(false)
       expect(client).to receive(:put).with('/foo/bar', '{"foo":"bar"}').and_return(response)
       expect(subject.save!('foo' => 'bar')).to be_truthy
       expect(subject.expanded).to be_falsey
     end
 
     it 'throws an exception when an invalid field is set' do
-      response = instance_double('Response', body: '{"errorMessages":["blah"]}', status: 400)
-      allow(subject).to receive(:new_record?) { false }
-      expect(client).to receive(:put).with('/foo/bar', '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
-      expect(-> { subject.save!('invalid_field' => 'foobar') }).to raise_error(JIRA::HTTPError)
+      response = instance_double(Response, body: '{"errorMessages":["blah"]}', status: 400)
+      allow(subject).to receive(:new_record?).and_return(false)
+      expect(client).to receive(:put).with('/foo/bar',
+                                           '{"invalid_field":"foobar"}').and_raise(JIRA::HTTPError.new(response))
+      expect { subject.save!('invalid_field' => 'foobar') }.to raise_error(JIRA::HTTPError)
     end
   end
 
@@ -320,48 +342,51 @@ describe JIRA::Base do
   end
 
   describe 'delete' do
-    before(:each) do
+    before do
       expect(client).to receive(:delete).with('/foo/bar')
-      allow(subject).to receive(:url) { '/foo/bar' }
+      allow(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'flags itself as deleted' do
-      expect(subject.deleted?).to be_falsey
+      expect(subject).not_to be_deleted
       subject.delete
-      expect(subject.deleted?).to be_truthy
+      expect(subject).to be_deleted
     end
 
     it 'sends a DELETE request' do
       subject.delete
+
+      expect(subject).to have_received(:url)
+      expect(subject).to be_deleted
     end
   end
 
   describe 'new_record?' do
     it 'returns true for new_record? when new object' do
       subject.attrs['id'] = nil
-      expect(subject.new_record?).to be_truthy
+      expect(subject).to be_new_record
     end
 
     it 'returns false for new_record? when id is set' do
       subject.attrs['id'] = '123'
-      expect(subject.new_record?).to be_falsey
+      expect(subject).not_to be_new_record
     end
   end
 
   describe 'has_errors?' do
     it 'returns true when the response contains errors' do
       attrs['errors'] = { 'invalid' => 'Field invalid' }
-      expect(subject.has_errors?).to be_truthy
+      expect(subject).to have_errors
     end
 
     it 'returns false when the response does not contain any errors' do
-      expect(subject.has_errors?).to be_falsey
+      expect(subject).not_to have_errors
     end
   end
 
   describe 'url' do
-    before(:each) do
-      allow(client).to receive(:options) { { rest_base_path: '/foo/bar' } }
+    before do
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo/bar' })
     end
 
     it 'returns self as the URL if set' do
@@ -370,13 +395,13 @@ describe JIRA::Base do
     end
 
     it 'returns path as the URL if set and site options is specified' do
-      allow(client).to receive(:options) { { site: 'http://foo' } }
+      allow(client).to receive(:options).and_return({ site: 'http://foo' })
       attrs['self'] = 'http://foo/bar'
       expect(subject.url).to eq('/bar')
     end
 
     it 'returns path as the URL if set and site options is specified and ends with a slash' do
-      allow(client).to receive(:options) { { site: 'http://foo/' } }
+      allow(client).to receive(:options).and_return({ site: 'http://foo/' })
       attrs['self'] = 'http://foo/bar'
       expect(subject.url).to eq('/bar')
     end
@@ -428,21 +453,21 @@ describe JIRA::Base do
 
     h       = { 'key' => subject }
     h_attrs = { 'key' => subject.attrs }
-    expect(h.to_json).to eq(h_attrs.to_json)
+    expect(h['key'].to_json).to eq(h_attrs['key'].to_json)
   end
 
   describe 'extract attrs from response' do
     subject { JIRA::Resource::Deadbeef.new(client, attrs: {}) }
 
     it 'sets the attrs from a response' do
-      response = instance_double('Response', body: '{"foo":"bar"}')
+      response = instance_double(Response, body: '{"foo":"bar"}')
 
       expect(subject.set_attrs_from_response(response)).to eq('foo' => 'bar')
       expect(subject.foo).to eq('bar')
     end
 
     it "doesn't clobber existing attrs not in response" do
-      response = instance_double('Response', body: '{"foo":"bar"}')
+      response = instance_double(Response, body: '{"foo":"bar"}')
 
       subject.attrs = { 'flum' => 'flar' }
       expect(subject.set_attrs_from_response(response)).to eq('foo' => 'bar')
@@ -451,7 +476,7 @@ describe JIRA::Base do
     end
 
     it 'handles nil response body' do
-      response = instance_double('Response', body: nil)
+      response = instance_double(Response, body: nil)
 
       subject.attrs = { 'flum' => 'flar' }
       expect(subject.set_attrs_from_response(response)).to be_nil
@@ -487,7 +512,9 @@ describe JIRA::Base do
     end
 
     it 'allows the has_many attributes to be nested inside another attribute' do
-      subject = JIRA::Resource::HasManyExample.new(client, attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' }, { 'id' => '456' }] } })
+      subject = JIRA::Resource::HasManyExample.new(client,
+                                                   attrs: { 'nested' => { 'brunchmuffins' => [{ 'id' => '123' },
+                                                                                              { 'id' => '456' }] } })
       expect(subject.brunchmuffins.length).to eq(2)
       subject.brunchmuffins.each do |brunchmuffin|
         expect(brunchmuffin.class).to eq(JIRA::Resource::Deadbeef)
@@ -495,9 +522,12 @@ describe JIRA::Base do
     end
 
     it 'allows it to be deeply nested' do
-      subject = JIRA::Resource::HasManyExample.new(client, attrs: { 'nested' => {
-                                                     'breakfastscone' => { 'breakfastscones' => [{ 'id' => '123' }, { 'id' => '456' }] }
-                                                   } })
+      subject = JIRA::Resource::HasManyExample.new(
+        client,
+        attrs: {
+          'nested' => { 'breakfastscone' => { 'breakfastscones' => [{ 'id' => '123' }, { 'id' => '456' }] } }
+        }
+      )
       expect(subject.breakfastscones.length).to eq(2)
       subject.breakfastscones.each do |breakfastscone|
         expect(breakfastscone.class).to eq(JIRA::Resource::Deadbeef)
@@ -512,7 +542,9 @@ describe JIRA::Base do
     end
 
     it 'allows the attribute key to be specified' do
-      subject = JIRA::Resource::HasManyExample.new(client, attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' }, { 'id' => '456' }] })
+      subject = JIRA::Resource::HasManyExample.new(client,
+                                                   attrs: { 'irregularlyNamedThings' => [{ 'id' => '123' },
+                                                                                         { 'id' => '456' }] })
       expect(subject.irregularly_named_things.length).to eq(2)
       subject.irregularly_named_things.each do |thing|
         expect(thing.class).to eq(JIRA::Resource::Deadbeef)
@@ -545,7 +577,8 @@ describe JIRA::Base do
     end
 
     it 'allows the has_one attributes to be nested inside another attribute' do
-      subject = JIRA::Resource::HasOneExample.new(client, attrs: { 'nested' => { 'brunchmuffin' => { 'id' => '123' } } })
+      subject = JIRA::Resource::HasOneExample.new(client,
+                                                  attrs: { 'nested' => { 'brunchmuffin' => { 'id' => '123' } } })
       expect(subject.brunchmuffin.class).to eq(JIRA::Resource::Deadbeef)
       expect(subject.brunchmuffin.id).to eq('123')
     end
@@ -566,31 +599,35 @@ describe JIRA::Base do
   end
 
   describe 'belongs_to' do
-    class JIRA::Resource::BelongsToExample < JIRA::Base
-      belongs_to :deadbeef
+    module JIRA
+      module Resource
+        class BelongsToExample < JIRA::Base
+          belongs_to :deadbeef
+        end
+      end
     end
 
-    let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
+    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
 
-    subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef: deadbeef) }
+    let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
 
     it 'sets up an accessor for the belongs to relationship' do
       expect(subject.deadbeef).to eq(deadbeef)
     end
 
     it 'raises an exception when initialized without a belongs_to instance' do
-      expect(lambda {
+      expect do
         JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' })
-      }).to raise_exception(ArgumentError, 'Required option :deadbeef missing')
+      end.to raise_exception(ArgumentError, 'Required option :deadbeef missing')
     end
 
     it 'returns the right url' do
-      allow(client).to receive(:options) { { rest_base_path: '/foo' } }
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo' })
       expect(subject.url).to eq('/foo/deadbeef/999/belongstoexample/123')
     end
 
     it 'can be initialized with an instance or a key value' do
-      allow(client).to receive(:options) { { rest_base_path: '/foo' } }
+      allow(client).to receive(:options).and_return({ rest_base_path: '/foo' })
       subject = JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef_id: '987')
       expect(subject.url).to eq('/foo/deadbeef/987/belongstoexample/123')
     end

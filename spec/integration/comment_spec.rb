@@ -7,7 +7,7 @@ describe JIRA::Resource::Comment do
 
     let(:key) { '10000' }
 
-    let(:target) { JIRA::Resource::Comment.new(client, attrs: { 'id' => '99999' }, issue_id: '54321') }
+    let(:target) { described_class.new(client, attrs: { 'id' => '99999' }, issue_id: '54321') }
 
     let(:expected_collection_length) { 2 }
 
@@ -23,7 +23,7 @@ describe JIRA::Resource::Comment do
     let(:expected_attributes) do
       {
         'self' => 'http://localhost:2990/jira/rest/api/2/issue/10002/comment/10000',
-        'id'   => key,
+        'id' => key,
         'body' => 'This is a comment. Creative.'
       }
     end
@@ -42,11 +42,11 @@ describe JIRA::Resource::Comment do
       { 'id' => '10000', 'body' => 'new body' }
     end
 
-    it_should_behave_like 'a resource'
-    it_should_behave_like 'a resource with a collection GET endpoint'
-    it_should_behave_like 'a resource with a singular GET endpoint'
-    it_should_behave_like 'a resource with a DELETE endpoint'
-    it_should_behave_like 'a resource with a POST endpoint'
-    it_should_behave_like 'a resource with a PUT endpoint'
+    it_behaves_like 'a resource'
+    it_behaves_like 'a resource with a collection GET endpoint'
+    it_behaves_like 'a resource with a singular GET endpoint'
+    it_behaves_like 'a resource with a DELETE endpoint'
+    it_behaves_like 'a resource with a POST endpoint'
+    it_behaves_like 'a resource with a PUT endpoint'
   end
 end

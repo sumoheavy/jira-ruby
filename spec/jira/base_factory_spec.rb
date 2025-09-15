@@ -1,11 +1,21 @@
 require 'spec_helper'
 
 describe JIRA::BaseFactory do
-  class JIRA::Resource::FooFactory < JIRA::BaseFactory; end
-  class JIRA::Resource::Foo; end
+  module JIRA
+    module Resource
+      class FooFactory < JIRA::BaseFactory; end
+    end
+  end
+
+  module JIRA
+    module Resource
+      class Foo; end
+    end
+  end
+
+  subject       { JIRA::Resource::FooFactory.new(client) }
 
   let(:client)  { double }
-  subject       { JIRA::Resource::FooFactory.new(client) }
 
   it 'initializes correctly' do
     expect(subject.class).to        eq(JIRA::Resource::FooFactory)

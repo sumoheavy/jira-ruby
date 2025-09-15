@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 gem 'rspec', '~> 3.0.0'
 

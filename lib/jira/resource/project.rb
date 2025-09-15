@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class ProjectFactory < JIRA::BaseFactory # :nodoc:
@@ -15,7 +17,7 @@ module JIRA
 
       # Returns all the issues for this project
       def issues(options = {})
-        search_url = client.options[:rest_base_path] + '/search'
+        search_url = "#{client.options[:rest_base_path]}/search/jql"
         query_params = { jql: "project=\"#{key}\"" }
         query_params.update Base.query_params_for_search(options)
         response = client.get(url_with_query_params(search_url, query_params))
@@ -26,7 +28,7 @@ module JIRA
       end
 
       def users(start_at: nil, max_results: nil)
-        users_url = client.options[:rest_base_path] + '/user/assignable/search'
+        users_url = "#{client.options[:rest_base_path]}/user/assignable/search"
         query_params = { project: key_value }
         query_params['startAt'] = start_at if start_at
         query_params['maxResults'] = max_results if max_results

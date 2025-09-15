@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cgi'
 
 module JIRA
@@ -7,7 +9,7 @@ module JIRA
 
     class RapidView < JIRA::Base
       def self.all(client)
-        response = client.get(path_base(client) + '/rapidview')
+        response = client.get("#{path_base(client)}/rapidview")
         json = parse_json(response.body)
         json['views'].map do |view|
           client.RapidView.build(view)
@@ -44,7 +46,7 @@ module JIRA
 
       def sprints(options = {})
         params = { includeHistoricSprints: options.fetch(:include_historic, false),
-                   includeFutureSprints:   options.fetch(:include_future, false) }
+                   includeFutureSprints: options.fetch(:include_future, false) }
         response = client.get(path_base(client) + "/sprintquery/#{id}?#{params.to_query}")
         json = self.class.parse_json(response.body)
         json['sprints'].map do |sprint|
@@ -56,7 +58,7 @@ module JIRA
       private
 
       def self.path_base(client)
-        client.options[:context_path] + '/rest/greenhopper/1.0'
+        "#{client.options[:context_path]}/rest/greenhopper/1.0"
       end
 
       def path_base(client)

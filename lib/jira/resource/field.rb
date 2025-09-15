@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JIRA
   module Resource
     class FieldFactory < JIRA::BaseFactory # :nodoc:
@@ -19,43 +21,42 @@ module JIRA
 
       def self.map_fields(client)
         field_map = {}
-        field_map_reverse = {}
         fields = client.Field.all
 
         # two pass approach, so that a custom field with the same name
         # as a system field can't take precedence
         fields.each do |f|
           next if f.custom
+
           name = safe_name(f.name)
-          field_map_reverse[f.id] = [f.name, name] # capture both the official name, and the mapped name
           field_map[name] = f.id
         end
 
-        fields.each do |f|
+        fields.each do |f| # rubocop:disable Style/CombinableLoops
           next unless f.custom
+
           name = if field_map.key? f.name
                    renamed = safer_name(f.name, f.id)
                    warn "Duplicate Field name #{f.name} #{f.id} - renaming as #{renamed}"
                    renamed
                  else
                    safe_name(f.name)
-          end
-          field_map_reverse[f.id] = [f.name, name] # capture both the official name, and the mapped name
+                 end
           field_map[name] = f.id
         end
 
-        client.cache.field_map_reverse = field_map_reverse # not sure where this will be used yet, but sure to be useful
-        client.cache.field_map = field_map
+        client.field_map_cache = field_map
       end
 
       def self.field_map(client)
-        client.cache.field_map
+        client.field_map_cache
       end
 
       def self.name_to_id(client, field_name)
         field_name = field_name.to_s
-        return field_name unless client.cache.field_map && client.cache.field_map[field_name]
-        client.cache.field_map[field_name]
+        return field_name unless client.field_map_cache && client.field_map_cache[field_name]
+
+        client.field_map_cache[field_name]
       end
 
       def respond_to?(method_name, _include_all = false)
@@ -66,7 +67,7 @@ module JIRA
         end
       end
 
-      def method_missing(method_name, *args, &block)
+      def method_missing(method_name, *args, &)
         if attrs.key?(method_name.to_s)
           attrs[method_name.to_s]
         else
@@ -74,7 +75,7 @@ module JIRA
           if attrs.key?(official_name)
             attrs[official_name]
           else
-            super(method_name, *args, &block)
+            super
           end
         end
       end

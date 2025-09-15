@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler/gem_tasks'
 
 require 'rubygems'
@@ -13,14 +15,11 @@ task test: %i[prepare spec]
 desc 'Prepare and run rspec tests'
 task :prepare do
   rsa_key = File.expand_path('rsakey.pem')
-  unless File.exist?(rsa_key)
-    raise 'rsakey.pem does not exist, tests will fail.  Run `rake jira:generate_public_cert` first'
-  end
+  Rake::Task['jira:generate_public_cert'].invoke unless File.exist?(rsa_key)
 end
 
 desc 'Run RSpec tests'
-# RSpec::Core::RakeTask.new(:spec)
-RSpec::Core::RakeTask.new(:spec) do |task|
+RSpec::Core::RakeTask.new(:spec, [] => [:prepare]) do |task|
   task.rspec_opts = ['--color', '--format', 'doc']
 end
 

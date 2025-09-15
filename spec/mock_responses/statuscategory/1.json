@@ -1,0 +1,7 @@
+{
+  "self": "http://localhost:2990/jira/rest/api/2/statuscategory/1",
+  "id": 1,
+  "key": "undefined",
+  "colorName": "medium-gray",
+  "name": "No Category"
+}

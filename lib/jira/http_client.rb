@@ -1,17 +1,53 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'net/https'
 require 'cgi/cookie'
 require 'uri'
 
 module JIRA
+  # Client using HTTP Basic Authentication
+  # @example Basic authentication
+  #   options = {
+  #     auth_type:        :basic,
+  #     site:             "https://jira.example.com",
+  #     use_ssl:          true,
+  #     ssl_verify_mode:  OpenSSL::SSL::VERIFY_PEER,
+  #     cert_path:        '/usr/local/etc/trusted-certificates.pem',
+  #     username:         'jamie',
+  #     password:         'password'
+  #   }
+  #   client = JIRA::Client.new(options)
+  # @example Bearer token authentication
+  #   options = {
+  #     auth_type:        :basic,
+  #     site:             "https://jira.example.com",
+  #     default_headers:  { 'authorization' => "Bearer #{bearer_token_str}" },
+  #     use_ssl:          true,
+  #     ssl_verify_mode:  OpenSSL::SSL::VERIFY_PEER
+  #     cert_path:        '/usr/local/etc/trusted-certificates.pem',
+  #   }
+  #   client = JIRA::Client.new(options)
   class HttpClient < RequestClient
+    # @private
     DEFAULT_OPTIONS = {
       username: nil,
       password: nil
     }.freeze
 
+    # @!attribute [r] options
+    #   @return [Hash] The client options
     attr_reader :options
 
+    # Generally not used directly, but through JIRA::Client.
+    # See JIRA::Client for documentation.
+    # @param [Hash] options Options as passed from JIRA::Client constructor.
+    # @option options [String] :username The username to authenticate with
+    # @option options [String] :password The password to authenticate with
+    # @option options [Hash] :default_headers Additional headers for requests
+    # @option options [String] :proxy_uri Proxy URI
+    # @option options [String] :proxy_user Proxy user
+    # @option options [String] :proxy_password Proxy Password
     def initialize(options)
       @options = DEFAULT_OPTIONS.merge(options)
       @cookies = {}
@@ -21,9 +57,21 @@ module JIRA
       body = { username: @options[:username].to_s, password: @options[:password].to_s }.to_json
       @options.delete(:username)
       @options.delete(:password)
-      make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
+      make_request(:post, "#{@options[:context_path]}/rest/auth/1/session", body, 'Content-Type' => 'application/json')
     end
 
+    # Makes a request to the JIRA server.
+    #
+    # Generally you should not call this method directly, but use the helper methods in JIRA::Client.
+    #
+    # File uploads are not supported with this method.  Use make_multipart_request instead.
+    #
+    # @param [Symbol] http_method The HTTP method to use
+    # @param [String] url The JIRA REST URL to call
+    # @param [String] body The request body
+    # @param [Hash] headers Additional headers to send with the request
+    # @return [Net::HTTPResponse] The response from the server
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def make_request(http_method, url, body = '', headers = {})
       # When a proxy is enabled, Net::HTTP expects that the request path omits the domain name
       path = request_path(url)
@@ -33,6 +81,17 @@ module JIRA
       execute_request(request)
     end
 
+    # Makes a multipart request to the JIRA server.
+    #
+    # This is used for file uploads.
+    #
+    # Generally you should not call this method directly, but use the helper methods in JIRA::Client.
+    #
+    # @param [String] url The JIRA REST URL to call
+    # @param [Hash] body The Net::HTTP::Post::Multipart data to send with the request
+    # @param [Hash] headers The headers to send with the request
+    # @return [Net::HTTPResponse] The response object
+    # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def make_multipart_request(url, body, headers = {})
       path = request_path(url)
       request = Net::HTTP::Post::Multipart.new(path, body, headers)
@@ -40,17 +99,20 @@ module JIRA
       execute_request(request)
     end
 
+    # @private
     def basic_auth_http_conn
       http_conn(uri)
     end
 
+    # @private
     def http_conn(uri)
-      if @options[:proxy_address]
-        http_class = Net::HTTP::Proxy(@options[:proxy_address], @options[:proxy_port] || 80, @options[:proxy_username], @options[:proxy_password])
-      else
-        http_class = Net::HTTP
-      end
-      http_conn = http_class.new(uri.host, uri.port)
+      http_conn =
+        if @options[:proxy_address]
+          Net::HTTP.new(uri.host, uri.port, @options[:proxy_address], @options[:proxy_port] || 80,
+                        @options[:proxy_username], @options[:proxy_password])
+        else
+          Net::HTTP.new(uri.host, uri.port)
+        end
       http_conn.use_ssl = @options[:use_ssl]
       if @options[:use_client_cert]
         http_conn.cert = @options[:ssl_client_cert]
@@ -59,13 +121,19 @@ module JIRA
       http_conn.verify_mode = @options[:ssl_verify_mode]
       http_conn.ssl_version = @options[:ssl_version] if @options[:ssl_version]
       http_conn.read_timeout = @options[:read_timeout]
+      http_conn.max_retries = @options[:max_retries] if @options[:max_retries]
+      http_conn.ca_file = @options[:ca_file] if @options[:ca_file]
       http_conn
     end
 
+    # The URI of the JIRA REST API call
+    # @return [URI] The URI of the JIRA REST API call
     def uri
       URI.parse(@options[:site])
     end
 
+    # Returns true if the client is authenticated.
+    # @return [Boolean] True if the client is authenticated
     def authenticated?
       @authenticated
     end
@@ -93,12 +161,12 @@ module JIRA
 
     def store_cookies(response)
       cookies = response.get_fields('set-cookie')
-      if cookies
-        cookies.each do |cookie|
-          data = CGI::Cookie.parse(cookie)
-          data.delete('Path')
-          @cookies.merge!(data)
-        end
+      return unless cookies
+
+      cookies.each do |cookie|
+        data = CGI::Cookie.parse(cookie)
+        data.delete('Path')
+        @cookies.merge!(data)
       end
     end
 

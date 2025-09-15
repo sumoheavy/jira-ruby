@@ -9,5 +9,7 @@ pkg/*
 .DS_STORE
 doc
 .ruby-version
+.yardoc
+doc
 
 .rakeTasks
