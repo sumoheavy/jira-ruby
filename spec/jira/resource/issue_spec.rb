@@ -210,6 +210,7 @@ describe JIRA::Resource::Issue do
                               'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
                               'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                               'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
+                              'properties' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                             }
                           })
     end
@@ -250,6 +251,9 @@ describe JIRA::Resource::Issue do
 
       expect(subject).to have_many(:worklogs, JIRA::Resource::Worklog)
       expect(subject.worklogs.length).to eq(2)
+
+      expect(subject).to have_many(:properties, JIRA::Resource::Properties)
+      expect(subject.properties.length).to eq(2)
     end
   end
 end
