@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'active_support/inflector'
+
 module JIRA
   module Resource
     class PropertiesFactory < JIRA::BaseFactory # :nodoc:
@@ -7,57 +11,45 @@ module JIRA
       belongs_to :issue
 
       def self.key_attribute
-        'key'
+        :key
       end
 
       def self.all(client, options = {})
         issue = options[:issue]
         raise ArgumentError, 'parent issue is required' unless issue
-        issue_properties = issue.properties
+
         response = client.get("#{issue.url}/#{endpoint_name}")
         json = parse_json(response.body)
-        json['keys'].each do |prop|
-          response = client.get(prop['self'])
-          property = parse_json(response.body)
-          issue_properties.build(property)
-        end
-        issue_properties
-      end
-
-      def self.find(client, key, options = {})
-        issue = options[:issue]
-        raise ArgumentError, 'parent issue is required' unless issue
-        ## Determine if we already have this property (via all or previous find)
-        response = client.get("#{issue.url}/#{endpoint_name}/#{key}")
-        property = parse_json(response.body)
-        issue.properties.build(property)
-      end
-
-      def initialize(client, options = {})
-        super(client, options)
-        ## Automatically convert attrs to a hash of just the resource key
-        ## if it's just a String (this simplifies the use case of build with just the key)
-        @attrs = {self.class.key_attribute => @attrs} if @attrs.is_a?(String)
-        if @attrs[self.class.key_attribute].nil?
-          raise ArgumentError, "Required option #{self.class.key_attribute.inspect} is required"
+        json[key_attribute.to_s.pluralize].map do |attrs|
+          ## Net get the individual property
+          self_response = client.get(attrs['self'])
+          property = parse_json(self_response.body)
+          ## Make sure to build the new resource via the issue.properties in order to support the has_many proxy
+          issue.properties.build(property)
         end
       end
 
-      ## force new_record? to false to always force :put (the only REST option for setting issue property)
-      def new_record?
-        false
-      end
+      ## Override save so we can handle the required attrs (and default 'value' when appropriate)
+      def save!(attrs = {}, path = nil)
+        if attrs.is_a?(Hash) && attrs.key?(self.class.key_attribute.to_s)
+          raise ArgumentError, "Use of 'value' is required when '#{self.class.key_attribute}' is provided" \
+            unless attrs.key?('value')
 
-      ## Override save so we can default the attrs
-      def save!(attrs = {}, _path = nil)
-        attrs = {'value' => attrs} unless attrs.is_a?(Hash)
-        ## Note: the .dup here prevents set_attrs from trying to re-insert the same value into itself
-        super(attrs.empty? ? @attrs['value'].dup : attrs.key?('value') ? attrs['value'] : attrs, _path)
-      end
+          set_attrs(self.class.key_attribute.to_s => attrs[self.class.key_attribute.to_s])
+        end
 
-      ## Note: save ultimately calls save!, so put the real logic in there
-      def save(attrs = {}, _path = nil)
-        super(attrs, _path)
+        raise ArgumentError, "'key' is required on a new record" if new_record?
+
+        path ||= patched_url
+        ## We can take either the 'value' element from the hash, OR use the entire attrs as the value
+        value = attrs.is_a?(Hash) && attrs.key?('value') ? attrs['value'] : attrs
+        value = '' if value.nil?
+        ## Note: this API endpoint requires a non-empty JSON body for the value of the property
+        ## Note2: this API endpoint does not return a body, so no need to call set_attrs_from_response
+        client.send(:put, path, value)
+        set_attrs({ 'value' => value }, false)
+        @expanded = false
+        true
       end
     end
   end

@@ -210,8 +210,8 @@ describe JIRA::Resource::Issue do
                               'comment' => { 'comments' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] },
                               'attachment' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
                               'worklog' => { 'worklogs' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }] }
-                              'properties' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }],
-                            }
+                            },
+                            'properties' => [{ 'foo' => 'bar' }, { 'baz' => 'flum' }]
                           })
     end
 

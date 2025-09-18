@@ -167,12 +167,11 @@ module JIRA
         # Actually fetch the attachment
         # Note: Jira handles attachment's weird!
         # Typically, they respond with a redirect location that should not have the same authentication
-        begin
-          client.get(attrs['content'])
-        rescue JIRA::HTTPError => ex
-          raise ex unless ex.response.code =~ /\A3\d\d\z/ && ex.response['location'].present?
-          Net::HTTP.get_response(URI(ex.response['location']))
-        end
+        client.get(attrs['content'])
+      rescue JIRA::HTTPError => e
+        raise e unless e.response.code =~ /\A3\d\d\z/ && e.response['location'].present?
+
+        Net::HTTP.get_response(URI(e.response['location']))
       end
 
       private

@@ -302,6 +302,10 @@ module JIRA
       JIRA::Resource::AgileFactory.new(self)
     end
 
+    def Properties
+      JIRA::Resource::PropertiesFactory.new(self)
+    end
+
     # HTTP methods without a body
 
     # Make an HTTP DELETE request
