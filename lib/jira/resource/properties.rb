@@ -46,7 +46,7 @@ module JIRA
         value = '' if value.nil?
         ## Note: this API endpoint requires a non-empty JSON body for the value of the property
         ## Note2: this API endpoint does not return a body, so no need to call set_attrs_from_response
-        client.send(:put, path, value)
+        client.send(:put, path, value.to_json)
         set_attrs({ 'value' => value }, false)
         @expanded = false
         true
