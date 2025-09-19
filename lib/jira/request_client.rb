@@ -22,9 +22,18 @@ module JIRA
     # @raise [JIRA::HTTPError] if it was not successful
     def request(*args)
       response = make_request(*args)
-      raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
 
-      response
+      if response.is_a?(Net::HTTPResponse)
+        raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+        return response
+      end
+
+      if response.respond_to?(:status)
+        raise HTTPError, response unless (200..299).include?(response&.status)
+        return response
+      end
+
+      raise HTTPError, response
     end
 
     # Makes a multipart request to the JIRA server.
@@ -38,9 +47,18 @@ module JIRA
     # @raise [JIRA::HTTPError] if it was not successful
     def request_multipart(*args)
       response = make_multipart_request(*args)
-      raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
 
-      response
+      if response.is_a?(Net::HTTPResponse)
+        raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
+        return response
+      end
+
+      if response.respond_to?(:status)
+        raise HTTPError, response unless (200..299).include?(response&.status)
+        return response
+      end
+
+      raise HTTPError, response
     end
 
     # Abstract method to make a request to the JIRA server.
