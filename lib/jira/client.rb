@@ -302,6 +302,10 @@ module JIRA
       JIRA::Resource::AgileFactory.new(self)
     end
 
+    def Properties
+      JIRA::Resource::PropertiesFactory.new(self)
+    end
+
     # HTTP methods without a body
 
     # Make an HTTP DELETE request
@@ -351,7 +355,9 @@ module JIRA
     # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def post_multipart(path, file, headers = {})
       puts "post multipart: #{path} - [#{file}]" if @http_debug
-      @request_client.request_multipart(path, file, merge_default_headers(headers))
+      res = @request_client.request_multipart(path, file, merge_default_headers(headers))
+      puts "response: #{res}" if @http_debug
+      res
     end
 
     # Make an HTTP PUT request
@@ -375,7 +381,9 @@ module JIRA
     # @raise [JIRA::HTTPError] If the response is not an HTTP success code
     def request(http_method, path, body = '', headers = {})
       puts "#{http_method}: #{path} - [#{body}]" if @http_debug
-      @request_client.request(http_method, path, body, headers)
+      res = @request_client.request(http_method, path, body, headers)
+      puts "response: #{res}" if @http_debug
+      res
     end
 
     # @private

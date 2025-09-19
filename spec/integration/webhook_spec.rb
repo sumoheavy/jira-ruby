@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Webhook do
-  with_each_client do |site_url, client|
+  ## This endpoint uses a different base path, so override this client's rest_base_path option
+  ## so this test can still use the SharedExampleGroups
+  with_each_client(rest_base_path: described_class.const_get(:REST_BASE_PATH)) do |site_url, client|
     let(:client) { client }
     let(:site_url) { site_url }
 
@@ -20,7 +22,7 @@ describe JIRA::Resource::Webhook do
 
     it 'returns a collection of components' do
       stub_request(:get, site_url + described_class.singular_path(client, key))
-        .to_return(status: 200, body: get_mock_response('webhook/webhook.json'))
+        .to_return(status: 200, body: get_mock_response('webhook/2.json'))
 
       webhook = client.Webhook.find(key)
 

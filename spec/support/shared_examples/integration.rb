@@ -1,20 +1,18 @@
 require 'cgi'
 
-def get_mock_from_path(method, options = {})
-  prefix = if defined? belongs_to
-             "#{belongs_to.path_component}/"
-           else
-             ''
-           end
+def build_url(options = {})
+  prefix = defined?(belongs_to) ? "#{belongs_to.path_component}/" : '/'
+  path = if options.key?(:key)
+           described_class.singular_path(client, options[:key], prefix)
+         else
+           described_class.collection_path(client, prefix)
+         end
+  site_url + path
+end
 
-  url = if options[:url]
-          options[:url]
-        elsif options[:key]
-          described_class.singular_path(client, options[:key], prefix)
-        else
-          described_class.collection_path(client, prefix)
-        end
-  file_path = url.sub(client.options[:rest_base_path], '')
+def get_mock_from_url(method, url, options = {})
+  # Remove site_url and rest api portion of the url
+  file_path = url.sub(site_url + client.options[:rest_base_path], '')
   file_path = "#{file_path}.#{options[:suffix]}" if options[:suffix]
   file_path = "#{file_path}.#{method}" unless method == :get
   value_if_not_found = options.key?(:value_if_not_found) ? options[:value_if_not_found] : false
@@ -63,8 +61,8 @@ end
 
 shared_examples 'a resource with a collection GET endpoint' do
   it 'gets the collection' do
-    stub_request(:get, site_url + described_class.collection_path(client))
-      .to_return(status: 200, body: get_mock_from_path(:get))
+    req_url = build_url
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_from_url(:get, req_url))
     collection = build_receiver.all
 
     expect(collection.length).to eq(expected_collection_length)
@@ -74,10 +72,8 @@ end
 
 shared_examples 'a resource with JQL inputs and a collection GET endpoint' do
   it 'gets the collection' do
-    stub_request(
-      :get,
-      "#{site_url}#{client.options[:rest_base_path]}/search/jql?jql=#{CGI.escape(jql_query_string)}"
-    ).to_return(status: 200, body: get_mock_response('issue.json'))
+    req_url = "#{site_url}#{client.options[:rest_base_path]}/search/jql?jql=#{CGI.escape(jql_query_string)}"
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_response('issue.json'))
 
     collection = build_receiver.jql(jql_query_string)
 
@@ -90,8 +86,8 @@ shared_examples 'a resource with a singular GET endpoint' do
   it 'GETs a single resource' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.find()
-    stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key:))
+    req_url = build_url(key:)
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_from_url(:get, req_url))
     subject = client.send(class_basename).find(key, options)
 
     expect(subject).to have_attributes(expected_attributes)
@@ -100,8 +96,8 @@ shared_examples 'a resource with a singular GET endpoint' do
   it 'builds and fetches a single resource' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.build('key' => 'ABC123')
-    stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key:))
+    req_url = build_url(key:)
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_from_url(:get, req_url))
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
@@ -110,7 +106,7 @@ shared_examples 'a resource with a singular GET endpoint' do
   end
 
   it 'handles a 404' do
-    stub_request(:get, site_url + described_class.singular_path(client, '99999', prefix))
+    stub_request(:get, build_url(key: '99999'))
       .to_return(status: 404, body: "{\"errorMessages\":[\"#{class_basename} Does Not Exist\"],\"errors\": {}}")
     expect do
       client.send(class_basename).find('99999', options)
@@ -122,8 +118,8 @@ shared_examples 'a resource with a DELETE endpoint' do
   it 'deletes a resource' do
     # E.g., for JIRA::Resource::Project, we need to call
     # client.Project.delete()
-    stub_request(:delete, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 204, body: nil)
+    req_url = build_url(key:)
+    stub_request(:delete, req_url).to_return(status: 204, body: nil)
 
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     expect(subject.delete).to be_truthy
@@ -132,8 +128,8 @@ end
 
 shared_examples 'a resource with a POST endpoint' do
   it 'saves a new resource' do
-    stub_request(:post, site_url + described_class.collection_path(client, prefix))
-      .to_return(status: 201, body: get_mock_from_path(:post))
+    req_url = build_url
+    stub_request(:post, req_url).to_return(status: 201, body: get_mock_from_url(:post, req_url))
     subject = build_receiver.build
     expect(subject.save(attributes_for_post)).to be_truthy
     expected_attributes_from_post.each do |method_name, value|
@@ -144,10 +140,10 @@ end
 
 shared_examples 'a resource with a PUT endpoint' do
   it 'saves an existing component' do
-    stub_request(:get, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:get, key:))
-    stub_request(:put, site_url + described_class.singular_path(client, key, prefix))
-      .to_return(status: 200, body: get_mock_from_path(:put, key:, value_if_not_found: nil))
+    req_url = build_url(key:)
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_from_url(:get, req_url))
+    stub_request(:put, req_url)
+      .to_return(status: 200, body: get_mock_from_url(:put, req_url, value_if_not_found: nil))
     subject = build_receiver.build(described_class.key_attribute.to_s => key)
     subject.fetch
     expect(subject.save(attributes_for_put)).to be_truthy
@@ -159,10 +155,10 @@ end
 
 shared_examples 'a resource with a PUT endpoint that rejects invalid fields' do
   it 'fails to save with an invalid field' do
-    stub_request(:get, site_url + described_class.singular_path(client, key))
-      .to_return(status: 200, body: get_mock_from_path(:get, key:))
-    stub_request(:put, site_url + described_class.singular_path(client, key))
-      .to_return(status: 400, body: get_mock_from_path(:put, key:, suffix: 'invalid'))
+    req_url = build_url(key:)
+    stub_request(:get, req_url).to_return(status: 200, body: get_mock_from_url(:get, req_url))
+    stub_request(:put, req_url)
+      .to_return(status: 400, body: get_mock_from_url(:put, req_url, suffix: 'invalid'))
     subject = client.send(class_basename).build(described_class.key_attribute.to_s => key)
     subject.fetch
 

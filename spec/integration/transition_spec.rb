@@ -38,9 +38,10 @@ describe JIRA::Resource::Transition do
 
     describe 'POST endpoint' do
       it 'saves a new resource' do
-        stub_request(:post, /#{described_class.collection_path(client, prefix)}$/)
+        req_url = build_url
+        stub_request(:post, req_url)
           .with(body: attributes_for_post.to_json)
-          .to_return(status: 200, body: get_mock_from_path(:post))
+          .to_return(status: 200, body: get_mock_from_url(:post, req_url))
         subject = build_receiver.build
         expect(subject.save(attributes_for_post)).to be_truthy
       end
