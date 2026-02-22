@@ -78,10 +78,9 @@ describe JIRA::Resource::Issue do
     end
 
     describe 'GET jql issues' do # JIRA::Resource::Issue.jql uses the search endpoint
-      jql_query_string = "PROJECT = 'SAMPLEPROJECT'"
       let(:client) { client }
       let(:site_url) { site_url }
-      let(:jql_query_string) { jql_query_string }
+      let(:jql_query_string) { "PROJECT = 'SAMPLEPROJECT'" }
 
       let(:expected_attributes) do
         {
