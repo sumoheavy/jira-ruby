@@ -81,7 +81,57 @@ module JIRA
         result
       end
 
+      # Get issues using JQL query.
+      # @param client [JIRA::Client]
+      # @param jql [String] the JQL query string to search with
+      # @param options [Hash] Jira API options for the search
+      # @return [Array<JIRA::Resource::Issue>] or [Integer] total count if max_results is 0
       def self.jql(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil })
+        issues = []
+        total = nil
+        next_page_token = nil
+        is_last = false
+
+        until is_last
+          result = jql_paged(client, jql, options.merge(next_page_token:))
+
+          issues.concat(result[:issues])
+          total = result[:total]
+          next_page_token = result[:next_page_token]
+          is_last = next_page_token.nil?
+        end
+        options[:max_results]&.zero? ? total : issues
+      end
+
+      # Get paged issues using JQL query.
+      # @param jql [String] the JQL query string to search with
+      # @param options [Hash] Jira API options for the search, including next_page_token
+      # @return [Hash] with format { issues: [JIRA::Resource::Issue], next_page_token: [String], total: [Integer] }
+      def self.jql_paged(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil, next_page_token: nil })
+        url = jql_url(client, jql, options)
+        next_page_token = options[:next_page_token]
+        max_results = options[:max_results]
+
+        issues = []
+
+        page_url = url.dup
+        page_url << "&nextPageToken=#{next_page_token}" if next_page_token
+
+        response = client.get(page_url)
+        json = parse_json(response.body)
+        total = json['total']
+
+        unless max_results&.zero?
+          next_page_token = json['nextPageToken']
+          json['issues'].map do |issue|
+            issues << client.Issue.build(issue)
+          end
+        end
+
+        { issues:, next_page_token:, total: }
+      end
+
+      def self.jql_url(client, jql, options)
         url = client.options[:rest_base_path] + "/search/jql?jql=#{CGI.escape(jql)}"
 
         if options[:fields]
@@ -96,24 +146,7 @@ module JIRA
           options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
           url << "&expand=#{options[:expand].to_a.map { |value| CGI.escape(value.to_s) }.join(',')}"
         end
-
-        issues = []
-        next_page_token = nil
-        json = {}
-        while json['isLast'] != true
-          page_url = url.dup
-          page_url << "&nextPageToken=#{next_page_token}" if next_page_token
-
-          response = client.get(page_url)
-          json = parse_json(response.body)
-          return json['total'] if options[:max_results]&.zero?
-
-          next_page_token = json['nextPageToken']
-          json['issues'].map do |issue|
-            issues << client.Issue.build(issue)
-          end
-        end
-        issues
+        url
       end
 
       # Fetches the attributes for the specified resource from JIRA unless
