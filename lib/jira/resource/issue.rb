@@ -57,6 +57,7 @@ module JIRA
       has_many :issuelinks, nested_under: 'fields'
       has_many :remotelink, class: JIRA::Resource::Remotelink
       has_many :watchers, attribute_key: 'watches', nested_under: %w[fields watches]
+      has_many :properties, class: JIRA::Resource::Properties
 
       # Get collection of issues.
       # @param client [JIRA::Client]

@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "key": "xyz",
+      "self": "http://localhost:2990/jira/rest/api/2/issue/10002/properties/xyz"
+    },
+    {
+      "key": "foo",
+      "self": "http://localhost:2990/jira/rest/api/2/issue/10002/properties/foo"
+    }
+  ]
+}

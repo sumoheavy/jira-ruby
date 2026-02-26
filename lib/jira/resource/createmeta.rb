@@ -12,22 +12,22 @@ module JIRA
 
       def self.all(client, params = {})
         if params.key?(:projectKeys)
-          values = Array(params[:projectKeys]).map { |i| (i.is_a?(JIRA::Resource::Project) ? i.key : i) }
+          values = Array(params[:projectKeys]).map { |i| i.is_a?(JIRA::Resource::Project) ? i.key : i }
           params[:projectKeys] = values.join(',')
         end
 
         if params.key?(:projectIds)
-          values = Array(params[:projectIds]).map { |i| (i.is_a?(JIRA::Resource::Project) ? i.id : i) }
+          values = Array(params[:projectIds]).map { |i| i.is_a?(JIRA::Resource::Project) ? i.id : i }
           params[:projectIds] = values.join(',')
         end
 
         if params.key?(:issuetypeNames)
-          values = Array(params[:issuetypeNames]).map { |i| (i.is_a?(JIRA::Resource::Issuetype) ? i.name : i) }
+          values = Array(params[:issuetypeNames]).map { |i| i.is_a?(JIRA::Resource::Issuetype) ? i.name : i }
           params[:issuetypeNames] = values.join(',')
         end
 
         if params.key?(:issuetypeIds)
-          values = Array(params[:issuetypeIds]).map { |i| (i.is_a?(JIRA::Resource::Issuetype) ? i.id : i) }
+          values = Array(params[:issuetypeIds]).map { |i| i.is_a?(JIRA::Resource::Issuetype) ? i.id : i }
           params[:issuetypeIds] = values.join(',')
         end
 

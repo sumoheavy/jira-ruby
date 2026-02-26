@@ -146,10 +146,14 @@ module JIRA
       # @raise [JIRA::HTTPError] if failed
       def save!(attrs, path = url)
         file = attrs['file'] || attrs[:file] # Keep supporting 'file' parameter as a string for backward compatibility
-        mime_type = attrs[:mimeType] || 'application/binary'
+        # If :filename does not exist or is nil, that is fine as it will force
+        # Upload to determine the filename automatically from file.
+        # Breaking the filename out allows this to support any IO-based file parameter.
+        fname = attrs['filename'] || attrs[:filename]
+        mime_type = attrs['mimeType'] || attrs[:mimeType] || 'application/binary'
 
         headers = { 'X-Atlassian-Token' => 'nocheck' }
-        data = { 'file' => Multipart::Post::UploadIO.new(file, mime_type, file) }
+        data = { 'file' => Multipart::Post::UploadIO.new(file, mime_type, fname) }
 
         response = client.post_multipart(path, data, headers)
 
@@ -157,6 +161,17 @@ module JIRA
 
         @expanded = false
         true
+      end
+
+      def http_download
+        # Actually fetch the attachment
+        # Note: Jira handles attachment's weird!
+        # Typically, they respond with a redirect location that should not have the same authentication
+        client.get(attrs['content'])
+      rescue JIRA::HTTPError => e
+        raise e unless e.response.code =~ /\A3\d\d\z/ && e.response['location'].present?
+
+        Net::HTTP.get_response(URI(e.response['location']))
       end
 
       private
