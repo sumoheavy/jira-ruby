@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'activesupport'
-  s.add_dependency 'atlassian-jwt'
   s.add_dependency 'cgi'
+  s.add_dependency 'jwt', '>= 2.1'
   s.add_dependency 'multipart-post'
   s.add_dependency 'oauth', '~> 1.0'
 end
