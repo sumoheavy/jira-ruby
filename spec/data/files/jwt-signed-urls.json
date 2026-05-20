@@ -1,0 +1,317 @@
+{
+    "secret": "7512836e-9137-48ac-baaf-a1935b96e17a",
+    "tests": [{
+        "name": "Simple",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003dvalue",
+        "signedUrl": "https://example.com/test?param\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiZTE2OTEwODU4YTQxZmQxOWVhNWMxYjRlOWRlY2NhOWE3ODRkMTAyNGNiMDBiMjE1OGRlZmUyZjI5ZGM4NmRkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.ssbmLUBemh6nQW3MH5o2fSdnOFTIKf2w0KASnnH8aXo"
+    }, {
+        "name": "Simple (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003dvalue",
+        "signedUrl": "https://example.com/test?param\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiZTE2OTEwODU4YTQxZmQxOWVhNWMxYjRlOWRlY2NhOWE3ODRkMTAyNGNiMDBiMjE1OGRlZmUyZjI5ZGM4NmRkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.ssbmLUBemh6nQW3MH5o2fSdnOFTIKf2w0KASnnH8aXo"
+    }, {
+        "name": "Spaces",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003dsome%20spaces%20in%20this%20parameter",
+        "signedUrl": "https://example.com/test?param\u003dsome+spaces+in+this+parameter\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJlZjQwOTdkMDUzOTVlYWYxYTEzMzk1NmYxNDAxMTZhOWM0MTFhZmFkNzY4ZDRmMDZkYWFjOWUzMDU3NjQyNjVkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.JGTIXMHEtxAmLlTjIUFR21IEs9b8-3QIt3VwyRB816M"
+    }, {
+        "name": "Spaces (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003dsome%20spaces%20in%20this%20parameter",
+        "signedUrl": "https://example.com/test?param\u003dsome+spaces+in+this+parameter\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJlZjQwOTdkMDUzOTVlYWYxYTEzMzk1NmYxNDAxMTZhOWM0MTFhZmFkNzY4ZDRmMDZkYWFjOWUzMDU3NjQyNjVkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.JGTIXMHEtxAmLlTjIUFR21IEs9b8-3QIt3VwyRB816M"
+    }, {
+        "name": "Asterisk",
+        "canonicalUrl": "GET\u0026/test\u0026query\u003dconnect%2A",
+        "signedUrl": "https://example.com/test?query\u003dconnect*\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZDI4YmMxMGQxOTcyZDljYWI1OWUxMjNjZTE3OTc2ZWIzMmFhZDY5NTdhMTNjZmI4Yjk3Y2VkNmQzZmM4YTI5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.Lj8eCYfC3mYcnkdGtvGPXT763nPI2XYyxlIJjSgIF5k"
+    }, {
+        "name": "Asterisk (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026query\u003dconnect%2A",
+        "signedUrl": "https://example.com/test?query\u003dconnect*\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZDI4YmMxMGQxOTcyZDljYWI1OWUxMjNjZTE3OTc2ZWIzMmFhZDY5NTdhMTNjZmI4Yjk3Y2VkNmQzZmM4YTI5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.Lj8eCYfC3mYcnkdGtvGPXT763nPI2XYyxlIJjSgIF5k"
+    }, {
+        "name": "Unicode",
+        "canonicalUrl": "GET\u0026/test\u0026director\u003d%E5%AE%AE%E5%B4%8E%20%E9%A7%BF",
+        "signedUrl": "https://example.com/test?director\u003d%E5%AE%AE%E5%B4%8E+%E9%A7%BF\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0NGQ2MzU0ZmZlOGY5NjM5NzJhN2ZjNTllOThiMmMzZGZlNGI0OTMyOTVjNWI4OWVkZDk3NGEzMzllNjFhYzg5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.oc618kGGWy6ZP6ZqDsy2Hj61OS1kqFghcaQdvCBMLhc"
+    }, {
+        "name": "Unicode (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026director\u003d%E5%AE%AE%E5%B4%8E%20%E9%A7%BF",
+        "signedUrl": "https://example.com/test?director\u003d%E5%AE%AE%E5%B4%8E+%E9%A7%BF\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0NGQ2MzU0ZmZlOGY5NjM5NzJhN2ZjNTllOThiMmMzZGZlNGI0OTMyOTVjNWI4OWVkZDk3NGEzMzllNjFhYzg5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.oc618kGGWy6ZP6ZqDsy2Hj61OS1kqFghcaQdvCBMLhc"
+    }, {
+        "name": "Comma-delimited",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d10%2C2%2C20%2C1",
+        "signedUrl": "https://example.com/test?ids\u003d10%2C2%2C20%2C1\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyZTYxN2I2NWY5NjY2NTA3ODk5OTBlNWNhYzhmZjI5NWVlNWI0NTM4MzRkMDQ3OThmNDY2ZmY2MDM1YmQ4ODI5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.fdIooLlQ22kaE0FA15_cS_LvOtwBj2r5y586US4WJiw"
+    }, {
+        "name": "Comma-delimited (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d10%2C2%2C20%2C1",
+        "signedUrl": "https://example.com/test?ids\u003d10%2C2%2C20%2C1\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyZTYxN2I2NWY5NjY2NTA3ODk5OTBlNWNhYzhmZjI5NWVlNWI0NTM4MzRkMDQ3OThmNDY2ZmY2MDM1YmQ4ODI5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.fdIooLlQ22kaE0FA15_cS_LvOtwBj2r5y586US4WJiw"
+    }, {
+        "name": "Multi-value Comma-delimited",
+        "canonicalUrl": "GET\u0026/test\u0026tuples\u003d1%2C2%2C3,6%2C5%2C4,7%2C9%2C8",
+        "signedUrl": "https://example.com/test?tuples\u003d1%2C2%2C3\u0026tuples\u003d6%2C5%2C4\u0026tuples\u003d7%2C9%2C8\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJmOWY2MmJiNjExOTFkZmYxYjIxOWU5YWRlOGFjMzhmY2ZhNDYyNzJlYTc2ZDk1NDU0MTBkYjY1NTlmZDhlN2JkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.PXOWzUEk0Be2zCEzO5W_yTvYWDOhuEQbm7t8XXctXrE"
+    }, {
+        "name": "Multi-value Comma-delimited (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026tuples\u003d1%2C2%2C3,6%2C5%2C4,7%2C9%2C8",
+        "signedUrl": "https://example.com/test?tuples\u003d1%2C2%2C3\u0026tuples\u003d6%2C5%2C4\u0026tuples\u003d7%2C9%2C8\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJmOWY2MmJiNjExOTFkZmYxYjIxOWU5YWRlOGFjMzhmY2ZhNDYyNzJlYTc2ZDk1NDU0MTBkYjY1NTlmZDhlN2JkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.PXOWzUEk0Be2zCEzO5W_yTvYWDOhuEQbm7t8XXctXrE"
+    }, {
+        "name": "Plus",
+        "canonicalUrl": "GET\u0026/test\u0026title\u003d1%20%2B%201%20equals%203",
+        "signedUrl": "https://example.com/test?title\u003d1+%2B+1+equals+3\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJjZTBhODY2Y2UwYzM0Y2JkZTcwZGViNjNmNjkxNTE5MmY1ODUwMGQyYjQ5YjEyZTFmZmM4Y2RmOTFlZGFiYzkxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.NKD1M6kVQ3YFsQb-W2AUzYyntKSNvE15r4_hL9OO6A4"
+    }, {
+        "name": "Plus (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026title\u003d1%20%2B%201%20equals%203",
+        "signedUrl": "https://example.com/test?title\u003d1+%2B+1+equals+3\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJjZTBhODY2Y2UwYzM0Y2JkZTcwZGViNjNmNjkxNTE5MmY1ODUwMGQyYjQ5YjEyZTFmZmM4Y2RmOTFlZGFiYzkxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.NKD1M6kVQ3YFsQb-W2AUzYyntKSNvE15r4_hL9OO6A4"
+    }, {
+        "name": "JSON Object",
+        "canonicalUrl": "GET\u0026/test\u0026json\u003d%7B%22key%22%3A%22value%22%7D",
+        "signedUrl": "https://example.com/test?json\u003d%7B%22key%22%3A%22value%22%7D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIxZDc0YzVhMWYwYTZjNzJhM2NlMjg1NTcwY2JmZDhmZTczNjkxMDEyM2U2YWRhMjAzZDRjN2JhOWE2MTI4YTZmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.AFKN_CHERMJa-VYAEVfRFw-Hi53VbJ_Y3clKB3RDAfE"
+    }, {
+        "name": "JSON Object (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026json\u003d%7B%22key%22%3A%22value%22%7D",
+        "signedUrl": "https://example.com/test?json\u003d%7B%22key%22%3A%22value%22%7D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIxZDc0YzVhMWYwYTZjNzJhM2NlMjg1NTcwY2JmZDhmZTczNjkxMDEyM2U2YWRhMjAzZDRjN2JhOWE2MTI4YTZmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.AFKN_CHERMJa-VYAEVfRFw-Hi53VbJ_Y3clKB3RDAfE"
+    }, {
+        "name": "JSON Array",
+        "canonicalUrl": "GET\u0026/test\u0026json\u003d%5B%22val1%22%2C%22val2%22%5D",
+        "signedUrl": "https://example.com/test?json\u003d%5B%22val1%22%2C%22val2%22%5D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1YTY5ZDM1ZjE2NTM0MjkwYTRlZDJmOWU1M2E0NWU2ODcyY2YwYzNhMTE2MzI5NWM0Mjk0N2Q0MjkzMWExZjczIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xO5VqtU8GL8CTr_wn0tHJAJ-r63PU-bJBTeuKF759dA"
+    }, {
+        "name": "JSON Array (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026json\u003d%5B%22val1%22%2C%22val2%22%5D",
+        "signedUrl": "https://example.com/test?json\u003d%5B%22val1%22%2C%22val2%22%5D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1YTY5ZDM1ZjE2NTM0MjkwYTRlZDJmOWU1M2E0NWU2ODcyY2YwYzNhMTE2MzI5NWM0Mjk0N2Q0MjkzMWExZjczIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xO5VqtU8GL8CTr_wn0tHJAJ-r63PU-bJBTeuKF759dA"
+    }, {
+        "name": "Single Quotes",
+        "canonicalUrl": "GET\u0026/test\u0026quote\u003d%27quoted%27",
+        "signedUrl": "https://example.com/test?quote\u003d%27quoted%27\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyMDdhMzAzNzZjNTk0ZDVjZGU3YjZlODczYjk0M2Y4NDc5ODM3MWQzMjkzYjdlYWMyN2UyYzJhMmE1ZDExMWQ1IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.XsfJjmLIyIuX7_xfuj1JlNBiNQ_oSoh8KQVfEJHNJ0A"
+    }, {
+        "name": "Single Quotes (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026quote\u003d%27quoted%27",
+        "signedUrl": "https://example.com/test?quote\u003d%27quoted%27\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyMDdhMzAzNzZjNTk0ZDVjZGU3YjZlODczYjk0M2Y4NDc5ODM3MWQzMjkzYjdlYWMyN2UyYzJhMmE1ZDExMWQ1IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.XsfJjmLIyIuX7_xfuj1JlNBiNQ_oSoh8KQVfEJHNJ0A"
+    }, {
+        "name": "Brackets",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003d%28%29",
+        "signedUrl": "https://example.com/test?param\u003d%28%29\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0NmI5Nzg3YTg5ODM1NjBmNDQ2ZjgyZDYxNDMxMjJkOTllMTUzYWZmZDU2ODhmYTQ1MzQzMDc0YTA5MTU3M2ViIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.E7tLaNwK3c9HmDEoptDGWh2p6DZ2pd1R4sNBAPJ0L_A"
+    }, {
+        "name": "Brackets (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026param\u003d%28%29",
+        "signedUrl": "https://example.com/test?param\u003d%28%29\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0NmI5Nzg3YTg5ODM1NjBmNDQ2ZjgyZDYxNDMxMjJkOTllMTUzYWZmZDU2ODhmYTQ1MzQzMDc0YTA5MTU3M2ViIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.E7tLaNwK3c9HmDEoptDGWh2p6DZ2pd1R4sNBAPJ0L_A"
+    }, {
+        "name": "Tilde",
+        "canonicalUrl": "GET\u0026/test\u0026eta\u003din%20~3%20days",
+        "signedUrl": "https://example.com/test?eta\u003din+%7E3+days\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1YzVmOTdjZGZlM2FiZDhmZWI0OGY2ZjAyNDBhNzFlZjVjMTExMjg5YTViZjc3ZGRmNjQ1MjUwYjM5NTFlYzYzIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.kc_ugGzgCHSyCk4DgUFNVb5dhC2TdTlFVKyQx1oBcDQ"
+    }, {
+        "name": "Tilde (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026eta\u003din%20~3%20days",
+        "signedUrl": "https://example.com/test?eta\u003din+%7E3+days\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1YzVmOTdjZGZlM2FiZDhmZWI0OGY2ZjAyNDBhNzFlZjVjMTExMjg5YTViZjc3ZGRmNjQ1MjUwYjM5NTFlYzYzIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.kc_ugGzgCHSyCk4DgUFNVb5dhC2TdTlFVKyQx1oBcDQ"
+    }, {
+        "name": "RFC-1738 Unsafe",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%20%3C%3E%22%23%25%7B%7D%7C%5C%5E~%5B%5D%60",
+        "signedUrl": "https://example.com/test?rfc\u003d+%3C%3E%22%23%25%7B%7D%7C%5C%5E%7E%5B%5D%60\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIzNmJhMzljNTM3OWQ3NTJiYmVmMTM0OWJhNThkZjk4ZWNhYTQ1NmI3OGM3YzJlMzI0NWUyZjMzZWFjNzEyYTQ5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.AHIN8GC3aWL6o8ZOxZZBW_fxTI-6CY78ucWh_kaXBAs"
+    }, {
+        "name": "RFC-1738 Unsafe (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%20%3C%3E%22%23%25%7B%7D%7C%5C%5E~%5B%5D%60",
+        "signedUrl": "https://example.com/test?rfc\u003d+%3C%3E%22%23%25%7B%7D%7C%5C%5E%7E%5B%5D%60\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIzNmJhMzljNTM3OWQ3NTJiYmVmMTM0OWJhNThkZjk4ZWNhYTQ1NmI3OGM3YzJlMzI0NWUyZjMzZWFjNzEyYTQ5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.AHIN8GC3aWL6o8ZOxZZBW_fxTI-6CY78ucWh_kaXBAs"
+    }, {
+        "name": "RFC-1738 Reserved",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%3B%2F%3F%3A%40%3D%26",
+        "signedUrl": "https://example.com/test?rfc\u003d%3B%2F%3F%3A%40%3D%26\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI2MzkzMzBiYzkyZDc5MzczYjE5OGRhNjk3ODczYjJmMDNmMWEzYTBjNWFmNzhjZjhlZWE1MTdmMTQ5NjBiMTUwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.a7vQvXIFT-sSJiHFcQKf3o8pTFA__O0X4EJOD_91iK0"
+    }, {
+        "name": "RFC-1738 Reserved (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%3B%2F%3F%3A%40%3D%26",
+        "signedUrl": "https://example.com/test?rfc\u003d%3B%2F%3F%3A%40%3D%26\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI2MzkzMzBiYzkyZDc5MzczYjE5OGRhNjk3ODczYjJmMDNmMWEzYTBjNWFmNzhjZjhlZWE1MTdmMTQ5NjBiMTUwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.a7vQvXIFT-sSJiHFcQKf3o8pTFA__O0X4EJOD_91iK0"
+    }, {
+        "name": "RFC-1738 Special",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%24-_.%2B%21%2A%27%28%29%2C",
+        "signedUrl": "https://example.com/test?rfc\u003d%24-_.%2B%21*%27%28%29%2C\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZTM2MjI5Y2M0NTlmZjhjY2I0ODQ1YzExNDMzY2ZiYmUyNWJmYTQ1ZThjMWVhMTRkMmExMjQyMzFjYjBhMmU5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.vUERQg8SGBRFZpB8d0DFOcaFdDfJjsHZBUDujLJ7LhQ"
+    }, {
+        "name": "RFC-1738 Special (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%24-_.%2B%21%2A%27%28%29%2C",
+        "signedUrl": "https://example.com/test?rfc\u003d%24-_.%2B%21*%27%28%29%2C\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZTM2MjI5Y2M0NTlmZjhjY2I0ODQ1YzExNDMzY2ZiYmUyNWJmYTQ1ZThjMWVhMTRkMmExMjQyMzFjYjBhMmU5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.vUERQg8SGBRFZpB8d0DFOcaFdDfJjsHZBUDujLJ7LhQ"
+    }, {
+        "name": "RFC-3986 Unreserved",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d-._~",
+        "signedUrl": "https://example.com/test?rfc\u003d-._%7E\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZGRmN2U2MzFjM2IxMWU3OTc1ODE0ZWU4NGZlYzI2ODA0ZGM3MmIwYTBlOTk3ODcxZDg0MTVjZWU2Yjc4YjMxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.tqAbSA8_iIe-nfjtqBrHpxUe3HI7D9ILxpXIf0EqUfA"
+    }, {
+        "name": "RFC-3986 Unreserved (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d-._~",
+        "signedUrl": "https://example.com/test?rfc\u003d-._%7E\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwZGRmN2U2MzFjM2IxMWU3OTc1ODE0ZWU4NGZlYzI2ODA0ZGM3MmIwYTBlOTk3ODcxZDg0MTVjZWU2Yjc4YjMxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.tqAbSA8_iIe-nfjtqBrHpxUe3HI7D9ILxpXIf0EqUfA"
+    }, {
+        "name": "RFC-3986 gen-delims",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%3A%2F%3F%23%5B%5D%40",
+        "signedUrl": "https://example.com/test?rfc\u003d%3A%2F%3F%23%5B%5D%40\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI5NjA0MWVlNDVhZDRiOGVhMjliY2U0MmYzZTI4MzU0OTA1OTFmNTVlODRiZGRiYmFiODIxNTFkNGExYWMxYTExIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.ChCEYkRpoqkZsyZ2ZtGAAntcb0KYHjmqI6to9p1KKJQ"
+    }, {
+        "name": "RFC-3986 gen-delims (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%3A%2F%3F%23%5B%5D%40",
+        "signedUrl": "https://example.com/test?rfc\u003d%3A%2F%3F%23%5B%5D%40\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI5NjA0MWVlNDVhZDRiOGVhMjliY2U0MmYzZTI4MzU0OTA1OTFmNTVlODRiZGRiYmFiODIxNTFkNGExYWMxYTExIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.ChCEYkRpoqkZsyZ2ZtGAAntcb0KYHjmqI6to9p1KKJQ"
+    }, {
+        "name": "RFC-3986 sub-delims",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%21%24%26%27%28%29%2A%2B%2C%3B%3D",
+        "signedUrl": "https://example.com/test?rfc\u003d%21%24%26%27%28%29*%2B%2C%3B%3D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiOGQwNDk4NzRmMWZlNWFiZTI3NGQyMGJkZWNlYmVlOGRhYWRhNDUzMTkxYTgyNzczOGVlYmNkNzU5ZWZkNGUxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.rvu_onWEK0PWM-w6K7JEShKHVplx9oCTdeKyhpJmSx4"
+    }, {
+        "name": "RFC-3986 sub-delims (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026rfc\u003d%21%24%26%27%28%29%2A%2B%2C%3B%3D",
+        "signedUrl": "https://example.com/test?rfc\u003d%21%24%26%27%28%29*%2B%2C%3B%3D\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiOGQwNDk4NzRmMWZlNWFiZTI3NGQyMGJkZWNlYmVlOGRhYWRhNDUzMTkxYTgyNzczOGVlYmNkNzU5ZWZkNGUxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.rvu_onWEK0PWM-w6K7JEShKHVplx9oCTdeKyhpJmSx4"
+    }, {
+        "name": "Empty",
+        "canonicalUrl": "GET\u0026/test\u0026notmuch\u003d",
+        "signedUrl": "https://example.com/test?notmuch\u003d\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyMGZlY2RlZDk5NTE1MTZhMzQ0N2IxYjU1NmQwZWIzNTBkZTI5NzcwNTA1MjUzYTMwZGM3Mzk1MDJlMDVkZGM3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.P8btoE2iwXDoTpWr9eL64OcumNeFtRVVuNAg_vb5EwE"
+    }, {
+        "name": "Empty (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026notmuch\u003d",
+        "signedUrl": "https://example.com/test?notmuch\u003d\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIyMGZlY2RlZDk5NTE1MTZhMzQ0N2IxYjU1NmQwZWIzNTBkZTI5NzcwNTA1MjUzYTMwZGM3Mzk1MDJlMDVkZGM3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.P8btoE2iwXDoTpWr9eL64OcumNeFtRVVuNAg_vb5EwE"
+    }, {
+        "name": "Encoded",
+        "canonicalUrl": "GET\u0026/test\u0026referrer\u003dhttp%3A%2F%2Ffrom.net%2Fp%3Fx%3DA%2B%252B%2BB%26y%3D%2524-_.%252B%2521%2A%2527%2528%2529%252C",
+        "signedUrl": "https://example.com/test?referrer\u003dhttp%3A%2F%2Ffrom.net%2Fp%3Fx%3DA%2B%252B%2BB%26y%3D%2524-_.%252B%2521*%2527%2528%2529%252C\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3Y2E4MWI4ZTRlODNjMjM3NWVlYTdiOGI1MGJkMzc4NmJhOGI0MzI2MTE5M2EzYmQzY2NkZmNhMDYxMjBlZTMzIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.OTKND114j4id2cHr_AdHLAK9GqhbxFE7ad0eT0DmEV8"
+    }, {
+        "name": "Encoded (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026referrer\u003dhttp%3A%2F%2Ffrom.net%2Fp%3Fx%3DA%2B%252B%2BB%26y%3D%2524-_.%252B%2521%2A%2527%2528%2529%252C",
+        "signedUrl": "https://example.com/test?referrer\u003dhttp%3A%2F%2Ffrom.net%2Fp%3Fx%3DA%2B%252B%2BB%26y%3D%2524-_.%252B%2521*%2527%2528%2529%252C\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3Y2E4MWI4ZTRlODNjMjM3NWVlYTdiOGI1MGJkMzc4NmJhOGI0MzI2MTE5M2EzYmQzY2NkZmNhMDYxMjBlZTMzIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.OTKND114j4id2cHr_AdHLAK9GqhbxFE7ad0eT0DmEV8"
+    }, {
+        "name": "Multi-value",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d-1,1,10,2,20",
+        "signedUrl": "https://example.com/test?ids\u003d-1\u0026ids\u003d1\u0026ids\u003d10\u0026ids\u003d2\u0026ids\u003d20\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhNjQ2YzQ4NzQxZmFhZWI2NDlmOWNhNzg4OGFlMDI5ZWFkNDMyZTM4MDZmNTZjNGE1N2I4MGIzZTJhYzYyOGE5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.gUepTNdB4HtYcabEZSiuXZrf2vU18ZGft5cvAT2W6FI"
+    }, {
+        "name": "Multi-value (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d-1,1,10,2,20",
+        "signedUrl": "https://example.com/test?ids\u003d-1\u0026ids\u003d1\u0026ids\u003d10\u0026ids\u003d2\u0026ids\u003d20\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhNjQ2YzQ4NzQxZmFhZWI2NDlmOWNhNzg4OGFlMDI5ZWFkNDMyZTM4MDZmNTZjNGE1N2I4MGIzZTJhYzYyOGE5IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.gUepTNdB4HtYcabEZSiuXZrf2vU18ZGft5cvAT2W6FI"
+    }, {
+        "name": "Multi-value II",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d.1,.2,%3A1,%3A2",
+        "signedUrl": "https://example.com/test?ids\u003d.1\u0026ids\u003d.2\u0026ids\u003d%3A1\u0026ids\u003d%3A2\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJmMDUyNGQ0MmUwZjg2NjE4NjJlMWYxZTlhZGQ4NzU3OTcyYTAwNDNiYjcxMzZkNjQxNzM1ZDIxODc0YzVhMDU2IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.bbmy58zcb675U8eE1NaDvtd85EcVsGjZfIcSLbgOwas"
+    }, {
+        "name": "Multi-value II (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026ids\u003d.1,.2,%3A1,%3A2",
+        "signedUrl": "https://example.com/test?ids\u003d.1\u0026ids\u003d.2\u0026ids\u003d%3A1\u0026ids\u003d%3A2\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJmMDUyNGQ0MmUwZjg2NjE4NjJlMWYxZTlhZGQ4NzU3OTcyYTAwNDNiYjcxMzZkNjQxNzM1ZDIxODc0YzVhMDU2IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.bbmy58zcb675U8eE1NaDvtd85EcVsGjZfIcSLbgOwas"
+    }, {
+        "name": "Multi-value Unicode",
+        "canonicalUrl": "GET\u0026/test\u0026chars\u003d%E5%AE%AE,%E5%B4%8E,%E9%A7%BF",
+        "signedUrl": "https://example.com/test?chars\u003d%E5%AE%AE\u0026chars\u003d%E5%B4%8E\u0026chars\u003d%E9%A7%BF\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3MmE3ZjdjZTlmOTMxNTdmMjk2Yjg2MzM4MzE1NDIzZDZmM2I2YWJhNTA4MWYwNGJiZGI2YmIxODIxOGI2NWVlIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.K8dOEK17rBCjHS_sNj58CO4_rB4IM-JeRoUYVv2osbc"
+    }, {
+        "name": "Multi-value Unicode (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026chars\u003d%E5%AE%AE,%E5%B4%8E,%E9%A7%BF",
+        "signedUrl": "https://example.com/test?chars\u003d%E5%AE%AE\u0026chars\u003d%E5%B4%8E\u0026chars\u003d%E9%A7%BF\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3MmE3ZjdjZTlmOTMxNTdmMjk2Yjg2MzM4MzE1NDIzZDZmM2I2YWJhNTA4MWYwNGJiZGI2YmIxODIxOGI2NWVlIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.K8dOEK17rBCjHS_sNj58CO4_rB4IM-JeRoUYVv2osbc"
+    }, {
+        "name": "Multi-value Empty",
+        "canonicalUrl": "GET\u0026/test\u0026c\u003d,%20,%2520,%2B",
+        "signedUrl": "https://example.com/test?c\u003d\u0026c\u003d+\u0026c\u003d%2520\u0026c\u003d%2B\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJjYmJjYWM5YTZhMDJmM2FkOTZjNWFiNWJmODc2ZGQ5Zjc5YjJjNjFjZWVjNTY2MGExYzlkNzNhM2IxMDJlYzJjIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.R_DWbzp9IZbL9lutC4eRBf-NcN4sllakpx5H59F329A"
+    }, {
+        "name": "Multi-value Empty (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026c\u003d,%20,%2520,%2B",
+        "signedUrl": "https://example.com/test?c\u003d\u0026c\u003d+\u0026c\u003d%2520\u0026c\u003d%2B\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJjYmJjYWM5YTZhMDJmM2FkOTZjNWFiNWJmODc2ZGQ5Zjc5YjJjNjFjZWVjNTY2MGExYzlkNzNhM2IxMDJlYzJjIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.R_DWbzp9IZbL9lutC4eRBf-NcN4sllakpx5H59F329A"
+    }, {
+        "name": "Key RFC-1738 Unsafe",
+        "canonicalUrl": "GET\u0026/test\u0026%231\u003dvalue",
+        "signedUrl": "https://example.com/test?%231\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJlY2NiNGEyMzJkNTBjYTQxYWM0MDM5ODY3NWI2NDg3YTcxMWQ5ZTk3MjkxN2Q4YTYxY2JjMTIwZjlmYmRhNTk3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.OLjm-tHtgDfOwTtBQ50-JGJM4zIP-yZcsDRAuJn0P7s"
+    }, {
+        "name": "Key RFC-1738 Unsafe (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026%231\u003dvalue",
+        "signedUrl": "https://example.com/test?%231\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJlY2NiNGEyMzJkNTBjYTQxYWM0MDM5ODY3NWI2NDg3YTcxMWQ5ZTk3MjkxN2Q4YTYxY2JjMTIwZjlmYmRhNTk3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.OLjm-tHtgDfOwTtBQ50-JGJM4zIP-yZcsDRAuJn0P7s"
+    }, {
+        "name": "Key RFC-1738 Reserved",
+        "canonicalUrl": "GET\u0026/test\u0026%3A1\u003dvalue",
+        "signedUrl": "https://example.com/test?%3A1\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI2ZDgyMzE4MWE2OGE0OTUyYzc1ZTRiNTFhZDBiOGQ1OWU4Nzk4NTljZGY5NzdlNzI1NDU0NTIwMWJjYTg0NjVkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.lqRCsE131cmicAXf2BoCtLiV4g7D50piFnSzJoE0rCk"
+    }, {
+        "name": "Key RFC-1738 Reserved (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026%3A1\u003dvalue",
+        "signedUrl": "https://example.com/test?%3A1\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI2ZDgyMzE4MWE2OGE0OTUyYzc1ZTRiNTFhZDBiOGQ1OWU4Nzk4NTljZGY5NzdlNzI1NDU0NTIwMWJjYTg0NjVkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.lqRCsE131cmicAXf2BoCtLiV4g7D50piFnSzJoE0rCk"
+    }, {
+        "name": "Key RFC-1738 Special",
+        "canonicalUrl": "GET\u0026/test\u0026%241\u003dvalue",
+        "signedUrl": "https://example.com/test?%241\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhOWY2MWYxYzgyNTBlYmZiOTIzNDY1NGU3MWRlYzIzM2M5M2MxNmE1NGZlMzBhNjQ5ZGZkNjViYWRmM2MwMTcxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xSvBJ10iVN7_Y97j1qApcYXUVq8JoXkCLnYf0Fwj0mY"
+    }, {
+        "name": "Key RFC-1738 Special (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026%241\u003dvalue",
+        "signedUrl": "https://example.com/test?%241\u003dvalue\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhOWY2MWYxYzgyNTBlYmZiOTIzNDY1NGU3MWRlYzIzM2M5M2MxNmE1NGZlMzBhNjQ5ZGZkNjViYWRmM2MwMTcxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xSvBJ10iVN7_Y97j1qApcYXUVq8JoXkCLnYf0Fwj0mY"
+    }, {
+        "name": "Multiple Parameters Simple",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003dx\u0026b\u003dy",
+        "signedUrl": "https://example.com/test?a\u003dx\u0026b\u003dy\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhYmQ1ZGU2MDRiOWQzY2RhNDRkM2M3YTlkZDY5OGEyMTI1OTY1NTM5NDY1OGE2NjQyZjg3YjlkODI1ODY5NDYwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.1jFYZh4FjFNsGo62Qj9E7xzGCVVunqj5vtXoz7a8bCo"
+    }, {
+        "name": "Multiple Parameters Simple (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003dx\u0026b\u003dy",
+        "signedUrl": "https://example.com/test?a\u003dx\u0026b\u003dy\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJhYmQ1ZGU2MDRiOWQzY2RhNDRkM2M3YTlkZDY5OGEyMTI1OTY1NTM5NDY1OGE2NjQyZjg3YjlkODI1ODY5NDYwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.1jFYZh4FjFNsGo62Qj9E7xzGCVVunqj5vtXoz7a8bCo"
+    }, {
+        "name": "Multiple Multi-value Parameters",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003dx1,x10\u0026b\u003dy1,y10",
+        "signedUrl": "https://example.com/test?a\u003dx1\u0026a\u003dx10\u0026b\u003dy1\u0026b\u003dy10\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIzMTBiYTNmZjdlMWU5YThjYWNkMzNkZDYxNzI1MDEzMDRiZjMyNTA5NmQ4MWNjYWQ0NDk0NjU0MjdlNThhOWM0IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.7OJXrJdQpPUni7Qm0IrFz9KHxTgCMeE1WbVC1unQJ3g"
+    }, {
+        "name": "Multiple Multi-value Parameters (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003dx1,x10\u0026b\u003dy1,y10",
+        "signedUrl": "https://example.com/test?a\u003dx1\u0026a\u003dx10\u0026b\u003dy1\u0026b\u003dy10\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIzMTBiYTNmZjdlMWU5YThjYWNkMzNkZDYxNzI1MDEzMDRiZjMyNTA5NmQ4MWNjYWQ0NDk0NjU0MjdlNThhOWM0IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.7OJXrJdQpPUni7Qm0IrFz9KHxTgCMeE1WbVC1unQJ3g"
+    }, {
+        "name": "Multiple Parameters Spaces",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003danother%20one,one%20string\u0026b\u003dand%20yet%20more,more%20here",
+        "signedUrl": "https://example.com/test?a\u003danother+one\u0026a\u003done+string\u0026b\u003dand+yet+more\u0026b\u003dmore+here\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3MDA3MjFlNjUzODU3ODFmYzFmYTI0ODIyMGM3NTQwMGYxZThhMTk3YzgzOGVmMTc3OWYwMGI2OWJmYTRhNmZmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.g5YMPR92qU3hw2uPmdWVztIIl25QKF5QlqsvCNZ7TDE"
+    }, {
+        "name": "Multiple Parameters Spaces (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003danother%20one,one%20string\u0026b\u003dand%20yet%20more,more%20here",
+        "signedUrl": "https://example.com/test?a\u003danother+one\u0026a\u003done+string\u0026b\u003dand+yet+more\u0026b\u003dmore+here\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI3MDA3MjFlNjUzODU3ODFmYzFmYTI0ODIyMGM3NTQwMGYxZThhMTk3YzgzOGVmMTc3OWYwMGI2OWJmYTRhNmZmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.g5YMPR92qU3hw2uPmdWVztIIl25QKF5QlqsvCNZ7TDE"
+    }, {
+        "name": "Multiple Parameters Comma-delimited",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003d1%2C2%2C3,4%2C5%2C6\u0026b\u003da%2Cb%2Cc,d%2Ce%2Cf",
+        "signedUrl": "https://example.com/test?a\u003d1%2C2%2C3\u0026a\u003d4%2C5%2C6\u0026b\u003da%2Cb%2Cc\u0026b\u003dd%2Ce%2Cf\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwNmI3NmViNjNhY2NjY2UyMzU2Y2RmYzY2ZjRhYmQxZTNhMDYxYzAzMDVjOWZjNzZiNjE2YWU3MWZlM2I2YWI1IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.6skGpsaWS3sR1ft8hdnJL5EvgFDlyUYmmjcziQrIK1s"
+    }, {
+        "name": "Multiple Parameters Comma-delimited (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026a\u003d1%2C2%2C3,4%2C5%2C6\u0026b\u003da%2Cb%2Cc,d%2Ce%2Cf",
+        "signedUrl": "https://example.com/test?a\u003d1%2C2%2C3\u0026a\u003d4%2C5%2C6\u0026b\u003da%2Cb%2Cc\u0026b\u003dd%2Ce%2Cf\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwNmI3NmViNjNhY2NjY2UyMzU2Y2RmYzY2ZjRhYmQxZTNhMDYxYzAzMDVjOWZjNzZiNjE2YWU3MWZlM2I2YWI1IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.6skGpsaWS3sR1ft8hdnJL5EvgFDlyUYmmjcziQrIK1s"
+    }, {
+        "name": "Parameter Order",
+        "canonicalUrl": "GET\u0026/test\u0026a1\u003d2\u0026a10\u003d1\u0026b1\u003d3\u0026b10\u003d4",
+        "signedUrl": "https://example.com/test?a10\u003d1\u0026a1\u003d2\u0026b1\u003d3\u0026b10\u003d4\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIxNTljYzNkMzAwM2YwNjdjM2FlMjYzZDE5ZGVkNDJkZWRkMjgyMjFjY2U0ZDQ3NTdiMTNmYzc3MjJhMjQ0MDhmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.CEfY2ck1VpaOVlfNi9iXiF03lowoqm_WgHvtgf5Xfps"
+    }, {
+        "name": "Parameter Order (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026a1\u003d2\u0026a10\u003d1\u0026b1\u003d3\u0026b10\u003d4",
+        "signedUrl": "https://example.com/test?a10\u003d1\u0026a1\u003d2\u0026b1\u003d3\u0026b10\u003d4\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIxNTljYzNkMzAwM2YwNjdjM2FlMjYzZDE5ZGVkNDJkZWRkMjgyMjFjY2U0ZDQ3NTdiMTNmYzc3MjJhMjQ0MDhmIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.CEfY2ck1VpaOVlfNi9iXiF03lowoqm_WgHvtgf5Xfps"
+    }, {
+        "name": "Upper- and Lower-case Parameters",
+        "canonicalUrl": "GET\u0026/test\u0026A\u003dA\u0026B\u003dB\u0026a\u003da\u0026b\u003db",
+        "signedUrl": "https://example.com/test?A\u003dA\u0026a\u003da\u0026b\u003db\u0026B\u003dB\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1MzlhZGMyYjBhZWYyZWM4NjU5ODI1ODkzYjhiOTJlNmE1M2M5NDgzZTIxNTBiODE4NWIwODQ5MGQ4YjZkZTYwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.wOC7mInLeAu_mQpoHlGW2DIlEeEfiqFvn32sea8vDvc"
+    }, {
+        "name": "Upper- and Lower-case Parameters (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026A\u003dA\u0026B\u003dB\u0026a\u003da\u0026b\u003db",
+        "signedUrl": "https://example.com/test?A\u003dA\u0026a\u003da\u0026b\u003db\u0026B\u003dB\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1MzlhZGMyYjBhZWYyZWM4NjU5ODI1ODkzYjhiOTJlNmE1M2M5NDgzZTIxNTBiODE4NWIwODQ5MGQ4YjZkZTYwIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.wOC7mInLeAu_mQpoHlGW2DIlEeEfiqFvn32sea8vDvc"
+    }, {
+        "name": "Search Request View",
+        "canonicalUrl": "GET\u0026/search-view\u0026cp\u003djira\u0026endIssue\u003d2\u0026issues\u003dissues%3DTEST-2%2CTEST-1\u0026lic\u003dnone\u0026link\u003dhttp%3A%2F%2Fion%3A2990%2Fjira%2Fsecure%2FIssueNavigator.jspa%3Freset%3Dtrue%26jqlQuery%3Dissuetype%2B%253D%2BBug\u0026loc\u003den-US\u0026startIssue\u003d0\u0026totalIssues\u003d2\u0026tz\u003dAustralia%2FSydney\u0026user_id\u003dadmin\u0026user_key\u003dadmin\u0026xdm_c\u003dchannel-acmodule-1564427223927602208\u0026xdm_e\u003dhttp%3A%2F%2Fion.local%3A2990",
+        "signedUrl": "https://example.com/search-view?link\u003dhttp%3A%2F%2Fion%3A2990%2Fjira%2Fsecure%2FIssueNavigator.jspa%3Freset%3Dtrue%26jqlQuery%3Dissuetype%2B%253D%2BBug\u0026startIssue\u003d0\u0026totalIssues\u003d2\u0026endIssue\u003d2\u0026issues\u003dissues%3DTEST-2%2CTEST-1\u0026tz\u003dAustralia%2FSydney\u0026loc\u003den-US\u0026user_id\u003dadmin\u0026user_key\u003dadmin\u0026xdm_e\u003dhttp%3A%2F%2Fion.local%3A2990\u0026xdm_c\u003dchannel-acmodule-1564427223927602208\u0026cp\u003djira\u0026lic\u003dnone\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwY2I3NGI4MGRkN2Y3NzkzODQ5ODY3Mjk4Y2EyZDg4OWU0ZDhiNjYxMTFiNjg5NjIyN2JkYmI0OTBkYzQ0YWUxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.UXWVrjqrCcjX6Mt6gIap4nK7o3aTLRz0ab1fMwwSJqo"
+    }, {
+        "name": "Search Request View (uri)",
+        "canonicalUrl": "GET\u0026/search-view\u0026cp\u003djira\u0026endIssue\u003d2\u0026issues\u003dissues%3DTEST-2%2CTEST-1\u0026lic\u003dnone\u0026link\u003dhttp%3A%2F%2Fion%3A2990%2Fjira%2Fsecure%2FIssueNavigator.jspa%3Freset%3Dtrue%26jqlQuery%3Dissuetype%2B%253D%2BBug\u0026loc\u003den-US\u0026startIssue\u003d0\u0026totalIssues\u003d2\u0026tz\u003dAustralia%2FSydney\u0026user_id\u003dadmin\u0026user_key\u003dadmin\u0026xdm_c\u003dchannel-acmodule-1564427223927602208\u0026xdm_e\u003dhttp%3A%2F%2Fion.local%3A2990",
+        "signedUrl": "https://example.com/search-view?link\u003dhttp%3A%2F%2Fion%3A2990%2Fjira%2Fsecure%2FIssueNavigator.jspa%3Freset%3Dtrue%26jqlQuery%3Dissuetype%2B%253D%2BBug\u0026startIssue\u003d0\u0026totalIssues\u003d2\u0026endIssue\u003d2\u0026issues\u003dissues%3DTEST-2%2CTEST-1\u0026tz\u003dAustralia%2FSydney\u0026loc\u003den-US\u0026user_id\u003dadmin\u0026user_key\u003dadmin\u0026xdm_e\u003dhttp%3A%2F%2Fion.local%3A2990\u0026xdm_c\u003dchannel-acmodule-1564427223927602208\u0026cp\u003djira\u0026lic\u003dnone\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiIwY2I3NGI4MGRkN2Y3NzkzODQ5ODY3Mjk4Y2EyZDg4OWU0ZDhiNjYxMTFiNjg5NjIyN2JkYmI0OTBkYzQ0YWUxIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.UXWVrjqrCcjX6Mt6gIap4nK7o3aTLRz0ab1fMwwSJqo"
+    }, {
+        "name": "BasePath only",
+        "canonicalUrl": "GET\u0026/test\u0026",
+        "signedUrl": "https://example.com/test?jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiYWQzMjhmYWM5OTAzNDlhOGM4ODM5M2MxNzU1YmM0Zjk4NGE5YzM4NzIwMjIyOWI4ZWQ1MmUwNGZmN2U5ZmVjIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.1LHKcYMbSI-xGystYrcpniFDmOkA45g-aJ7NhfyB-wY"
+    }, {
+        "name": "BasePath only (uri)",
+        "canonicalUrl": "GET\u0026/test\u0026",
+        "signedUrl": "https://example.com/test?jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiJiYWQzMjhmYWM5OTAzNDlhOGM4ODM5M2MxNzU1YmM0Zjk4NGE5YzM4NzIwMjIyOWI4ZWQ1MmUwNGZmN2U5ZmVjIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.1LHKcYMbSI-xGystYrcpniFDmOkA45g-aJ7NhfyB-wY"
+    }, {
+        "name": "BasePath with Delimiter",
+        "canonicalUrl": "GET\u0026/endsWithDelimiter\u0026a\u003db",
+        "signedUrl": "https://example.com/endsWithDelimiter/?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI4Zjc3YzZhMGU2YmYyNTA0MTEyMWVlNDQ0ODBkM2M5N2FlOWNjYTRiN2EwMDdlYTZlMWQ2NDhkOWEyNmU1ZDFkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.Lssm_JCVXZ7Qh-FEMJZx-eblxAa13MlzkReNLvARJI8"
+    }, {
+        "name": "BasePath with Delimiter (uri)",
+        "canonicalUrl": "GET\u0026/endsWithDelimiter\u0026a\u003db",
+        "signedUrl": "https://example.com/endsWithDelimiter/?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI4Zjc3YzZhMGU2YmYyNTA0MTEyMWVlNDQ0ODBkM2M5N2FlOWNjYTRiN2EwMDdlYTZlMWQ2NDhkOWEyNmU1ZDFkIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.Lssm_JCVXZ7Qh-FEMJZx-eblxAa13MlzkReNLvARJI8"
+    }, {
+        "name": "BasePath with Delimiter Only",
+        "canonicalUrl": "GET\u0026/endsWithDelimiter\u0026",
+        "signedUrl": "https://example.com/endsWithDelimiter/?jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0Yzc5OWU5MWZjOGUxYmU5YjFmMDM0ZjIxOTFhZTgwY2IyMDgwYjU0YTg1ZTlhMjQ2NGFkMmYyMTE1ZjhkOTg3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.wqBRfpzUg79FTLQZiUqNIk9qGEBFXhrZmQ5GvicOFY8"
+    }, {
+        "name": "BasePath with Delimiter Only (uri)",
+        "canonicalUrl": "GET\u0026/endsWithDelimiter\u0026",
+        "signedUrl": "https://example.com/endsWithDelimiter/?jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI0Yzc5OWU5MWZjOGUxYmU5YjFmMDM0ZjIxOTFhZTgwY2IyMDgwYjU0YTg1ZTlhMjQ2NGFkMmYyMTE1ZjhkOTg3IiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.wqBRfpzUg79FTLQZiUqNIk9qGEBFXhrZmQ5GvicOFY8"
+    }, {
+        "name": "BasePath RFC3986 Unreserved",
+        "canonicalUrl": "GET\u0026/path-._~\u0026a\u003db",
+        "signedUrl": "https://example.com/path-._~?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1ZDE1NzRlYTBmZDg5NzRmYTQzMjZkODdiM2VmZWM3NDAwNGJmMTNkMzUzOTU1OTlkZTQyNTMyNzE3OGMxNzNiIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.oWGLh5OdI0tw1i6FL6CDOm-qGpGJQnru9rk5B37O2T8"
+    }, {
+        "name": "BasePath RFC3986 Unreserved (uri)",
+        "canonicalUrl": "GET\u0026/path-._~\u0026a\u003db",
+        "signedUrl": "https://example.com/path-._~?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI1ZDE1NzRlYTBmZDg5NzRmYTQzMjZkODdiM2VmZWM3NDAwNGJmMTNkMzUzOTU1OTlkZTQyNTMyNzE3OGMxNzNiIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.oWGLh5OdI0tw1i6FL6CDOm-qGpGJQnru9rk5B37O2T8"
+    }, {
+        "name": "BasePath RFC3986 Subdelimiters",
+        "canonicalUrl": "GET\u0026/path!$%26\u0027()*+,;\u003d\u0026a\u003db",
+        "signedUrl": "https://example.com/path!$\u0026\u0027()*+,;\u003d?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI5ZWY4MDNmOWNiOGRlYTRmN2Y4NzVjYWZmOGQzMWU5NTk2MmM2ZThiZDQ0ZDY0YTg0OGQ2ZWJiMDU1YjIxNDRiIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xT24PP9ialy7yso14IaFYO9c5dV2oJ1OMTrPon7yRF4"
+    }, {
+        "name": "BasePath RFC3986 Subdelimiters (uri)",
+        "canonicalUrl": "GET\u0026/path!$%26\u0027()*+,;\u003d\u0026a\u003db",
+        "signedUrl": "https://example.com/path!$\u0026\u0027()*+,;\u003d?a\u003db\u0026jwt\u003deyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJxc2giOiI5ZWY4MDNmOWNiOGRlYTRmN2Y4NzVjYWZmOGQzMWU5NTk2MmM2ZThiZDQ0ZDY0YTg0OGQ2ZWJiMDU1YjIxNDRiIiwiY29udGV4dCI6e30sImlzcyI6ImppcmE6MTIzNC01Njc4LTkwMDAiLCJleHAiOjE0NjY3MzEyNTUsImlhdCI6MTQ2NjczMTA3NX0.xT24PP9ialy7yso14IaFYO9c5dV2oJ1OMTrPon7yRF4"
+    }],
+    "comment": "Generated by com.atlassian.plugin.connect.plugin.auth.jwt.JwtSigningInteroperabilityTest.SigningTests on Fri Jun 24 11:17:55 AEST 2016"
+}

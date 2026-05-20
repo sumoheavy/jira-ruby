@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'atlassian/jwt'
+require 'jira/atlassian/jwt'
 
 module JIRA
   class JwtClient < HttpClient
@@ -29,7 +29,7 @@ module JIRA
     end
 
     def build_jwt(url)
-      claim = Atlassian::Jwt.build_claims \
+      claim = JIRA::Atlassian::Jwt.build_claims \
         @options[:issuer],
         url,
         http_method.to_s,
