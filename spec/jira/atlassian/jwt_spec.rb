@@ -8,6 +8,7 @@ describe JIRA::Atlassian::Jwt do
     }
   end
   let(:base_url) { '' }
+  let(:shared_secret) { TEST_DATA['secret'] }
 
   it 'generates claims' do
     url = 'https://example.atlassian.com/jira/projects'
@@ -30,29 +31,29 @@ describe JIRA::Atlassian::Jwt do
   end
 
   # Offical Atlassian signed URL test data
-  json_tests = File.read(File.expand_path('../../data/files/jwt-signed-urls.json', File.dirname(__FILE__)))
+  TEST_DATA = JSON.parse(
+    File.read(File.expand_path('../../data/files/jwt-signed-urls.json', File.dirname(__FILE__)))
+  ).freeze
 
-  test_data = JSON.parse(json_tests)
-  shared_secret = test_data['secret']
+  TEST_DATA['tests'].each do |test|
+    context test['name'] do
+      let(:signed_url) { test['signedUrl'] }
+      let(:token) { CGI.parse(URI.parse(signed_url).query)['jwt'].first }
 
-  test_data['tests'].each do |test|
-    signed_url = test['signedUrl']
-    signed_uri = URI.parse(signed_url)
-    token = CGI.parse(signed_uri.query)['jwt'].first
+      it 'builds the canonical URL' do
+        canonical_uri = described_class.create_canonical_request(signed_url, 'GET', base_url)
 
-    it "#{test['name']} - Canonical URL" do
-      canonical_uri = described_class.create_canonical_request(signed_url, 'GET', base_url)
+        # Remote the jwt query param from the signed URL to get the original
+        expect(canonical_uri).to eq test['canonicalUrl']
+      end
 
-      # Remote the jwt query param from the signed URL to get the original
-      expect(canonical_uri).to eq test['canonicalUrl']
-    end
+      it 'matches the qsh claim' do
+        expected_qsh = Digest::SHA256.hexdigest(described_class.create_canonical_request(signed_url, 'GET', base_url))
 
-    it "#{test['name']} - QSH match" do
-      expected_qsh = Digest::SHA256.hexdigest(described_class.create_canonical_request(signed_url, 'GET', base_url))
+        decoded_token = JWT.decode(token, shared_secret, true, jwt_opts).first
 
-      decoded_token = JWT.decode(token, shared_secret, true, jwt_opts).first
-
-      expect(expected_qsh).to eq decoded_token['qsh']
+        expect(expected_qsh).to eq decoded_token['qsh']
+      end
     end
   end
 end

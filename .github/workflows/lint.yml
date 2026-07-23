@@ -1,9 +1,10 @@
-name: Rubocop
+name: Lint
 
 on: [push, pull_request]
 
 jobs:
   rubocop:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
