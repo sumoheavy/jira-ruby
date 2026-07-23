@@ -339,6 +339,27 @@ describe JIRA::Base do
       subject.set_attrs({ 'foo' => { 'fum' => 'dum' } }, false)
       expect(subject.foo).to eq('bar' => 'baz', 'fum' => 'dum')
     end
+
+    it 'creates missing intermediate hashes instead of merging into the top level when clobber is false' do
+      subject.attrs = { 'id' => '10500', 'key' => 'REL-77', 'fields' => { 'summary' => 'x' } }
+      subject.set_attrs({ 'fields' => { 'project' => { 'key' => 'REL' } } }, false)
+      expect(subject.attrs['key']).to eq('REL-77')
+      expect(subject.attrs['fields']['project']['key']).to eq('REL')
+      expect(subject.attrs['fields']['summary']).to eq('x')
+    end
+
+    it 'deeply merges into an existing nested hash when clobber is false' do
+      subject.attrs = { 'fields' => { 'project' => { 'id' => '10000' }, 'summary' => 'x' } }
+      subject.set_attrs({ 'fields' => { 'project' => { 'key' => 'REL' } } }, false)
+      expect(subject.attrs['fields']['project']).to eq('id' => '10000', 'key' => 'REL')
+      expect(subject.attrs['fields']['summary']).to eq('x')
+    end
+
+    it 'replaces a non-hash value with the new hash when clobber is false' do
+      subject.attrs = { 'fields' => { 'project' => 'REL' } }
+      subject.set_attrs({ 'fields' => { 'project' => { 'key' => 'REL' } } }, false)
+      expect(subject.attrs['fields']['project']).to eq('key' => 'REL')
+    end
   end
 
   describe 'delete' do
