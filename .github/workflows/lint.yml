@@ -1,13 +1,14 @@
-name: Rubocop
+name: Lint
 
 on: [push, pull_request]
 
 jobs:
   rubocop:
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
