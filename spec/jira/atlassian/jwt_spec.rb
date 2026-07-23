@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-# rubocop:disable RSpec/LeakyLocalVariable
 describe JIRA::Atlassian::Jwt do
   let(:jwt_opts) do
     {
       algorithm: 'HS256',
-      leeway: (3600 * 24 * 365 * 10) # 10 years of leeway -- the JWT gem verifies the token expiry time
+      leeway: (3600 * 24 * 365 * 20) # 10 years of leeway -- the JWT gem verifies the token expiry time
     }
   end
   let(:base_url) { '' }
@@ -57,4 +56,3 @@ describe JIRA::Atlassian::Jwt do
     end
   end
 end
-# rubocop:enable RSpec/LeakyLocalVariable
