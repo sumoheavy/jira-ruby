@@ -1,6 +1,6 @@
 # JIRA API Gem
 
-[![Build Status](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml/badge.svg)](https://github.com/sumoheavy/jira-ruby/actions/workflows/CI.yml)
+[![Build Status](https://github.com/sumoheavy/jira-ruby/actions/workflows/test.yml/badge.svg)](https://github.com/sumoheavy/jira-ruby/actions/workflows/test.yml)
 
 This gem provides access to the Atlassian JIRA REST API.
 
