@@ -103,7 +103,7 @@ EOS
       end
 
       context 'when there are multiple pages of results' do
-        let(:result_1) do
+        let(:first_page) do
           double(body: {
             'startAt' => 0,
             'maxResults' => 1,
@@ -111,7 +111,7 @@ EOS
             'issues' => []
           }.to_json)
         end
-        let(:result_2) do
+        let(:second_page) do
           double(body: {
             'startAt' => 1,
             'maxResults' => 1,
@@ -121,14 +121,14 @@ EOS
         end
 
         it 'makes multiple requests and increments the startAt param' do
-          expect(client).to receive(:get).and_return(result_1)
-          expect(client).to receive(:get).and_return(result_2)
+          expect(client).to receive(:get).and_return(first_page)
+          expect(client).to receive(:get).and_return(second_page)
           subject.issues
         end
       end
 
       context 'when there is only one page of results' do
-        let(:result_1) do
+        let(:only_page) do
           double(body: {
             'startAt' => 0,
             'maxResults' => 2,
@@ -138,7 +138,7 @@ EOS
         end
 
         it 'only requires one request' do
-          expect(client).to receive(:get).once.and_return(result_1)
+          expect(client).to receive(:get).once.and_return(only_page)
           subject.issues
         end
       end

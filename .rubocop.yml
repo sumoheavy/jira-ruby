@@ -65,9 +65,6 @@ RSpec/ExampleLength:
 RSpec/ExpectInHook:
   Enabled: false
 
-RSpec/IndexedLet:
-  Enabled: false
-
 RSpec/InstanceVariable:
   Enabled: false
 
