@@ -71,9 +71,6 @@ RSpec/IndexedLet:
 RSpec/InstanceVariable:
   Enabled: false
 
-RSpec/LeakyConstantDeclaration:
-  Enabled: false
-
 RSpec/MessageSpies:
   Enabled: false
 
