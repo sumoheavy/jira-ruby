@@ -43,9 +43,12 @@ module JIRA
     # Generally not used directly, but through JIRA::Client.
     # @param [Hash] options Options as passed from JIRA::Client constructor.
     # @option options [String] :signature_method The signature method to use (defaults to 'RSA-SHA1')
-    # @option options [String] :request_token_path The path to request a token (defaults to '/plugins/servlet/oauth/request-token')
-    # @option options [String] :authorize_path The path to authorize a token (defaults to '/plugins/servlet/oauth/authorize')
-    # @option options [String] :access_token_path The path to access a token (defaults to '/plugins/servlet/oauth/access-token')
+    # @option options [String] :request_token_path The path to request a token
+    #   (defaults to '/plugins/servlet/oauth/request-token')
+    # @option options [String] :authorize_path The path to authorize a token
+    #   (defaults to '/plugins/servlet/oauth/authorize')
+    # @option options [String] :access_token_path The path to access a token
+    #   (defaults to '/plugins/servlet/oauth/access-token')
     # @option options [String] :private_key_file The path to the private key file
     # @option options [String] :consumer_key The OAuth 1.0 consumer key
     # @option options [String] :consumer_secret The OAuth 1.0 consumer secret

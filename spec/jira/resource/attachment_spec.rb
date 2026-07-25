@@ -136,7 +136,9 @@ describe JIRA::Resource::Attachment do
       end
 
       it 'successfully update the attachment' do
-        expect(client).to receive(:post_multipart).and_return(response).with("/jira/rest/api/2/issue/#{issue.id}/attachments/#{attachment.id}", anything, anything)
+        expect(client).to receive(:post_multipart)
+          .with("/jira/rest/api/2/issue/#{issue.id}/attachments/#{attachment.id}", anything, anything)
+          .and_return(response)
 
         subject
 
@@ -216,7 +218,9 @@ describe JIRA::Resource::Attachment do
           )
         end
 
-        let(:default_headers_given) { { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' } }
+        let(:default_headers_given) do
+          { 'authorization' => 'Bearer 83CF8B609DE60036A8277BD0E96135751BBC07EB234256D4B65B893360651BF2' }
+        end
         let(:bearer_client) do
           JIRA::Client.new(username: 'username', password: 'password', auth_type: :basic, use_ssl: false,
                            default_headers: default_headers_given)

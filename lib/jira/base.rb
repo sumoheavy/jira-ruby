@@ -226,7 +226,8 @@ module JIRA
     #                   Use this option if the key in the JSON is named differently.
     #
     #                     # Respond to resource.children, but return the value of resource.attrs['kids']
-    #                     has_many :children, :attribute_key => 'kids' # => {"id":"123",{"kids":[{"id":"456"},{"id":"789"}]}}
+    #                     has_many :children, :attribute_key => 'kids'
+    #                     # => {"id":"123",{"kids":[{"id":"456"},{"id":"789"}]}}
     #
     # [:class]          The class of the child instance will be inferred from the name of the
     #                   relationship. E.g. <tt>has_many :children</tt> will return an instance

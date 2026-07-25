@@ -24,7 +24,9 @@ module JIRA
     #
     # === Creating a new issue
     #
-    #   issue = client.Issue.build(fields: { summary: 'New issue', project: { key: 'SUP' }, issuetype: { name: 'Bug' } })
+    #   issue = client.Issue.build(
+    #     fields: { summary: 'New issue', project: { key: 'SUP' }, issuetype: { name: 'Bug' } }
+    #   )
     #   issue.save
     #
     # === Updating an issue
@@ -107,7 +109,9 @@ module JIRA
       # @param jql [String] the JQL query string to search with
       # @param options [Hash] Jira API options for the search, including next_page_token
       # @return [Hash] with format { issues: [JIRA::Resource::Issue], next_page_token: [String], total: [Integer] }
-      def self.jql_paged(client, jql, options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil, next_page_token: nil })
+      def self.jql_paged(client, jql,
+                         options = { fields: nil, max_results: nil, expand: nil, reconcile_issues: nil,
+                                     next_page_token: nil })
         url = jql_url(client, jql, options)
         next_page_token = options[:next_page_token]
         max_results = options[:max_results]
@@ -169,7 +173,9 @@ module JIRA
            (@attrs['fields']['worklog']['total'] > @attrs['fields']['worklog']['maxResults'])
           worklog_url = client.options[:rest_base_path] + "/#{self.class.endpoint_name}/#{id}/worklog"
           response = client.get(worklog_url)
-          set_attrs({ 'fields' => { 'worklog' => self.class.parse_json(response.body) } }, false) unless response.body.nil? || (response.body.length < 2)
+          unless response.body.nil? || (response.body.length < 2)
+            set_attrs({ 'fields' => { 'worklog' => self.class.parse_json(response.body) } }, false)
+          end
         end
         @expanded = true
       end

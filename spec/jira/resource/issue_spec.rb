@@ -42,11 +42,13 @@ describe JIRA::Resource::Issue do
     issue = double
 
     allow(response).to receive(:body).and_return('{"issues":[{"id":"1","summary":"Bugs Everywhere"}]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=0')
-                                   .and_return(response)
+    expect(client).to receive(:get)
+      .with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=0')
+      .and_return(response)
     allow(empty_response).to receive(:body).and_return('{"issues":[]}')
-    expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=1')
-                                   .and_return(empty_response)
+    expect(client).to receive(:get)
+      .with('/jira/rest/api/2/search/jql?expand=transitions.fields&maxResults=1000&startAt=1')
+      .and_return(empty_response)
 
     expect(client).to receive(:Issue).and_return(issue)
     expect(issue).to receive(:build).with({ 'id' => '1', 'summary' => 'Bugs Everywhere' })
@@ -201,7 +203,10 @@ describe JIRA::Resource::Issue do
 
       let(:response_string) { '{"issues": [{"key":"baz"}], "isLast": true}' }
 
-      before { expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc').and_return(double(body: response_string)) }
+      before do
+        expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc')
+                                       .and_return(double(body: response_string))
+      end
 
       it { is_expected.to eq(issues: %w[3], next_page_token: nil, total: nil) }
     end

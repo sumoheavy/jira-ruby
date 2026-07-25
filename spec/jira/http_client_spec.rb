@@ -167,8 +167,9 @@ describe JIRA::HttpClient do
     basic_auth_http_conn = double
     request = double
     allow(basic_cookie_client).to receive(:basic_auth_http_conn).and_return(basic_auth_http_conn)
-    expect(request).to receive(:basic_auth).with(basic_cookie_client.options[:username],
-                                                 basic_cookie_client.options[:password]).exactly(5).times.and_return(request)
+    expect(request).to receive(:basic_auth)
+      .with(basic_cookie_client.options[:username], basic_cookie_client.options[:password])
+      .exactly(5).times.and_return(request)
     expect(cookie_response).to receive(:get_fields).with('set-cookie').exactly(5).times
     expect(basic_auth_http_conn).to receive(:request).exactly(5).times.with(request).and_return(cookie_response)
     %i[delete get head].each do |method|
@@ -275,7 +276,8 @@ describe JIRA::HttpClient do
     expect(Net::HTTP).to receive(:new).with(host, port).and_return(http_conn)
     expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
-    expect(http_conn).to receive(:ssl_version=).with(custom_ssl_version_client.options[:ssl_version]).and_return(http_conn)
+    expect(http_conn).to receive(:ssl_version=)
+      .with(custom_ssl_version_client.options[:ssl_version]).and_return(http_conn)
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
     expect(custom_ssl_version_client.http_conn(uri)).to eq(http_conn)
   end
@@ -352,7 +354,8 @@ describe JIRA::HttpClient do
     expect(http_conn).to receive(:use_ssl=).with(basic_client.options[:use_ssl]).and_return(http_conn)
     expect(http_conn).to receive(:verify_mode=).with(basic_client.options[:ssl_verify_mode]).and_return(http_conn)
     expect(http_conn).to receive(:read_timeout=).with(basic_client.options[:read_timeout]).and_return(http_conn)
-    expect(http_conn).to receive(:max_retries=).with(basic_client_with_max_retries.options[:max_retries]).and_return(http_conn)
+    expect(http_conn).to receive(:max_retries=)
+      .with(basic_client_with_max_retries.options[:max_retries]).and_return(http_conn)
     expect(basic_client_with_max_retries.http_conn(uri)).to eq(http_conn)
   end
 
