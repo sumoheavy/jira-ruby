@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+# Offical Atlassian signed URL test data. Loaded at the top level because it is used to
+# generate the contexts below, so it must be available when this file is loaded.
+TEST_DATA = JSON.parse(
+  File.read(File.expand_path('../../data/files/jwt-signed-urls.json', File.dirname(__FILE__)))
+).freeze
+
 describe JIRA::Atlassian::Jwt do
   let(:jwt_opts) do
     {
@@ -29,11 +35,6 @@ describe JIRA::Atlassian::Jwt do
     claim = described_class.build_claims(issuer, url, 'get', base_url, now, now + 60)
     expect(claim).to eq expected_claim
   end
-
-  # Offical Atlassian signed URL test data
-  TEST_DATA = JSON.parse(
-    File.read(File.expand_path('../../data/files/jwt-signed-urls.json', File.dirname(__FILE__)))
-  ).freeze
 
   TEST_DATA['tests'].each do |test|
     context test['name'] do

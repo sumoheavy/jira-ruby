@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe JIRA::Resource::Field do
   # Schema for a custom field of the 'select' customfieldtype.
-  def self.select_schema(custom_id)
+  def select_schema(custom_id)
     {
       'type' => 'string',
       'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select',
@@ -11,34 +11,99 @@ describe JIRA::Resource::Field do
   end
 
   # Attributes for all the fields the stubbed client knows about.
-  FIELD_ATTRS = [
-    { 'id' => 'customfield_10666', 'name' => 'Priority', 'custom' => true, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10666]', 'Priority'],
-      'schema' => select_schema(10_666) },
-    { 'id' => 'issuekey', 'name' => 'Key', 'custom' => false, 'orderable' => false,
-      'navigable' => true, 'searchable' => false, 'clauseNames' => %w[id issue issuekey key] },
-    { 'id' => 'priority', 'name' => 'Priority', 'custom' => false, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['priority'],
-      'schema' => { 'type' => 'priority', 'system' => 'priority' } },
-    { 'id' => 'summary', 'name' => 'Summary', 'custom' => false, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['summary'],
-      'schema' => { 'type' => 'string', 'system' => 'summary' } },
-    { 'id' => 'issuetype', 'name' => 'Issue Type', 'custom' => false, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => %w[issuetype type],
-      'schema' => { 'type' => 'issuetype', 'system' => 'issuetype' } },
-    { 'id' => 'customfield_10111', 'name' => 'SingleWord', 'custom' => true, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10111]', 'SingleWord'],
-      'schema' => select_schema(10_111) },
-    { 'id' => 'customfield_10222', 'name' => 'Multi Word', 'custom' => true, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10222]', 'Multi Word'],
-      'schema' => select_schema(10_222) },
-    { 'id' => 'customfield_10333', 'name' => 'Why/N@t', 'custom' => true, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10333]', 'Why/N@t'],
-      'schema' => select_schema(10_333) },
-    { 'id' => 'customfield_10444', 'name' => 'SingleWord', 'custom' => true, 'orderable' => true,
-      'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10444]', 'SingleWord'],
-      'schema' => select_schema(10_444) }
-  ].freeze
+  let(:field_attrs) do
+    [
+      {
+        'id' => 'customfield_10666',
+        'name' => 'Priority',
+        'custom' => true,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['cf[10666]', 'Priority'],
+        'schema' => select_schema(10_666)
+      },
+      {
+        'id' => 'issuekey',
+        'name' => 'Key',
+        'custom' => false,
+        'orderable' => false,
+        'navigable' => true,
+        'searchable' => false,
+        'clauseNames' => %w[id issue issuekey key]
+      },
+      {
+        'id' => 'priority',
+        'name' => 'Priority',
+        'custom' => false,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['priority'],
+        'schema' => { 'type' => 'priority', 'system' => 'priority' }
+      },
+      {
+        'id' => 'summary',
+        'name' => 'Summary',
+        'custom' => false,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['summary'],
+        'schema' => { 'type' => 'string', 'system' => 'summary' }
+      },
+      {
+        'id' => 'issuetype',
+        'name' => 'Issue Type',
+        'custom' => false,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => %w[issuetype type],
+        'schema' => { 'type' => 'issuetype', 'system' => 'issuetype' }
+      },
+      {
+        'id' => 'customfield_10111',
+        'name' => 'SingleWord',
+        'custom' => true,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['cf[10111]', 'SingleWord'],
+        'schema' => select_schema(10_111)
+      },
+      {
+        'id' => 'customfield_10222',
+        'name' => 'Multi Word',
+        'custom' => true,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['cf[10222]', 'Multi Word'],
+        'schema' => select_schema(10_222)
+      },
+      {
+        'id' => 'customfield_10333',
+        'name' => 'Why/N@t',
+        'custom' => true,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['cf[10333]', 'Why/N@t'],
+        'schema' => select_schema(10_333)
+      },
+      {
+        'id' => 'customfield_10444',
+        'name' => 'SingleWord',
+        'custom' => true,
+        'orderable' => true,
+        'navigable' => true,
+        'searchable' => true,
+        'clauseNames' => ['cf[10444]', 'SingleWord'],
+        'schema' => select_schema(10_444)
+      }
+    ]
+  end
 
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })
@@ -47,7 +112,7 @@ describe JIRA::Resource::Field do
     allow(client).to receive(:field_map_cache).and_return(nil)
     allow(client).to receive(:field_map_cache=)
     # info about all fields on the client
-    all_fields = FIELD_ATTRS.map { |attrs| described_class.new(client, attrs:) }
+    all_fields = field_attrs.map { |attrs| described_class.new(client, attrs:) }
     allow(client.Field).to receive(:all).and_return(all_fields)
     client
   end

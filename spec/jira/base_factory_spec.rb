@@ -1,18 +1,15 @@
 require 'spec_helper'
 
+# Test fixtures. JIRA::BaseFactory#target_class derives the target from the factory's
+# own name, so these must keep their fully qualified names.
+module JIRA
+  module Resource
+    class FooFactory < JIRA::BaseFactory; end
+    class Foo; end
+  end
+end
+
 describe JIRA::BaseFactory do
-  module JIRA
-    module Resource
-      class FooFactory < JIRA::BaseFactory; end
-    end
-  end
-
-  module JIRA
-    module Resource
-      class Foo; end
-    end
-  end
-
   subject       { JIRA::Resource::FooFactory.new(client) }
 
   let(:client)  { double }

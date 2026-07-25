@@ -1,49 +1,47 @@
 require 'spec_helper'
 
-describe JIRA::Base do
-  class JIRADelegation < SimpleDelegator # :nodoc:
-  end
+class JIRADelegation < SimpleDelegator # :nodoc:
+end
 
-  module JIRA
-    module Resource
-      class Deadbeef < JIRA::Base # :nodoc:
-      end
+# Test fixtures. JIRA::Base resolves relationships from these class names, so they
+# must keep their fully qualified names.
+module JIRA
+  module Resource
+    class Deadbeef < JIRA::Base # :nodoc:
     end
-  end
 
-  module JIRA
-    module Resource
-      class HasOneExample < JIRA::Base # :nodoc:
-        has_one :deadbeef
-        has_one :muffin, class: JIRA::Resource::Deadbeef
-        has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
+    class HasOneExample < JIRA::Base # :nodoc:
+      has_one :deadbeef
+      has_one :muffin, class: JIRA::Resource::Deadbeef
+      has_one :brunchmuffin, class: JIRA::Resource::Deadbeef,
+                             nested_under: 'nested'
+      has_one :breakfastscone,
+              class: JIRA::Resource::Deadbeef,
+              nested_under: %w[nested breakfastscone]
+      has_one :irregularly_named_thing,
+              class: JIRA::Resource::Deadbeef,
+              attribute_key: 'irregularlyNamedThing'
+    end
+
+    class HasManyExample < JIRA::Base # :nodoc:
+      has_many :deadbeefs
+      has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
                                nested_under: 'nested'
-        has_one :breakfastscone,
-                class: JIRA::Resource::Deadbeef,
-                nested_under: %w[nested breakfastscone]
-        has_one :irregularly_named_thing,
-                class: JIRA::Resource::Deadbeef,
-                attribute_key: 'irregularlyNamedThing'
-      end
+      has_many :breakfastscones,
+               class: JIRA::Resource::Deadbeef,
+               nested_under: %w[nested breakfastscone]
+      has_many :irregularly_named_things,
+               class: JIRA::Resource::Deadbeef,
+               attribute_key: 'irregularlyNamedThings'
+    end
+
+    class BelongsToExample < JIRA::Base # :nodoc:
+      belongs_to :deadbeef
     end
   end
+end
 
-  module JIRA
-    module Resource
-      class HasManyExample < JIRA::Base # :nodoc:
-        has_many :deadbeefs
-        has_many :brunchmuffins, class: JIRA::Resource::Deadbeef,
-                                 nested_under: 'nested'
-        has_many :breakfastscones,
-                 class: JIRA::Resource::Deadbeef,
-                 nested_under: %w[nested breakfastscone]
-        has_many :irregularly_named_things,
-                 class: JIRA::Resource::Deadbeef,
-                 attribute_key: 'irregularlyNamedThings'
-      end
-    end
-  end
-
+describe JIRA::Base do
   subject { JIRA::Resource::Deadbeef.new(client, attrs:) }
 
   let(:client)  { double('client') }
@@ -506,6 +504,14 @@ describe JIRA::Base do
   end
 
   describe 'nesting' do
+    # nested_collections mutates the shared Deadbeef fixture class, so restore the
+    # original value to keep these examples independent of execution order.
+    around do |example|
+      original = JIRA::Resource::Deadbeef.collection_attributes_are_nested
+      example.run
+      JIRA::Resource::Deadbeef.nested_collections original
+    end
+
     it 'defaults collection_attributes_are_nested to false' do
       expect(JIRA::Resource::Deadbeef.collection_attributes_are_nested).to be_falsey
     end
@@ -620,14 +626,6 @@ describe JIRA::Base do
   end
 
   describe 'belongs_to' do
-    module JIRA
-      module Resource
-        class BelongsToExample < JIRA::Base
-          belongs_to :deadbeef
-        end
-      end
-    end
-
     subject { JIRA::Resource::BelongsToExample.new(client, attrs: { 'id' => '123' }, deadbeef:) }
 
     let(:deadbeef) { JIRA::Resource::Deadbeef.new(client, attrs: { 'id' => '999' }) }
