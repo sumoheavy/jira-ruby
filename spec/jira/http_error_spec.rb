@@ -5,8 +5,7 @@ describe JIRA::HTTPError do
 
   let(:response) do
     response = double('response')
-    allow(response).to receive(:code).and_return(401)
-    allow(response).to receive(:message).and_return('A MESSAGE WOO')
+    allow(response).to receive_messages(code: 401, message: 'A MESSAGE WOO')
     response
   end
 

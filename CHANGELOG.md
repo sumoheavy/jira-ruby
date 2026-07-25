@@ -60,7 +60,8 @@ These changes do not modify the public API.
 - These RuboCop cops are enabled again, and all related offenses are corrected:
   `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
   `Lint/IneffectiveAccessModifier`, `RSpec/IndexedLet`,
-  `RSpec/InstanceVariable`, and `RSpec/LeakyConstantDeclaration`.
+  `RSpec/InstanceVariable`, `RSpec/LeakyConstantDeclaration`, and
+  `RSpec/ReceiveMessages`.
 - The shared spec fixtures are now in `spec/support/`. This removed a second
   `JIRAResourceDelegation` class.
 - A test in `spec/jira/resource/issue_spec.rb` did not test the correct object.

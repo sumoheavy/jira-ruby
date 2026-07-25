@@ -80,9 +80,6 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Enabled: false
 
-RSpec/ReceiveMessages:
-  Enabled: false
-
 RSpec/SpecFilePathFormat:
   Enabled: false
 

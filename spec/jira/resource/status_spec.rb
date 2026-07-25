@@ -3,8 +3,7 @@ require 'spec_helper'
 describe JIRA::Resource::Status do
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })
-    allow(client).to receive(:Field).and_return(JIRA::Resource::FieldFactory.new(client))
-    allow(client).to receive(:field_map_cache).and_return(nil)
+    allow(client).to receive_messages(Field: JIRA::Resource::FieldFactory.new(client), field_map_cache: nil)
     client
   end
 

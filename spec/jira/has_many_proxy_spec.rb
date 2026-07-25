@@ -21,8 +21,7 @@ describe JIRA::HasManyProxy do
   it 'can build a new instance' do
     client = double('client')
     foo = double('foo')
-    allow(parent).to receive(:client).and_return(client)
-    allow(parent).to receive(:to_sym).and_return(:parent)
+    allow(parent).to receive_messages(client: client, to_sym: :parent)
     expect(Foo).to receive(:new).with(client, attrs: { 'foo' => 'bar' }, parent:).and_return(foo)
     expect(collection).to receive(:<<).with(foo)
     expect(subject.build('foo' => 'bar')).to eq(foo)
@@ -31,8 +30,7 @@ describe JIRA::HasManyProxy do
   it 'can get all the instances' do
     foo = double('foo')
     client = double('client')
-    allow(parent).to receive(:client).and_return(client)
-    allow(parent).to receive(:to_sym).and_return(:parent)
+    allow(parent).to receive_messages(client: client, to_sym: :parent)
     expect(Foo).to receive(:all).with(client, parent:).and_return(foo)
     expect(subject.all).to eq(foo)
   end

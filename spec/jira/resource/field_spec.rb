@@ -108,8 +108,7 @@ describe JIRA::Resource::Field do
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })
     field = JIRA::Resource::FieldFactory.new(client)
-    allow(client).to receive(:Field).and_return(field)
-    allow(client).to receive(:field_map_cache).and_return(nil)
+    allow(client).to receive_messages(Field: field, field_map_cache: nil)
     allow(client).to receive(:field_map_cache=)
     # info about all fields on the client
     all_fields = field_attrs.map { |attrs| described_class.new(client, attrs:) }
