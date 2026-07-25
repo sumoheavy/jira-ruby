@@ -17,11 +17,12 @@ module JIRA
     #
     # File uploads are not supported with this method.  Use request_multipart instead.
     #
-    # @param [Array] args Arguments to pass to the request method
+    # All arguments are forwarded to {#make_request}.
+    #
     # @return [Net::HTTPResponse] The response from the server
     # @raise [JIRA::HTTPError] if it was not successful
-    def request(*args)
-      response = make_request(*args)
+    def request(*)
+      response = make_request(*)
       raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
 
       response
@@ -33,11 +34,12 @@ module JIRA
     #
     # Generally you should not call this method directly, but use derived classes.
     #
-    # @param [Array] args Arguments to pass to the request method
+    # All arguments are forwarded to {#make_multipart_request}.
+    #
     # @return [Net::HTTPResponse] The response from the server
     # @raise [JIRA::HTTPError] if it was not successful
-    def request_multipart(*args)
-      response = make_multipart_request(*args)
+    def request_multipart(*)
+      response = make_multipart_request(*)
       raise HTTPError, response unless response.is_a?(Net::HTTPSuccess)
 
       response

@@ -2,7 +2,6 @@
 
 require 'active_support/core_ext/string'
 require 'active_support/inflector'
-require 'set'
 
 module JIRA
   # This class provides the basic object <-> REST mapping for all JIRA::Resource subclasses,
