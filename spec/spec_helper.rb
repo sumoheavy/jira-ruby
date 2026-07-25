@@ -4,9 +4,10 @@ require 'bundler/setup'
 require 'webmock/rspec'
 require 'pry'
 
-Dir['./spec/support/**/*.rb'].each { |f| require f }
-
 require 'jira-ruby'
+
+# Loaded after jira-ruby, as the shared fixtures subclass JIRA::Base.
+Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|
   config.extend ClientsHelper

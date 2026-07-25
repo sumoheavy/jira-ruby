@@ -26,9 +26,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Lint/EmptyClass:
-  Enabled: false
-
 Lint/IneffectiveAccessModifier:
   Enabled: false
 

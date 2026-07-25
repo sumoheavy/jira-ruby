@@ -1,9 +1,6 @@
 require 'spec_helper'
 require 'active_support/core_ext/hash'
 
-class JIRAResourceDelegation < SimpleDelegator # :nodoc:
-end
-
 describe JIRA::Resource::Board do
   let(:client) do
     double(options: {

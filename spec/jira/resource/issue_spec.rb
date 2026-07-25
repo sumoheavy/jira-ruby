@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-class JIRAResourceDelegation < SimpleDelegator # :nodoc:
-end
-
 describe JIRA::Resource::Issue do
   let(:client) do
     client = double(options: { rest_base_path: '/jira/rest/api/2' })

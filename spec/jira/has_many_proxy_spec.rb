@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-class Foo; end # :nodoc:
-
 describe JIRA::HasManyProxy do
   subject { described_class.new(parent, Foo, collection) }
 
