@@ -14,6 +14,26 @@ Naming/FileName:
 Naming/MethodName:
   Enabled: false
 
+# The shared examples in spec/support/shared_examples/integration.rb need ten
+# `let` names. Thus the specs in spec/integration cannot obey this limit, and
+# they are excluded. This cop has no IgnoreMetadata option, thus the exclusion
+# uses the path.
+#
+# The limit of 13 applies to the other specs. Groups in spec/jira inherit the
+# `let` statements of their parent groups, and this cop counts the inherited
+# statements again at each level.
+#
+# The spec for the HTTP client is also excluded. It has twelve clients at the top
+# level, and each client has a different configuration. Its
+# `#make_multipart_request` group adds six more `let` statements, but it uses only
+# one of the twelve clients. Thus its count of 17 is an effect of inheritance, not
+# of too many helpers in the group.
+RSpec/MultipleMemoizedHelpers:
+  Max: 13
+  Exclude:
+    - 'spec/integration/**/*'
+    - 'spec/jira/http_client_spec.rb'
+
 # The specs in spec/integration test a resource, but they are not in the
 # spec/jira/resource directory. Each of these specs has `type: :integration`
 # metadata, which tells this cop to ignore the path.
@@ -73,9 +93,6 @@ RSpec/MessageSpies:
   Enabled: false
 
 RSpec/MultipleExpectations:
-  Enabled: false
-
-RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 RSpec/NamedSubject:
