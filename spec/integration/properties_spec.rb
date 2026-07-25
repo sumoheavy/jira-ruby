@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Properties do
+describe JIRA::Resource::Properties, type: :integration do
   with_each_client do |site_url, client|
     context 'when accessing singular resource' do
       let(:client) { client }

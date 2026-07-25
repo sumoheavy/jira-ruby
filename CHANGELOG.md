@@ -61,10 +61,17 @@ These changes do not modify the public API.
   `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
   `Lint/IneffectiveAccessModifier`, `Naming/HeredocDelimiterNaming`,
   `RSpec/IndexedLet`, `RSpec/InstanceVariable`,
-  `RSpec/LeakyConstantDeclaration`, and `RSpec/ReceiveMessages`.
+  `RSpec/LeakyConstantDeclaration`, `RSpec/ReceiveMessages`, and
+  `RSpec/SpecFilePathFormat`.
 - The JSON test data in `spec/jira/resource/board_spec.rb` is now in
   `spec/mock_responses/board/`. The spec file decreased from 222 lines to 126
   lines.
+- Each spec in `spec/integration` has `type: :integration` metadata. You can now
+  run only one group of tests: `rspec --tag type:integration` for the
+  integration tests, or `rspec --tag ~type:integration` for the unit tests.
+- The `spec/jira/resource/jira_picker_suggestions_issue_spec.rb` file has the
+  name `issue_picker_suggestions_issue_spec.rb`. The new name agrees with the
+  `JIRA::Resource::IssuePickerSuggestionsIssue` class that the spec tests.
 - The shared spec fixtures are now in `spec/support/`. This removed a second
   `JIRAResourceDelegation` class.
 - A test in `spec/jira/resource/issue_spec.rb` did not test the correct object.

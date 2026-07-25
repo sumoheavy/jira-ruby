@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Transition do
+describe JIRA::Resource::Transition, type: :integration do
   with_each_client do |site_url, client|
     let(:client) { client }
     let(:site_url) { site_url }

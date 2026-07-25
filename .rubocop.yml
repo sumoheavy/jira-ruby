@@ -14,6 +14,13 @@ Naming/FileName:
 Naming/MethodName:
   Enabled: false
 
+# The specs in spec/integration test a resource, but they are not in the
+# spec/jira/resource directory. Each of these specs has `type: :integration`
+# metadata, which tells this cop to ignore the path.
+RSpec/SpecFilePathFormat:
+  IgnoreMetadata:
+    type: integration
+
 Style/Documentation:
   Enabled: false
 
@@ -75,9 +82,6 @@ RSpec/NamedSubject:
   Enabled: false
 
 RSpec/NestedGroups:
-  Enabled: false
-
-RSpec/SpecFilePathFormat:
   Enabled: false
 
 RSpec/StubbedMock:

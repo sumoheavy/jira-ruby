@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Webhook do
+describe JIRA::Resource::Webhook, type: :integration do
   ## This endpoint uses a different base path, so override this client's rest_base_path option
   ## so this test can still use the SharedExampleGroups
   with_each_client(rest_base_path: described_class.const_get(:REST_BASE_PATH)) do |site_url, client|

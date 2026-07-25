@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JIRA::Resource::Status do
+describe JIRA::Resource::Status, type: :integration do
   with_each_client do |site_url, client|
     let(:client) { client }
     let(:site_url) { site_url }
