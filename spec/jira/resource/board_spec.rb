@@ -27,26 +27,7 @@ describe JIRA::Resource::Board do
 
   it 'finds all boards' do
     response = double
-    api_json = <<EOS
-    {
-         "maxResults": 50,
-         "startAt": 0,
-         "isLast": true,
-         "values": [
-            {
-                "id": 84,
-                "name": "scrum board",
-                "type": "scrum"
-            },
-            {
-                "id": 92,
-                "name": "kanban board",
-                "type": "kanban"
-            }
-        ]
-    }
-EOS
-    allow(response).to receive(:body).and_return(api_json)
+    allow(response).to receive(:body).and_return(get_mock_response('board/all.json'))
     expect(client).to receive(:get).with('/rest/agile/1.0/board')
                                    .and_return(response)
     expect(client).to receive(:Board).twice.and_return(JIRA::Resource::BoardFactory.new(client))
@@ -62,29 +43,7 @@ EOS
     it 'finds all issues' do
       issues_response = double
 
-      api_json_issues = <<EOS
-    {
-        "expand": "names,schema",
-        "startAt": 0,
-        "maxResults": 50,
-        "total": 1,
-        "issues": [
-            {
-                "id": "10001",
-                "fields": {
-                    "sprint": {
-                        "id": 37,
-                        "state": "future",
-                        "name": "sprint 2"
-                    },
-                    "description": "example bug report"
-                }
-            }
-        ]
-    }
-EOS
-
-      allow(issues_response).to receive(:body).and_return(api_json_issues)
+      allow(issues_response).to receive(:body).and_return(get_mock_response('board/84_issues.json'))
       allow(board).to receive(:id).and_return(84)
       expect(client).to receive(:get).with('/rest/agile/1.0/board/84/issue')
                                      .and_return(issues_response)
@@ -148,23 +107,7 @@ EOS
   it 'gets all sprints for a board' do
     response = double
 
-    api_json = <<-EOS
-    {
-        "values": [
-            {
-                "id": 37,
-                "state": "closed",
-                "name": "sprint 1"
-            },
-            {
-                "id": 72,
-                "state": "future",
-                "name": "sprint 2"
-            }
-        ]
-    }
-    EOS
-    allow(response).to receive(:body).and_return(api_json)
+    allow(response).to receive(:body).and_return(get_mock_response('board/84_sprints.json'))
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/sprint?').and_return(response)
     expect(client).to receive(:Sprint).twice.and_return(JIRA::Resource::SprintFactory.new(client))
@@ -174,46 +117,7 @@ EOS
   it 'gets board configuration for a board' do
     response = double
 
-    api_json = <<-EOS
-      {
-        "id":1,
-        "name":"My Board",
-        "type":"kanban",
-        "self":"https://mycompany.atlassian.net/rest/agile/1.0/board/1/configuration",
-        "location":{
-          "type":"project",
-          "key":"MYPROJ",
-          "id":"10000",
-          "self":"https://mycompany.atlassian.net/rest/api/2/project/10000",
-          "name":"My Project"
-        },
-        "filter":{
-          "id":"10000",
-          "self":"https://mycompany.atlassian.net/rest/api/2/filter/10000"
-        },
-        "subQuery":{
-          "query":"resolution = EMPTY OR resolution != EMPTY AND resolutiondate >= -5d"
-        },
-        "columnConfig":{
-          "columns":[
-            {
-              "name":"Backlog",
-              "statuses":[
-                {
-                  "id":"10000",
-                  "self":"https://mycompany.atlassian.net/rest/api/2/status/10000"
-                }
-              ]
-            }
-          ],
-          "constraintType":"issueCount"
-        },
-        "ranking":{
-          "rankCustomFieldId":10011
-        }
-      }
-    EOS
-    allow(response).to receive(:body).and_return(api_json)
+    allow(response).to receive(:body).and_return(get_mock_response('board/84_configuration.json'))
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
     expect(client).to receive(:BoardConfiguration).and_return(JIRA::Resource::BoardConfigurationFactory.new(client))

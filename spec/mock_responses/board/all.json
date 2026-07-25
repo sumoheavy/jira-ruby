@@ -1,0 +1,17 @@
+{
+    "maxResults": 50,
+    "startAt": 0,
+    "isLast": true,
+    "values": [
+        {
+            "id": 84,
+            "name": "scrum board",
+            "type": "scrum"
+        },
+        {
+            "id": 92,
+            "name": "kanban board",
+            "type": "kanban"
+        }
+    ]
+}

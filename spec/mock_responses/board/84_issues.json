@@ -1,0 +1,19 @@
+{
+    "expand": "names,schema",
+    "startAt": 0,
+    "maxResults": 50,
+    "total": 1,
+    "issues": [
+        {
+            "id": "10001",
+            "fields": {
+                "sprint": {
+                    "id": 37,
+                    "state": "future",
+                    "name": "sprint 2"
+                },
+                "description": "example bug report"
+            }
+        }
+    ]
+}

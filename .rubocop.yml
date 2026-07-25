@@ -47,9 +47,6 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Enabled: false
 
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
 Naming/PredicatePrefix:
   Enabled: false
 
