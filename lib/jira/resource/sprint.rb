@@ -84,13 +84,17 @@ module JIRA
 
       private
 
+      # You must use `send`, because an instance and its class object are not in
+      # the same private scope.
       def agile_path
-        self.class.agile_path(client, id)
+        self.class.send(:agile_path, client, id)
       end
 
       def self.agile_path(client, key)
         "#{client.options[:context_path]}/rest/agile/1.0/sprint/#{key}"
       end
+
+      private_class_method :agile_path
     end
   end
 end

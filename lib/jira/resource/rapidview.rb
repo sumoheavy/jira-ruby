@@ -57,13 +57,17 @@ module JIRA
 
       private
 
+      # You must use `send`, because an instance and its class object are not in
+      # the same private scope.
+      def path_base(client)
+        self.class.send(:path_base, client)
+      end
+
       def self.path_base(client)
         "#{client.options[:context_path]}/rest/greenhopper/1.0"
       end
 
-      def path_base(client)
-        self.class.path_base(client)
-      end
+      private_class_method :path_base
     end
   end
 end

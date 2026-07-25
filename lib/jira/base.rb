@@ -465,6 +465,12 @@ module JIRA
       key_value.nil?
     end
 
+    # JIRA::Resource::Project#issues calls this method with an explicit receiver.
+    # Thus this method must stay public.
+    def self.query_params_for_search(options)
+      options.slice(*QUERY_PARAMS_FOR_SEARCH)
+    end
+
     protected
 
     # This allows conditional lookup of possibly nested attributes.  Example usage:
@@ -473,55 +479,61 @@ module JIRA
     #   maybe_nested_attribute('foo', 'bar')          # => @attrs['bar']['foo']
     #   maybe_nested_attribute('foo', ['bar', 'baz']) # => @attrs['bar']['baz']['foo']
     #
+    # These methods call the protected class methods that follow. You must use
+    # `send`, because an instance and its class object are not in the same
+    # protected scope.
     def maybe_nested_attribute(attribute_name, nested_under = nil)
-      self.class.maybe_nested_attribute(@attrs, attribute_name, nested_under)
-    end
-
-    def self.maybe_nested_attribute(attributes, attribute_name, nested_under = nil)
-      return attributes[attribute_name] if nested_under.nil?
-
-      if nested_under.instance_of? Array
-        final = nested_under.inject(attributes) do |parent, key|
-          break if parent.nil?
-
-          parent[key]
-        end
-        return nil if final.nil?
-
-        final[attribute_name]
-      else
-        attributes[nested_under][attribute_name]
-      end
+      self.class.send(:maybe_nested_attribute, @attrs, attribute_name, nested_under)
     end
 
     def url_with_query_params(url, query_params)
-      self.class.url_with_query_params(url, query_params)
-    end
-
-    def self.url_with_query_params(url, query_params)
-      if query_params.empty?
-        url
-      else
-        "#{url}?#{hash_to_query_string query_params}"
-      end
+      self.class.send(:url_with_query_params, url, query_params)
     end
 
     def hash_to_query_string(query_params)
-      self.class.hash_to_query_string(query_params)
+      self.class.send(:hash_to_query_string, query_params)
     end
 
-    def self.hash_to_query_string(query_params)
-      query_params.map do |k, v|
-        "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}"
-      end.join('&')
-    end
+    # These methods are in a `class << self` block. Thus the `protected` keyword
+    # applies to them. A `protected` keyword in the class body has no effect on
+    # `def self.` methods.
+    class << self
+      protected
 
-    def self.query_params_for_single_fetch(options)
-      options.slice(*QUERY_PARAMS_FOR_SINGLE_FETCH)
-    end
+      def maybe_nested_attribute(attributes, attribute_name, nested_under = nil)
+        return attributes[attribute_name] if nested_under.nil?
 
-    def self.query_params_for_search(options)
-      options.slice(*QUERY_PARAMS_FOR_SEARCH)
+        if nested_under.instance_of? Array
+          final = nested_under.inject(attributes) do |parent, key|
+            break if parent.nil?
+
+            parent[key]
+          end
+          return nil if final.nil?
+
+          final[attribute_name]
+        else
+          attributes[nested_under][attribute_name]
+        end
+      end
+
+      def url_with_query_params(url, query_params)
+        if query_params.empty?
+          url
+        else
+          "#{url}?#{hash_to_query_string query_params}"
+        end
+      end
+
+      def hash_to_query_string(query_params)
+        query_params.map do |k, v|
+          "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}"
+        end.join('&')
+      end
+
+      def query_params_for_single_fetch(options)
+        options.slice(*QUERY_PARAMS_FOR_SINGLE_FETCH)
+      end
     end
   end
 end

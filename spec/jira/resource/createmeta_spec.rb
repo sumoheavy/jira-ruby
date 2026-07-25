@@ -19,7 +19,8 @@ describe JIRA::Resource::Createmeta do
     )
   end
 
-  # Expects a GET of the createmeta endpoint, with the given query string appended.
+  # This method expects a GET of the createmeta endpoint. It adds the given query
+  # string to the endpoint.
   def expect_createmeta_get(query = '')
     expect(client).to receive(:get).with("/jira/rest/api/2/issue/createmeta#{query}").and_return(response)
   end

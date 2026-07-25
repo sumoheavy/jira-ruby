@@ -463,8 +463,8 @@ describe JIRA::Base do
   end
 
   describe 'nesting' do
-    # nested_collections mutates the shared Deadbeef fixture class, so restore the
-    # original value to keep these examples independent of execution order.
+    # The `nested_collections` method changes the shared Deadbeef fixture class.
+    # Put back the initial value. Thus the sequence of the examples has no effect.
     around do |example|
       original = JIRA::Resource::Deadbeef.collection_attributes_are_nested
       example.run

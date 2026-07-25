@@ -7,13 +7,14 @@ describe JIRA::Resource::Agile do
     client
   end
   let(:response) { double }
-  # The JQL lookup issued for the issue ids in the board/1_issues.json fixture.
+  # This is the JQL query for the issue ids in the board/1_issues.json fixture.
   let(:board_issues_jql_url) do
     '/jira/rest/api/2/search/jql?jql=id+IN%2810546%2C+10547%2C+10556%2C' \
       '+10557%2C+10558%2C+10559%2C+10600%2C+10601%2C+10604%29'
   end
 
-  # Expects a GET of an agile endpoint, with the given path appended to the agile base path.
+  # This method expects a GET of an agile endpoint. It adds the given path to the
+  # agile base path.
   def expect_agile_get(path)
     expect(client).to receive(:get).with("/jira/rest/agile/1.0#{path}").and_return(response)
   end

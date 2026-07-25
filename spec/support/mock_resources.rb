@@ -1,8 +1,9 @@
-# Resource classes used as test fixtures.
+# These resource classes are test fixtures.
 #
-# JIRA::Base resolves has_one/has_many/belongs_to targets from class names, and
-# JIRA::BaseFactory#target_class derives its target by stripping "Factory" from its
-# own name, so these must keep their fully qualified names.
+# You must not change these class names. JIRA::Base finds the target of a
+# `has_one`, a `has_many`, or a `belongs_to` from the class name. Also,
+# JIRA::BaseFactory#target_class removes "Factory" from its own name to find its
+# target.
 module JIRA
   module Resource
     class Deadbeef < JIRA::Base # :nodoc:
@@ -37,13 +38,14 @@ module JIRA
       belongs_to :deadbeef
     end
 
-    # Target of FooFactory, used to verify factory delegation.
+    # This class is the target of FooFactory. It tests the factory delegation.
     class Foo < JIRA::Base; end
 
     class FooFactory < JIRA::BaseFactory; end
   end
 end
 
-# Stands in for a HasManyProxy target class. Distinct from JIRA::Resource::Foo above.
-# Every call made on it is stubbed, so it needs no body of its own.
+# This class is a target class for a HasManyProxy. It is not the same as the
+# JIRA::Resource::Foo class above. The tests replace all calls to this class with
+# stubs. Thus the class does not need a body.
 class Foo < JIRA::Base; end

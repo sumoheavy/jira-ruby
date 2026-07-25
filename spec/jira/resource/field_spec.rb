@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JIRA::Resource::Field do
-  # Schema for a custom field of the 'select' customfieldtype.
+  # This is the schema for a custom field of the 'select' type.
   def select_schema(custom_id)
     {
       'type' => 'string',
@@ -10,7 +10,7 @@ describe JIRA::Resource::Field do
     }
   end
 
-  # Attributes for all the fields the stubbed client knows about.
+  # These are the attributes of all the fields that the stub client contains.
   let(:field_attrs) do
     [
       {

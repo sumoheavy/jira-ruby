@@ -6,7 +6,8 @@ require 'pry'
 
 require 'jira-ruby'
 
-# Loaded after jira-ruby, as the shared fixtures subclass JIRA::Base.
+# These files load after jira-ruby, because the shared fixtures are subclasses of
+# JIRA::Base.
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|

@@ -12,7 +12,10 @@ Gem::Specification.new do |s|
   s.description = 'API for JIRA'
   s.licenses    = ['MIT']
   s.metadata    = {
+    'homepage_uri' => s.homepage,
     'source_code_uri' => 'https://github.com/sumoheavy/jira-ruby',
+    'bug_tracker_uri' => 'https://github.com/sumoheavy/jira-ruby/issues',
+    'changelog_uri' => "https://github.com/sumoheavy/jira-ruby/blob/v#{JIRA::VERSION}/CHANGELOG.md",
     'rubygems_mfa_required' => 'true'
   }
 

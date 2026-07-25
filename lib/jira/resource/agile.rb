@@ -63,12 +63,14 @@ module JIRA
 
       private
 
-      def self.path_base(client)
-        "#{client.options[:context_path]}/rest/agile/1.0"
+      # You must use `send`, because an instance and its class object are not in
+      # the same private scope.
+      def path_base(client)
+        self.class.send(:path_base, client)
       end
 
-      def path_base(client)
-        self.class.path_base(client)
+      def self.path_base(client)
+        "#{client.options[:context_path]}/rest/agile/1.0"
       end
 
       private_class_method :path_base
