@@ -10,24 +10,23 @@ describe JIRA::Resource::Issue do
 
   describe '#respond_to?' do
     describe 'when decorated by SimpleDelegator' do
+      subject(:decorated) { JIRAResourceDelegation.new(described_class.find(client, 101)) }
+
       before do
         response = double
         allow(response).to receive(:body).and_return('{"key":"foo","id":"101"}')
         allow(described_class).to receive(:collection_path).and_return('/jira/rest/api/2/issue')
         allow(client).to receive(:get).with('/jira/rest/api/2/issue/101')
                                       .and_return(response)
-
-        issue = described_class.find(client, 101)
-        @decorated = JIRAResourceDelegation.new(issue)
       end
 
       it 'responds to key' do
-        expect(@decorated.respond_to?(:key)).to be(true)
+        expect(decorated.respond_to?(:key)).to be(true)
       end
 
       it 'does not raise an error' do
         expect do
-          @issue.respond_to?(:project)
+          decorated.respond_to?(:project)
         end.not_to raise_error
       end
     end

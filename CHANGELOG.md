@@ -9,6 +9,12 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0] - Unreleased
 
+### Added
+
+- This changelog.
+- The gem metadata contains a `homepage_uri`, a `bug_tracker_uri`, and a
+  `changelog_uri`. RubyGems shows these links on the gem page.
+
 ### Removed
 
 - **Breaking:** Support for Ruby 3.1 and Ruby 3.2. The minimum version is now
@@ -51,11 +57,16 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 These changes do not modify the public API.
 
-- The `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
-  and `Lint/IneffectiveAccessModifier` RuboCop cops are enabled again. All
-  related offenses are corrected.
+- These RuboCop cops are enabled again, and all related offenses are corrected:
+  `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
+  `Lint/IneffectiveAccessModifier`, `RSpec/IndexedLet`,
+  `RSpec/InstanceVariable`, and `RSpec/LeakyConstantDeclaration`.
 - The shared spec fixtures are now in `spec/support/`. This removed a second
   `JIRAResourceDelegation` class.
+- A test in `spec/jira/resource/issue_spec.rb` did not test the correct object.
+  The example used the `@issue` variable, but no code sets this variable. Thus
+  the example tested `nil` and always passed. The example now uses the decorated
+  issue, and it tests `JIRA::Resource::Issue` correctly.
 - A test in `spec/jira/base_spec.rb` failed for some `--order random` seeds. The
   `nested_collections` examples changed a shared fixture class, but did not put
   back the initial value.
