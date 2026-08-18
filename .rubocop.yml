@@ -14,6 +14,16 @@ Naming/FileName:
 Naming/MethodName:
   Enabled: false
 
+# OpenSSL names its TLS methods `TLSv1_2` and `TLSv1_1`. The specs give these
+# names to `ssl_version`, thus the names must not change. This cop already permits
+# `TLS1_1` and `TLS1_2`; these two names use the same pattern.
+Naming/VariableNumber:
+  AllowedIdentifiers:
+    - TLS1_1
+    - TLS1_2
+    - TLSv1_1
+    - TLSv1_2
+
 # The shared examples in spec/support/shared_examples/integration.rb need ten
 # `let` names. Thus the specs in spec/integration cannot obey this limit, and
 # they are excluded. This cop has no IgnoreMetadata option, thus the exclusion
@@ -79,9 +89,6 @@ Naming/PredicatePrefix:
 
 Naming/PredicateMethod:
   AllowBangMethods: true
-
-Naming/VariableNumber:
-  Enabled: false
 
 RSpec/ExampleLength:
   Enabled: false

@@ -60,7 +60,7 @@ These changes do not modify the public API.
 - These RuboCop cops are enabled again, and all related offenses are corrected:
   `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
   `Lint/IneffectiveAccessModifier`, `Naming/HeredocDelimiterNaming`,
-  `RSpec/IndexedLet`, `RSpec/InstanceVariable`,
+  `Naming/VariableNumber`, `RSpec/IndexedLet`, `RSpec/InstanceVariable`,
   `RSpec/LeakyConstantDeclaration`, `RSpec/MultipleMemoizedHelpers`,
   `RSpec/ReceiveMessages`, and `RSpec/SpecFilePathFormat`.
 - The JSON test data in `spec/jira/resource/board_spec.rb` is now in

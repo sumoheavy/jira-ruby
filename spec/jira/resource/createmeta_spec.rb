@@ -81,26 +81,26 @@ describe JIRA::Resource::Createmeta do
     end
 
     it 'queries correct url when multiple `projectKeys` given as Project' do
-      prj_1 = JIRA::Resource::Project.new(client)
-      allow(prj_1).to receive(:key).and_return('PRJ_1')
-      prj_2 = JIRA::Resource::Project.new(client)
-      allow(prj_2).to receive(:key).and_return('PRJ_2')
+      prj1 = JIRA::Resource::Project.new(client)
+      allow(prj1).to receive(:key).and_return('PRJ_1')
+      prj2 = JIRA::Resource::Project.new(client)
+      allow(prj2).to receive(:key).and_return('PRJ_2')
 
       expect_createmeta_get '?projectKeys=PRJ_2%2CPRJ_1'
       described_class.all(
         client,
-        projectKeys: [prj_2, prj_1]
+        projectKeys: [prj2, prj1]
       )
     end
 
     it 'queries correct url when multiple `projectKeys` given as different types' do
-      prj_5 = JIRA::Resource::Project.new(client)
-      allow(prj_5).to receive(:key).and_return('PRJ_5')
+      prj5 = JIRA::Resource::Project.new(client)
+      allow(prj5).to receive(:key).and_return('PRJ_5')
 
       expect_createmeta_get '?projectKeys=PROJECT_1%2CPRJ_5'
       described_class.all(
         client,
-        projectKeys: ['PROJECT_1', prj_5]
+        projectKeys: ['PROJECT_1', prj5]
       )
     end
   end
@@ -134,26 +134,26 @@ describe JIRA::Resource::Createmeta do
     end
 
     it 'queries correct url when multiple `projectIds` given as Project' do
-      prj_1 = JIRA::Resource::Project.new(client)
-      allow(prj_1).to receive(:id).and_return('30303')
-      prj_2 = JIRA::Resource::Project.new(client)
-      allow(prj_2).to receive(:id).and_return('50505')
+      prj1 = JIRA::Resource::Project.new(client)
+      allow(prj1).to receive(:id).and_return('30303')
+      prj2 = JIRA::Resource::Project.new(client)
+      allow(prj2).to receive(:id).and_return('50505')
 
       expect_createmeta_get '?projectIds=50505%2C30303'
       described_class.all(
         client,
-        projectIds: [prj_2, prj_1]
+        projectIds: [prj2, prj1]
       )
     end
 
     it 'queries correct url when multiple `projectIds` given as different types' do
-      prj_5 = JIRA::Resource::Project.new(client)
-      allow(prj_5).to receive(:id).and_return('60606')
+      prj5 = JIRA::Resource::Project.new(client)
+      allow(prj5).to receive(:id).and_return('60606')
 
       expect_createmeta_get '?projectIds=10101%2C60606'
       described_class.all(
         client,
-        projectIds: ['10101', prj_5]
+        projectIds: ['10101', prj5]
       )
     end
   end
@@ -187,15 +187,15 @@ describe JIRA::Resource::Createmeta do
     end
 
     it 'queries correct url when multiple `issuetypeNames` given as Issuetype' do
-      issue_type_1 = JIRA::Resource::Issuetype.new(client)
-      allow(issue_type_1).to receive(:name).and_return('Epic')
-      issue_type_2 = JIRA::Resource::Issuetype.new(client)
-      allow(issue_type_2).to receive(:name).and_return('Sub-Task')
+      issue_type1 = JIRA::Resource::Issuetype.new(client)
+      allow(issue_type1).to receive(:name).and_return('Epic')
+      issue_type2 = JIRA::Resource::Issuetype.new(client)
+      allow(issue_type2).to receive(:name).and_return('Sub-Task')
 
       expect_createmeta_get '?issuetypeNames=Sub-Task%2CEpic'
       described_class.all(
         client,
-        issuetypeNames: [issue_type_2, issue_type_1]
+        issuetypeNames: [issue_type2, issue_type1]
       )
     end
 
@@ -240,15 +240,15 @@ describe JIRA::Resource::Createmeta do
     end
 
     it 'queries correct url when multiple `issuetypeIds` given as Issuetype' do
-      issue_type_1 = JIRA::Resource::Issuetype.new(client)
-      allow(issue_type_1).to receive(:id).and_return('30303')
-      issue_type_2 = JIRA::Resource::Issuetype.new(client)
-      allow(issue_type_2).to receive(:id).and_return('50505')
+      issue_type1 = JIRA::Resource::Issuetype.new(client)
+      allow(issue_type1).to receive(:id).and_return('30303')
+      issue_type2 = JIRA::Resource::Issuetype.new(client)
+      allow(issue_type2).to receive(:id).and_return('50505')
 
       expect_createmeta_get '?issuetypeIds=50505%2C30303'
       described_class.all(
         client,
-        issuetypeIds: [issue_type_2, issue_type_1]
+        issuetypeIds: [issue_type2, issue_type1]
       )
     end
 
