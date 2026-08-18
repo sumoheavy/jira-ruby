@@ -49,6 +49,9 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `super` from an overridden `respond_to?` in a subclass, examine it: the
   removed methods ignored the second `include_all` argument, but
   `respond_to_missing?` uses it.
+- The `initialize` methods of `JIRA::HttpClient`, `JIRA::OauthClient`, and
+  `JIRA::HTTPError` call `super`. If you have a subclass of one of these classes,
+  its `initialize` method must also call `super`.
 - `JIRA::RequestClient#request` and `JIRA::RequestClient#request_multipart` send
   their arguments with `*`. Before, they used an `args` array. The behavior for
   callers does not change.
@@ -61,6 +64,11 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `issue.respond_to?(:summary)` gave `true`, but `issue.method(:summary)` raised
   `NameError`. These classes now have `respond_to_missing?`, and `method`,
   `Method#owner`, and code that examines an object all operate correctly.
+- `JIRA::HTTPError#to_s` gave the class name, not the error text. The class had
+  an `attr_reader :message` that hid the method of `StandardError`, and the
+  `initialize` method did not call `super`. Thus `error.message` gave the text
+  but `error.to_s` gave `"JIRA::HTTPError"`. The `initialize` method now calls
+  `super` with the text, and the two methods agree.
 - `JIRA::Resource::Agile#path_base` raised `NoMethodError`. The instance method
   called the private class method with an explicit receiver, which Ruby does not
   permit. This defect was not visible, because only the class methods of `Agile`
@@ -72,7 +80,7 @@ These changes do not modify the public API.
 
 - These RuboCop cops are enabled again, and all related offenses are corrected:
   `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
-  `Lint/IneffectiveAccessModifier`, `Naming/HeredocDelimiterNaming`,
+  `Lint/IneffectiveAccessModifier`, `Lint/MissingSuper`, `Naming/HeredocDelimiterNaming`,
   `Naming/VariableNumber`, `RSpec/ExpectInHook`, `RSpec/IndexedLet`,
   `RSpec/InstanceVariable`, `RSpec/LeakyConstantDeclaration`,
   `RSpec/MultipleMemoizedHelpers`, `RSpec/NestedGroups`,

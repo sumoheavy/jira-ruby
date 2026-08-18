@@ -8,11 +8,11 @@ module JIRA
     extend Forwardable
 
     def_instance_delegators :@response, :code
-    attr_reader :response, :message
+    attr_reader :response
 
     def initialize(response)
       @response = response
-      @message = response.try(:message).presence || response.try(:body)
+      super(response.try(:message).presence || response.try(:body))
     end
   end
 end

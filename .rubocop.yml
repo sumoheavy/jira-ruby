@@ -69,9 +69,6 @@ Style/FrozenStringLiteralComment:
 # 
 # We are going to disable these and fix in pull requests
 ##
-Lint/MissingSuper:
-  Enabled: false
-
 Metrics/AbcSize:
   Enabled: false
 

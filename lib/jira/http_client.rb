@@ -49,6 +49,7 @@ module JIRA
     # @option options [String] :proxy_user Proxy user
     # @option options [String] :proxy_password Proxy Password
     def initialize(options)
+      super()
       @options = DEFAULT_OPTIONS.merge(options)
       @cookies = {}
     end
