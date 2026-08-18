@@ -60,16 +60,20 @@ These changes do not modify the public API.
 - These RuboCop cops are enabled again, and all related offenses are corrected:
   `Layout/LineLength`, `Lint/ConstantDefinitionInBlock`, `Lint/EmptyClass`,
   `Lint/IneffectiveAccessModifier`, `Naming/HeredocDelimiterNaming`,
-  `Naming/VariableNumber`, `RSpec/IndexedLet`, `RSpec/InstanceVariable`,
-  `RSpec/LeakyConstantDeclaration`, `RSpec/MultipleMemoizedHelpers`,
-  `RSpec/NestedGroups`, `RSpec/ReceiveMessages`, and
-  `RSpec/SpecFilePathFormat`.
+  `Naming/VariableNumber`, `RSpec/ExpectInHook`, `RSpec/IndexedLet`,
+  `RSpec/InstanceVariable`, `RSpec/LeakyConstantDeclaration`,
+  `RSpec/MultipleMemoizedHelpers`, `RSpec/NestedGroups`,
+  `RSpec/ReceiveMessages`, and `RSpec/SpecFilePathFormat`.
 - The JSON test data in `spec/jira/resource/board_spec.rb` is now in
   `spec/mock_responses/board/`. The spec file decreased from 222 lines to 126
   lines.
 - Each spec in `spec/integration` has `type: :integration` metadata. You can now
   run only one group of tests: `rspec --tag type:integration` for the
   integration tests, or `rspec --tag ~type:integration` for the unit tests.
+- The `before` hooks that used `expect` now use `allow`. A hook that stubs a
+  method must not also make an assertion. Where the assertion was necessary, the
+  examples now use `have_received`. The example `sends a DELETE request` in
+  `spec/jira/base_spec.rb` did not test the DELETE request; it now does.
 - The `spec/jira/resource/sprint_spec.rb` file had a `describe 'peristence'`
   group. This group had no `let`, `before`, or `subject` of its own, and its
   name had a spelling error. The group is removed, and its contents moved up one

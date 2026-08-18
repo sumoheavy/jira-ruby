@@ -99,9 +99,6 @@ Naming/PredicateMethod:
 RSpec/ExampleLength:
   Enabled: false
 
-RSpec/ExpectInHook:
-  Enabled: false
-
 RSpec/MessageSpies:
   Enabled: false
 

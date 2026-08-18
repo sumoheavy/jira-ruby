@@ -80,10 +80,11 @@ describe JIRA::Resource::Project do
     let(:response) { double('response', body: '[{}]') }
 
     context 'with pagination' do
+      let(:user_factory) { double('user factory') }
+
       before do
-        user_factory = double('user factory')
-        expect(client).to receive(:User).and_return(user_factory)
-        expect(user_factory).to receive(:build).with(any_args)
+        allow(client).to receive(:User).and_return(user_factory)
+        allow(user_factory).to receive(:build).with(any_args)
       end
 
       it 'doesn\'t use pagination parameters by default' do
@@ -92,6 +93,9 @@ describe JIRA::Resource::Project do
           .and_return(response)
 
         project.users
+
+        expect(client).to have_received(:User)
+        expect(user_factory).to have_received(:build).with(any_args)
       end
 
       it 'accepts start_at option' do
@@ -102,6 +106,9 @@ describe JIRA::Resource::Project do
           .and_return(response)
 
         project.users(start_at:)
+
+        expect(client).to have_received(:User)
+        expect(user_factory).to have_received(:build).with(any_args)
       end
 
       it 'accepts max_results option' do
@@ -112,6 +119,9 @@ describe JIRA::Resource::Project do
           .and_return(response)
 
         project.users(max_results:)
+
+        expect(client).to have_received(:User)
+        expect(user_factory).to have_received(:build).with(any_args)
       end
 
       it 'accepts start_at and max_results options' do
@@ -124,6 +134,9 @@ describe JIRA::Resource::Project do
           .and_return(response)
 
         project.users(start_at:, max_results:)
+
+        expect(client).to have_received(:User)
+        expect(user_factory).to have_received(:build).with(any_args)
       end
     end
   end

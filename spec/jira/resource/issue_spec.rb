@@ -185,7 +185,7 @@ describe JIRA::Resource::Issue do
     context 'without next_page_token (first page)' do
       subject { described_class.jql_paged(client, 'foo bar', page_size: 2) }
 
-      before { expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar').and_return(response) }
+      before { allow(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar').and_return(response) }
 
       let(:response) { double }
       let(:response_string) { '{"issues": [{"key":"foo"},{"key":"bar"}], "isLast": false, "nextPageToken": "abc"}' }
@@ -199,8 +199,8 @@ describe JIRA::Resource::Issue do
       let(:response_string) { '{"issues": [{"key":"baz"}], "isLast": true}' }
 
       before do
-        expect(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc')
-                                       .and_return(double(body: response_string))
+        allow(client).to receive(:get).with('/jira/rest/api/2/search/jql?jql=foo+bar&nextPageToken=abc')
+                                      .and_return(double(body: response_string))
       end
 
       it { is_expected.to eq(issues: %w[3], next_page_token: nil, total: nil) }

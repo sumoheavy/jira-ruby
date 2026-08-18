@@ -96,7 +96,7 @@ describe JIRA::Base do
 
   describe 'collection_path' do
     before do
-      expect(client).to receive(:options).and_return(rest_base_path: '/deadbeef/bar')
+      allow(client).to receive(:options).and_return(rest_base_path: '/deadbeef/bar')
     end
 
     it 'returns the collection_path' do
@@ -142,8 +142,8 @@ describe JIRA::Base do
     describe 'not cached' do
       before do
         response = instance_double(Response, body: '{"self":"http://deadbeef/","id":"98765"}')
-        expect(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
-        expect(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
+        allow(client).to receive(:get).with('/jira/rest/api/2/deadbeef/98765').and_return(response)
+        allow(JIRA::Resource::Deadbeef).to receive(:collection_path).and_return('/jira/rest/api/2/deadbeef')
       end
 
       it 'sets expanded to true after fetch' do
@@ -202,7 +202,7 @@ describe JIRA::Base do
     let(:response) { double }
 
     before do
-      expect(subject).to receive(:url).and_return('/foo/bar')
+      allow(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'POSTs a new record' do
@@ -255,7 +255,7 @@ describe JIRA::Base do
     let(:response) { double }
 
     before do
-      expect(subject).to receive(:url).and_return('/foo/bar')
+      allow(subject).to receive(:url).and_return('/foo/bar')
     end
 
     it 'POSTs a new record' do
@@ -321,7 +321,7 @@ describe JIRA::Base do
 
   describe 'delete' do
     before do
-      expect(client).to receive(:delete).with('/foo/bar')
+      allow(client).to receive(:delete).with('/foo/bar')
       allow(subject).to receive(:url).and_return('/foo/bar')
     end
 
@@ -334,6 +334,7 @@ describe JIRA::Base do
     it 'sends a DELETE request' do
       subject.delete
 
+      expect(client).to have_received(:delete).with('/foo/bar')
       expect(subject).to have_received(:url)
       expect(subject).to be_deleted
     end
