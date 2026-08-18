@@ -117,8 +117,5 @@ RSpec/SubjectStub:
 RSpec/VerifiedDoubles:
   Enabled: false
 
-Style/MissingRespondToMissing:
-  Enabled: false
-
 Style/OptionalBooleanParameter:
   Enabled: false

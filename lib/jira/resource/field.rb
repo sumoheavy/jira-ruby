@@ -59,11 +59,11 @@ module JIRA
         client.field_map_cache[field_name]
       end
 
-      def respond_to?(method_name, _include_all = false)
+      def respond_to_missing?(method_name, include_all = false)
         if [method_name.to_s, client.Field.name_to_id(method_name)].any? { |k| attrs.key?(k) }
           true
         else
-          super(method_name)
+          super
         end
       end
 

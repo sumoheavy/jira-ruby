@@ -42,5 +42,11 @@ module JIRA
     def method_missing(method_name, ...)
       collection.send(method_name, ...)
     end
+
+    # The collection receives the methods that this class does not have. Thus
+    # this class answers for the methods of the collection.
+    def respond_to_missing?(method_name, include_all = false)
+      collection.respond_to?(method_name, include_all) || super
+    end
   end
 end

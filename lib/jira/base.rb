@@ -289,9 +289,10 @@ module JIRA
 
     # Checks if method_name is set in the attributes hash
     # and returns true when found, otherwise proxies the
-    # call to the superclass.
-    def respond_to?(method_name, _include_all = false)
-      attrs.key?(method_name.to_s) || super(method_name)
+    # call to the superclass. Ruby routes respond_to? through this method, and
+    # method() and Method#owner also use it.
+    def respond_to_missing?(method_name, include_all = false)
+      attrs.key?(method_name.to_s) || super
     end
 
     # Overrides method_missing to check the attribute hash

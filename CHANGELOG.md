@@ -42,12 +42,25 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `NoMethodError`. This change does not apply to
   `JIRA::Base.query_params_for_search`, which stays public.
 
+- The public `respond_to?` methods on `JIRA::Base`, `JIRA::Resource::Field`, and
+  `JIRA::Resource::Issue` are removed. Ruby now supplies `respond_to?`, which
+  calls the new `respond_to_missing?` method. If your code calls
+  `respond_to?(name)`, the result does not change. If your code calls
+  `super` from an overridden `respond_to?` in a subclass, examine it: the
+  removed methods ignored the second `include_all` argument, but
+  `respond_to_missing?` uses it.
 - `JIRA::RequestClient#request` and `JIRA::RequestClient#request_multipart` send
   their arguments with `*`. Before, they used an `args` array. The behavior for
   callers does not change.
 
 ### Fixed
 
+- `respond_to?` and `method` did not agree. `JIRA::Base`, `JIRA::HasManyProxy`,
+  `JIRA::Resource::Field`, and `JIRA::Resource::Issue` use `method_missing` for
+  dynamic attributes, but they did not have a `respond_to_missing?` method. Thus
+  `issue.respond_to?(:summary)` gave `true`, but `issue.method(:summary)` raised
+  `NameError`. These classes now have `respond_to_missing?`, and `method`,
+  `Method#owner`, and code that examines an object all operate correctly.
 - `JIRA::Resource::Agile#path_base` raised `NoMethodError`. The instance method
   called the private class method with an explicit receiver, which Ruby does not
   permit. This defect was not visible, because only the class methods of `Agile`
@@ -63,7 +76,8 @@ These changes do not modify the public API.
   `Naming/VariableNumber`, `RSpec/ExpectInHook`, `RSpec/IndexedLet`,
   `RSpec/InstanceVariable`, `RSpec/LeakyConstantDeclaration`,
   `RSpec/MultipleMemoizedHelpers`, `RSpec/NestedGroups`,
-  `RSpec/ReceiveMessages`, and `RSpec/SpecFilePathFormat`.
+  `RSpec/ReceiveMessages`, `RSpec/SpecFilePathFormat`, and
+  `Style/MissingRespondToMissing`.
 - The JSON test data in `spec/jira/resource/board_spec.rb` is now in
   `spec/mock_responses/board/`. The spec file decreased from 222 lines to 126
   lines.
