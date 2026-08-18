@@ -31,132 +31,126 @@ describe JIRA::Resource::Sprint do
     end
   end
 
-  describe 'peristence' do
-    describe '#save' do
-      let(:instance_attrs) { { start_date: '2016-06-01' } }
+  describe '#save' do
+    let(:instance_attrs) { { start_date: '2016-06-01' } }
 
-      before do
-        sprint.attrs = instance_attrs
-      end
+    before do
+      sprint.attrs = instance_attrs
+    end
 
-      context 'when attributes are specified' do
-        let(:given_attrs) { { start_date: '2016-06-10' } }
+    context 'when attributes are specified' do
+      let(:given_attrs) { { start_date: '2016-06-10' } }
 
-        it 'calls save on the super class with the given attributes & agile url' do
-          mock_response = double('response', body: '{"id":"123"}')
+      it 'calls save on the super class with the given attributes & agile url' do
+        mock_response = double('response', body: '{"id":"123"}')
 
-          expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
+        expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
 
-          sprint.save(given_attrs)
-        end
-      end
-
-      context 'when attributes are not specified' do
-        it 'calls save on the super class with the instance attributes & agile url' do
-          mock_response = double('response', body: '{"id":"123"}')
-
-          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
-
-          sprint.save
-        end
-      end
-
-      context 'when providing the path argument' do
-        it 'ignores it' do
-          mock_response = double('response', body: '{"id":"123"}')
-
-          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
-
-          sprint.save({}, 'mavenlink.com')
-        end
+        sprint.save(given_attrs)
       end
     end
 
-    describe '#save!' do
-      let(:instance_attrs) { { start_date: '2016-06-01' } }
+    context 'when attributes are not specified' do
+      it 'calls save on the super class with the instance attributes & agile url' do
+        mock_response = double('response', body: '{"id":"123"}')
 
-      before do
-        sprint.attrs = instance_attrs
-      end
+        expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
 
-      context 'when attributes are specified' do
-        let(:given_attrs) { { start_date: '2016-06-10' } }
-
-        it 'calls save! on the super class with the given attributes & agile url' do
-          mock_response = double('response', body: '{"id":"123"}')
-
-          expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
-
-          sprint.save!(given_attrs)
-        end
-      end
-
-      context 'when attributes are not specified' do
-        it 'calls save! on the super class with the instance attributes & agile url' do
-          mock_response = double('response', body: '{"id":"123"}')
-
-          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
-
-          sprint.save!
-        end
-      end
-
-      context 'when providing the path argument' do
-        it 'ignores it' do
-          mock_response = double('response', body: '{"id":"123"}')
-
-          expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
-
-          sprint.save!({}, 'mavenlink.com')
-        end
+        sprint.save
       end
     end
 
-    context 'when an issue exists' do
-      let(:issue_id) { 1001 }
-      let(:post_issue_path) { '/jira/rest/agile/1.0/sprint//issue' }
-      let(:issue) do
+    context 'when providing the path argument' do
+      it 'ignores it' do
+        mock_response = double('response', body: '{"id":"123"}')
+
+        expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
+
+        sprint.save({}, 'mavenlink.com')
+      end
+    end
+  end
+
+  describe '#save!' do
+    let(:instance_attrs) { { start_date: '2016-06-01' } }
+
+    before do
+      sprint.attrs = instance_attrs
+    end
+
+    context 'when attributes are specified' do
+      let(:given_attrs) { { start_date: '2016-06-10' } }
+
+      it 'calls save! on the super class with the given attributes & agile url' do
+        mock_response = double('response', body: '{"id":"123"}')
+
+        expect(client).to receive(:post).with(agile_sprint_path, given_attrs.to_json).and_return(mock_response)
+
+        sprint.save!(given_attrs)
+      end
+    end
+
+    context 'when attributes are not specified' do
+      it 'calls save! on the super class with the instance attributes & agile url' do
+        mock_response = double('response', body: '{"id":"123"}')
+
+        expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
+
+        sprint.save!
+      end
+    end
+
+    context 'when providing the path argument' do
+      it 'ignores it' do
+        mock_response = double('response', body: '{"id":"123"}')
+
+        expect(client).to receive(:post).with(agile_sprint_path, instance_attrs.to_json).and_return(mock_response)
+
+        sprint.save!({}, 'mavenlink.com')
+      end
+    end
+  end
+
+  context 'when an issue exists' do
+    let(:issue_id) { 1001 }
+    let(:post_issue_path) { '/jira/rest/agile/1.0/sprint//issue' }
+    let(:issue) do
+      issue = double
+      allow(issue).to receive(:id).and_return(issue_id)
+      issue
+    end
+    let(:post_issue_input) do
+      { issues: [issue.id] }
+    end
+
+    describe '#add_issue' do
+      it 'posts with the issue id' do
+        expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
+
+        expect(sprint.add_issue(issue)).to eq(issue)
+      end
+    end
+  end
+
+  context 'when multiple issues exist' do
+    let(:issue_ids) { [1001, 1012] }
+    let(:post_issue_path) { '/jira/rest/agile/1.0/sprint//issue' }
+    let(:issues) do
+      issue_ids.map do |issue_id|
         issue = double
         allow(issue).to receive(:id).and_return(issue_id)
         issue
       end
-      let(:post_issue_input) do
-        { issues: [issue.id] }
-      end
-
-      describe '#add_issue' do
-        context 'when an issue is passed' do
-          it 'posts with the issue id' do
-            expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
-
-            expect(sprint.add_issue(issue)).to eq(issue)
-          end
-        end
-      end
+    end
+    let(:post_issue_input) do
+      { issues: issue_ids }
     end
 
-    context 'when multiple issues exist' do
-      let(:issue_ids) { [1001, 1012] }
-      let(:post_issue_path) { '/jira/rest/agile/1.0/sprint//issue' }
-      let(:issues) do
-        issue_ids.map do |issue_id|
-          issue = double
-          allow(issue).to receive(:id).and_return(issue_id)
-          issue
-        end
-      end
-      let(:post_issue_input) do
-        { issues: issue_ids }
-      end
+    describe '#add_issues' do
+      it 'posts with the issue id' do
+        expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
 
-      describe '#add_issues' do
-        context 'when an issue is passed' do
-          it 'posts with the issue id' do
-            expect(client).to receive(:post).with(post_issue_path, post_issue_input.to_json)
-
-            expect(sprint.add_issues(issues)).to eq(issues)
-          end
-        end
+        expect(sprint.add_issues(issues)).to eq(issues)
       end
     end
   end

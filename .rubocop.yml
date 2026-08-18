@@ -44,6 +44,12 @@ RSpec/MultipleMemoizedHelpers:
     - 'spec/integration/**/*'
     - 'spec/jira/http_client_spec.rb'
 
+# Four levels are permitted. The specs use the fourth level to give a different
+# value to a `let` statement, for example a group for `maxResults` with a child
+# group for each value. Each level has its own `let`, `before`, or `subject`.
+RSpec/NestedGroups:
+  Max: 4
+
 # The specs in spec/integration test a resource, but they are not in the
 # spec/jira/resource directory. Each of these specs has `type: :integration`
 # metadata, which tells this cop to ignore the path.
@@ -103,9 +109,6 @@ RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/NamedSubject:
-  Enabled: false
-
-RSpec/NestedGroups:
   Enabled: false
 
 RSpec/StubbedMock:

@@ -62,13 +62,18 @@ These changes do not modify the public API.
   `Lint/IneffectiveAccessModifier`, `Naming/HeredocDelimiterNaming`,
   `Naming/VariableNumber`, `RSpec/IndexedLet`, `RSpec/InstanceVariable`,
   `RSpec/LeakyConstantDeclaration`, `RSpec/MultipleMemoizedHelpers`,
-  `RSpec/ReceiveMessages`, and `RSpec/SpecFilePathFormat`.
+  `RSpec/NestedGroups`, `RSpec/ReceiveMessages`, and
+  `RSpec/SpecFilePathFormat`.
 - The JSON test data in `spec/jira/resource/board_spec.rb` is now in
   `spec/mock_responses/board/`. The spec file decreased from 222 lines to 126
   lines.
 - Each spec in `spec/integration` has `type: :integration` metadata. You can now
   run only one group of tests: `rspec --tag type:integration` for the
   integration tests, or `rspec --tag ~type:integration` for the unit tests.
+- The `spec/jira/resource/sprint_spec.rb` file had a `describe 'peristence'`
+  group. This group had no `let`, `before`, or `subject` of its own, and its
+  name had a spelling error. The group is removed, and its contents moved up one
+  level.
 - The `spec/jira/resource/jira_picker_suggestions_issue_spec.rb` file has the
   name `issue_picker_suggestions_issue_spec.rb`. The new name agrees with the
   `JIRA::Resource::IssuePickerSuggestionsIssue` class that the spec tests.
