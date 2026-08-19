@@ -96,6 +96,10 @@ These changes do not modify the public API.
   method must not also make an assertion. Where the assertion was necessary, the
   examples now use `have_received`. The example `sends a DELETE request` in
   `spec/jira/base_spec.rb` did not test the DELETE request; it now does.
+- The example `gets board configuration for a board` in
+  `spec/jira/resource/board_spec.rb` tested only that the result was not nil.
+  Thus the example gave a pass with no data. The example now tests the id, the
+  name, the type, the location, and the columns.
 - The `spec/jira/resource/sprint_spec.rb` file had a `describe 'peristence'`
   group. This group had no `let`, `before`, or `subject` of its own, and its
   name had a spelling error. The group is removed, and its contents moved up one

@@ -121,6 +121,14 @@ describe JIRA::Resource::Board do
     allow(board).to receive(:id).and_return(84)
     expect(client).to receive(:get).with('/rest/agile/1.0/board/84/configuration').and_return(response)
     expect(client).to receive(:BoardConfiguration).and_return(JIRA::Resource::BoardConfigurationFactory.new(client))
-    expect(board.configuration).not_to be_nil
+
+    configuration = board.configuration
+
+    expect(configuration).to be_a(JIRA::Resource::BoardConfiguration)
+    expect(configuration.id).to eq(1)
+    expect(configuration.name).to eq('My Board')
+    expect(configuration.type).to eq('kanban')
+    expect(configuration.location['key']).to eq('MYPROJ')
+    expect(configuration.columnConfig['columns'].map { |column| column['name'] }).to eq(['Backlog'])
   end
 end
