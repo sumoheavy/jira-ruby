@@ -512,7 +512,12 @@ module JIRA
 
     def self.hash_to_query_string(query_params)
       query_params.map do |k, v|
-        "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}"
+        case v
+        when Array
+          "#{CGI.escape(k.to_s)}=#{v.map { |val| CGI.escape(val.to_s) }.join(',')}"
+        else
+          "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}"
+        end
       end.join('&')
     end
 
