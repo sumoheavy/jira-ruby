@@ -103,6 +103,43 @@ module JIRA
         options[:max_results]&.zero? ? total : issues
       end
 
+      # Get issues using JQL query via the legacy /search endpoint.
+      # This endpoint is used for Jira Data Center where /search/jql is not available.
+      # @param client [JIRA::Client]
+      # @param jql [String] the JQL query string to search with
+      # @param options [Hash] Jira API options for the search
+      # @option options [Array] :fields the fields to include in the response
+      # @option options [Integer] :start_at the index of the first issue to return (0-based)
+      # @option options [Integer] :max_results maximum number of issues to return
+      # @option options [Array] :expand fields to expand
+      # @option options [Boolean] :validate_query whether to validate the query (default: true)
+      # @return [Array<JIRA::Resource::Issue>] or [Integer] total count if max_results is 0
+      def self.datacenter_jql(client, jql, options = { fields: nil, start_at: nil, max_results: nil, expand: nil, validate_query: true })
+        url = client.options[:rest_base_path] + "/search?jql=#{CGI.escape(jql)}"
+
+        if options[:fields]
+          url << "&fields=#{options[:fields].map do |value|
+                              CGI.escape(client.Field.name_to_id(value))
+                            end.join(',')}"
+        end
+        url << "&startAt=#{CGI.escape(options[:start_at].to_s)}" if options[:start_at]
+        url << "&maxResults=#{CGI.escape(options[:max_results].to_s)}" if options[:max_results]
+        url << '&validateQuery=false' if options[:validate_query] === false # rubocop:disable Style/CaseEquality
+
+        if options[:expand]
+          options[:expand] = [options[:expand]] if options[:expand].is_a?(String)
+          url << "&expand=#{options[:expand].to_a.map { |value| CGI.escape(value.to_s) }.join(',')}"
+        end
+
+        response = client.get(url)
+        json = parse_json(response.body)
+        return json['total'] if options[:max_results]&.zero?
+
+        json['issues'].map do |issue|
+          client.Issue.build(issue)
+        end
+      end
+
       # Get paged issues using JQL query.
       # @param jql [String] the JQL query string to search with
       # @param options [Hash] Jira API options for the search, including next_page_token

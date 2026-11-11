@@ -26,16 +26,16 @@ describe JIRA::Resource::Field do
                                                                                    'navigable' => true, 'searchable' => true, 'clauseNames' => %w[issuetype type], 'schema' => { 'type' => 'issuetype', 'system' => 'issuetype' } }),
                                                       described_class.new(client,
                                                                           attrs: { 'id' => 'customfield_10111', 'name' => 'SingleWord', 'custom' => true, 'orderable' => true,
-                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10111]', 'SingleWord'],       'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_111 } }),
+                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10111]', 'SingleWord'], 'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_111 } }),
                                                       described_class.new(client,
                                                                           attrs: { 'id' => 'customfield_10222', 'name' => 'Multi Word', 'custom' => true, 'orderable' => true,
-                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10222]', 'Multi Word'],       'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_222 } }),
+                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10222]', 'Multi Word'], 'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_222 } }),
                                                       described_class.new(client,
                                                                           attrs: { 'id' => 'customfield_10333', 'name' => 'Why/N@t', 'custom' => true, 'orderable' => true,
-                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10333]', 'Why/N@t'],          'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_333 } }),
+                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10333]', 'Why/N@t'], 'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_333 } }),
                                                       described_class.new(client,
                                                                           attrs: { 'id' => 'customfield_10444', 'name' => 'SingleWord', 'custom' => true, 'orderable' => true,
-                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10444]', 'SingleWord'],       'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_444 } })
+                                                                                   'navigable' => true, 'searchable' => true, 'clauseNames' => ['cf[10444]', 'SingleWord'], 'schema' => { 'type' => 'string', 'custom' => 'com.atlassian.jira.plugin.system.customfieldtypes:select', 'customId' => 10_444 } })
                                                     ])
     client
   end
