@@ -173,6 +173,82 @@ describe JIRA::Resource::Issue do
     end
   end
 
+  describe '.datacenter_jql' do
+    let(:issue) { double }
+    let(:response) { double }
+    let(:response_string) { '{"issues": [{"key":"foo"}], "total": 1}' }
+
+    before do
+      allow(response).to receive(:body).and_return(response_string)
+      allow(client).to receive(:Issue).and_return(issue)
+      allow(issue).to receive(:build).with({ 'key' => 'foo' }).and_return('')
+    end
+
+    it 'searches an issue with a jql query string using /search endpoint' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar')).to eq([''])
+    end
+
+    it 'searches with fields parameter' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&fields=foo,bar')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', fields: %w[foo bar])).to eq([''])
+    end
+
+    it 'searches with start_at parameter' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&startAt=10')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', start_at: 10)).to eq([''])
+    end
+
+    it 'searches with max_results parameter' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=5')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', max_results: 5)).to eq([''])
+    end
+
+    it 'returns total count when max_results is 0' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&maxResults=0')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', max_results: 0)).to eq(1)
+    end
+
+    it 'searches with expand parameter as string' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', expand: 'transitions')).to eq([''])
+    end
+
+    it 'searches with expand parameter as array' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&expand=transitions')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', expand: %w[transitions])).to eq([''])
+    end
+
+    it 'passes validateQuery=false when validate_query is false' do
+      expect(client).to receive(:get)
+        .with('/jira/rest/api/2/search?jql=foo+bar&validateQuery=false')
+        .and_return(response)
+
+      expect(described_class.datacenter_jql(client, 'foo bar', validate_query: false)).to eq([''])
+    end
+  end
+
   describe '.jql_paged' do
     let(:issue) { double }
     let(:response) { double }
